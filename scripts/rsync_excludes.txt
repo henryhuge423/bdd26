@@ -1,0 +1,10 @@
+.git/
+__pycache__/
+*.pyc
+/data/
+/runs/
+/logs/
+/wandb/
+/weights/
+/third_party/*/.git/
+*.egg-info/
