@@ -1,0 +1,103 @@
+# Prompt bank for the text-anchored type head (RESEARCH_PLAN.md pillar A).
+# Morphological descriptions were written by an LLM (Claude Opus 5.5, 2026-09-24) following
+# PanNuke's class definitions (Gamper et al. 2020): neoplastic = tumour cells; inflammatory =
+# lymphocytes, plasma cells, neutrophils, eosinophils, macrophages; connective = fibroblasts,
+# endothelial, smooth-muscle and other soft-tissue cells; dead = apoptotic / necrotic cells;
+# epithelial = non-neoplastic epithelium. Keep the file frozen once experiments start (ablations
+# compare "names" vs "descriptions" vs "tissue-conditioned descriptions").
+
+templates:
+  - "an H&E image of {}."
+  - "a histopathology image showing {}."
+  - "a high-magnification H&E photomicrograph of {}."
+  - "{}, H&E stain."
+
+classes:
+  Background:
+    names: ["background", "extracellular stroma without nuclei"]
+    descriptions:
+      - "pink eosinophilic extracellular matrix without nuclei"
+      - "cytoplasm and stroma with no visible nucleus"
+      - "empty glandular lumen and white background space"
+      - "collagen fibres and fibrin without cell nuclei"
+      - "red blood cells without nuclei inside a vessel lumen"
+      - "mucin and secretory material in a lumen"
+      - "pale fat vacuoles of adipose tissue"
+      - "granular cytoplasm between neighbouring cells"
+  Neoplastic:
+    names: ["neoplastic cell nuclei", "tumor cell nuclei"]
+    descriptions:
+      - "large pleomorphic tumor nuclei with irregular nuclear contours"
+      - "enlarged hyperchromatic malignant nuclei with prominent nucleoli"
+      - "crowded overlapping cancer cell nuclei with a high nuclear-to-cytoplasmic ratio"
+      - "atypical nuclei with vesicular chromatin and nuclear membrane irregularities"
+      - "sheets of carcinoma cells with coarse clumped chromatin"
+      - "mitotic figures among atypical neoplastic nuclei"
+      - "variably sized oval to bizarre nuclei of malignant cells"
+      - "loss of polarity in densely packed neoplastic nuclei"
+  Inflammatory:
+    names: ["inflammatory cell nuclei", "lymphocyte nuclei"]
+    descriptions:
+      - "small round dark lymphocyte nuclei with dense chromatin and scant cytoplasm"
+      - "plasma cells with eccentric clock-face nuclei and a perinuclear halo"
+      - "neutrophils with multilobed segmented nuclei"
+      - "eosinophils with bilobed nuclei and bright red cytoplasmic granules"
+      - "macrophages with bean-shaped nuclei and abundant foamy cytoplasm"
+      - "a dense infiltrate of small uniform hyperchromatic immune cells"
+      - "tiny round deeply basophilic nuclei scattered in the stroma"
+      - "clusters of inflammatory cells with compact round nuclei"
+  Connective:
+    names: ["connective tissue cell nuclei", "fibroblast nuclei"]
+    descriptions:
+      - "thin elongated spindle-shaped fibroblast nuclei in collagenous stroma"
+      - "wavy slender nuclei with tapered ends between collagen fibres"
+      - "flat endothelial nuclei lining small blood vessels"
+      - "cigar-shaped smooth muscle nuclei with blunt ends"
+      - "sparse spindle cells embedded in pink extracellular matrix"
+      - "elongated pale stromal nuclei oriented along fibre bundles"
+      - "adipocyte nuclei compressed at the rim of fat cells"
+      - "pericytes and stromal cells with narrow oval nuclei"
+  Dead:
+    names: ["dead cell nuclei", "apoptotic cell nuclei"]
+    descriptions:
+      - "apoptotic bodies with shrunken, intensely dark pyknotic nuclei"
+      - "karyorrhectic nuclear fragments scattered as dark dust"
+      - "condensed round nuclear remnants surrounded by a clear halo"
+      - "hypereosinophilic shrunken cells with fragmented chromatin"
+      - "necrotic debris with ghost cells and faded karyolytic nuclei"
+      - "small very dense homogeneous black nuclei of dying cells"
+      - "crescent-shaped chromatin condensation along the nuclear membrane"
+      - "cell debris and nuclear dust in areas of necrosis"
+  Epithelial:
+    names: ["epithelial cell nuclei", "benign epithelial nuclei"]
+    descriptions:
+      - "uniform round to oval benign epithelial nuclei with fine chromatin"
+      - "orderly polarized columnar epithelial nuclei along a basement membrane"
+      - "regularly spaced nuclei of normal glandular epithelium"
+      - "bland squamous epithelial nuclei with even chromatin and small nucleoli"
+      - "cuboidal epithelial cells with central round nuclei lining ducts"
+      - "non-atypical epithelial nuclei with smooth nuclear membranes"
+      - "a single layer of evenly sized nuclei lining a gland lumen"
+      - "benign hepatocyte-like or tubular epithelial nuclei with moderate cytoplasm"
+
+# Natural-language tissue names for tissue-conditioned prototypes ("{description} in {tissue}").
+tissues:
+  Adrenal_gland: "adrenal gland tissue"
+  Bile-duct: "bile duct tissue"
+  Bladder: "urinary bladder tissue"
+  Breast: "breast tissue"
+  Cervix: "cervical tissue"
+  Colon: "colon tissue"
+  Esophagus: "esophageal tissue"
+  HeadNeck: "head and neck tissue"
+  Kidney: "kidney tissue"
+  Liver: "liver tissue"
+  Lung: "lung tissue"
+  Ovarian: "ovarian tissue"
+  Pancreatic: "pancreatic tissue"
+  Prostate: "prostate tissue"
+  Skin: "skin tissue"
+  Stomach: "stomach tissue"
+  Testis: "testis tissue"
+  Thyroid: "thyroid tissue"
+  Uterus: "uterine tissue"

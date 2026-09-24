@@ -202,21 +202,35 @@ def _post(args):
 
 
 @torch.no_grad()
-def predict_fold(model, fold_ds, device="cuda", batch_size=32, workers=16, tta: bool = False) -> tuple[np.ndarray, np.ndarray]:
-    """Run HoVer-Net on every patch of a fold; returns (inst, type) arrays in fold order."""
+def predict_fold(model, fold_ds, device="cuda", batch_size=32, workers=16, tta: bool = False,
+                 inst_probs: bool = False):
+    """Run HoVer-Net on every patch of a fold; returns (inst, type) arrays in fold order, plus with
+    inst_probs=True a per-instance table (img index, inst id, mean type probabilities (M, 6))."""
+    from ..text.conch_prior import instance_mean_probs
+
     model.eval()
-    maps = []
-    for s in range(0, len(fold_ds), batch_size):
-        imgs = np.stack([pad_image(np.asarray(fold_ds.images[i])) for i in range(s, min(s + batch_size, len(fold_ds)))])
-        x = torch.from_numpy(imgs).to(device)
-        p = _tta_forward(model, x) if tta else _softmaxed(forward_crop(model, x))
-        tp = p["tp"].argmax(-1, keepdim=True).float()
-        np_ = p["np"][..., 1:]
-        maps.append(torch.cat([tp, np_, p["hv"]], -1).cpu().numpy())
-    maps = np.concatenate(maps)
+    insts, types, tab = [], [], ([], [], [])
     with Pool(workers) as pool:
-        res = pool.map(_post, ((m,) for m in maps), chunksize=8)
-    return np.stack([r[0] for r in res]), np.stack([r[1] for r in res])
+        for s in range(0, len(fold_ds), batch_size):
+            imgs = np.stack([pad_image(np.asarray(fold_ds.images[i])) for i in range(s, min(s + batch_size, len(fold_ds)))])
+            x = torch.from_numpy(imgs).to(device)
+            p = _tta_forward(model, x) if tta else _softmaxed(forward_crop(model, x))
+            tp = p["tp"].argmax(-1, keepdim=True).float()
+            maps = torch.cat([tp, p["np"][..., 1:], p["hv"]], -1).cpu().numpy()
+            res = pool.map(_post, ((m,) for m in maps), chunksize=2)
+            insts += [r[0] for r in res]
+            types += [r[1] for r in res]
+            if inst_probs:
+                prob = p["tp"].cpu().numpy()
+                for b, (inst, _) in enumerate(res):
+                    ids = np.unique(inst)[1:]
+                    tab[0].append(np.full(len(ids), s + b))
+                    tab[1].append(ids)
+                    tab[2].append(instance_mean_probs(inst, prob[b], ids))
+    out = (np.stack(insts), np.stack(types))
+    if inst_probs:
+        out += (tuple(np.concatenate(t) for t in tab),)
+    return out
 
 
 def _softmaxed(p: dict) -> dict:

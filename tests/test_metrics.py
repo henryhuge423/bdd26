@@ -159,3 +159,26 @@ def test_error_taxonomy_toy():
     gs, ps, _ = classify_errors(overlap(t, p))
     assert list(gs) == [1, 1, 2, 3]            # merged, merged, split, missed_bg
     assert list(ps) == [1, 2, 2, 3]            # fp_merge, fp_split, fp_split, fp_bg
+
+
+def test_fast_retype_matches_full_eval(fold, preds):
+    from nucseg.metrics.fast_retype import RetypeEvaluator
+    from nucseg.metrics.pannuke_eval import instance_classes
+    from nucseg.text.retype import paint_types
+
+    inst, typ = preds
+    gt = fold.gt_channels[:N]
+    tissue = np.asarray(fold.tissue[:N])
+    rows = [(j, i) for j in range(N) for i in np.unique(inst[j]) if i]
+    ii, iid = np.array([r[0] for r in rows]), np.array([r[1] for r in rows])
+    ev = RetypeEvaluator(gt, inst, ii, iid, tissue, workers=4)
+    rng = np.random.default_rng(1)
+    for trial in range(2):
+        cls = np.concatenate([instance_classes(inst[j], typ[j])[1] for j in range(N)])
+        if trial:
+            cls = np.where(rng.random(len(cls)) < 0.4, rng.integers(0, 6, len(cls)), cls)
+        painted = paint_types(inst, ii, iid, cls)
+        full = evaluate(gt, np.asarray(fold.inst[:N]), np.asarray(fold.type[:N]), tissue, inst, painted, workers=4)
+        fast, per_class = ev.mpq(cls)
+        assert fast == pytest.approx(full["summary"]["official"]["mPQ"], abs=1e-9)
+        assert per_class == pytest.approx(list(full["summary"]["per_class_PQ"].values()), abs=1e-9, nan_ok=True)

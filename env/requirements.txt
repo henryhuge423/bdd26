@@ -36,3 +36,8 @@ networkx==3.1
 psutil
 pytest
 future==0.18.2
+# CONCH text/image towers (pillar A); CONCH itself: pip install --no-deps -e third_party/CONCH
+transformers==4.46.3
+tokenizers==0.20.3
+ftfy==6.3.1
+regex

@@ -8,3 +8,4 @@ set -euo pipefail; cd "$(dirname "$0")/../third_party" 2>/dev/null || { mkdir -p
 [ -d hover_next_train ] || { git clone -q https://github.com/digitalpathologybern/hover_next_train.git hover_next_train && git -C hover_next_train checkout -q db4adfa425ffcad51d01a361e660a40c1ecda9dd; }  # 2026-08-26
 [ -d PanNuke-metrics ] || { git clone -q https://github.com/TissueImageAnalytics/PanNuke-metrics.git PanNuke-metrics && git -C PanNuke-metrics checkout -q c00014d766ca1be142b81bea19d9ef4315cde65a; }  # 2020-10-20
 [ -d PromptNucSeg ] || { git clone -q https://github.com/windygoo/PromptNucSeg.git PromptNucSeg && git -C PromptNucSeg checkout -q fce029082bf2820314a4dc46be443a836e4876a4; }  # 2025-01-10
+[ -d CONCH ] || { git clone -q https://github.com/mahmoodlab/CONCH.git CONCH && git -C CONCH checkout -q 141cc09c7d4ff33d8eda562bd75169b457f71a62; }  # 2025-03-25
