@@ -9,5 +9,8 @@ if ! "$ENV/bin/python" -c "import torch, nucseg, cv2, skimage, imgaug" 2>/dev/nu
   "$ENV/bin/uv" pip install --python "$ENV/bin/python" torch==2.5.1 torchvision==0.20.1 --index-url https://download.pytorch.org/whl/cu124
   "$ENV/bin/uv" pip install --python "$ENV/bin/python" -r env/requirements.txt
   "$ENV/bin/uv" pip install --python "$ENV/bin/python" -e .
+  # imgaug drags in GUI opencv (needs libGL, absent on LM2); keep only the headless build
+  "$ENV/bin/uv" pip uninstall --python "$ENV/bin/python" opencv-python || true
+  "$ENV/bin/uv" pip install --python "$ENV/bin/python" --reinstall-package opencv-python-headless opencv-python-headless==4.8.1.78 numpy==1.23.5
 fi
 "$ENV/bin/python" -c "import torch; print('[env]', torch.__version__, torch.cuda.is_available(), torch.cuda.device_count())"

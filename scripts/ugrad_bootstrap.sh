@@ -11,6 +11,9 @@ if ! "$UGRAD_ROOT/venv/bin/python" -c "import torch, nucseg, cv2, skimage" 2>/de
   uv pip install --python "$UGRAD_ROOT/venv/bin/python" torch==2.5.1 torchvision==0.20.1 --index-url https://download.pytorch.org/whl/cu124
   uv pip install --python "$UGRAD_ROOT/venv/bin/python" -r env/requirements.txt
   uv pip install --python "$UGRAD_ROOT/venv/bin/python" -e .
+  # imgaug drags in GUI opencv (needs libGL, absent on LM2); keep only the headless build
+  uv pip uninstall --python "$UGRAD_ROOT/venv/bin/python" opencv-python || true
+  uv pip install --python "$UGRAD_ROOT/venv/bin/python" --reinstall-package opencv-python-headless opencv-python-headless==4.8.1.78 numpy==1.23.5
 fi
 CRON='23 5 * * * find /tmp/cgf2604 -xdev -exec touch -a -c -h {} + >/dev/null 2>&1'
 { crontab -l 2>/dev/null | grep -v 'touch -a -c -h' || true; echo "$CRON"; } | crontab -
