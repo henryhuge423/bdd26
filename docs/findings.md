@@ -120,8 +120,8 @@ Test fold per split: 1 -> 3, 2 -> 3, 3 -> 1. Values: mPQ / bPQ / Dead PQ (no TTA
 
 | model | split 1 | split 2 | split 3 | mean |
 |---|---|---|---|---|
-| HoVer-Net (ours, full-patch) | .4558 / .6601 / .103 [.4664 / .6707 / .087] | running | running | |
-| CellViT-UNI (ours) | .4951 / .6676 / .142 [.5013 / .6728 / .146] | .4930 / .6638 / .162 [.4973 / .6683 / .163] | .5104 / .6647 / .224 [TTA running] | .4995 / .6654 / .176 |
+| HoVer-Net (ours, full-patch) | .4558 / .6601 / .103 [.4664 / .6707 / .087] | .4529 / .6610 / .108 [.4633 / .6696 / .105] | running | |
+| CellViT-UNI (ours) | .4951 / .6676 / .142 [.5013 / .6728 / .146] | .4930 / .6638 / .162 [.4973 / .6683 / .163] | .5104 / .6647 / .224 [.5154 / .6707 / .221] | .4995 / .6654 / .176 [.5047 / .6706 / .177] |
 
 Reference (paper-reported): HoVer-Net .463 / .660; CellViT-UNI (CellViT++) .492.
 
