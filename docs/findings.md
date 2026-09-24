@@ -114,3 +114,13 @@ Dead GT median area 107 px (others 368). Inside the *missed-without-overlap* GT 
 - ~Half of the missed Inflammatory nuclei have NP firing -> lost in post-processing (small objects).
 - Implication: improvements for Dead must act on detection / foreground (class-aware foreground,
   small-object recovery, targeted synthesis), not on re-typing detected instances.
+
+## Baselines (official 3-split protocol, last checkpoint; filled in as runs finish)
+Test fold per split: 1 -> 3, 2 -> 3, 3 -> 1. Values: mPQ / bPQ / Dead PQ (no TTA; TTA in brackets).
+
+| model | split 1 | split 2 | split 3 | mean |
+|---|---|---|---|---|
+| HoVer-Net (ours, full-patch) | .4558 / .6601 / .103 [.4664 / .6707 / .087] | running | running | |
+| CellViT-UNI (ours) | .4951 / .6676 / .142 [.5013 / .6728 / .146] | .4930 / .6638 / .162 [.4973 / .6683 / .163] | .5104 / .6647 / .224 [TTA running] | .4995 / .6654 / .176 |
+
+Reference (paper-reported): HoVer-Net .463 / .660; CellViT-UNI (CellViT++) .492.
