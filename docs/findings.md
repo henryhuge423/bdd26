@@ -124,3 +124,30 @@ Test fold per split: 1 -> 3, 2 -> 3, 3 -> 1. Values: mPQ / bPQ / Dead PQ (no TTA
 | CellViT-UNI (ours) | .4951 / .6676 / .142 [.5013 / .6728 / .146] | .4930 / .6638 / .162 [.4973 / .6683 / .163] | .5104 / .6647 / .224 [TTA running] | .4995 / .6654 / .176 |
 
 Reference (paper-reported): HoVer-Net .463 / .660; CellViT-UNI (CellViT++) .492.
+
+## 2026-09-25 — Training-free recovery of missed nuclei (CellViT-UNI, 3 splits; ugrad L4s)
+`scripts/dump_cellvit_maps.py` (fp16 NP/HV/TP maps) + `scripts/sweep_recovery.py`
+(`nucseg.postproc.recovery`; default config tested identical to the official post-processing; light
+metric tested equal to the full evaluator). 96 configs: beta (NP mixed with TP-branch foreground)
+{0,.5,1} x k_dead (fg = max(fg, k P(Dead))) {0,1,2,4} x blob threshold {.3,.4,.5,.6} x orphan-blob
+recovery. Selection per family by VALIDATION mPQ, one test scoring. Sanity: official config from the
+fp16 maps reproduces the pipeline test mPQ within 0.0003 on every split.
+
+Test mPQ (val-selected config per family):
+
+| family | split 1 (test f3) | split 2 (test f3) | split 3 (test f1) | mean | mean Dead PQ |
+|---|---|---|---|---|---|
+| official | .4950 | .4927 | .5104 | .4994 | .176 |
+| thr (tuning control) | .4953 (t.3) | .4929 (t.3) | .5108 (t.3) | .4997 | .176 |
+| orphans | .4951 | .4927 | .5094 | .4991 | .177 |
+| beta | .4953 (b.5) | .4929 (b0,t.3) | .5108 (b0,t.3) | .4997 | .177 |
+| dead | .4953 (k0,t.3) | .4929 (k0,t.3) | .5108 (k0,t.3) | .4997 | .176 |
+| all | .4953 (b.5) | .4929 (t.3,orph) | .5092 (t.3,orph) | .4991 | .178 |
+
+Validation grid, mean over splits (beta 0, no orphans): mPQ is flat (.4902-.4906) across k and thr;
+Dead PQ moves only .181-.186 even at k = 4. Orphans: val Dead +.004, Inflammatory +.003, bPQ -.0015;
+no test gain.
+
+=> **Negative**: missed Dead nuclei cannot be recovered post hoc from this model's outputs; every
+change is within +-0.0004 test mPQ (the threshold-only control does as well as any recovery
+variant). The detection deficit has to be addressed in training (foreground supervision / data).
