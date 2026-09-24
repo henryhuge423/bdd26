@@ -55,8 +55,11 @@ ugrad constraints and how they are handled:
 - `/tmp` is purged after 10 days without access -> `ugrad_bootstrap.sh` installs a daily cron that
   touches `/tmp/cgf2604`; `scripts/push_ugrad.sh` restores everything idempotently from LM1.
 - **Hard 16 GB address-space limit per process** (`limits.conf: @users hard as`). torch+CUDA use ~9 GB of
-  it, leaving **~6.9 GB usable GPU memory per process** on the L4s (with the env tweaks in
-  `ugrad_env.sh`). HoVer-Net training needs 20-36 GB -> train on A100s. There is also a per-process CPU
+  it, leaving **at most ~6.9 GB usable GPU memory per process** on the L4s (with the env tweaks in
+  `ugrad_env.sh`); host-side memory (model copies, memory-mapped folds) eats into the same budget, so
+  big models get less. Measured 2026-09-25 with CellViT-UNI: inference bs 16 OK (3.7 GB peak,
+  ~16 ms/patch), bs 32 OOM at ~4.2 GB; training (even frozen encoder, bs 4) fails. CONCH nucleus
+  prior: 2.6 GB peak. HoVer-Net training needs 20-36 GB -> all training on A100s. There is also a per-process CPU
   time limit (~7 days); long jobs must be resumable.
 - Downloads from huggingface.co / Google Drive are much faster on ugrad than LM1; download there and
   `scripts/pull_ugrad.sh --weights`. hf-mirror.com (LM1 default) does not serve gated repos.
