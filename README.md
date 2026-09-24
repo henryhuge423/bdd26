@@ -11,7 +11,13 @@ src/nucseg/            our package (pip install -e .)
   metrics/instance.py  fast PQ / AJI / AJI+ / centroid pairing (tested == official)
   metrics/errors.py    merge / split / missed / FP taxonomy, touching-neighbour counts
   metrics/pannuke_eval.py  official mPQ/bPQ + strict mPQ, mPQ+, per tissue/class, F_d/F_c, errors
+  metrics/fast_retype.py   exact fast mPQ when only instance classes change (tuning re-typing on val)
   hovernet/            official HoVer-Net (third_party) + our full-patch PanNuke plumbing, TTA
+  cellvit/             CellViT-UNI (UNI ViT-L/16 + CellViT decoder), CellViT PanNuke recipe; shares
+                       HoVer-Net post-processing / TTA / eval
+  text/                CONCH prompt prototypes, radius-restricted CONCH nucleus embeddings, re-typing
+configs/text/          nucleus prompt bank (LLM-written morphology descriptions)
+docs/findings.md       experiment log with all numbers
 scripts/               CLIs + machine sync (see below)
 tests/                 pytest: metrics vs official code, HoVer-Net targets/TTA
 third_party/           pinned upstream repos (scripts/fetch_third_party.sh)
@@ -25,7 +31,14 @@ python -m pytest -q                                     # metric + plumbing test
 python scripts/train_hovernet.py --split 1 --out runs/hovernet/split1 --tta
 python scripts/eval_pannuke.py --pred X.npz --fold 3 --out runs/.../eval
 python scripts/predict_hovernet.py --ckpt CKPT --fold 3 --out runs/...
+python scripts/train_cellvit.py --split 1 --out runs/cellvit_uni/split1 --tta       # ~2-4 h on one A100
+python scripts/predict_cellvit.py --run runs/cellvit_uni/split1 --fold 2 [--tta]    # + per-instance type probs
+python scripts/encode_text_prototypes.py [--probe-fold 1 --crop 256 --calibrate]    # CONCH prototypes (+ crop probe)
+python scripts/probe_conch_dense.py --fold 1                                        # radius-restricted pooling probe
+python scripts/retype_conch.py --run runs/cellvit_uni/split1 --split 1 [--tta]      # pillar-A re-typing (val-tuned)
 ```
+CONCH (text/image towers) is installed with `pip install --no-deps -e third_party/CONCH`
+(done by `lm_env_setup.sh` / `ugrad_bootstrap.sh`).
 Official splits (train/val/test): 1 = 1/2/3, 2 = 2/1/3, 3 = 3/2/1. Always test the LAST checkpoint.
 
 ## Machines
