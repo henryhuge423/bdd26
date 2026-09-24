@@ -44,16 +44,24 @@ def normalize(img: np.ndarray) -> np.ndarray:
     return np.ascontiguousarray(x.transpose(2, 0, 1))
 
 
+def small_nuclei(inst: np.ndarray, max_area: int) -> np.ndarray:
+    """Pixels of instances with area < max_area (after augmentation)."""
+    area = np.bincount(inst.ravel())
+    area[0] = max_area  # background never small
+    return area[inst] < max_area
+
+
 def tissue_ids(names) -> np.ndarray:
     lut = {t: i for i, t in enumerate(TISSUES)}
     return np.array([lut[str(t)] for t in names], np.int64)
 
 
 class PanNukeCellViT(Dataset):
-    def __init__(self, folds: list[int], train: bool):
+    def __init__(self, folds: list[int], train: bool, small_area: int = 100):
         self.folds = [PanNukeFold(k) for k in folds]
         self.index = [(fi, j) for fi, f in enumerate(self.folds) for j in range(len(f))]
         self.train = train
+        self.small_area = small_area
         self.augs = cellvit_train_augs() if train else None
         self._tissue_ids = [tissue_ids(f.tissue) for f in self.folds]
 
@@ -85,6 +93,7 @@ class PanNukeCellViT(Dataset):
             "np_map": torch.from_numpy((inst > 0).astype(np.int64)),     # (256, 256)
             "hv_map": torch.from_numpy(hv_targets(inst)),                # (256, 256, 2)
             "tp_map": torch.from_numpy(typ.astype(np.int64)),            # (256, 256) 0..5
+            "small_map": torch.from_numpy(small_nuclei(inst, self.small_area)),  # (256, 256) bool
             "tissue": int(self._tissue_ids[fi][j]),
             "index": i,
         }

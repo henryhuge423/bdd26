@@ -30,6 +30,7 @@ from .data import PanNukeCellViT, cell_tissue_weights
 from .model import UNI_MEAN, UNI_STD, CellViTUNI
 
 NR_TYPES = NUM_CLASSES + 1
+DEAD = 4
 
 
 @dataclass
@@ -47,6 +48,12 @@ class TrainConfig:
     workers: int = 8
     seed: int = 19
     val_every: int = 5
+    # targeted foreground supervision (off by default = CellViT recipe): extra pixel-weighted CE on the
+    # NP branch, weight 1 + dead_w * [Dead nucleus pixel] + small_w * [pixel of a nucleus < small_area px]
+    np_wce: float = 0.0
+    dead_w: float = 0.0
+    small_w: float = 0.0
+    small_area: int = 100
 
 
 def focal_tversky(p: torch.Tensor, t: torch.Tensor, alpha=0.7, beta=0.3, gamma=4 / 3, smooth=1e-6,
@@ -65,7 +72,16 @@ def to_nhwc(out: dict) -> dict:
     return {k: (v.permute(0, 2, 3, 1).float() if v.ndim == 4 else v.float()) for k, v in out.items()}
 
 
-def cellvit_loss(pred: dict, batch: dict) -> tuple[torch.Tensor, dict]:
+def np_pixel_weights(batch: dict, cfg: TrainConfig) -> torch.Tensor:
+    w = torch.ones_like(batch["np_map"], dtype=torch.float32)
+    if cfg.dead_w:
+        w = w + cfg.dead_w * (batch["tp_map"] == DEAD).float()
+    if cfg.small_w:
+        w = w + cfg.small_w * batch["small_map"].float()
+    return w
+
+
+def cellvit_loss(pred: dict, batch: dict, cfg: TrainConfig | None = None) -> tuple[torch.Tensor, dict]:
     """pred: NHWC logits (np, hv, tp) + tissue logits."""
     t_np = F.one_hot(batch["np_map"], 2).float()
     t_tp = F.one_hot(batch["tp_map"], NR_TYPES).float()
@@ -81,6 +97,9 @@ def cellvit_loss(pred: dict, batch: dict) -> tuple[torch.Tensor, dict]:
         "tp_ft": 0.5 * focal_tversky(p_tp, t_tp, per_class=True),
         "tissue_ce": 0.1 * F.cross_entropy(pred["tissue"], batch["tissue"]),
     }
+    if cfg is not None and cfg.np_wce:
+        ce = F.cross_entropy(pred["np"].permute(0, 3, 1, 2), batch["np_map"], reduction="none")
+        terms["np_wce"] = cfg.np_wce * (ce * np_pixel_weights(batch, cfg)).mean()
     return sum(terms.values()), {k: float(v) for k, v in terms.items()}
 
 
@@ -120,12 +139,12 @@ def train(cfg: TrainConfig, train_folds: list[int], val_folds: list[int], device
         ep0, global_step = state["epoch"] + 1, state["global_step"]
         print(f"[resume] epoch {ep0}")
 
-    train_ds = PanNukeCellViT(train_folds, train=True)
+    train_ds = PanNukeCellViT(train_folds, train=True, small_area=cfg.small_area)
     sampler = WeightedRandomSampler(cell_tissue_weights(train_ds, cfg.sampling_gamma), len(train_ds),
                                     replacement=True, generator=torch.Generator().manual_seed(cfg.seed))
     train_dl = DataLoader(train_ds, batch_size=cfg.batch_size, sampler=sampler, drop_last=True,
                           num_workers=cfg.workers, pin_memory=True, persistent_workers=True)
-    val_dl = DataLoader(PanNukeCellViT(val_folds, train=False), batch_size=32, num_workers=cfg.workers)
+    val_dl = DataLoader(PanNukeCellViT(val_folds, train=False, small_area=cfg.small_area), batch_size=32, num_workers=cfg.workers)
 
     for ep in range(ep0, cfg.epochs):
         model.freeze_encoder(ep < cfg.unfreeze_epoch)
@@ -135,7 +154,7 @@ def train(cfg: TrainConfig, train_folds: list[int], val_folds: list[int], device
             batch = _to_device(batch, device)
             with torch.autocast("cuda", dtype=torch.bfloat16):
                 pred = to_nhwc(model(batch["img"]))
-            loss, terms = cellvit_loss(pred, batch)
+            loss, terms = cellvit_loss(pred, batch, cfg)
             opt.zero_grad(set_to_none=True)
             loss.backward()
             opt.step()
@@ -148,7 +167,7 @@ def train(cfg: TrainConfig, train_folds: list[int], val_folds: list[int], device
         rec = {"epoch": ep, "lr": opt.param_groups[0]["lr"], "time": time.time() - t0,
                **{f"train/{k}": v / n for k, v in agg.items()}}
         if (ep + 1) % cfg.val_every == 0 or ep + 1 == cfg.epochs:
-            rec.update(validate(model, val_dl, device))
+            rec.update(validate(model, val_dl, device, cfg))
         for k, v in rec.items():
             if isinstance(v, float):
                 writer.add_scalar(k, v, global_step)
@@ -163,7 +182,7 @@ def train(cfg: TrainConfig, train_folds: list[int], val_folds: list[int], device
 
 
 @torch.no_grad()
-def validate(model, dl, device) -> dict:
+def validate(model, dl, device, cfg: TrainConfig | None = None) -> dict:
     model.eval()
     agg, n = defaultdict(float), 0
     inter = union = correct = total = 0.0
@@ -171,7 +190,7 @@ def validate(model, dl, device) -> dict:
         batch = _to_device(batch, device)
         with torch.autocast("cuda", dtype=torch.bfloat16):
             pred = to_nhwc(model(batch["img"]))
-        loss, terms = cellvit_loss(pred, batch)
+        loss, terms = cellvit_loss(pred, batch, cfg)
         for k, v in terms.items():
             agg[k] += v
         agg["loss"] += float(loss)

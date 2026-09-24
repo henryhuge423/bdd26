@@ -151,3 +151,26 @@ no test gain.
 => **Negative**: missed Dead nuclei cannot be recovered post hoc from this model's outputs; every
 change is within +-0.0004 test mPQ (the threshold-only control does as well as any recovery
 variant). The detection deficit has to be addressed in training (foreground supervision / data).
+
+## 2026-09-25 — Why Dead nuclei are missed (CellViT-UNI, 3 test folds pooled)
+`scripts/show_nuclei.py` montage: `runs/analysis/dead_split1.png` (split 1, test fold 3; green = GT
+nucleus, yellow = predictions). Qualitative (visual, not quantified): missed Dead GT are a mix of
+(a) tiny dark nuclear fragments (karyorrhectic debris, often < 50 px), (b) round eosinophilic
+apoptotic bodies without dark chromatin that do not look like nuclei, (c) a few ambiguous annotations;
+matched Dead look like compact dark pyknotic nuclei.
+
+Detection vs. GT area (fraction of GT nuclei with no overlapping prediction):
+
+| GT area | Dead missed | Dead n | other classes missed |
+|---|---|---|---|
+| < 30 px   | .869 | 268  | .831 |
+| 30-60     | .680 | 488  | .601 |
+| 60-100    | .318 | 739  | .328 |
+| 100-200   | .212 | 1073 | .125 |
+| > 200     | .214 | 513  | .035 |
+
+24% of Dead GT are < 60 px (other classes 6%) -> a size effect shared by all classes (IoU 0.5 is
+very strict for such objects), plus an appearance effect: large Dead nuclei are missed 6x more often
+than large nuclei of other classes. Training-side ablations on split 1 (running):
+M1 NP pixel-CE with Dead pixels x11 (appearance), M2 same with nuclei < 100 px x6 (size),
+C1 sampler gamma 1.0 (resampling control).
