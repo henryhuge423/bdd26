@@ -36,6 +36,9 @@ p.add_argument("--dropout-cond", type=float, default=0.1)
 p.add_argument("--warmup", type=int, default=100)
 p.add_argument("--val", type=int, default=100, help="held-out patches at the end of the fold")
 p.add_argument("--val-every", type=int, default=250)
+p.add_argument("--snapshot-every", type=int, default=250,
+               help="keep step-stamped adapter snapshots (epsilon-val is too noisy for selection; "
+                    "pick checkpoints with the image-space pixcell_eval)")
 p.add_argument("--lora-controlnet", action="store_true", help="also LoRA the ControlNet attention")
 p.add_argument("--seed", type=int, default=19)
 a = p.parse_args()
@@ -165,6 +168,8 @@ while step < a.steps:
         log.write(json.dumps(rec) + "\n")
         log.flush()
         save_lora(transformer, out / "transformer_lora.pth")
+        if a.snapshot_every and step % a.snapshot_every == 0 and step != a.steps:
+            save_lora(transformer, out / f"transformer_lora_step{step}.pth")
         if a.lora_controlnet:
             save_lora(controlnet, out / "controlnet_lora.pth")
 print("done", out)

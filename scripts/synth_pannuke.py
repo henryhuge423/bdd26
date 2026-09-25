@@ -51,6 +51,10 @@ p.add_argument("--batch", type=int, default=16)
 p.add_argument("--amp", action="store_true", help="bf16 sampling (faster; default fp32)")
 p.add_argument("--type-thresh", type=float, default=0.6)
 p.add_argument("--keep-frac", type=float, default=0.7)
+p.add_argument("--random-ctx", action="store_true",
+               help="context embedding from a random patch instead of the layout's own base patch "
+                    "(the 2026-09-26 review showed random contexts push generation off-manifold: "
+                    "black-crushed nuclei, bimodal per-patch colour)")
 p.add_argument("--verify", type=int, default=0, help="compare batched vs pipeline on N patches")
 p.add_argument("--seed", type=int, default=19)
 a = p.parse_args()
@@ -199,7 +203,9 @@ def main():
                                        np.asarray(f.images[j]))
         layouts.append(inst)
         inserted_ids.append(ins_ids)
-        ctx_idx.append(int(rng.integers(len(f))))
+        # PAIRED context (the base patch's own embedding) matches training conditioning; random
+        # contexts produce off-manifold appearance (see --random-ctx help)
+        ctx_idx.append(int(rng.integers(len(f))) if a.random_ctx else j)
         seeds.append(int(rng.integers(2 ** 31)))
         base_idx.append(j)
     print(f"[layout] {a.n} layouts, {np.mean([len(x) for x in inserted_ids]):.2f} inserted each")
