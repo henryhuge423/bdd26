@@ -120,8 +120,11 @@ Test fold per split: 1 -> 3, 2 -> 3, 3 -> 1. Values: mPQ / bPQ / Dead PQ (no TTA
 
 | model | split 1 | split 2 | split 3 | mean |
 |---|---|---|---|---|
-| HoVer-Net (ours, full-patch) | .4558 / .6601 / .103 [.4664 / .6707 / .087] | .4529 / .6610 / .108 [.4633 / .6696 / .105] | running | |
+| HoVer-Net (ours, full-patch) | .4558 / .6601 / .103 [.4664 / .6707 / .087] | .4529 / .6610 / .108 [.4633 / .6696 / .105] | .4606 / .6627 / .170 [.4700 / .6739 / .191] | .4564 / .6613 / .127 [.4666 / .6714 / .128] |
 | CellViT-UNI (ours) | .4951 / .6676 / .142 [.5013 / .6728 / .146] | .4930 / .6638 / .162 [.4973 / .6683 / .163] | .5104 / .6647 / .224 [.5154 / .6707 / .221] | .4995 / .6654 / .176 [.5047 / .6706 / .177] |
+
+Both baselines reproduce (HoVer-Net paper .463/.660, ours .456/.661; CellViT++ UNI .492, ours .500).
+Course requirement (a) — reproducible HoVer-Net baseline with full official evaluation — DONE.
 
 Reference (paper-reported): HoVer-Net .463 / .660; CellViT-UNI (CellViT++) .492.
 
@@ -188,8 +191,25 @@ test-set sampling noise only, NOT training noise). Decisions use the VAL fold (2
 | C1 sampler gamma 1.0 | .4840 | +.0005 [-.0041, +.0050] | -.010 | .4906 | -.0045 [-.0092, +.0003] | .000 [-.032, +.025] |
 
 TTA test mPQ: baseline .5013, M1 .4975, M2 .4998, C1 .4953.
-- No variant improves the validation fold; M2's test Dead gain does not reproduce on val.
-- Dead PQ CIs are ~+-.02-.03 from test-set sampling alone (only ~1k Dead nuclei per fold): Dead-PQ
-  claims need multi-seed, 3-split evidence.
-- Seed test (baseline seeds 1 and 2, `runs/cellvit_abl/split1_seed{1,2}`) running to measure training
-  noise.
+
+### Seed noise (baseline, split 1, seeds 19/1/2; `scripts/compare_runs.py`, runs/analysis/compare_split1_*.json)
+| | val mPQ | val Dead | test mPQ | test Dead |
+|---|---|---|---|---|
+| mean | .4816 | .1643 | .4928 | .1393 |
+| std over seeds | .0019 | .0029 | .0021 | **.0074** |
+
+### Ablations vs. the 3-seed baseline (deltas, [95% image-bootstrap CI])
+| run | val d mPQ | test d mPQ | test d Dead |
+|---|---|---|---|
+| M1 Dead x11 | -.0018 [-.0057,+.0019] | -.0013 [-.0061,+.0029] | +.0125 [-.0055,+.0295] |
+| M2 small x6 | +.0006 [-.0035,+.0047] | **+.0042 [+.0009,+.0076]** | +.0141 [-.0027,+.0319] |
+| C1 sampler 1.0 | +.0024 [-.0021,+.0067] | -.0022 [-.0066,+.0020] | +.0030 [-.0282,+.0287] |
+
+Conclusions:
+- **M1 (Dead-weighted CE) and C1 (full-balance sampler) are dead ends**: no val gain, no test gain.
+- **M2 (small-nucleus x6) is the only candidate**: test mPQ +.0042 with CI excluding 0 and no val
+  degradation — but the effect is ~2x the seed std (mPQ .0021), and its test Dead gain (+.014) is
+  within seed noise on Dead (.0074 std) and test-sampling noise (+-.03). NOT confirmed.
+- General rule established: on this benchmark a single-seed Dead-PQ change below ~.01-.015 is
+  indistinguishable from noise (seed std .0074, test-sampling CI half-width .02-.03). Any Dead claim
+  must be a multi-seed, 3-split mean.
