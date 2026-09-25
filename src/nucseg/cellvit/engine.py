@@ -22,6 +22,7 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader, WeightedRandomSampler
 from torch.utils.tensorboard import SummaryWriter
 
+from ..augment.copy_paste import CopyPasteConfig
 from ..constants import NUM_CLASSES
 from ..hovernet.engine import _post, dihedral, undo_dihedral
 from ..text.conch_prior import instance_mean_probs
@@ -54,6 +55,12 @@ class TrainConfig:
     dead_w: float = 0.0
     small_w: float = 0.0
     small_area: int = 100
+    # failure-driven copy-paste (pillar B control arm CP1); prob 0 disables it
+    cp_prob: float = 0.0
+    cp_lam: float = 3.0
+    cp_dead_w: float = 0.4
+    cp_area: tuple = (50, 400)
+    cp_clearance: int = 8
 
 
 def focal_tversky(p: torch.Tensor, t: torch.Tensor, alpha=0.7, beta=0.3, gamma=4 / 3, smooth=1e-6,
@@ -139,7 +146,9 @@ def train(cfg: TrainConfig, train_folds: list[int], val_folds: list[int], device
         ep0, global_step = state["epoch"] + 1, state["global_step"]
         print(f"[resume] epoch {ep0}")
 
-    train_ds = PanNukeCellViT(train_folds, train=True, small_area=cfg.small_area)
+    cp = CopyPasteConfig(prob=cfg.cp_prob, lam=cfg.cp_lam, dead_w=cfg.cp_dead_w,
+                         area=tuple(cfg.cp_area), clearance=cfg.cp_clearance) if cfg.cp_prob else None
+    train_ds = PanNukeCellViT(train_folds, train=True, small_area=cfg.small_area, copy_paste=cp)
     sampler = WeightedRandomSampler(cell_tissue_weights(train_ds, cfg.sampling_gamma), len(train_ds),
                                     replacement=True, generator=torch.Generator().manual_seed(cfg.seed))
     train_dl = DataLoader(train_ds, batch_size=cfg.batch_size, sampler=sampler, drop_last=True,

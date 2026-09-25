@@ -68,6 +68,20 @@
   边界真实感；合成时按大小分层 + fill-rate 过滤。下一步：LoRA 训练管线（fold1 图+掩码对）；
   扩量定量（几百 patch，Dead/大核分层）；并行做 copy-paste 对照。
 
+**2026-09-26（上午）— 支柱 B 第一轮并行推进：CP1 对照训练 + PixCell LoRA 管线**
+- **CP1 失败驱动 copy-paste**（`src/nucseg/augment/copy_paste.py`，对照实验也是假设检验：Dead 检测
+  缺陷是否"数据可修"）：donor 取自训练折（50-400px，Dead 权重 0.4），插入空基质、8px 间距（对应
+  "漏检 Dead 均为孤立核"），prob 0.5 × Poisson(3)；**在几何/色彩增强之前**粘贴使粘贴核同步增强。
+  视觉审查（sonnet 子代理）抓到单测漏掉的真 bug：v1 有边界裁剪碎片、增强顺序漏洞（粘贴核未增强=
+  可学习捷径）、与未标注核碰撞、色调失配；v2 已修（边界 donor 剔除、基质色偏移、Otsu 暗区防护、
+  先粘贴后增强）。run `split1_cp1`（seed 19）已在 LM2 训练。
+- **PixCell LoRA 管线**（`scripts/train_pixcell_lora.py` + `nucseg.pixcell`）：DiT attention LoRA
+  8.3M 参数，ControlNet/VAE 冻结，条件协议与推理完全一致（CFG dropout=0.1，dropped rows 零贡献，
+  加性注入已核实）；fold1 条件缓存；5000 步约 40 分钟。定量评估器 `scripts/pixcell_eval.py`
+  （200 分层 patch、OOF split2 检测器评渲染率、Laplacian/OD/UNI2-h cos）。LoRA 前基线在跑
+  （`runs/pixcell/eval_base`）。
+- 待办：CP1 结果（多种子判定规则同前）；LoRA before/after；布局采样扩量合成 → 合成训练对照 copy-paste。
+
 **据此对 §2.1（支柱 A）的修订**：原"语言锚定类型头"针对分类，而瓶颈在检测，故改为以**检测**为目标——
 (1) 类别感知前景：利用 TP 分支/CONCH 稠密先验召回 NP 漏检的核（先做免训练的后处理验证，在验证折调参，
 单独报告）；(2) 训练侧：对小核/Dead 的前景损失加权或类别条件的前景监督；(3) CONCH 半径受限池化保留为

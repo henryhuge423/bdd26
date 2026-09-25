@@ -14,6 +14,7 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 
+from ..augment.copy_paste import CopyPasteConfig, NucleusBank, apply_copy_paste
 from ..constants import NUM_CLASSES, TISSUES
 from ..data.pannuke import PanNukeFold
 from ..hovernet.data import hv_targets
@@ -57,12 +58,15 @@ def tissue_ids(names) -> np.ndarray:
 
 
 class PanNukeCellViT(Dataset):
-    def __init__(self, folds: list[int], train: bool, small_area: int = 100):
+    def __init__(self, folds: list[int], train: bool, small_area: int = 100,
+                 copy_paste: CopyPasteConfig | None = None):
         self.folds = [PanNukeFold(k) for k in folds]
         self.index = [(fi, j) for fi, f in enumerate(self.folds) for j in range(len(f))]
         self.train = train
         self.small_area = small_area
         self.augs = cellvit_train_augs() if train else None
+        self.copy_paste = copy_paste if (train and copy_paste is not None) else None
+        self.bank = NucleusBank(self.folds) if self.copy_paste is not None else None
         self._tissue_ids = [tissue_ids(f.tissue) for f in self.folds]
 
     def __len__(self) -> int:
@@ -86,6 +90,13 @@ class PanNukeCellViT(Dataset):
         inst = np.array(f.inst[j]).astype(np.int32)
         typ = np.array(f.type[j]).astype(np.int32)
         if self.train:
+            if self.copy_paste is not None:
+                # BEFORE the geometric/photometric augmentations, so pasted nuclei are rotated,
+                # blurred and colour-jittered together with the rest of the patch (pasting after
+                # would let the network spot fakes by their un-augmented appearance)
+                img, inst, typ = apply_copy_paste(
+                    img, inst, typ, self.bank, self.copy_paste,
+                    np.random.default_rng(np.random.randint(2**31)))
             r = self.augs(image=img, mask=np.stack([inst, typ], -1))
             img, inst, typ = r["image"], r["mask"][..., 0], r["mask"][..., 1]
         return {

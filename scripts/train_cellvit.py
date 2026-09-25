@@ -30,6 +30,11 @@ p.add_argument("--np-wce", type=float, default=0.0, help="weight of the pixel-we
 p.add_argument("--dead-w", type=float, default=0.0, help="extra NP-CE weight on Dead-nucleus pixels")
 p.add_argument("--small-w", type=float, default=0.0, help="extra NP-CE weight on small-nucleus pixels")
 p.add_argument("--small-area", type=int, default=100)
+p.add_argument("--cp-prob", type=float, default=0.0, help="copy-paste: fraction of patches augmented")
+p.add_argument("--cp-lam", type=float, default=3.0, help="copy-paste: mean insertions per augmented patch")
+p.add_argument("--cp-dead-w", type=float, default=0.4, help="copy-paste: donor weight for Dead class")
+p.add_argument("--cp-area", type=int, nargs=2, default=[50, 400], help="copy-paste: donor area range px")
+p.add_argument("--cp-clearance", type=int, default=8, help="copy-paste: min px distance to other nuclei")
 p.add_argument("--skip-train", action="store_true")
 p.add_argument("--tta", action="store_true", help="also evaluate with 8x dihedral TTA")
 a = p.parse_args()
@@ -38,7 +43,8 @@ tr, va, te = split_folds(a.split)
 cfg = TrainConfig(split=a.split, out_dir=str(a.out), epochs=a.epochs, unfreeze_epoch=a.unfreeze_epoch,
                   batch_size=a.batch, lr=a.lr, workers=a.workers, val_every=a.val_every,
                   seed=a.seed, sampling_gamma=a.sampling_gamma, np_wce=a.np_wce, dead_w=a.dead_w, small_w=a.small_w,
-                  small_area=a.small_area)
+                  small_area=a.small_area, cp_prob=a.cp_prob, cp_lam=a.cp_lam, cp_dead_w=a.cp_dead_w,
+                  cp_area=tuple(a.cp_area), cp_clearance=a.cp_clearance)
 if not a.skip_train:
     train(cfg, [tr], [va])
 

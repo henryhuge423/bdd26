@@ -287,3 +287,42 @@ targeting nuclear internal texture and boundary realism at least as much as colo
 adaptation run the per-object fill-rate, hallucination and Laplacian metrics over a few hundred
 stratified patches (Dead/large nuclei stratum first). At synthesis time: filter or regenerate
 samples whose large objects under-render (fill-rate gate), stratify by size.
+
+## 2026-09-26 (morning) — Pillar B round 1 executing: CP1 copy-paste control + PixCell LoRA pipeline
+Two tracks launched in parallel (all training on LM2; per the pillar-B decision that Dead detection
+needs data-level intervention):
+
+**CP1 — failure-driven copy-paste (control arm; `src/nucseg/augment/copy_paste.py`)**
+- Layout straight from failure mining: donors (50-400 px, class-weighted Dead 0.4 / others 0.15)
+  pasted into nucleus-free stroma with an 8 px clearance (never touching, matching the "missed Dead
+  are ISOLATED" finding); prob 0.5, Poisson(3) insertions per augmented patch, applied BEFORE the
+  geometric/photometric augmentations so pasted nuclei are rotated/colour-jittered with the patch.
+- Montage review (sonnet subagent, `runs/analysis/copy_paste_{noaugs,full}_v2.png`) caught real bugs
+  in v1 that unit tests missed: donors clipped at the patch border became straight-edged fragments;
+  pasting after augmentation let fakes keep raw colour/orientation (a learnable shortcut); occasional
+  collision with UNANNOTATED nuclei (PanNuke annotation gaps) and gross hue mismatch. v2 fixes:
+  border-clipped donors excluded from the bank, per-channel stroma colour shift (donor stroma ->
+  destination stroma), Otsu-darkness guard against unannotated nuclei, paste-before-augment order.
+  6 unit tests (`tests/test_copy_paste.py`): bank/class counts, isolation clearance, label
+  consistency, donor-class mix, border-donor exclusion.
+- Run `runs/cellvit_abl/split1_cp1` (LM2 GPU1, split 1, seed 19, CellViT-UNI, --cp-prob 0.5, TTA),
+  ~3 h on a shared A100. Compare vs baseline seeds 19/1/2 (`scripts/compare_runs.py`). This is the
+  decisive experiment for "is the Dead detection deficit data-fixable at all".
+
+**PixCell LoRA — 40x adaptation (`scripts/train_pixcell_lora.py`, `src/nucseg/pixcell.py`)**
+- LoRA (r=16, alpha=16) on the DiT attention projections only (8.3 M trainable / 616 M), ControlNet
+  and VAE frozen, epsilon objective, CFG-condition dropout 0.1 implemented exactly like inference
+  (dropped rows get zero controlnet contribution — the block injection is additive, verified in
+  `pixcell_controlnet_transformer.py`). Conditions cached once per fold (VAE latents of image and
+  binary mask + UNI2-h CLS embedding of the real image; `cache_fold{k}.npz`).
+- Fold 1 (= split-1 TRAIN fold; no leakage) 5000 steps bs 16 lr 1e-4 (~40 min on a shared A100):
+  `runs/pixcell/lora_fold1` (LM2 GPU7).
+- Quantitative generator eval harness (`scripts/pixcell_eval.py`): 200 stratified patches
+  (100 Dead-rich / 50 large-nucleus-rich / 50 random) re-generated from GT masks; per-object
+  rendering scored by an OUT-OF-FOLD detector (split-2 CellViT-UNI, fold 1 = its val fold):
+  coverage >= .5 rendered / .2-.5 partial / < .2 dropped, by size stratum and class; phantom rate,
+  Laplacian variance ratio (global + in-nuclei), OD colour distance, UNI2-h cosine. Baseline
+  (pre-LoRA) run on LM1 (`runs/pixcell/eval_base`); smoke numbers on 8 patches: Dead <100 px
+  rendered .63 vs 1.0 for larger Dead, Laplacian ratio .68 in nuclei (texture deficit confirmed).
+- Next when LoRA finishes: `pixcell_eval.py --lora runs/pixcell/lora_fold1/transformer_lora.pth`
+  before/after comparison + montage review; then layout sampling at scale.
