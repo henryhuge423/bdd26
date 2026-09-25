@@ -8,6 +8,8 @@ Augmentations and probabilities are copied from the CellViT paper configs
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import albumentations as A
 import cv2
 import numpy as np
@@ -59,21 +61,39 @@ def tissue_ids(names) -> np.ndarray:
 
 class PanNukeCellViT(Dataset):
     def __init__(self, folds: list[int], train: bool, small_area: int = 100,
-                 copy_paste: CopyPasteConfig | None = None):
+                 copy_paste: CopyPasteConfig | None = None, synth: Path | None = None,
+                 synth_frac: float = 0.0):
         self.folds = [PanNukeFold(k) for k in folds]
-        self.index = [(fi, j) for fi, f in enumerate(self.folds) for j in range(len(f))]
+        self.index = [("r", fi, j) for fi, f in enumerate(self.folds) for j in range(len(f))]
         self.train = train
         self.small_area = small_area
         self.augs = cellvit_train_augs() if train else None
         self.copy_paste = copy_paste if (train and copy_paste is not None) else None
         self.bank = NucleusBank(self.folds) if self.copy_paste is not None else None
         self._tissue_ids = [tissue_ids(f.tissue) for f in self.folds]
+        # optional synthetic samples appended after the real ones (pillar B): images.npy uint8,
+        # inst.npy uint16, type.npy uint8, base.npy = index into the FIRST fold's tissue labels
+        self.synth = None
+        if train and synth is not None and synth_frac > 0:
+            n_real = len(self.index)
+            n_synth = min(int(synth_frac * n_real), len(np.load(synth / "base.npy", mmap_mode="r")))
+            self.synth = {
+                "dir": synth, "images": np.load(synth / "images.npy", mmap_mode="r"),
+                "inst": np.load(synth / "inst.npy", mmap_mode="r"),
+                "type": np.load(synth / "type.npy", mmap_mode="r"),
+                "base": np.load(synth / "base.npy", mmap_mode="r"),
+                "tissue": self._tissue_ids[0][np.load(synth / "base.npy")],
+            }
+            self.index += [("s", 0, j) for j in range(n_synth)]
 
     def __len__(self) -> int:
         return len(self.index)
 
     def tissue_labels(self) -> np.ndarray:
-        return np.concatenate([self._tissue_ids[fi] for fi in range(len(self.folds))])
+        out = [self._tissue_ids[fi] for fi in range(len(self.folds))]
+        if self.synth is not None:
+            out.append(self.synth["tissue"][:len(self) - sum(len(x) for x in out)])
+        return np.concatenate(out)
 
     def class_presence(self) -> np.ndarray:
         """(N, 5) bool: does image contain at least one nucleus of class c."""
@@ -81,16 +101,28 @@ class PanNukeCellViT(Dataset):
         for f in self.folds:
             typ = f.type
             out.append(np.stack([[(typ[j] == c).any() for c in range(1, NUM_CLASSES + 1)] for j in range(len(f))]))
+        if self.synth is not None:
+            n = len(self) - sum(len(x) for x in out)
+            typ = self.synth["type"][:n]
+            out.append(np.stack([[(typ[j] == c).any() for c in range(1, NUM_CLASSES + 1)] for j in range(n)]))
         return np.concatenate(out)
 
     def __getitem__(self, i: int) -> dict:
-        fi, j = self.index[i]
-        f = self.folds[fi]
-        img = np.array(f.images[j])
-        inst = np.array(f.inst[j]).astype(np.int32)
-        typ = np.array(f.type[j]).astype(np.int32)
+        kind, fi, j = self.index[i]
+        if kind == "s":
+            s = self.synth
+            img = np.array(s["images"][j])
+            inst = np.array(s["inst"][j]).astype(np.int32)
+            typ = np.array(s["type"][j]).astype(np.int32)
+            tissue = int(s["tissue"][j])
+        else:
+            f = self.folds[fi]
+            img = np.array(f.images[j])
+            inst = np.array(f.inst[j]).astype(np.int32)
+            typ = np.array(f.type[j]).astype(np.int32)
+            tissue = int(self._tissue_ids[fi][j])
         if self.train:
-            if self.copy_paste is not None:
+            if kind == "r" and self.copy_paste is not None:
                 # BEFORE the geometric/photometric augmentations, so pasted nuclei are rotated,
                 # blurred and colour-jittered together with the rest of the patch (pasting after
                 # would let the network spot fakes by their un-augmented appearance)
@@ -105,7 +137,7 @@ class PanNukeCellViT(Dataset):
             "hv_map": torch.from_numpy(hv_targets(inst)),                # (256, 256, 2)
             "tp_map": torch.from_numpy(typ.astype(np.int64)),            # (256, 256) 0..5
             "small_map": torch.from_numpy(small_nuclei(inst, self.small_area)),  # (256, 256) bool
-            "tissue": int(self._tissue_ids[fi][j]),
+            "tissue": tissue,
             "index": i,
         }
 

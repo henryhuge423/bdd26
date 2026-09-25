@@ -267,8 +267,10 @@ def main():
                 kept_type[img_i] = tout
             if (s // a.batch) % 20 == 0:
                 print(f"[teacher] {s}/{a.n}", flush=True)
-    np.savez_compressed(a.out / "labels.npz", inst=kept_inst, type=kept_type,
-                        ctx=np.array(ctx_idx), base=np.array(base_idx))
+    np.save(a.out / "inst.npy", kept_inst.astype(np.uint16))
+    np.save(a.out / "type.npy", kept_type.astype(np.uint8))
+    np.save(a.out / "base.npy", np.array(base_idx, np.int32))  # tissue label source
+    np.save(a.out / "ctx.npy", np.array(ctx_idx, np.int32))
     stats = {"n": a.n, "objects": int(n_obj_all), "objects_kept": int(n_obj_kept),
              "keep_rate": round(n_obj_kept / max(n_obj_all, 1), 4),
              "images_dropped": int(n_drop_img)}

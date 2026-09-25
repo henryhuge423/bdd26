@@ -61,6 +61,9 @@ class TrainConfig:
     cp_dead_w: float = 0.4
     cp_area: tuple = (50, 400)
     cp_clearance: int = 8
+    # synthetic data mixing (pillar B): dir with images/inst/type/base .npy, appended at frac of |real|
+    synth: str | None = None
+    synth_frac: float = 0.0
 
 
 def focal_tversky(p: torch.Tensor, t: torch.Tensor, alpha=0.7, beta=0.3, gamma=4 / 3, smooth=1e-6,
@@ -148,7 +151,9 @@ def train(cfg: TrainConfig, train_folds: list[int], val_folds: list[int], device
 
     cp = CopyPasteConfig(prob=cfg.cp_prob, lam=cfg.cp_lam, dead_w=cfg.cp_dead_w,
                          area=tuple(cfg.cp_area), clearance=cfg.cp_clearance) if cfg.cp_prob else None
-    train_ds = PanNukeCellViT(train_folds, train=True, small_area=cfg.small_area, copy_paste=cp)
+    train_ds = PanNukeCellViT(train_folds, train=True, small_area=cfg.small_area, copy_paste=cp,
+                              synth=Path(cfg.synth) if cfg.synth else None,
+                              synth_frac=cfg.synth_frac)
     sampler = WeightedRandomSampler(cell_tissue_weights(train_ds, cfg.sampling_gamma), len(train_ds),
                                     replacement=True, generator=torch.Generator().manual_seed(cfg.seed))
     train_dl = DataLoader(train_ds, batch_size=cfg.batch_size, sampler=sampler, drop_last=True,
