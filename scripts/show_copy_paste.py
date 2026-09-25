@@ -28,12 +28,12 @@ p.add_argument("--out", type=Path, default=Path("runs/analysis/copy_paste.png"))
 a = p.parse_args()
 
 CLASS_COLORS = [(80, 180, 0), (0, 200, 255), (255, 140, 0), (0, 80, 255), (200, 0, 200)]  # BGR, 1..5
-RED = (0, 0, 255)
+RED = (255, 0, 255)  # magenta, distinct from Dead's orange-red
 
 
 def contour(img, mask, color):
     cs, _ = cv2.findContours(mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    cv2.drawContours(img, cs, -1, color, 1)
+    cv2.drawContours(img, cs, -1, color, 2 if color == RED else 1)
 
 
 def main():

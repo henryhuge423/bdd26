@@ -7,8 +7,10 @@ training fold into nucleus-free stroma with a clearance margin (never touching e
 class-weighted towards Dead but including every class, so the model cannot learn an
 "isolated small nucleus == Dead" shortcut.
 
-Runs after the geometric/photometric augmentations, directly on (img, inst, typ), so all
-downstream targets (np / hv / tp / small_map) are computed from the augmented label maps.
+Runs BEFORE the geometric/photometric augmentations (see PanNukeCellViT), so pasted nuclei are
+rotated / blurred / colour-jittered together with the patch and cannot be spotted by their
+un-augmented appearance; all downstream targets (np / hv / tp / small_map) are then computed from
+the augmented label maps.
 """
 
 from __future__ import annotations
@@ -39,7 +41,8 @@ class NucleusBank:
 
     def __init__(self, folds, edge_margin: int = 2):
         self.folds = folds
-        fi_, im_, id_, cl_, ar_, y0_, y1_, x0_, x1_, edge_ = [], [], [], [], [], [], [], [], [], []
+        fi_, im_, id_, cl_, ar_, y0_, y1_, x0_, x1_, edge_, touch_ = [], [], [], [], [], [], [], [], [], [], []
+        kern3 = np.ones((3, 3), np.uint8)
         for fi, f in enumerate(folds):
             H, W = f.inst[0].shape
             for j in range(len(f)):
@@ -68,10 +71,17 @@ class NucleusBank:
                     # straight cut edges -> unusable (caught in the 2026-09-26 montage review)
                     edge_.append(y0 < edge_margin or x0 < edge_margin
                                  or y1 > H - edge_margin or x1 > W - edge_margin)
+                    # donors that touch a neighbour in the SOURCE patch carry a straight shared
+                    # boundary (chord) in their mask -> also unusable
+                    win = inst[max(y0 - 1, 0):y1 + 1, max(x0 - 1, 0):x1 + 1]
+                    m = win == k
+                    dil = cv2.dilate(m.astype(np.uint8), kern3).astype(bool)
+                    touch_.append(bool((dil & (win > 0) & ~m).any()))
         self.rows = np.rec.fromarrays(
-            [np.array(x) for x in (fi_, im_, id_, cl_, ar_, y0_, y1_, x0_, x1_, edge_)],
-            names="fi,img,id,cls,area,y0,y1,x0,x1,edge")
-        self.by_class = [np.flatnonzero((self.rows.cls == c) & ~self.rows.edge) for c in range(8)]
+            [np.array(x) for x in (fi_, im_, id_, cl_, ar_, y0_, y1_, x0_, x1_, edge_, touch_)],
+            names="fi,img,id,cls,area,y0,y1,x0,x1,edge,touch")
+        self.usable = ~self.rows.edge & ~self.rows.touch
+        self.by_class = [np.flatnonzero((self.rows.cls == c) & self.usable) for c in range(8)]
 
     def sample(self, cfg: CopyPasteConfig, rng: np.random.Generator) -> int:
         """Row index of a donor, class-weighted and area-filtered (falls back to any class)."""
@@ -85,9 +95,9 @@ class NucleusBank:
                 & (self.rows.area[self.by_class[c]] <= cfg.area[1])]
             if len(ok):
                 return int(rng.choice(ok))
-        ok = np.flatnonzero(~self.rows.edge &
+        ok = np.flatnonzero(self.usable &
                             (self.rows.area >= cfg.area[0]) & (self.rows.area <= cfg.area[1]))
-        return int(rng.choice(ok if len(ok) else np.flatnonzero(~self.rows.edge)))
+        return int(rng.choice(ok if len(ok) else np.flatnonzero(self.usable)))
 
 
 def _find_objects(inst: np.ndarray, n: int):
@@ -123,8 +133,8 @@ def apply_copy_paste(img: np.ndarray, inst: np.ndarray, typ: np.ndarray,
     stroma = np.median(img[~blocked.astype(bool)].reshape(-1, 3), axis=0) if (blocked == 0).any() \
         else np.array([180.0, 180.0, 180.0])
     gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-    _, dark_thr = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    dark = (gray < dark_thr) & ~blocked.astype(bool)
+    otsu_thr, _ = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    dark = (gray < otsu_thr) & ~blocked.astype(bool)
     free = np.argwhere(~blocked.astype(bool))
     if not len(free):
         return img, inst, typ
