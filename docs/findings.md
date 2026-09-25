@@ -174,3 +174,22 @@ very strict for such objects), plus an appearance effect: large Dead nuclei are 
 than large nuclei of other classes. Training-side ablations on split 1 (running):
 M1 NP pixel-CE with Dead pixels x11 (appearance), M2 same with nuclei < 100 px x6 (size),
 C1 sampler gamma 1.0 (resampling control).
+
+## 2026-09-25 — Training-side foreground supervision, split 1 (single seed; seed test running)
+CellViT-UNI recipe + pixel-weighted NP cross-entropy (`--np-wce 1`), last checkpoint. Deltas vs. the
+baseline (seed 19) with 95% paired, tissue-stratified image-bootstrap CIs (`scripts/compare_runs.py`;
+test-set sampling noise only, NOT training noise). Decisions use the VAL fold (2); test (3) reported once.
+
+| run | val mPQ | val d mPQ [CI] | val d Dead | test mPQ | test d mPQ [CI] | test d Dead [CI] |
+|---|---|---|---|---|---|---|
+| baseline (seed 19) | .4835 | | | .4951 | | |
+| M1 Dead pixels x11 | .4798 | -.0036 [-.0076, .0000] | -.002 | .4915 | -.0036 [-.0085, +.0009] | +.009 [-.012, +.030] |
+| M2 nuclei < 100 px x6 | .4822 | -.0013 [-.0050, +.0025] | +.001 | .4971 | +.0019 [-.0016, +.0059] | +.011 [-.004, +.027] |
+| C1 sampler gamma 1.0 | .4840 | +.0005 [-.0041, +.0050] | -.010 | .4906 | -.0045 [-.0092, +.0003] | .000 [-.032, +.025] |
+
+TTA test mPQ: baseline .5013, M1 .4975, M2 .4998, C1 .4953.
+- No variant improves the validation fold; M2's test Dead gain does not reproduce on val.
+- Dead PQ CIs are ~+-.02-.03 from test-set sampling alone (only ~1k Dead nuclei per fold): Dead-PQ
+  claims need multi-seed, 3-split evidence.
+- Seed test (baseline seeds 1 and 2, `runs/cellvit_abl/split1_seed{1,2}`) running to measure training
+  noise.

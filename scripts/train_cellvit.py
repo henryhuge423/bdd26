@@ -24,6 +24,7 @@ p.add_argument("--batch", type=int, default=16)
 p.add_argument("--lr", type=float, default=3e-4)
 p.add_argument("--workers", type=int, default=8)
 p.add_argument("--val-every", type=int, default=5)
+p.add_argument("--seed", type=int, default=19, help="global seed: decoder init, sampler, augmentation workers")
 p.add_argument("--sampling-gamma", type=float, default=0.85, help="cell+tissue sampler balance (1 = full)")
 p.add_argument("--np-wce", type=float, default=0.0, help="weight of the pixel-weighted NP cross-entropy")
 p.add_argument("--dead-w", type=float, default=0.0, help="extra NP-CE weight on Dead-nucleus pixels")
@@ -36,7 +37,7 @@ a = p.parse_args()
 tr, va, te = split_folds(a.split)
 cfg = TrainConfig(split=a.split, out_dir=str(a.out), epochs=a.epochs, unfreeze_epoch=a.unfreeze_epoch,
                   batch_size=a.batch, lr=a.lr, workers=a.workers, val_every=a.val_every,
-                  sampling_gamma=a.sampling_gamma, np_wce=a.np_wce, dead_w=a.dead_w, small_w=a.small_w,
+                  seed=a.seed, sampling_gamma=a.sampling_gamma, np_wce=a.np_wce, dead_w=a.dead_w, small_w=a.small_w,
                   small_area=a.small_area)
 if not a.skip_train:
     train(cfg, [tr], [va])
