@@ -326,3 +326,29 @@ needs data-level intervention):
   rendered .63 vs 1.0 for larger Dead, Laplacian ratio .68 in nuclei (texture deficit confirmed).
 - Next when LoRA finishes: `pixcell_eval.py --lora runs/pixcell/lora_fold1/transformer_lora.pth`
   before/after comparison + montage review; then layout sampling at scale.
+
+## 2026-09-26 (midday) — PixCell LoRA round-1 verdict: over-adapted; synthesis pipeline works, appearance not yet
+- **Generator eval harness numbers** (`runs/pixcell/eval_base` vs `eval_lora16`, 200 stratified fold-1
+  patches, paired context, same seeds; OOF split-2 detector): the r16/5000-step LoRA made generation
+  WORSE — od_mean_l1 .098 -> .266, uni_cos .472 -> .327, in-nuclei Laplacian ratio unchanged .72,
+  global Laplacian 0.95 -> 1.24 (speckle, not chromatin), Dead<100px render .650 -> .606, phantom
+  px .0036 -> .0073. **Verdict: over-adapted (contrast/saturation blow-up).**
+- **Synthesis smoke review** (32 images, LoRA + RANDOM context + bf16, sonnet subagent): geometry,
+  density and label placement good (outlines on visible nuclei, phantom-labeled area 3.8%,
+  teacher keep rate .886), but appearance failed: nucleus interiors crushed to near-black
+  (median 42 vs real 121/255), per-patch bimodal colour (uniform violet or brick-red, saturation
+  .40 vs .29), soft focus (Laplacian 3-10x low in 8/12 rows), milky fog / streak stroma, halo rims.
+  10-20% of visible nuclei per patch left unlabelled (small, dark) — the known teacher-blind-spot
+  caveat, confirmed visually.
+- Diagnosis split: paired-context eval (above) isolates the LoRA as the main cause; random context
+  amplifies it (off-manifold conditioning). Fixes launched:
+  1. **LoRA round 2**: r8, lr 5e-5, 2500 steps, step-stamped snapshots every 250 (`lora_fold1_r8`,
+     LM2 GPU7) — checkpoint selection by image-space metrics (od_mean_l1 / uni_cos / in-nuclei
+     Laplacian on a 60-patch eval), NOT by the noisy epsilon-val (its trajectory was flat/noisy).
+  2. **Paired-context synthesis** (default in `scripts/synth_pannuke.py`; random ctx now opt-in).
+  3. Batched sampler verified equal to the reference pipeline (mean|diff| 0.015/255, fp32).
+- `scripts/synth_pannuke.py` end-to-end: layout perturbation (2.38 inserted/layout) -> batched
+  generation -> OOF teacher labelling with coverage>=.4 + type prob>=.6 -> keep-frac .7 gating;
+  866/978 objects kept, 1/32 images dropped on the smoke batch.
+- Training-side synthetic mixing implemented (`--synth DIR --synth-frac r`; synthetic samples carry
+  the base patch's tissue label and the same cell+tissue sampler semantics).
