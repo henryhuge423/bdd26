@@ -205,11 +205,85 @@ TTA test mPQ: baseline .5013, M1 .4975, M2 .4998, C1 .4953.
 | M2 small x6 | +.0006 [-.0035,+.0047] | **+.0042 [+.0009,+.0076]** | +.0141 [-.0027,+.0319] |
 | C1 sampler 1.0 | +.0024 [-.0021,+.0067] | -.0022 [-.0066,+.0020] | +.0030 [-.0282,+.0287] |
 
-Conclusions:
+Conclusions (single seed):
 - **M1 (Dead-weighted CE) and C1 (full-balance sampler) are dead ends**: no val gain, no test gain.
-- **M2 (small-nucleus x6) is the only candidate**: test mPQ +.0042 with CI excluding 0 and no val
-  degradation — but the effect is ~2x the seed std (mPQ .0021), and its test Dead gain (+.014) is
-  within seed noise on Dead (.0074 std) and test-sampling noise (+-.03). NOT confirmed.
-- General rule established: on this benchmark a single-seed Dead-PQ change below ~.01-.015 is
-  indistinguishable from noise (seed std .0074, test-sampling CI half-width .02-.03). Any Dead claim
-  must be a multi-seed, 3-split mean.
+- M2 flagged as the only candidate (single-seed test mPQ +.0042, CI excluding 0) pending seeds.
+
+### M2 three-seed verdict (seeds 19/20/21 vs baseline seeds 19/1/2; split 1)
+Runs `split1_npwce_small5{,_s20,_s21}` (`small_w 5, small_area 100`). The single-seed test gain
+does NOT replicate (95% paired image-bootstrap CIs):
+
+| | val d mPQ | test d mPQ | test d bPQ | test d Dead |
+|---|---|---|---|---|
+| 3-seed M2 | -.0007 [-.0029,+.0016] | -.0010 [-.0043,+.0022] | **-.0024 [-.0048,-.0002]** | +.0108 [-.0021,+.0238] |
+
+Per-seed test Dead: M2 .1533/.1444/.1523 vs base .1424/.1308/.1446 — the Dead direction is
+consistent (3/3 seeds above the baseline mean) but not significant, and it is bought with a small
+significant bPQ loss; mPQ is unchanged.
+
+=> **M2 rejected as a contribution** (a trade, not a gain). All pillar-A training-side ablations
+(M1 Dead-weight, M2 small-weight, C1 balanced sampler) are null. The +.0042 single-seed effect was
+seed luck — validating the rule below. The Dead detection deficit needs data-level intervention
+(pillar B synthesis / copy-paste) or architecture changes, not loss reweighting.
+
+General rule (validated): on this benchmark a single-seed mPQ change below ~.004 and any Dead-PQ
+change below ~.01-.015 are indistinguishable from noise (seed std mPQ .0021 / Dead .0074,
+test-sampling CI half-width .02-.03 on Dead). Every claim must be a multi-seed, 3-split mean.
+
+## 2026-09-26 — Failure mining on out-of-fold predictions (pillar B input; `scripts/mine_failures.py`)
+OOF setting: split-2 CellViT-UNI predicting fold 1 (fold 1 = split 2's val fold, never trained on).
+fold-1 OOF reference: mPQ .5019 / Dead PQ .180, missed_bg .104. Identical patterns on fold 3 test
+(split-1 model), so the layout statistics generalise. Per-nucleus records:
+`runs/analysis/failures_fold{1,3}.csv.gz`.
+
+missed_bg rate by class x area bin (fold 1 / fold 3 agree):
+
+| class | <60px | 60-100 | 100-200 | >200 |
+|---|---|---|---|---|
+| Neoplastic | .75 | .35 | .13 | .03 |
+| Inflammatory | .68 | .18 | .05 | .01 |
+| Connective | .77 | .40 | .18 | .06 |
+| Dead | .76 | .38 | **.15** | **.12** |
+| Epithelial | .75 | .37 | .09 | .02 |
+
+Key layout findings (both folds):
+- **Missed Dead nuclei are ISOLATED, not touching**: Dead with 0 touching neighbours miss .39/.42
+  (n=863/882 = ~90% of all Dead); missed_bg Dead touch another nucleus in <5% of cases. The
+  originally hypothesised "Dead glued to Neoplastic" layout is NOT the failure mode.
+- **Merge is an intra-class cluster problem**: of merged Dead, 54/74 (fold 1) and 77/94 (fold 3)
+  touch another Dead (karyorrhexis clusters); cross-class touching is rare overall in PanNuke
+  (per-nucleus touching-class flags are almost diagonal).
+- Size dominates everything (<60px miss .68-.77 for ALL classes), but large Dead are still missed
+  .12-.25 vs .01-.06 for other classes -> appearance effect on top of size.
+
+=> Layout sampler priorities for pillar B synthesis: (1) insert ISOLATED small nuclei (Dead-looking,
+  60-200px) into empty stroma; (2) dense same-class clusters (Dead chains, Connective fields) to
+  train separation; (3) cross-class touching de-prioritised (rare in the data and not the failure).
+
+## 2026-09-26 — PixCell-256 Cell-ControlNet smoke test (20x generator on 40x PanNuke; `scripts/pixcell_sample.py`)
+Released ControlNet + UNI2-h context embedding, real fold-1 instance masks as condition, fp32,
+20 steps, guidance 2.5 (`runs/pixcell/smoke/smoke_fold1.png`, 6 patches x 2 seeds; UNI2-h
+cosine(gen, real) .25-.77). Runs in ~10 s/patch on one A100 — large-scale synthesis is cheap.
+
+Visual + quantitative review (440 mask objects, per-object fill/IoU, off-mask hallucination scan,
+Laplacian/colour stats; details in the session log):
+- **Placement is faithful and training-usable**: ~95% of mask objects get a nucleus at the right
+  place/size/orientation (median per-object IoU .68); phantom nuclei off-mask are rare (36 slivers
+  in 12 samples, mostly boundary artefacts). Tiny hyperchromatic dots — our failure case — are
+  reproduced reliably.
+- **Systematic under-rendering of LARGE masks**: 4.5% of objects dropped + 13% partial, and the
+  failures are size-biased (dropped median 322 px vs 137 px for well-rendered). Using these as
+  labels would under-supervise exactly the big atypical/clumped nuclei and teach "label extends
+  past the visible object" at large-nucleus boundaries. (Same direction as our Dead finding: large
+  Dead are missed .12-.25 — the generator is weakest where the segmenter is weakest.)
+- **Appearance gap is structural, not just colour**: chromatin rendered as flat blobs/shells/rim
+  (no granular texture or nucleoli; Laplacian variance 0.76x real, 0.45x on sharp patches),
+  consistent pink->violet shift with higher saturation and milky background, flat magenta
+  eosinophilic fills, mechanical cobblestone stroma. A stain-normalisation augmentation would NOT
+  fix the chromatin/boundary part.
+
+=> **Decision: LoRA-adapt the generator to 40x PanNuke (train fold only)**, with adaptation
+targeting nuclear internal texture and boundary realism at least as much as colour; before/after
+adaptation run the per-object fill-rate, hallucination and Laplacian metrics over a few hundred
+stratified patches (Dead/large nuclei stratum first). At synthesis time: filter or regenerate
+samples whose large objects under-render (fill-rate gate), stratify by size.

@@ -9,3 +9,11 @@ set -euo pipefail; cd "$(dirname "$0")/../third_party" 2>/dev/null || { mkdir -p
 [ -d PanNuke-metrics ] || { git clone -q https://github.com/TissueImageAnalytics/PanNuke-metrics.git PanNuke-metrics && git -C PanNuke-metrics checkout -q c00014d766ca1be142b81bea19d9ef4315cde65a; }  # 2020-10-20
 [ -d PromptNucSeg ] || { git clone -q https://github.com/windygoo/PromptNucSeg.git PromptNucSeg && git -C PromptNucSeg checkout -q fce029082bf2820314a4dc46be443a836e4876a4; }  # 2025-01-10
 [ -d CONCH ] || { git clone -q https://github.com/mahmoodlab/CONCH.git CONCH && git -C CONCH checkout -q 141cc09c7d4ff33d8eda562bd75169b457f71a62; }  # 2025-03-25
+
+# PixCell custom pipeline modules (3 loose files) for scripts/pixcell_sample.py
+if [ ! -d pixcell_pipeline ]; then
+  mkdir -p pixcell_pipeline
+  for f in pipeline.py pixcell_controlnet.py pixcell_controlnet_transformer.py; do
+    curl -sL "https://hf-mirror.com/StonyBrook-CVLab/PixCell-pipeline-ControlNet/resolve/main/$f" -o "pixcell_pipeline/$f"
+  done
+fi
