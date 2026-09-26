@@ -45,6 +45,7 @@ else:
     inst, typ = predict_fold(model, ds, tta=a.tta, batch_size=a.bs)
 
 out = (a.run or a.ckpt.parent) / f"eval_ext_{a.data}{'_tta' if a.tta else ''}"
+out.mkdir(parents=True, exist_ok=True)
 np.savez_compressed(out / "pred.npz", inst=inst.astype(np.int32), type=typ)
 res = evaluate(ds.gt_channels, ds.inst, ds.type, ds.tissue, inst, typ,
                tissue_names=ds.meta["tissue_names"])
