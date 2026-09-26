@@ -418,3 +418,23 @@ baseline, paired tissue-stratified image bootstrap (`runs/analysis/compare_split
   images, fold 1, class-agnostic labels, synth-frac .5 first); if it also fails, pillar B closes
   with "small-nucleus detection is not data-fixable by real-appearance pastes or in-context
   synthesis".
+
+## 2026-09-26 (night) — SYN1 verdict: null overall, Dead +1.0 PQ at the seed-noise edge; pillar B closes
+- SYN1 = exact split-1 base recipe (seed 19) + 1146 synth (synth-frac .5) from
+  runs/pixcell/synth_fold1 (3000 img, keep-rate .886); trained to completion on LM2, out
+  runs/cellvit_abl/split1_synth1 (pulled to LM1 minus last.pth — /data7 hit 100%, 2026-09-26;
+  full copy incl. last.pth still on LM2). Test fold 3, last ckpt:
+  - mPQ .4900 / bPQ .6604 (base .4951 / .6676); TTA .4956 / .6659 (base .5013 / .6728). mPQ sits
+    at the BOTTOM of the 3-seed range (seed1 .4910, seed2 .4924, seed19 .4951) — null-to-slightly-
+    negative overall.
+  - Dead PQ .1521 vs .1424 (TTA .1570 vs .1461): above all 3 seed draws (max .1446) but Dead seed
+    noise alone spans .131-.142, so ~+1 pt is at the edge of noise. Decomposition: PQ+ FLAT
+    (.2761 vs .2759), DQ+/SQ+ flat => the gain is correct-TYPE pairing (Dead-typed matches 367 vs
+    352 of ~500 Dead GT), not better segmentation; Inflammatory PQ -1.0/-1.6 pts (possible
+    small-nucleus synth side-effect).
+  - Loss re-weighting dominates: npwce_small5 remains the best Dead arm (TTA Dead .1626, mPQ
+    .4998) — better than SYN1 on BOTH axes; data-side levers (CP1 paste, SYN1 synthesis) add
+    nothing on top.
+- Verdict per the pre-registered rule: SYN1 fails to move the needle => pillar B closes: Dead /
+  small-nucleus performance is not data-fixable via real-appearance pastes (CP1) or in-context
+  synthesis with self-consistent labels (SYN1); the remaining lever is the loss (npwce_small5).
