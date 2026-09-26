@@ -103,7 +103,11 @@ def _f1_type(pt, pp, ut, up, c, w=(2, 2, 1, 1)):
     return 2 * tp_tn / den if den else np.nan
 
 
-def evaluate(gt_channels, gt_inst, gt_type, tissue, pred_inst, pred_type, workers: int = 16) -> dict:
+def evaluate(gt_channels, gt_inst, gt_type, tissue, pred_inst, pred_type, workers: int = 16,
+             tissue_names: list[str] | None = None) -> dict:
+    """tissue_names: labels for the ids in `tissue` (defaults to the 19 PanNuke tissues); external
+    datasets pass their own pseudo-tissue names so per_tissue reports are readable."""
+    tnames = tissue_names or TISSUES
     n = len(tissue)
     assert pred_inst.shape == gt_inst.shape and pred_type.shape == gt_type.shape
     jobs = ((gt_channels[i], np.asarray(gt_inst[i]), np.asarray(gt_type[i]),
@@ -133,7 +137,7 @@ def evaluate(gt_channels, gt_inst, gt_type, tissue, pred_inst, pred_type, worker
         img_mpq_strict = np.nanmean(strict_pq, 1)
 
         def tissue_avg(v):
-            per = {t: float(np.nanmean(v[tissue == t])) for t in TISSUES if (tissue == t).any()}
+            per = {t: float(np.nanmean(v[tissue == t])) for t in tnames if (tissue == t).any()}
             return float(np.nanmean(list(per.values()))), per
 
         mpq, mpq_t = tissue_avg(img_mpq)
@@ -143,7 +147,7 @@ def evaluate(gt_channels, gt_inst, gt_type, tissue, pred_inst, pred_type, worker
         per_class_pq_strict = {CLASS_NAMES[c]: float(np.nanmean(strict_pq[:, c])) for c in range(NUM_CLASSES)}
         # tissue x class PQ (image nanmean within tissue)
         tissue_class = {t: {CLASS_NAMES[c]: float(np.nanmean(cls_pq[tissue == t, c])) for c in range(NUM_CLASSES)}
-                        for t in TISSUES if (tissue == t).any()}
+                        for t in tnames if (tissue == t).any()}
 
     # ---- pooled (CoNIC-style) PQ+
     pooled = cls[..., :4].sum(0)

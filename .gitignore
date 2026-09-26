@@ -2,7 +2,7 @@
 hg-token.txt
 *.token
 # data / weights / outputs (large; LM1 is the source of truth, synced by scripts/)
-data/
+/data/
 weights/
 runs/
 logs/
