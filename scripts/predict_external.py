@@ -26,7 +26,12 @@ p.add_argument("--tta", action="store_true")
 p.add_argument("--bs", type=int, default=32)
 a = p.parse_args()
 
-ds = ExternalSet(a.data)
+data_path = Path(a.data)
+if data_path.parent != Path("."):
+    ds = ExternalSet(data_path.name, root=data_path.parent)
+    a.data = data_path.name  # report dir name: keep it flat even when --data is a path
+else:
+    ds = ExternalSet(a.data)
 if a.model == "cellvit":
     from nucseg.cellvit.engine import build_model, predict_fold
     model = build_model(pretrained=False).cuda()

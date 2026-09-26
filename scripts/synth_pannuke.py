@@ -33,7 +33,7 @@ import torch
 from nucseg.augment.copy_paste import DEAD, NucleusBank
 from nucseg.cellvit.engine import _forward_probs, _post, build_model
 from nucseg.data.pannuke import PanNukeFold
-from nucseg.pixcell import (encode_condition, load_lora, load_pipeline, reinhard_lab, uni_embed,
+from nucseg.pixcell import (batched_generate, load_lora, load_pipeline, reinhard_lab, uni_embed,
                             wrap_lora)
 from nucseg.text.conch_prior import instance_mean_probs
 
@@ -125,41 +125,7 @@ def perturb_layout(inst, bank, base_img):
 
 
 # ------------------------------------------------------------------ batched sampling core
-@torch.no_grad()
-def batched_generate(pipe, embs, mask_rgbs, steps, guidance, seeds, amp=False):
-    """PixCellControlNetPipeline semantics, batched. CFG uncond rows get ZERO controlnet
-    contribution (identical to the pipeline's controlnet_outputs=None uncond pass, because the
-    block injection is additive). embs (B,1,1536) fp32; mask_rgbs list of HWC uint8."""
-    dev = embs.device
-    B = len(embs)
-    sch = pipe.scheduler
-    sch.set_timesteps(steps, device=dev)
-    raw = pipe.transformer.caption_projection.uncond_embedding.detach().to(dev)
-    uncond = raw[None].expand(B, -1, -1) if raw.ndim == 2 else raw.expand(B, -1, -1)
-
-    mlat = torch.cat([encode_condition(pipe, m) for m in mask_rgbs])  # (B,16,32,32)
-    g = torch.Generator(dev)
-    noise = torch.stack([torch.randn(pipe.transformer.config.in_channels, 32, 32, device=dev,
-                                     generator=g.manual_seed(int(s))) for s in seeds])
-    latents = noise * sch.init_noise_sigma
-    for t in sch.timesteps:
-        lat_in = torch.cat([latents, latents], 0)
-        tt = t.expand(2 * B)
-        emb_all = torch.cat([uncond, embs], 0)
-        cn_cond = pipe.controlnet(hidden_states=latents, conditioning=mlat,
-                                  encoder_hidden_states=embs, timestep=t.expand(B),
-                                  return_dict=False)[0]
-        cn_all = [torch.cat([torch.zeros_like(b), b], 0) for b in cn_cond]
-        pred = pipe.transformer(sch.scale_model_input(lat_in, t), encoder_hidden_states=emb_all,
-                                controlnet_outputs=cn_all, timestep=tt, return_dict=False)[0]
-        if pred.shape[1] == 2 * latents.shape[1]:
-            pred = pred.chunk(2, dim=1)[0]
-        u, c = pred.chunk(2, dim=0)
-        latents = sch.step(u + guidance * (c - u), t, latents, return_dict=False)[0]
-    img = pipe.vae.decode((latents / pipe.vae.config.scaling_factor)
-                          + getattr(pipe.vae.config, "shift_factor", 0), return_dict=False)[0]
-    img = (img / 2 + 0.5).clamp(0, 1)
-    return (img * 255).round().byte().permute(0, 2, 3, 1).cpu().numpy()
+# batched_generate lives in nucseg.pixcell (shared with the PanNuke-CF renderer)
 
 
 def verify(pipe, f, n):
