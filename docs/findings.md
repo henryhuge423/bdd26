@@ -389,3 +389,32 @@ baseline, paired tissue-stratified image bootstrap (`runs/analysis/compare_split
 - SYN-v2 smoke (32 images, fold 1, that recipe): teacher keep rate .901 (729/809), 0 images
   dropped, 2.69 insertions/layout; colour vs paired real: median RGB |diff| ~3/255, saturation
   68.5 vs 69.6; Laplacian ratio .70 (the base model's texture ceiling — accepted).
+
+## 2026-09-26 (evening) — SYN-v2 review: appearance PASS; Dead labels structurally ZERO (diagnosed)
+- Sonnet montage review (12 rows, real|gen|label): every v1 defect fixed — patch median V 165-231
+  (v1: 42), per-patch saturation within 1-3 of real, no milkiness, halos gone (dark-rim like
+  real), 0/12 failure rows; placement 12/12 correct, 0/222 mask objects under-rendered by an
+  inside-vs-ring contrast test; unlabelled-but-visible nuclei ~4-5% overall (worst row 25%).
+  Residuals (accepted): nuclei somewhat darker than real on intrinsically dark patches (row 2),
+  per-nucleus hue dispersion ~0.5x real, sharpness 0.45-0.69x real on high-frequency rows.
+- **Blocker found by the review: 0 of 729 kept objects typed Dead** (expected ~60: ~11% of
+  base-layout GT objects are Dead + 38% of the 86 inserted donors were Dead-class).
+- Diagnosis (`scripts/diag_synth_dead.py`, same split-2 OOF teacher, same labelling code path):
+  - REAL fold-1 Dead-rich patches: GT-Dead objects with coverage >= .4 are argmax-typed Dead 77%
+    with MEDIAN max-prob .99 (97% clear the .6 gate) -> the teacher and the threshold are fine.
+  - SMOKE synthetics re-read: P(Dead) = .000-.005 for ALL 729 kept objects (max .005; not a
+    runner-up/confusion pattern, which would sit at ~.2-.4) -> the generated small nuclei simply
+    carry no Dead cue.
+- Structural cause: the ControlNet condition is a BINARY mask (class-agnostic) and the context
+  embedding carries no per-nucleus class information; the generator's 20x prior renders isolated
+  small nuclei as lymphocyte-like objects regardless of the donor's class. Class-targeted
+  appearance is not expressible in this generator without re-training it (the abandoned LoRA
+  route). Forcing donor-class labels anyway would recreate the CP1 failure mode (labels that do
+  not match appearance).
+- Consequence for pillar B: synthesis can add DETECTION supervision for small isolated nuclei
+  with SELF-CONSISTENT (teacher-read) types — the CP1 harm channel (40% of pastes carrying forced
+  Dead labels) is structurally absent, and the label/appearance pairs stay natural. Dead PQ can
+  then only move through its detection factor. => SYN1 launched as the completing arm (3000
+  images, fold 1, class-agnostic labels, synth-frac .5 first); if it also fails, pillar B closes
+  with "small-nucleus detection is not data-fixable by real-appearance pastes or in-context
+  synthesis".
