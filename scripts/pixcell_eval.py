@@ -112,6 +112,8 @@ def main():
             print(f"[gen] {k + 1}/{len(idx)}", flush=True)
 
     # ------------------------------------------------------------------ OOF detector
+    np.savez_compressed(a.out / "images.npz", idx=np.array(idx), gen=np.stack(gens),
+                        real=np.stack(reals), inst=np.stack(masks))
     model = build_model(pretrained=False).cuda().eval()
     model.load_state_dict(torch.load(a.detector, map_location="cpu", weights_only=False)["model"])
     preds = []

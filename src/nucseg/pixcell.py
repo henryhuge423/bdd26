@@ -112,3 +112,16 @@ def encode_image(pipe, img_u8: np.ndarray, seed: int | None = None) -> torch.Ten
     g = torch.Generator(dev).manual_seed(seed if seed is not None else 0)
     lat = pipe.vae.encode(x).latent_dist.sample(generator=g)
     return (lat - getattr(pipe.vae.config, "shift_factor", 0)) * pipe.vae.config.scaling_factor
+
+
+def reinhard_lab(src: np.ndarray, tgt: np.ndarray) -> np.ndarray:
+    """Reinhard colour transfer (LAB mean/std of src -> tgt). Fixes the generator's global colour
+    gap: paired-context base generations go from od_mean_l1 .072 to .009 vs the real target."""
+    import cv2
+
+    lab = cv2.cvtColor(src, cv2.COLOR_RGB2LAB).astype(np.float32).reshape(-1, 3)
+    m_s, s_s = lab.mean(0), lab.std(0)
+    lab_t = cv2.cvtColor(tgt, cv2.COLOR_RGB2LAB).astype(np.float32).reshape(-1, 3)
+    m_t, s_t = lab_t.mean(0), lab_t.std(0)
+    out = (lab - m_s) / np.maximum(s_s, 1e-3) * s_t + m_t
+    return cv2.cvtColor(np.clip(out.reshape(src.shape), 0, 255).astype(np.uint8), cv2.COLOR_LAB2RGB)

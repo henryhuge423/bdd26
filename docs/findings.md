@@ -352,3 +352,40 @@ needs data-level intervention):
   866/978 objects kept, 1/32 images dropped on the smoke batch.
 - Training-side synthetic mixing implemented (`--synth DIR --synth-frac r`; synthetic samples carry
   the base patch's tissue label and the same cell+tissue sampler semantics).
+
+## 2026-09-26 (afternoon) — CP1 copy-paste verdict: NEGATIVE (hurts Dead typing)
+Run `split1_cp1` (seed 19, split 1, cp-prob .5, paste-before-augs, all v2 fixes) vs the 3-seed
+baseline, paired tissue-stratified image bootstrap (`runs/analysis/compare_split1_cp1{,_val,_tta}.json`):
+
+| fold | d mPQ [95% CI] | d bPQ [95% CI] | d Dead PQ [95% CI] |
+|---|---|---|---|
+| val 2    | +.0048 [+.0002,+.0090] | +.0002 [-.0018,+.0022] | +.0235 [-.0079,+.0652] |
+| test 3   | +.0009 [-.0024,+.0043] | -.0010 [-.0031,+.0009] | **-.0310 [-.0576,-.0100]** |
+| test 3 TTA | -.0004 [-.0035,+.0027] | -.0005 [-.0022,+.0011] | **-.0315 [-.0570,-.0116]** |
+
+- The test Dead drop is real (>4x seed std .0074, CI excludes 0, TTA-consistent) and acts mostly
+  through TYPING, not detection: among matched GT-Dead, correct type .690 -> .609; matched-Dead
+  precision .512 -> .484; matched Dead 497 -> 484 (confusion matrix, test fold 3). Confusion moves
+  both ways (Dead->Neo/Infla up AND Conne->Dead up) — a noisier Dead boundary, not a recall gain.
+- The VAL fold pointed the opposite way on Dead (+.0235, n.s.): single-seed Dead PQ swings ~.05
+  between folds. Third independent confirmation of the multi-seed/multi-fold rule.
+- Interpretation: transplanting real-appearance donors (colour-shifted into random stroma) teaches
+  "small isolated nucleus in clean stroma" as a Dead-ish cue and blurs the type boundary instead of
+  improving detection. => Layout-level intervention with REAL appearance does NOT fix the Dead
+  deficit; pillar B stands or falls with full synthesis (appearance generated in-context).
+- mPQ is neutral everywhere (+.0009 test) — the pastes are not toxic to overall segmentation, the
+  damage is Dead-specific.
+
+## 2026-09-26 — PixCell LoRA round 2: abandoned; Reinhard colour fix instead
+- r8 / lr 5e-5 / 2500 steps with snapshots every 250 (`runs/pixcell/lora_fold1_r8`, 60-patch
+  image-space eval): EVERY checkpoint is worse than the base model (od_mean_l1 .60-1.10 vs base
+  .116; uni_cos .13-.25 vs .496; even step 250 gives od .80). Round 1 (r16/5000, od .098 -> .266)
+  was not a tuning accident — any DiT LoRA adaptation pulls generation off the 20x prior. Route
+  abandoned; documented in the `train_pixcell_lora.py` header.
+- Post-hoc colour fix instead: Reinhard LAB transfer of each generated image to its base real patch
+  (`nucseg.pixcell.reinhard_lab`): probe on 24 pairs, od_mean_l1 .0723 -> .0094; mean saturation
+  70.0 -> 68.9 (real 69.7). Synthesis recipe locked: BASE model + PAIRED context + Reinhard
+  (`scripts/synth_pannuke.py` defaults; batched sampler verified equal to the pipeline, 0.015/255).
+- SYN-v2 smoke (32 images, fold 1, that recipe): teacher keep rate .901 (729/809), 0 images
+  dropped, 2.69 insertions/layout; colour vs paired real: median RGB |diff| ~3/255, saturation
+  68.5 vs 69.6; Laplacian ratio .70 (the base model's texture ceiling — accepted).

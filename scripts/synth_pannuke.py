@@ -3,8 +3,11 @@
 
 Round-1 layout arm (from failure mining): insert ISOLATED small nucleus MASKS into the empty stroma
 of real TRAIN-fold layouts (Dead-weighted donors, 8 px clearance, mask domain) and generate images
-with the (optionally LoRA-adapted) PixCell ControlNet — batched for throughput. Context embeddings
-come from random real train-fold patches (stain/tissue diversity; cached by train_pixcell_lora).
+with the PixCell ControlNet (BASE model: the LoRA-adaptation route was tried and abandoned, see
+findings 2026-09-26) — batched for throughput. Context embedding = the base patch's own UNI2-h
+embedding (PAIRED; matches training conditioning; random contexts push generation off-manifold —
+opt-in via --random-ctx). Each generated image is colour-matched to its base real patch with
+Reinhard LAB transfer (od_mean_l1 .072 -> .009; disable with --no-reinhard).
 
 Labels: synthetic images are labelled by an OUT-OF-FOLD teacher (split-2 CellViT-UNI; fold 1 = its
 val fold, never trained). A layout object keeps a label iff the teacher detects an instance covering
@@ -15,7 +18,7 @@ blind spots bias labels towards teacher-consistency; detection (NP/HV) supervisi
 small nuclei is the primary signal, type labels secondary.
 
     python scripts/synth_pannuke.py --fold 1 --n 3000 --out runs/pixcell/synth_fold1 \
-        --lora runs/pixcell/lora_fold1/transformer_lora.pth --teacher runs/cellvit_uni/split2/final.pth
+        --teacher runs/cellvit_uni_split2_final.pth
     python scripts/synth_pannuke.py --verify 4 ...   # batched sampler vs the reference pipeline
 """
 import argparse
@@ -30,7 +33,8 @@ import torch
 from nucseg.augment.copy_paste import DEAD, NucleusBank
 from nucseg.cellvit.engine import _forward_probs, _post, build_model
 from nucseg.data.pannuke import PanNukeFold
-from nucseg.pixcell import encode_condition, load_lora, load_pipeline, uni_embed, wrap_lora
+from nucseg.pixcell import (encode_condition, load_lora, load_pipeline, reinhard_lab, uni_embed,
+                            wrap_lora)
 from nucseg.text.conch_prior import instance_mean_probs
 
 p = argparse.ArgumentParser()
@@ -55,6 +59,9 @@ p.add_argument("--random-ctx", action="store_true",
                help="context embedding from a random patch instead of the layout's own base patch "
                     "(the 2026-09-26 review showed random contexts push generation off-manifold: "
                     "black-crushed nuclei, bimodal per-patch colour)")
+p.add_argument("--no-reinhard", action="store_true",
+               help="skip Reinhard LAB matching of each generated image to its base real patch "
+                    "(probe 2026-09-26: od_mean_l1 .072 -> .009; on by default)")
 p.add_argument("--verify", type=int, default=0, help="compare batched vs pipeline on N patches")
 p.add_argument("--seed", type=int, default=19)
 a = p.parse_args()
@@ -217,11 +224,13 @@ def main():
                  for m in layouts[s:s + a.batch]]
         if a.amp:
             with torch.autocast("cuda", dtype=torch.bfloat16):
-                gens.append(batched_generate(pipe, embs, masks, a.steps, a.guidance,
-                                             seeds[s:s + a.batch]))
+                out = batched_generate(pipe, embs, masks, a.steps, a.guidance, seeds[s:s + a.batch])
         else:
-            gens.append(batched_generate(pipe, embs, masks, a.steps, a.guidance,
-                                         seeds[s:s + a.batch]))
+            out = batched_generate(pipe, embs, masks, a.steps, a.guidance, seeds[s:s + a.batch])
+        if not a.no_reinhard:  # match each synthetic to its own base patch's stain
+            out = np.stack([reinhard_lab(g, np.asarray(f.images[b]))
+                            for g, b in zip(out, base_idx[s:s + a.batch])])
+        gens.append(out)
         if (s // a.batch) % 10 == 0:
             print(f"[gen] {s}/{a.n}", flush=True)
     gens = np.concatenate(gens)

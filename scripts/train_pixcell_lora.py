@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 """LoRA-adapt PixCell-256 Cell-ControlNet to 40x PanNuke (pillar B, TRAIN folds only).
 
+ROUTE ABANDONED (findings 2026-09-26): r16/5000 over-adapted (od_mean_l1 .098 -> .266); the r8 /
+lr 5e-5 snapshot sweep was WORSE than the base model at every checkpoint (od_mean_l1 .60-1.10,
+uni_cos .13-.25 vs base .116/.496) — adaptation conflicts with the 20x prior. Kept for reference;
+synthesis uses the base model + Reinhard LAB colour matching.
+
 The released generator is 20x/GigaPath-domain; the smoke test (2026-09-26) showed flat chromatin,
 pink->violet shift and size-biased under-rendering of large masks on PanNuke 40x. This script
 freezes everything and trains LoRA adapters on the DiT attention projections (optionally also the
