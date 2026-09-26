@@ -438,3 +438,36 @@ baseline, paired tissue-stratified image bootstrap (`runs/analysis/compare_split
 - Verdict per the pre-registered rule: SYN1 fails to move the needle => pillar B closes: Dead /
   small-nucleus performance is not data-fixable via real-appearance pastes (CP1) or in-context
   synthesis with self-consistent labels (SYN1); the remaining lever is the loss (npwce_small5).
+
+## 2026-09-26 (late) — Pillar C launched: cross-domain sets converted + reviewed; PanNuke-CF renderer validated
+- **External datasets** (`scripts/prepare_external.py`, stored on LM2 `data/external/` — /data7 is full):
+  - CoNIC2022 (HF MedOtter mirror, 4,981 patches): the 112 `source=pannuke` patches EXCLUDED
+    (leakage guard); 20x -> 2x bilinear upsample (maps nearest) -> quad-split 256 -> **19,476
+    tiles**; classes mapped Neut/Lymph/Plasma/Eos -> Inflammatory, Epithelial, Connective
+    (Neoplastic & Dead absent). Single pseudo-tissue "Colon".
+  - MoNuSAC (HF RationAI, official TEST split, 101 whole images 40x): RGBA->RGB (alpha verified
+    opaque), Ambiguous instances dropped (2,403), tile 256 non-overlap, keep full tiles with >=1
+    nucleus -> **443 tiles**; Epi->Epithelial, Lymph/Macro/Neut->Inflammatory; tissues
+    Breast/Kidney/Lung/Prostate.
+  - Montage review (sonnet subagent, GT-ellipse overlays): **no conversion bug** — annotations
+    sub-pixel aligned (0.4-1.1 px), CoNIC-upsampled vs MoNuSAC-native nuclear scale within ~13%
+    in the correct direction, upsampling interpolated not blocky. Noted: CoNIC has some
+    mostly-acellular tiles + border-clipped nuclei chains (inherent to quad-split, documented).
+- **Eval plumbing**: `evaluate()` gained an optional `tissue_names` (default PanNuke; externally
+  readable per-tissue reports); `src/nucseg/data/external.py` mirrors PanNukeFold with a lazy
+  per-image `gt_channels` (flat RAM); `predict_external.py` / `collect_external.py` for
+  prediction and cross-split aggregation. Identity-prediction smoke = 1.0 PQ. Fixed a silent
+  repo bug: `.gitignore`'s `data/` swallowed `src/nucseg/data/` — `pannuke.py`/`prepare.py`
+  were NEVER tracked; now root-anchored `/data/` and committed.
+- **Zero-shot predictions running** (LM2 GPU1): CellViT-UNI splits 1-3 x {conic, monusac} x
+  {plain, TTA}. HoVer-Net after.
+- **PanNuke-CF** (`scripts/render_pannuke_cf.py`): fixed fold-3 GT labels, factorial appearance
+  intervention — context {paired, swapped-tissue} x Reinhard target {self, donor} = arms
+  control/stain/ctx/tissue (+ `real` reference arm on the same 500 patches; 3 generator-seed
+  replicates of control for the noise floor). 8-patch smoke (split-2 model): real .4735 ->
+  control .4860 (generator renders EASIER images: bPQ .71 -> .80, but strict mPQ drops .47 ->
+  .40 — generated nuclei carry type-inconsistent appearance), tissue arm .2807 (strong stress
+  signal, missed_bg .07 -> .17). Smoke montage review forced two fixes: (a) blank/no-label
+  patches excluded (context embedding is a CONTENT channel — hallucinated a whole tissue on an
+  empty patch), (b) context donors luminance-guarded (±35 mean-L; near-white donor bleached a
+  patch to 88% white). Full render (500 patches/arm) running on LM2 GPU7.
