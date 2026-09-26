@@ -110,6 +110,19 @@
   类别映射 + bPQ/AJI/PQ）+ PanNuke-CF 反事实渲染（复用已锁定配方：基座+配对上下文+Reinhard），
   验证 CF 排序与真实跨域排序的一致性（Spearman）。注意 /data7 已满，新数据集放 LM2 /data6。
 
+**2026-09-26（深夜）— 支柱 C 启动：跨域数据转换完成并审查通过；PanNuke-CF 渲染器验证通过**
+- CoNIC（剔除 112 张 PanNuke 重叠、20×→2×上采样、四分裂 256）= 19,476 tiles；MoNuSAC test
+  （RGBA→RGB、Ambiguous 剔除、256 tiling）= 443 tiles；均存 LM2（/data7 满）。Sonnet 拼接图
+  审查：无转换 bug（亚像素对齐、尺寸方向正确、插值平滑）。
+- 评测管线打通（evaluate 可选 tissue_names；external.py 镜像 PanNukeFold、惰性 gt_channels；
+  predict_external / collect_external）。修复静默仓库 bug：.gitignore 的 `data/` 吞掉了
+  `src/nucseg/data/`（pannuke.py/prepare.py 从未被跟踪）。
+- PanNuke-CF：固定 fold3 GT 标签，context {配对,换组织} × Reinhard {自身, donor} 因子设计
+  （control/stain/ctx/tissue 四臂 + real 参照 + control 3 种子重复）。冒烟（8 patch）：control
+  比真实还容易（bPQ .71→.80）但 strict 掉（外观-类型不一致）；tissue 臂强压力信号（.28）。
+  审查修复：空白 patch 剔除（context 是内容通道）、donor 亮度护栏。全量 500/臂在 LM2 GPU7。
+- 在跑：CellViT-UNI 3 splits × {conic, monusac} × {plain, TTA}（LM2 GPU1）；HoVer-Net 随后。
+
 **据此对 §2.1（支柱 A）的修订**：原"语言锚定类型头"针对分类，而瓶颈在检测，故改为以**检测**为目标——
 (1) 类别感知前景：利用 TP 分支/CONCH 稠密先验召回 NP 漏检的核（先做免训练的后处理验证，在验证折调参，
 单独报告）；(2) 训练侧：对小核/Dead 的前景损失加权或类别条件的前景监督；(3) CONCH 半径受限池化保留为
