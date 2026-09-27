@@ -18,7 +18,7 @@ from nucseg.data.external import ExternalSet
 from nucseg.metrics.pannuke_eval import evaluate, format_summary, save_report
 
 p = argparse.ArgumentParser()
-p.add_argument("--model", choices=["cellvit", "hovernet"], default="cellvit")
+p.add_argument("--model", choices=["cellvit", "hovernet", "hovernext"], default="cellvit")
 p.add_argument("--run", type=Path, help="cellvit run dir (final.pth)")
 p.add_argument("--ckpt", type=Path, help="hovernet checkpoint (defaults to <run>/final.pth)")
 p.add_argument("--data", required=True, help="external dataset name, e.g. conic / monusac")
@@ -37,6 +37,10 @@ if a.model == "cellvit":
     model = build_model(pretrained=False).cuda()
     model.load_state_dict(torch.load(a.run / "final.pth", map_location="cpu", weights_only=False)["model"])
     inst, typ, _ = predict_fold(model, ds, tta=a.tta, batch_size=a.bs)
+elif a.model == "hovernext":
+    # run dir mirrors the official weight pack (params.toml / train/best_model / param dict)
+    from nucseg.hovernext.engine import build_model, predict_fold
+    inst, typ = predict_fold(build_model(a.run), ds, batch_size=a.bs)
 else:
     from nucseg.hovernet.engine import build_model, predict_fold
     ckpt = a.ckpt or a.run / "final.pth"
