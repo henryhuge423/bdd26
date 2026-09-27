@@ -2,9 +2,17 @@
 
 Wraps the official Zenodo per-fold weights (digitalpathologybern/hover_next_inference layout:
 ``<weights>/params.toml``, ``<weights>/train/best_model``, ``<weights>/pannuke_test_param_dict.json``).
-The model is the vendored :mod:`nucseg.hovernext.model`; the post-processing is vendored from
-``third_party/hover_next_inference/src/post_process_utils.py`` with the zarr stores replaced by
-plain numpy (we process one 256x256 patch at a time, so there is nothing to stitch).
+The model is the vendored :mod:`nucseg.hovernext.model`.
+
+Decoding: we use the hover_next_train VALIDATION decode — flat fg/seed thresholds + softmax-sum
+typing, no size/hole filters (``make_prediction`` in ``src/validation.py``). The official release
+number (0.477) additionally uses 16 stochastic spatial+COLOR aug views and per-class fg/seed
+thresholds tuned ON THE TEST FOLD (``evaluate.py --tta 16`` + ``get_pp_params``) — not reproduced
+here (see logs/hn_pp_ablation + hn_thresh_sweep on LM2): with our decode the port reaches
+mPQ ~.43-.45 on fold 3 (their own inference-repo decode on our maps: ~.36). Optional
+``<weights>/decode.json`` ({"fg": .., "seed": ..}) overrides the 0.7/0.3 defaults, e.g. written
+by ``scripts/hn_thresh_sweep.py --out`` tuned on a VAL fold. The per-class path stays available
+as :func:`_post_per_class`.
 
 Fold semantics verified against hover_next_train ``PANNUKE_FOLDS = [[1,2],[0,2],[1,0]]`` with
 ``fold = params["fold"] - 1``: weights ``pannuke_convnextv2_tiny_{1,2}`` test fold 3 (our
@@ -41,6 +49,8 @@ class HNModel:
     model: torch.nn.Module
     fg: np.ndarray  # per-class foreground thresholds (pannuke_test_param_dict.json)
     seed: np.ndarray  # per-class seed thresholds
+    fg_t: float = 0.7  # flat decode thresholds (validation path; decode.json overrides)
+    seed_t: float = 0.3
 
 
 def build_model(weights: Path | str) -> HNModel:
@@ -53,7 +63,10 @@ def build_model(weights: Path | str) -> HNModel:
     model.load_state_dict({k[7:] if k.startswith("module.") else k: v for k, v in state.items()})
     model.eval()
     dt = json.loads((weights / "pannuke_test_param_dict.json").read_text())
-    return HNModel(model, np.asarray(dt["best_fg_pannuke"]), np.asarray(dt["best_seed_pannuke"]))
+    dec = weights / "decode.json"
+    kw = json.loads(dec.read_text()) if dec.exists() else {}
+    return HNModel(model, np.asarray(dt["best_fg_pannuke"]), np.asarray(dt["best_seed_pannuke"]),
+                   fg_t=kw.get("fg", 0.7), seed_t=kw.get("seed", 0.3))
 
 
 # ---------------- vendored post-processing (numpy port) ----------------
@@ -154,7 +167,7 @@ def _remove_obj_cls(pred_inst, pred_ct, min_threshs, max_threshs):
     return out_oi, keep
 
 
-def _post(args):
+def _post_per_class(args):
     inst3, cls6, fg, seed = args
     # proc_tile equivalents: keep bg/fg softmax, one-hot the classes without background
     out_img = inst3[:2]
@@ -174,6 +187,23 @@ def _post(args):
     return inst, typ
 
 
+def _post(args):
+    """Validation-path decode: flat fg/seed watershed + softmax-sum typing (make_prediction)."""
+    inst3, cls6, fg_t, seed_t = args
+    flat = np.ones((1, *inst3.shape[1:]), bool)
+    lab, skip = _faster_instance_seg(inst3[:2], flat, np.array([fg_t]), np.array([seed_t]))
+    if skip:
+        return (np.zeros(inst3.shape[1:], np.int32), np.zeros(inst3.shape[1:], np.uint8))
+    probs = cls6[1:]  # cls channel 0 is background
+    typ = np.zeros(lab.shape, np.uint8)
+    for j, sl in enumerate(find_objects(lab)):
+        if not sl:
+            continue
+        sel = lab[sl] == (j + 1)
+        typ[lab == j + 1] = int(np.sum(probs[(slice(None), *sl)][:, sel], axis=1).argmax()) + 1
+    return lab, typ
+
+
 def predict_fold(m: HNModel, fold_ds, device="cuda", batch_size=16, workers=8, tta=False):
     """Returns (inst, type) for every patch of a fold, in fold order (no TTA — parity with the
     paper's plain inference and with our no-TTA HoVer-Net external rows)."""
@@ -189,7 +219,7 @@ def predict_fold(m: HNModel, fold_ds, device="cuda", batch_size=16, workers=8, t
                 out = m.model(x)
             inst3 = out[:, 2:5].softmax(1).float().cpu().numpy()
             cls6 = out[:, 5:].softmax(1).float().cpu().numpy()
-            res = pool.map(_post, [(inst3[i], cls6[i], m.fg, m.seed) for i in range(len(x))],
+            res = pool.map(_post, [(inst3[i], cls6[i], m.fg_t, m.seed_t) for i in range(len(x))],
                            chunksize=2)
             insts += [r[0] for r in res]
             types += [r[1] for r in res]
