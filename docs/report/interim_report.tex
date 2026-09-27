@@ -21,8 +21,8 @@ Diagnosis, Two Failed Data-Side Fixes, and a\\ Counterfactual Stress-Test Evalua
 \begin{abstract}
 On PanNuke, swapping backbones moves mean panoptic quality (mPQ) by only 1--2 points, while the
 \emph{Dead} (apoptotic) class stagnates at PQ $\approx$ 0.13--0.18 for every published model. This
-interim report asks why, and whether recent ``new paradigms''---pathology vision--language models
-and controllable generative models---can move either the rare-class deficit or robustness
+interim report asks why, and whether recent ``new paradigms'' (pathology vision--language models
+and controllable generative models) can address either the rare-class deficit or robustness
 evaluation. We first reproduce two baselines under the official 3-fold protocol (HoVer-Net
 0.456 mPQ, CellViT-UNI 0.500) and add a third evaluator, HoVer-NeXt-T (0.458), after diagnosing
 that our port's original 0.358 was a decoding artifact, not a model gap. Second, we show the Dead
@@ -31,7 +31,7 @@ nuclei receive no overlapping prediction, and inside those missed nuclei the for
 silent (mean nuclear-probability 0.16) while the type head assigns P(Dead)$\approx$0.26. Third,
 under a pre-registered multi-seed protocol, four interventions are null or harmful: post-hoc
 re-typing with a pathology VLM (CONCH), training-free missed-nucleus recovery, class-weighted and
-size-weighted foreground losses, and---on the data side---failure-driven copy-paste (Dead PQ
+size-weighted foreground losses, and, on the data side, failure-driven copy-paste (Dead PQ
 $-0.031$) and in-context diffusion synthesis with self-consistent labels (mPQ unchanged).
 Fourth, we build a three-architecture $\times$ three-dataset zero-shot cross-domain benchmark
 (CoNIC, MoNuSAC, PUMA) and \emph{PanNuke-CF}, a counterfactual test set that re-renders fixed
@@ -39,7 +39,7 @@ PanNuke labels under interventions on tissue context and stain. Counterfactual s
 \emph{inverts} the real cross-domain ranking (Spearman $-0.89$ across 6 evaluator points;
 $-1.00$ on architecture means): an axis decomposition shows real between-architecture transfer
 differences live almost entirely on the detection axis, which label-fixed rendering cannot
-stress by construction, while on the typing axis---where it can stress---counterfactual ranking
+stress by construction, while on the typing axis, which it does stress, counterfactual ranking
 agrees with real transfer. We conclude counterfactual rendering is a valid \emph{typing} stress
 test but not a transfer surrogate, and that the Dead detection deficit is architectural: it is
 robust to every loss-level and data-level intervention we tested, and follows the models
@@ -52,7 +52,7 @@ out-of-domain (Dead PQ $\leq 0.006$ on PUMA for all three architectures).
 Nuclei instance segmentation and classification is a standard workload in computational
 pathology, and PanNuke~\cite{gamper2019pannuke} its standard benchmark: 205,000 annotated nuclei
 across 19 tissues, evaluated by tissue-averaged mean panoptic quality (mPQ). The published
-leaderboard has a striking shape: five years of architectural progress compress into
+leaderboard is lopsided: five years of architectural progress compress into
 $\sim$1--2 mPQ points (HoVer-Net~\cite{graham2019hovernet} 0.463 $\rightarrow$
 CellViT-SAM-H~\cite{horta2024cellvit} 0.498 $\rightarrow$ best current models
 $\approx$0.51), while the \emph{Dead} (apoptotic bodies) class stays at PQ
@@ -144,7 +144,7 @@ split, per class). TTA (8 dihedral views with HV-channel remapping) is reported 
 
 \paragraph{Noise calibration (used for every verdict).} Across 3 seeds of the identical
 CellViT-UNI recipe: seed std is 0.0021 mPQ but \textbf{0.0074 Dead PQ}, and the image-bootstrap
-CI half-width on Dead is 0.02--0.03. Consequences we enforce: single-seed Dead changes below
+CI half-width on Dead is 0.02--0.03. Rules we enforce: single-seed Dead changes below
 $\sim$0.01--0.015 are noise; every intervention verdict is a 3-seed (or multi-fold) statement
 with paired, tissue-stratified image-bootstrap 95\% CIs; validation-fold decisions only.
 
@@ -294,13 +294,13 @@ identically; a v1 shortcut caught by visual review and fixed, alongside border-f
 unannotated-nucleus collisions). Result vs 3-seed baseline (split 1; test fold 3):
 $\Delta$mPQ $+0.0009$ $[-0.0024,+0.0043]$ but $\Delta$Dead \textbf{$-0.0310$}
 $[-0.0576,-0.0100]$ (TTA-consistent). The damage is in \emph{typing}, not detection: matched-Dead
-type accuracy .690$\rightarrow$.609, confusion increases in both directions. Notably the
-validation fold pointed the \emph{opposite} way on Dead ($+0.0235$): Dead PQ swings $\sim$0.05
+type accuracy .690$\rightarrow$.609, confusion increases in both directions. The
+validation fold, however, pointed the \emph{opposite} way on Dead ($+0.0235$): Dead PQ swings $\sim$0.05
 between folds, the third independent confirmation of the noise rules. Interpretation:
 transplanting real appearances into new contexts teaches ``small isolated nucleus in clean
 stroma'' as a Dead-ish cue and blurs the type boundary.
 
-\subsection{In-context synthesis (PixCell): from appearance gap to a structural label block}
+\subsection{In-context synthesis (PixCell): from an appearance gap to a structural blocker}
 PixCell-256 + Cell-ControlNet with real fold-1 masks as condition: placement is faithful
 ($\sim$95\% of mask objects rendered at the right place/size, median IoU 0.68) but the 20$\times$
 generator has a structural appearance gap on 40$\times$ PanNuke (flat chromatin, $-24\%$
@@ -346,7 +346,7 @@ patches sourced from PanNuke excluded; 20$\times\rightarrow$2$\times$ upsampled;
 Inflam/Epith/Conn), \textbf{MoNuSAC} test (443 tiles; Inflam/Epith), \textbf{PUMA} melanoma
 (3,278 tiles; all five PanNuke classes present, including 1,991 apoptotic$\rightarrow$Dead
 nuclei---the only sizable external Dead supply we found; GT is HoVer-Net-initialised and
-pathologist-corrected, so absolute recall has a ceiling, shared fairly by all models).
+pathologist-corrected, so absolute recall has a ceiling that applies equally to all models).
 
 \begin{table}[t]
 \centering\small
@@ -399,8 +399,8 @@ Dead), the external set that supplies cross-domain Dead labels.}
 factorial appearance intervention---context \{paired, swapped-tissue\} $\times$ Reinhard target
 \{self, donor\}---giving arms \texttt{control}/\texttt{stain}/\texttt{ctx}/\texttt{tissue},
 plus the untouched \texttt{real} images and 3 generator-seed replicates of control for a noise
-floor. Generator noise is an order of magnitude below the effects below (control-replicate mPQ
-std 0.002--0.006). Two calibration facts: generated \texttt{control} images are \emph{easier to
+floor. Generator noise sits an order of magnitude below the intervention effects
+(control-replicate mPQ std 0.002--0.006). Two calibration facts: generated \texttt{control} images are \emph{easier to
 segment} than real (bPQ 0.78 vs 0.67) but carry \emph{type-inconsistent} appearance (strict mPQ
 0.36 vs 0.45)---so CF comparisons are always arm-vs-control, never arm-vs-real; and blank
 patches must be excluded (the context embedding is a content channel).
@@ -464,7 +464,7 @@ rendering \emph{cannot} stress detection: the generator re-renders well-formed n
 positions, and indeed CF $F_d$ drops are homogeneous (0.08--0.10) across architectures with no
 ordering information. Where CF \emph{can} apply stress---typing under context/stain
 mismatch---its ranking agrees with real typing transfer ($\rho=+1.00$ on architecture means;
-$+0.71$/$+0.83$ over all 6 points). Honest caveats: $n=3$ architectures (an arch-mean
+$+0.71$/$+0.83$ over all 6 points). Caveats: $n=3$ architectures (an arch-mean
 $|\rho|=1$ has exact $p=1/3$; the defensible evidence is the perfect sign inversion across
 3 architectures $\times$ 2 splits plus the axis mechanism), and real typing differences between
 architectures are small (range 0.069--0.088) compared with detection differences (0.007--0.163).
@@ -486,10 +486,10 @@ missed Dead nuclei produce no foreground response at 83\% pixel level, the type 
 already ``sees'' them, and neither language-side fusion, post-hoc recovery, loss re-weighting
 (3 seeds), real-appearance transplant, nor in-context synthesis with self-consistent labels
 moved detection. The deficit is consistent with the resolution/architecture of the NP head at
-40$\times$, an hypothesis we have not yet tested architecturally (e.g.\ higher-resolution
+40$\times$, a hypothesis we have not yet tested architecturally (e.g.\ higher-resolution
 foreground supervision) and which is the main open direction.
 
-\paragraph{Evaluation methodology.} Three lessons with evidence: (1) seed noise on PanNuke is
+\paragraph{Evaluation methodology.} Three lessons, each with evidence: (1) seed noise on PanNuke is
 class-dependent (mPQ 0.002 vs Dead 0.007) and validation-fold Dead signals can point opposite
 to test (CP1: $+0.024$ vs $-0.031$)---single-seed, single-fold Dead claims are uninterpretable;
 (2) released evaluation recipes can embed test-side tuning worth $\sim$0.02 mPQ (our
