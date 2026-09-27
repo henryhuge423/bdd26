@@ -35,8 +35,7 @@ for data, sums in sorted(by_data.items()):
     print(f"\n=== {a.label} on {data} ({len(sums)} splits) ===")
 
     def agg(path):
-        vals = [s for s in (x for x in [d.get(path[0], {}).get(path[1]) if len(path) == 2
-                                         else x.get(path[0]) for x in sums]) if s is not None]
+        vals = [x.get(path[0], {}).get(path[1]) if len(path) == 2 else x.get(path[0]) for x in sums]
         vals = [v for v in vals if v is not None and not (isinstance(v, float) and np.isnan(v))]
         return (np.mean(vals), np.std(vals), len(vals)) if vals else (np.nan, np.nan, 0)
 

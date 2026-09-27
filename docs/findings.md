@@ -471,3 +471,28 @@ baseline, paired tissue-stratified image bootstrap (`runs/analysis/compare_split
   patches excluded (context embedding is a CONTENT channel — hallucinated a whole tissue on an
   empty patch), (b) context donors luminance-guarded (±35 mean-L; near-white donor bleached a
   patch to 88% white). Full render (500 patches/arm) running on LM2 GPU7.
+
+## 2026-09-27 — External zero-shot cross-domain (pillar C): CoNIC + MoNuSAC, 3-split mean
+`scripts/predict_external.py` (LM2) -> `scripts/collect_external.py` (mPQ/bPQ/F_d 3-split mean +- std;
+report files rsynced to LM1, `runs/analysis/ext_{cellvit,hovernet}.json`). HoVer-Net has no TTA row
+(hardware budget; CellViT TTA answers the does-TTA-help question). In-domain reference from the
+baselines table above: CellViT .4995 mPQ / .6654 bPQ, HoVer-Net .4564 / .6613.
+
+| model | CoNIC mPQ / bPQ / F_d | MoNuSAC mPQ / bPQ / F_d |
+|---|---|---|
+| CellViT-UNI | .3351 +- .0037 / .5314 / .7816  [TTA .3398 / .5381 / .7858] | .2495 +- .0218 / .5616 / .7652  [TTA .2484 / .5650 / .7672] |
+| HoVer-Net | .2610 +- .0061 / .5136 / .7669 | .0370 +- .0003 / .2756 +- .0701 / .3658 +- .0980 |
+
+- **Domain drop (in-domain mPQ minus external)**: CellViT -.164 (CoNIC) / -.250 (MoNuSAC);
+  HoVer-Net -.195 / -.419. Both degrade, but **HoVer-Net nearly collapses on MoNuSAC**
+  (F_d .37, bPQ split std +- .070 vs +- .003 on CoNIC — per-split F_d ranges .26-.78; failure
+  mode is missed_bg, i.e. detection, not typing).
+- **TTA does not rescue cross-domain**: +.005 mPQ on CoNIC, -.001 on MoNuSAC (CellViT).
+- **Per-class PQ (present classes only)**: CoNIC — CellViT Infla .425 / Conne .371 / Epith .246;
+  HoVer-Net .339 / .255 / .193. MoNuSAC — CellViT Infla .309 / Epith .213; HoVer-Net .061 / .012.
+  Epithelial is the weakest class on CoNIC for both models; Inflammatory transfers best.
+- Classes absent in GT: CoNIC has no Neoplastic/Dead, MoNuSAC has no Neoplastic/Connective/Dead
+  (mapping in the 2026-09-26 entry); strict mPQ on absent classes is excluded per official protocol.
+- CF arms (real/control x3/stain/ctx/tissue on fold-3 500 patches) are predicted + evaluated for
+  both models (2 splits each; `eval_ext_*` dirs) — paired bootstrap/rank-agreement analysis via
+  `scripts/analyze_cf.py` is the next step.
