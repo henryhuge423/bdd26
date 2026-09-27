@@ -496,3 +496,29 @@ baselines table above: CellViT .4995 mPQ / .6654 bPQ, HoVer-Net .4564 / .6613.
 - CF arms (real/control x3/stain/ctx/tissue on fold-3 500 patches) are predicted + evaluated for
   both models (2 splits each; `eval_ext_*` dirs) — paired bootstrap/rank-agreement analysis via
   `scripts/analyze_cf.py` is the next step.
+
+## 2026-09-27 — PanNuke-CF analysis (pillar C): noise floor, paired deltas, rank agreement
+`scripts/analyze_cf.py` on 4 evaluators (CellViT-UNI / HoVer-Net x splits 1/2; 494 images/arm,
+fixed fold-3 GT; log `logs/analyze_cf.log` on LM2; PanNuke-test references synced to LM2).
+
+- **Generator noise floor**: control-replicate mPQ std .0039-.0055 (range <= .0131) — an order of
+  magnitude below the stress effects below, so arm deltas are attributable to the intervention.
+- **real vs control** (same patches): CellViT +.042/+.051 mPQ (CI excl. 0) — but split by head:
+  bPQ control .78 vs real .67 (generated nuclei are EASIER to segment), strict .36 vs .45 (their
+  TYPE appearance is less consistent with GT labels). Both baselines show this; keep using mPQ +
+  strict for CF arms.
+- **Paired deltas vs control mean** (image-bootstrap 95% CI, all CIs exclude 0):
+  - `stain` (Reinhard to donor stain): CellViT -.023/-.024, HoVer-Net -.061/-.071 — mild stress.
+  - `ctx` (paired->swapped-tissue context): CellViT -.187/-.192, HoVer-Net -.135/-.144 — strong.
+  - `tissue` (ctx + donor stain): CellViT -.189/-.193, HoVer-Net -.145/-.147 — strongest for CellViT.
+  - Class structure: Epithelial collapses under ctx/tissue (CellViT -.41/-.42 PQ) while Dead loses
+    -.04..-.10 — context swap mostly destroys type information, not detection (F_d only -.10).
+- **Rank agreement (the pillar-C validation) FAILS at architecture level**: real domain drop
+  (PanNuke test - mean ext mPQ) CellViT .21 vs HoVer-Net .30, but ctx CF drop CellViT .19 >
+  HoVer-Net .14 -> Spearman **-1.00** across the 4 evaluator points (tissue -.60, stain +.60 ns).
+  Interpretation: the CF stress axis measures **context/stain sensitivity**, which is NOT the axis
+  that dominates real transfer — HoVer-Net's large real drop is its MoNuSAC *detection* collapse,
+  and the less context-dependent (weaker) model is hurt less by context swap. Caveat: 4 evaluator
+  points = 2 architectures x 2 near-identical splits, so the correlation is effectively the single
+  architecture contrast; next step is a 3rd architecture (HoVer-NeXt-T per-fold weights) +
+  PUMA (apoptotic->Dead) as an additional real external set before concluding.

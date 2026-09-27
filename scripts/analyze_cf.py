@@ -94,7 +94,7 @@ for label, run, sp in evaluators:
     # ---- real-domain reference: PanNuke test fold + external zero-shot
     te = {1: 3, 2: 3, 3: 1}[int(sp.removeprefix("split"))]
     in_dom = None
-    for d in sorted((run / sp).glob(f"test_fold{te}*")):
+    for d in sorted((run / sp).glob(f"*test_fold{te}")):
         if (d / "summary.json").exists():
             in_dom = json.loads((d / "summary.json").read_text())["official"]["mPQ"]
     ext = [load(run / sp, e) for e in a.ext]
