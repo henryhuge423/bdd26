@@ -123,6 +123,24 @@
   审查修复：空白 patch 剔除（context 是内容通道）、donor 亮度护栏。全量 500/臂在 LM2 GPU7。
 - 在跑：CellViT-UNI 3 splits × {conic, monusac} × {plain, TTA}（LM2 GPU1）；HoVer-Net 随后。
 
+**2026-09-27 — 外部零样本表 + CF 首轮分析 + 第三评估器就绪**（详见 findings.md）
+- 外部零样本（3-split mean mPQ）：CoNIC CellViT .335 / HoVer-Net .261；MoNuSAC .250 / .037
+  （HoVer-Net 检测崩溃 F_d .37）；PUMA（新增黑色素瘤集，apoptotic→Dead）CellViT .452 / HoVer-Net .320。
+- CF 分析（2 架构）：噪声地板 .004-.006 << 压力效应；stain -.02~-.07、ctx -.14~-.19、tissue 最强；
+  但 rank agreement 在架构层面反向 → 需第三评估器定论。
+- HoVer-NeXt-T 端口修复（瓶颈在 decode 不在模型）：val 调阈值 flat 解码 3 折 **mPQ .4579**
+  （介于 HoVer-Net .4564 与 CellViT .4995 之间），可用作第三评估器；merge 率最低（.10 vs .14）。
+
+**2026-09-28 — 支柱 C 终判关闭（详见 findings.md 同日条目）**
+- 第三评估器 HoVer-NeXt-T 补齐全部外部集（CoNIC .279 / MoNuSAC .112 / PUMA .381 mPQ）与 CF 两臂；
+  真实跨域排序三架构一致：CellViT .152 < HoVer-NeXt-T .199 < HoVer-Net .246（domain drop）。
+- **CF-vs-真实 rank agreement 在 mPQ 轴反向**（6 点 rho -.89 perm p .033；架构均值 -1.00）。
+  轴分解给出机理：真实架构间差异几乎全在**检测轴**（HoVer-Net F_d 掉 .15-.18 = MoNuSAC 崩溃，
+  CellViT 仅 .007），而标签固定的 CF 渲染对检测轴施加的压力三架构齐平（.08-.10）——构造上不可施压；
+  在 CF 能施压的**分型轴**上排序与真实一致（typing rho +1.00 架构均值）。
+- 结论：PanNuke-CF = 分型压力测试，**不是**跨域迁移代理。三个支柱全部关闭；
+  剩余工作 = 最终报告与图表（组织×类热力图、错误分解、合成/CF 样例、主表）。
+
 **据此对 §2.1（支柱 A）的修订**：原"语言锚定类型头"针对分类，而瓶颈在检测，故改为以**检测**为目标——
 (1) 类别感知前景：利用 TP 分支/CONCH 稠密先验召回 NP 漏检的核（先做免训练的后处理验证，在验证折调参，
 单独报告）；(2) 训练侧：对小核/Dead 的前景损失加权或类别条件的前景监督；(3) CONCH 半径受限池化保留为

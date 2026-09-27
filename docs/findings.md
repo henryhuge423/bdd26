@@ -522,3 +522,83 @@ fixed fold-3 GT; log `logs/analyze_cf.log` on LM2; PanNuke-test references synce
   points = 2 architectures x 2 near-identical splits, so the correlation is effectively the single
   architecture contrast; next step is a 3rd architecture (HoVer-NeXt-T per-fold weights) +
   PUMA (apoptotic->Dead) as an additional real external set before concluding.
+
+## 2026-09-27 (eve) — HoVer-NeXt-T port decoded: flat validation decode + VAL-tuned thresholds (.458 mPQ)
+- Port gap diagnosed with two ablation scripts (`hn_postproc_ablation.py`, `hn_thresh_sweep.py`,
+  same raw maps scored under 3 decodings + a 5x5 flat fg/seed grid): the maps are FINE — the
+  bottleneck was the decode. The vendored per-class inference-repo decode (their
+  `pannuke_test_param_dict.json` thresholds) gives mPQ .365 on fold-3 400-img; their own
+  **validation decode** (flat fg/seed + softmax-sum typing, `validation.py make_prediction`)
+  gives .425 with their defaults (.7/.3); grid best .447. Their pp (hole fill + PANNUKE size
+  filters) HURTS the flat decode (.425 -> .326) — dropped.
+- The released 0.477 comes from `evaluate.py --tta 16`: 16 stochastic spatial+COLOR-aug views
+  (inverse-transformed, averaged) + per-class fg/seed tuned ON THE TEST FOLD (`get_pp_params`).
+  Not reproduced (stochastic color TTA at eval + test-tuned thresholds is their recipe, not a
+  fair-comparison decode); we instead tune the flat pair on each split's VAL fold
+  (`decode.json` per weight dir; .6/.7, .6/.7, .6/.6) — same protocol as our other baselines.
+- **Sanity, full test folds (3-split mean): mPQ .4579 / bPQ .6367 / Dead .1363**
+  (paper .477/.656/.154; old port decode .3582/.5030/.080). Sits between HoVer-Net
+  (.4564/.6613) and CellViT-UNI (.4995/.6654) on mPQ — a usable 3rd evaluator.
+  Per-split: s1 .4423/.6247, s2 .4644/.6454, s3(test fold1) .4670/.6400.
+- Notable behaviour: HoVer-NeXt-T has the LOWEST merge rate of the three evaluators
+  (.096-.101 vs HoVer-Net ~.14) and higher missed_bg (.12-.13) — a different error profile,
+  which is exactly what the rank-agreement analysis needs.
+
+## 2026-09-27 (eve) — PUMA third external set (melanoma, apoptotic->Dead): converted, reviewed, predicted
+- `prepare_puma.py` (Zenodo 15050523 ROI pack): 3,278 tiles, tissues Melanoma-primary/-metastatic
+  (1648/1630); classes mapped nuclei_tumor->Neoplastic, lymphocyte/histiocyte/melanophage/plasma/
+  neutrophil->Inflammatory, stroma/endothelium->Connective, **apoptosis->Dead (1,991 nuclei)**,
+  epithelium->Epithelial (all 5 PanNuke classes present). Scale verified vs PanNuke fold-3 GT
+  (median nucleus 390 vs 464 px; tif tags 0.226 um/px but effective scale behaves ~0.5 um/px).
+- Sonnet montage review (GT outlines over 16 tiles): PASSED — 1-px contours boundary-exact,
+  class colours coherent (black-stroke Dead confined to pyknotic/dumbbell nuclei, 1-3/tile;
+  blue lymphocyte fields; orange spindle stroma), no conversion artifacts. Caveat inherited
+  from PUMA (HoVer-Net-initialised, pathologist-corrected GT): ~5-15% of nuclei in the densest
+  tiles carry no label -> absolute recall/mPQ on PUMA has a ceiling; model comparisons share
+  the same GT so remain fair.
+- Zero-shot (3-split mean, no TTA): **CellViT-UNI mPQ .4518 +- .0031 / bPQ .7177 / F_d .8831;
+  HoVer-Net .3203 +- .0139 / .7136 / .8714**. Domain drop (in-domain mPQ - PUMA): CellViT
+  -.048, HoVer-Net -.136 — ordering matches CoNIC/MoNuSAC (CellViT more robust), and unlike
+  MoNuSAC there is NO detection collapse (F_d ~.87-.88): the transfer loss is in TYPING
+  (CellViT strict .37 vs mPQ .45; Dead PQ ~.003 (!), Epithelial .09-.20). Apoptotic bodies
+  remain undetectable-as-Dead cross-domain for both models — the Dead failure mode follows us
+  out of domain (and PUMA's apoptotic GT is the only large external Dead supply we found).
+
+## 2026-09-28 — Pillar C closes: 3-architecture CF verdict (inverted on mPQ, positive on the typing axis)
+`hn_pipeline.sh` stage C+D added HoVer-NeXt-T everywhere (external x9, CF arms x2 splits);
+`analyze_cf.py` extended with an axis decomposition + axis-matched rank agreement (exact
+permutation p; `logs/analyze_cf3.log` on LM2, `runs/analysis/ext_hovernext.json` on LM1/LM2).
+
+- **HoVer-NeXt-T external zero-shot (3-split mean mPQ/bPQ)**: CoNIC .2786/.4811,
+  MoNuSAC .1123/.4025, PUMA .3813/.6888. Real domain drop (per-split in-domain reference,
+  2-split mean): .199 — ordering CellViT .152 < HoVer-NeXt-T .199 < HoVer-Net .246,
+  consistent across all 3 sets.
+- **Headline rank agreement now has 6 evaluator points (3 architectures x 2 splits)**:
+  ctx rho **-0.89** (perm p .033), tissue -0.89 (.033), stain +0.43 (ns). Architecture means
+  (honest n=3): ctx/tissue **-1.00** — perfect inversion. The 2-architecture caveat is closed:
+  more architectures made the inversion stronger, not weaker.
+- **Axis decomposition (why)** — real drops split into detection (F_d) vs typing (bPQ-mPQ gap):
+  | evaluator | real mPQ | F_d | typing | ctx CF mPQ | F_d | typing |
+  |---|---|---|---|---|---|---|
+  | CellViT-UNI (s1/s2)  | .155/.152 | **.007/.007** | +.092/+.084 | .187/.192 | .101/.103 | +.081/+.082 |
+  | HoVer-Net (s1/s2)    | .242/.250 | **.149/.176** | +.076/+.062 | .135/.144 | .082/.086 | +.033/+.035 |
+  | HoVer-NeXt-T (s1/s2) | .190/.207 | **.046/.043** | +.078/+.092 | .161/.164 | .092/.089 | +.062/+.066 |
+  Between-architecture real differences live almost entirely on the **detection** axis
+  (CellViT loses nothing, HoVer-Net loses .15-.18 = MoNuSAC collapse); typing-gap increase is
+  similar for all (.06-.09). But CF rendering gives a **homogeneous** detection stress
+  (.082-.103 for every architecture) — with labels fixed and the generator re-rendering
+  well-formed nuclei, the detection axis cannot be stressed by construction.
+- **Axis-matched rank agreement**: typing axis ctx rho **+0.71** (all 6 pts, perm p .136) /
+  **+1.00** (arch means); tissue typing +0.83/+1.00. Detection axis: -0.83/-1.00 (CF has no
+  variance there, so the correlation is meaningless-inverted). Stain arm's largest signal is
+  also on F_d (+0.83, p .058 — HoVer-Net biggest on both sides), same story at weak signal.
+- **Verdict (pillar C terminal)**: PanNuke-CF label-fixed counterfactual rendering is NOT a
+  valid proxy for real cross-domain transfer — at the mPQ level it *inverts* the architecture
+  ranking (the model most sensitive to context swap in-domain is the most robust transferrer).
+  Mechanistically, its blind spot is exactly the detection axis, which is where real transfer
+  differences concentrate. Where CF CAN apply stress (typing under context/stain mismatch), it
+  ranks architectures consistently with real typing transfer. ⇒ report CF as a **typing
+  stress test**, never as a transfer surrogate. Honest caveats: n=3 architectures (arch-mean
+  |rho|=1 has exact p=.33; the defensible evidence is perfect sign inversion across 3 archs x
+  2 splits plus the axis mechanism), external typing-axis differences are small (real typing
+  gap range .069-.088 vs detection range .007-.176).

@@ -15,6 +15,11 @@ test_fold*/ for the in-domain reference. Reports:
                   base.npy) with image-bootstrap 95% CI; per-class Dead/Epith deltas
 4. rank agreement Spearman between CF drop (real arm - stress arm) and real domain drop
                   (PanNuke test - mean external mPQ) across evaluators
+5. axis decomp.  each drop (real and CF) split into detection (F_d) vs typing (bPQ-mPQ gap)
+                  components -- shows which axis the between-architecture variance lives on
+6. axis-matched  rank agreement per axis (mPQ / F_d / typing), on all evaluator points AND on
+  rank agreement architecture means (splits within an architecture are near-duplicates, so the
+                  arch-mean test is the honest n=architectures one)
 """
 import argparse
 import json
@@ -55,7 +60,7 @@ for spec in a.evals:
     for sp in splits.split(","):
         evaluators.append((f"{Path(run_s).name}/{sp}", Path(run_s), sp))
 
-tab_rows, cf_drops, real_scores = [], {}, {}
+tab_rows, cf_drops, real_scores, axes = [], {}, {}, {}
 for label, run, sp in evaluators:
     data = {arm: load(run / sp, arm) for arm in arms}
     have = [x for x in arms if data[x]]
@@ -93,18 +98,34 @@ for label, run, sp in evaluators:
 
     # ---- real-domain reference: PanNuke test fold + external zero-shot
     te = {1: 3, 2: 3, 3: 1}[int(sp.removeprefix("split"))]
-    in_dom = None
+    in_s = None
     for d in sorted((run / sp).glob(f"*test_fold{te}")):
         if (d / "summary.json").exists():
-            in_dom = json.loads((d / "summary.json").read_text())["official"]["mPQ"]
+            in_s = json.loads((d / "summary.json").read_text())
     ext = [load(run / sp, e) for e in a.ext]
     ext = [x for x in ext if x]
-    if in_dom is not None and ext:
-        real_scores[label] = (in_dom, np.mean([x["s"]["official"]["mPQ"] for x in ext]))
-        print(f"  [ref] PanNuke test mPQ {in_dom:.4f} | ext mean mPQ "
+    if in_s is not None and ext:
+        real_scores[label] = (in_s["official"]["mPQ"], np.mean([x["s"]["official"]["mPQ"] for x in ext]))
+        axes[label] = {"in": in_s, "ext": [x["s"] for x in ext],
+                       "ctrl": [data[c]["s"] for c in controls if data[c]],
+                       "arms": {arm: data[arm]["s"] for arm in stress if data[arm]}}
+        print(f"  [ref] PanNuke test mPQ {real_scores[label][0]:.4f} | ext mean mPQ "
               f"{real_scores[label][1]:.4f} ({', '.join(a.ext)})")
 
 # ---- rank agreement: CF drop vs real domain drop across evaluators
+def _perm_p(x, y, rho_obs):
+    """Exact two-sided permutation p for Spearman (feasible for n <= 8)."""
+    import itertools
+    cnt = tot = 0
+    for perm in itertools.permutations(range(len(y))):
+        r, _ = stats.spearmanr(x, [y[i] for i in perm])
+        if not np.isfinite(r):
+            continue
+        tot += 1
+        cnt += abs(r) >= abs(rho_obs) - 1e-12
+    return cnt / tot if tot else float("nan")
+
+
 print("\n===== rank agreement (CF drop vs real domain drop across evaluators) =====")
 if len(real_scores) >= 3:
     rd = {k: v[0] - v[1] for k, v in real_scores.items()}
@@ -115,9 +136,53 @@ if len(real_scores) >= 3:
             continue
         x = [np.nanmean(cf_drops[(k, arm)]) for k in keys]
         y = [rd[k] for k in keys]
-        rho_v, rho_p = stats.spearmanr(x, y)
+        rho_v, _ = stats.spearmanr(x, y)
         tau_v, _ = stats.kendalltau(x, y)
+        pp = _perm_p(x, y, rho_v) if len(x) <= 8 else float("nan")
         print(f"  {arm:10s} CF drops {['%.4f' % v for v in x]}  spearman {rho_v:+.2f}"
-              f" (p {rho_p:.2f})  kendall {tau_v:+.2f}")
+              f" (perm p {pp:.3f})  kendall {tau_v:+.2f}")
 else:
     print("  [skip] need >=3 evaluators with external + CF evals")
+
+# ---- axis decomposition: detection (F_d) vs typing (bPQ-mPQ gap) share of each drop
+def _drops(easier, harder):
+    """(mPQ drop, F_d drop, typing-gap increase) between two sets of summaries; >0 = worse."""
+    m = lambda ss: np.mean([s["official"]["mPQ"] for s in ss])
+    b = lambda ss: np.mean([s["official"]["bPQ"] for s in ss])
+    f = lambda ss: np.mean([s["detection"]["F_d"] for s in ss])
+    return (m(easier) - m(harder), f(easier) - f(harder),
+            (b(harder) - m(harder)) - (b(easier) - m(easier)))
+
+
+real_axes = {k: _drops([ax["in"]], ax["ext"]) for k, ax in axes.items()}
+cf_axes = {k: {arm: _drops(ax["ctrl"], [ax["arms"][arm]]) for arm in ax["arms"]}
+           for k, ax in axes.items()}
+
+print("\n===== axis decomposition (all components >0 = worse) =====")
+print(f"  {'evaluator':22s} | {'real mPQ':>8s} {'F_d':>6s} {'typ':>6s} | "
+      f"{'ctx mPQ':>8s} {'F_d':>6s} {'typ':>6s}")
+for k in real_axes:
+    r, c = real_axes[k], cf_axes[k].get("ctx_rep0", (float("nan"),) * 3)
+    print(f"  {k:22s} | {r[0]:8.4f} {r[1]:6.3f} {r[2]:+6.3f} | {c[0]:8.4f} {c[1]:6.3f} {c[2]:+6.3f}")
+
+# ---- axis-matched rank agreement: CF drop vs real drop on the SAME axis
+print("\n===== axis-matched rank agreement (same axis on both sides) =====")
+arch_of = lambda k: k.split("/")[0]
+AXES = ("mPQ", "F_d", "typing")
+for arm in stress:
+    keys = [k for k in real_axes if arm in cf_axes.get(k, {})]
+    if len(keys) < 3:
+        continue
+    for i, name in enumerate(AXES):
+        x = [cf_axes[k][arm][i] for k in keys]
+        y = [real_axes[k][i] for k in keys]
+        rho_v, rho_p = stats.spearmanr(x, y)
+        pp = _perm_p(x, y, rho_v) if len(x) <= 8 else float("nan")
+        archs = sorted({arch_of(k) for k in keys})
+        xm = [np.mean([cf_axes[k][arm][i] for k in keys if arch_of(k) == ar]) for ar in archs]
+        ym = [np.mean([real_axes[k][i] for k in keys if arch_of(k) == ar]) for ar in archs]
+        rm, _ = stats.spearmanr(xm, ym) if len(archs) >= 3 else (float("nan"),) * 2
+        ppm = _perm_p(xm, ym, rm) if 3 <= len(archs) <= 8 else float("nan")
+        print(f"  {arm:11s} {name:6s} all {len(keys)} pts: rho {rho_v:+.2f} (perm p {pp:.3f})"
+              f" | arch means (n={len(archs)}): rho {rm:+.2f} (perm p {ppm:.3f})"
+              f"  cf={['%.3f' % v for v in x]}")
