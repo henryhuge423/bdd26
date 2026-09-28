@@ -485,7 +485,7 @@ baselines table above: CellViT .4995 mPQ / .6654 bPQ, HoVer-Net .4564 / .6613.
 
 - **Domain drop (in-domain mPQ minus external)**: CellViT -.164 (CoNIC) / -.250 (MoNuSAC);
   HoVer-Net -.195 / -.419. Both degrade, but **HoVer-Net nearly collapses on MoNuSAC**
-  (F_d .37, bPQ split std +- .070 vs +- .003 on CoNIC — per-split F_d ranges .26-.78; failure
+  (F_d .37, bPQ split std +- .070 vs +- .003 on CoNIC — per-split F_d ranges .26-.50; failure
   mode is missed_bg, i.e. detection, not typing).
 - **TTA does not rescue cross-domain**: +.005 mPQ on CoNIC, -.001 on MoNuSAC (CellViT).
 - **Per-class PQ (present classes only)**: CoNIC — CellViT Infla .425 / Conne .371 / Epith .246;
@@ -536,13 +536,20 @@ fixed fold-3 GT; log `logs/analyze_cf.log` on LM2; PanNuke-test references synce
   Not reproduced (stochastic color TTA at eval + test-tuned thresholds is their recipe, not a
   fair-comparison decode); we instead tune the flat pair on each split's VAL fold
   (`decode.json` per weight dir; .6/.7, .6/.7, .6/.6) — same protocol as our other baselines.
-- **Sanity, full test folds (3-split mean): mPQ .4579 / bPQ .6367 / Dead .1363**
+  (2026-09-28 audit: re-checked on LM2 — decode.json records sweep fold 2/1/2 for splits 1/2/3
+  = the VAL folds; test folds 3/3/1 were never swept.)
+- **Sanity, full test folds (3-split mean): mPQ .4579 / bPQ .6367 / Dead .1361**
   (paper .477/.656/.154; old port decode .3582/.5030/.080). Sits between HoVer-Net
   (.4564/.6613) and CellViT-UNI (.4995/.6654) on mPQ — a usable 3rd evaluator.
   Per-split: s1 .4423/.6247, s2 .4644/.6454, s3(test fold1) .4670/.6400.
-- Notable behaviour: HoVer-NeXt-T has the LOWEST merge rate of the three evaluators
-  (.096-.101 vs HoVer-Net ~.14) and higher missed_bg (.12-.13) — a different error profile,
-  which is exactly what the rank-agreement analysis needs.
+- Notable behaviour (ERROR PROFILE, corrected 2026-09-28 audit — an earlier version of this line
+  had the comparison inverted): HoVer-NeXt-T's flat decode merges ~2x MORE touching nuclei than
+  the watershed decodes (merged GT rate .096-.101 vs CellViT-UNI .044 / HoVer-Net .049) and
+  misses more background nuclei than CellViT-UNI (.122-.131 vs .102-.109; HoVer-Net .119-.125
+  sits in between) — a different error profile, which is exactly what the rank-agreement
+  analysis needs. (The "~.14" previously attributed to HoVer-Net was the merge rate of the
+  HNXT per-class-decode ablations, .156-.177 in hn_pp_ablation.log, not of any in-domain
+  evaluator.)
 
 ## 2026-09-27 (eve) — PUMA third external set (melanoma, apoptotic->Dead): converted, reviewed, predicted
 - `prepare_puma.py` (Zenodo 15050523 ROI pack): 3,278 tiles, tissues Melanoma-primary/-metastatic
@@ -560,7 +567,8 @@ fixed fold-3 GT; log `logs/analyze_cf.log` on LM2; PanNuke-test references synce
   HoVer-Net .3203 +- .0139 / .7136 / .8714**. Domain drop (in-domain mPQ - PUMA): CellViT
   -.048, HoVer-Net -.136 — ordering matches CoNIC/MoNuSAC (CellViT more robust), and unlike
   MoNuSAC there is NO detection collapse (F_d ~.87-.88): the transfer loss is in TYPING
-  (CellViT strict .37 vs mPQ .45; Dead PQ ~.003 (!), Epithelial .09-.20). Apoptotic bodies
+  (CellViT strict .37 vs mPQ .45; Dead PQ per-arch mean CellViT .0024 / HoVer-Net .0326
+  [.0211/.0209/.0559] / HoVer-NeXt-T .0046, Epithelial .09-.20). Apoptotic bodies
   remain undetectable-as-Dead cross-domain for both models — the Dead failure mode follows us
   out of domain (and PUMA's apoptotic GT is the only large external Dead supply we found).
 
@@ -571,7 +579,7 @@ permutation p; `logs/analyze_cf3.log` on LM2, `runs/analysis/ext_hovernext.json`
 
 - **HoVer-NeXt-T external zero-shot (3-split mean mPQ/bPQ)**: CoNIC .2786/.4811,
   MoNuSAC .1123/.4025, PUMA .3813/.6888. Real domain drop (per-split in-domain reference,
-  2-split mean): .199 — ordering CellViT .152 < HoVer-NeXt-T .199 < HoVer-Net .246,
+  2-split mean): .199 — ordering CellViT .154 < HoVer-NeXt-T .199 < HoVer-Net .246,
   consistent across all 3 sets.
 - **Headline rank agreement now has 6 evaluator points (3 architectures x 2 splits)**:
   ctx rho **-0.89** (perm p .033), tissue -0.89 (.033), stain +0.43 (ns). Architecture means

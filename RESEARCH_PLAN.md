@@ -129,7 +129,9 @@
 - CF 分析（2 架构）：噪声地板 .004-.006 << 压力效应；stain -.02~-.07、ctx -.14~-.19、tissue 最强；
   但 rank agreement 在架构层面反向 → 需第三评估器定论。
 - HoVer-NeXt-T 端口修复（瓶颈在 decode 不在模型）：val 调阈值 flat 解码 3 折 **mPQ .4579**
-  （介于 HoVer-Net .4564 与 CellViT .4995 之间），可用作第三评估器；merge 率最低（.10 vs .14）。
+  （介于 HoVer-Net .4564 与 CellViT .4995 之间），可用作第三评估器；错误模式与二者不同
+  （2026-09-28 审计更正：flat 解码 merge 率约为分水岭解码的 2 倍，.10 vs .044/.049，
+  missed_bg 高于 CellViT）。
 
 **2026-09-28 — 支柱 C 终判关闭（详见 findings.md 同日条目）**
 - 第三评估器 HoVer-NeXt-T 补齐全部外部集（CoNIC .279 / MoNuSAC .112 / PUMA .381 mPQ）与 CF 两臂；

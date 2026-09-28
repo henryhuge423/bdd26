@@ -45,7 +45,8 @@ copy-paste（Dead PQ $-0.031$）与标签自洽的上下文内扩散合成（mPQ
 $-1.00$）：轴分解显示架构间的真实迁移差异几乎全部位于检测轴，而标签固定的渲染从构造
 上就无法触及检测；在它能施压的分型轴上，反事实排序与真实迁移一致。结论：反事实渲染是
 有效的\emph{分型}压力测试而非迁移代理；Dead 检测缺陷是架构性的——我们测试的所有损失级
-与数据级干预都对它无效，且该缺陷跨域依然存在（三架构在 PUMA 上 Dead PQ $\le 0.006$）。
+与数据级干预都对它无效，且该缺陷跨域依然存在（三架构在 PUMA 上的平均 Dead PQ 仅
+0.002--0.033，域内为 0.13--0.18）。
 \end{abstract}
 
 \section{引言}
@@ -68,9 +69,10 @@ CellViT-SAM-H~\cite{horta2024cellvit} 0.498 $\rightarrow$ 当前最佳约 0.51�
 均已收官，本报告记录各项发现。贡献如下：
 
 \begin{enumerate}
-\item \textbf{单一严格协议下的复现}（\S\ref{sec:setup}）：HoVer-Net、CellViT-UNI、
-HoVer-NeXt-T 以完全相同的方式在官方 3-fold 划分上训练与评测，即一律取 last checkpoint、
-解码超参仅在验证折上调节。并顺带量化了一个已发布评测配方（16 个随机颜色 TTA 视图 + 在\emph{测试折}上
+\item \textbf{单一严格协议下的复现}（\S\ref{sec:setup}）：HoVer-Net、CellViT-UNI
+由我们自行训练并按同一协议评测（一律取 last checkpoint、解码超参仅在验证折上调节）；
+HoVer-NeXt-T 使用官方发布的分折（per-fold）权重（其验证折选出的 checkpoint；折划分已核对，
+与我们的完全一致），配以同样仅在验证折上调好的解码。并顺带量化了一个已发布评测配方（16 个随机颜色 TTA 视图 + 在\emph{测试折}上
 调阈值）能把分数抬高多少（\S\ref{sec:baselines}）。
 \item \textbf{Dead 缺陷的分解}（\S\ref{sec:diagnosis}）：它是一个集中在小核与孤立核上
 的\emph{检测}失败——前景头看不见，类型头却部分“看见”——这正是所有类型侧干预都失败的原因。
@@ -117,8 +119,9 @@ PanNuke 协议下以 mPQ 报告——已有研究均使用非标准划分与 Dic
 \label{sec:setup}
 
 \paragraph{数据与协议。}PanNuke 第 1--3 折，官方划分（train/val/test $=1/2/3$、
-$2/1/3$、$3/2/1$）；所有数字为 \emph{last-checkpoint} 模型的 3-split 均值，不做基于测试
-集的早停。外部数据集（\S\ref{sec:external}）为零样本：每个数据集都映射到 PanNuke 5 类，
+$2/1/3$、$3/2/1$）；所有数字为 3-split 均值，不做基于测试集的早停：我们自行训练的
+HoVer-Net/CellViT-UNI 取 last checkpoint，HoVer-NeXt-T 用官方发布的分折（验证折选出）
+checkpoint。外部数据集（\S\ref{sec:external}）为零样本：每个数据集都映射到 PanNuke 5 类，
 缺失类按官方协议从 mPQ 中排除。
 
 \paragraph{指标。}官方组织平均 mPQ/bPQ（对 PanNuke-metrics 的逐位一致复现）、strict mPQ
@@ -137,8 +140,9 @@ mPQ 上为 0.0021，但在 Dead PQ 上为 \textbf{0.0074}；Dead 的图像 boots
 
 \begin{table}[t]
 \centering\small
-\caption{官方 3-fold 协议下的基线（3-split 均值；last checkpoint；无 TTA，TTA 在括号
-内）。“已发表”= 论文自报数字（其各自配方）。}
+\caption{官方 3-fold 协议下的基线（3-split 均值；无 TTA，TTA 在括号内）。
+HoVer-Net/CellViT-UNI 为我们自行训练、取 last checkpoint；HoVer-NeXt-T 用官方发布的分折权重。
+“已发表”= 论文自报数字（其各自配方）。}
 \label{tab:baselines}
 \begin{tabular}{lccc}
 \toprule
@@ -155,14 +159,16 @@ HoVer-NeXt-T（本文）   & .4579 & .6367 & .136 \\
 \end{table}
 
 表~\ref{tab:baselines} 显示，两个经典基线均成功复现（HoVer-Net 略低于原文，与常见复现
-情况一致；CellViT-UNI 略高于原文）。HoVer-NeXt-T 需要移植，初始得分仅 0.358 mPQ；消融
+情况一致；CellViT-UNI 略高于原文）。HoVer-NeXt-T 需要把官方发布的分折权重移植进我们的管线，
+初始得分仅 0.358 mPQ；消融
 表明\emph{预测图本身没有问题}，性能损失完全出在解码环节。其发布的 0.477 配方平均 16 个随机空间
 +\emph{颜色} TTA 视图，并在\emph{测试折}上调每类阈值。我们改用它自身的验证解码（平坦
 fg/seed 阈值），只在每个 split 的\emph{验证}折上调参（与其它基线同一协议），得到
 0.4579。二者之差（0.458 vs 0.477）反映了测试侧调参与随机颜色 TTA 一共能带来多少提升；
 这个量级（0.02 mPQ）大于排行榜上多数名次差距。HoVer-NeXt-T 作为第三评估器的价值在于
-它与二者\emph{不同的错误模式}：merge 率在三者中最低（0.096--0.101，HoVer-Net 约 0.14），
-missed-background 比例更高。
+它与二者\emph{不同的错误模式}：其平坦解码把相互接触的核并成一体的比例约为分水岭解码的
+两倍（merged GT 率 0.096--0.101，CellViT-UNI 为 0.044、HoVer-Net 为 0.049），漏检
+（missed-background）比例高于 CellViT-UNI（0.122--0.131 vs 0.102--0.109）。
 
 \section{支柱 A：Dead 缺陷是检测缺陷}
 \label{sec:pillarA}
@@ -337,11 +343,12 @@ HoVer-NeXt-T & CoNIC   & .2786 & .4811 & .725 \\
 \end{table}
 
 表~\ref{tab:external} 显示，所有模型都出现退化，但方式各不相同。HoVer-Net 在 MoNuSAC
-上几乎\emph{崩溃}（$F_d$ 0.37；各 split 0.26--0.78），是典型的检测失败。在 PUMA 上，
+上几乎\emph{崩溃}（$F_d$ 0.37；各 split 0.26--0.50），是典型的检测失败。在 PUMA 上，
 没有模型出现检测崩溃（$F_d$ 0.85--0.88），退化发生在\emph{分型}（HoVer-NeXt-T strict
-mPQ 0.31 vs mPQ 0.38）；而且尽管 PUMA 有 1,991 个凋亡真值核，\textbf{三架构的 Dead PQ
-均 $\le$0.006}——Dead 的失效模式随模型一同跨域。TTA 也无助于迁移（CoNIC $+0.005$，
-MoNuSAC $-0.001$）。真实跨域降幅（域内 mPQ 减外部均值）给出的架构排序为 CellViT 0.152
+mPQ 0.31 vs mPQ 0.38）；而且尽管 PUMA 有 1,991 个凋亡真值核，\textbf{三架构的平均 Dead PQ
+分别跌至 0.002（CellViT-UNI）、0.005（HoVer-NeXt-T）与 0.033（HoVer-Net）}（域内依次为
+0.176、0.136、0.127）——Dead 的失效模式随模型一同跨域。TTA 也无助于迁移（CoNIC $+0.005$，
+MoNuSAC $-0.001$）。真实跨域降幅（域内 mPQ 减外部均值）给出的架构排序为 CellViT 0.154
 $<$ HoVer-NeXt-T 0.199 $<$ HoVer-Net 0.246，且在每个数据集上都一致。
 
 \subsection{PanNuke-CF：标签固定的反事实渲染}
@@ -377,13 +384,13 @@ $\Delta$，图像 bootstrap 95\% CI 除 HoVer-NeXt-T stain 外均不含 0）。}
 架构 & real & control & stain & ctx & tissue \\
 \midrule
 CellViT-UNI  & .495 & .449 & .426 [$-$.023] & .259 [$-$.190] & .258 [$-$.191] \\
-HoVer-Net    & .449 & .439 & .373 [$-$.066] & .300 [$-$.140] & .293 [$-$.146] \\
-HoVer-NeXt-T & .456 & .425 & .417 [$-$.008] & .262 [$-$.163] & .261 [$-$.164] \\
+HoVer-Net    & .449 & .440 & .373 [$-$.066] & .300 [$-$.140] & .293 [$-$.146] \\
+HoVer-NeXt-T & .456 & .425 & .417 [$-$.008] & .262 [$-$.163] & .260 [$-$.164] \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-上下文交换是强压力源（Epithelial PQ 跌至 0.24--0.43，而 $F_d$ 只降 0.08--0.10——被破
+上下文交换是强压力源（Epithelial PQ 跌至 0.23--0.43，而 $F_d$ 只降 0.08--0.10——被破
 坏的是\emph{类型}信息），染色则是弱压力源。我们要检验的问题是：一个评估器在这些反事实
 臂上的降幅，能否预测它\emph{真实}的跨域降幅。
 
@@ -449,7 +456,8 @@ Dead 0.007），且验证折的 Dead 信号可能与测试相反（CP1：$+0.024
 评分，并同时报告 strict mPQ 与 mPQ。
 
 \paragraph{Dead 作为跨域现象。}尽管 Dead 是 CONCH 文本上最可识别的类，也是域内模型检出
-后能以 0.69 正确分类的类，三架构在 PUMA 上的 Dead PQ 却都 $\le$0.006——这说明域内的
+后能以 0.69 正确分类的类，三架构在 PUMA 上的 Dead PQ 却跌至 0.002--0.033（域内
+0.13--0.18）——这说明域内的
 Dead 线索（40$\times$ 下的深色固缩染色质）迁移不到黑色素瘤 H\&E 中的凋亡小体。任何针对
 Dead 的改进都必须经过跨域验证，而不能只在 PanNuke 折上验证。
 

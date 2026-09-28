@@ -29,7 +29,7 @@ that our port's original 0.358 was a decoding artifact, not a model gap. Second,
 deficit is concentrated in \emph{detection}, not classification: 38.5\% of Dead ground-truth
 nuclei receive no overlapping prediction, and inside those missed nuclei the foreground head is
 silent (mean nuclear-probability 0.16) while the type head assigns P(Dead)$\approx$0.26. Third,
-under a pre-registered multi-seed protocol, four interventions are null or harmful: post-hoc
+under a pre-registered multi-seed protocol, five interventions are null or harmful: post-hoc
 re-typing with a pathology VLM (CONCH), training-free missed-nucleus recovery, class-weighted and
 size-weighted foreground losses, and, on the data side, failure-driven copy-paste (Dead PQ
 $-0.031$) and in-context diffusion synthesis with self-consistent labels (mPQ unchanged).
@@ -43,7 +43,7 @@ stress by construction, while on the typing axis, which it does stress, counterf
 agrees with real transfer. We conclude counterfactual rendering is a valid \emph{typing} stress
 test but not a transfer surrogate, and that the Dead detection deficit is architectural: it is
 robust to every loss-level and data-level intervention we tested, and follows the models
-out-of-domain (Dead PQ $\leq 0.006$ on PUMA for all three architectures).
+out-of-domain (mean Dead PQ 0.002--0.033 on PUMA, vs 0.13--0.18 in domain).
 \end{abstract}
 
 \section{Introduction}
@@ -71,9 +71,10 @@ cross-domain transfer plus a counterfactual test set). All three pillars have no
 report documents what was found. Its contributions:
 
 \begin{enumerate}
-\item \textbf{Reproduction under a single strict protocol} (Sec.~\ref{sec:setup}): HoVer-Net,
-CellViT-UNI, and HoVer-NeXt-T trained/evaluated identically on the official 3-fold split,
-last-checkpoint, validation-tuned decodes only. Along the way we quantify how much a released
+\item \textbf{Reproduction under a single strict protocol} (Sec.~\ref{sec:setup}): HoVer-Net and
+CellViT-UNI trained by us and evaluated identically (last checkpoint, validation-tuned decodes);
+HoVer-NeXt-T runs the official released \emph{per-fold} weights (their val-selected checkpoints;
+the fold mapping is verified to match ours exactly) under the same validation-only decode tuning. Along the way we quantify how much a released
 evaluation recipe (16 stochastic colour-TTA views + thresholds tuned on the \emph{test} fold)
 inflates reported numbers (Sec.~\ref{sec:baselines}).
 \item \textbf{A decomposition of the Dead deficit} (Sec.~\ref{sec:diagnosis}): it is a
@@ -131,8 +132,9 @@ experiments and our counterfactual renderer.
 \label{sec:setup}
 
 \paragraph{Data and protocol.} PanNuke folds 1--3 with the official assignment (train/val/test
-$=1/2/3$, $2/1/3$, $3/2/1$); all numbers are 3-split means of \emph{last-checkpoint} models with
-no test-based early stopping. External datasets (Sec.~\ref{sec:external}) are zero-shot: class
+$=1/2/3$, $2/1/3$, $3/2/1$); all numbers are 3-split means with no test-based early stopping:
+last checkpoint for our trained HoVer-Net/CellViT-UNI, the official released per-fold
+(val-selected) checkpoints for HoVer-NeXt-T. External datasets (Sec.~\ref{sec:external}) are zero-shot: class
 mappings to the 5 PanNuke classes are fixed per dataset, absent classes are excluded from mPQ
 per the official protocol.
 
@@ -153,8 +155,9 @@ with paired, tissue-stratified image-bootstrap 95\% CIs; validation-fold decisio
 
 \begin{table}[t]
 \centering\small
-\caption{Baselines under the official 3-fold protocol (3-split mean; last checkpoint; no TTA,
-TTA in brackets). ``Published'' = paper-reported numbers under their own recipes.}
+\caption{Baselines under the official 3-fold protocol (3-split mean; no TTA, TTA in brackets).
+Last checkpoint for HoVer-Net/CellViT-UNI (our training); official released per-fold weights for
+HoVer-NeXt-T. ``Published'' = paper-reported numbers under their own recipes.}
 \label{tab:baselines}
 \begin{tabular}{lccc}
 \toprule
@@ -172,7 +175,7 @@ HoVer-NeXt-T (ours)         & .4579 & .6367 & .136 \\
 
 Table~\ref{tab:baselines}: both classic baselines reproduce (HoVer-Net slightly below paper,
 consistent with common reproductions; CellViT-UNI slightly above). HoVer-NeXt-T required
-porting and initially scored 0.358 mPQ; ablations showed the \emph{predicted maps were fine}
+porting the official released per-fold weights and initially scored 0.358 mPQ; ablations showed the \emph{predicted maps were fine}
 and the loss was entirely in the decode. Its released 0.477 recipe averages 16 stochastic
 spatial+\emph{colour} TTA views and tunes per-class thresholds \emph{on the test fold}. We
 instead use its own validation decode (flat fg/seed thresholds) tuned on each split's
@@ -180,8 +183,9 @@ instead use its own validation decode (flat fg/seed thresholds) tuned on each sp
 (0.458 vs 0.477) is a measure of what test-side tuning + stochastic colour TTA buy, and we flag
 that recipe differences of this size (0.02 mPQ) are larger than most leaderboard gaps.
 HoVer-NeXt-T earns its place as our third evaluator through a \emph{different error profile}:
-lowest merge rate of the three (0.096--0.101 vs $\approx$0.14 for HoVer-Net), higher
-missed-background.
+its flat decode merges about twice as many touching nuclei as the watershed decodes (merged GT
+rate 0.096--0.101, vs 0.044 for CellViT-UNI and 0.049 for HoVer-Net), and it misses more
+background nuclei than CellViT-UNI (0.122--0.131 vs 0.102--0.109).
 
 \section{Pillar A: The Dead Deficit Is a Detection Deficit}
 \label{sec:pillarA}
@@ -373,12 +377,12 @@ HoVer-NeXt-T & CoNIC   & .2786 & .4811 & .725 \\
 \end{table}
 
 Table~\ref{tab:external}: all models degrade, but differently. HoVer-Net nearly
-\emph{collapses} on MoNuSAC ($F_d$ 0.37; per-split 0.26--0.78): a detection failure.
+\emph{collapses} on MoNuSAC ($F_d$ 0.37; per-split 0.26--0.50): a detection failure.
 On PUMA no model collapses in detection ($F_d$ 0.85--0.88)---the loss there is \emph{typing}
-(strict mPQ 0.31 vs mPQ 0.38 for HoVer-NeXt-T), and \textbf{Dead PQ is $\le$0.006 for all three
-architectures} despite 1,991 apoptotic GT nuclei: the Dead failure mode follows the models
-out-of-domain. TTA does not rescue transfer ($+0.005$ CoNIC, $-0.001$ MoNuSAC). Real domain
-drop (in-domain minus mean external mPQ) ranks architectures CellViT 0.152 $<$ HoVer-NeXt-T
+(strict mPQ 0.31 vs mPQ 0.38 for HoVer-NeXt-T), and \textbf{mean Dead PQ falls to 0.002
+(CellViT-UNI), 0.005 (HoVer-NeXt-T) and 0.033 (HoVer-Net)} despite 1,991 apoptotic GT nuclei
+(in domain: 0.176, 0.136, 0.127): the Dead failure mode follows the models out-of-domain. TTA does not rescue transfer ($+0.005$ CoNIC, $-0.001$ MoNuSAC). Real domain
+drop (in-domain minus mean external mPQ) ranks architectures CellViT 0.154 $<$ HoVer-NeXt-T
 0.199 $<$ HoVer-Net 0.246, consistently on every dataset.
 
 \subsection{PanNuke-CF: label-fixed counterfactual rendering}
@@ -415,13 +419,13 @@ brackets, image-bootstrap 95\% CI all exclude 0 except HoVer-NeXt-T stain).}
 Architecture & real & control & stain & ctx & tissue \\
 \midrule
 CellViT-UNI  & .495 & .449 & .426 [$-$.023] & .259 [$-$.190] & .258 [$-$.191] \\
-HoVer-Net    & .449 & .439 & .373 [$-$.066] & .300 [$-$.140] & .293 [$-$.146] \\
-HoVer-NeXt-T & .456 & .425 & .417 [$-$.008] & .262 [$-$.163] & .261 [$-$.164] \\
+HoVer-Net    & .449 & .440 & .373 [$-$.066] & .300 [$-$.140] & .293 [$-$.146] \\
+HoVer-NeXt-T & .456 & .425 & .417 [$-$.008] & .262 [$-$.163] & .260 [$-$.164] \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Context swap is a strong stressor (Epithelial PQ collapses by 0.24--0.43 while $F_d$ drops only
+Context swap is a strong stressor (Epithelial PQ collapses by 0.23--0.43 while $F_d$ drops only
 0.08--0.10: it destroys \emph{type} information), stain a mild one. The validation question is
 whether these counterfactual drops predict \emph{real} cross-domain drops across evaluators.
 
@@ -497,8 +501,9 @@ HoVer-NeXt-T decode study), larger than typical leaderboard gaps; (3) generated 
 is systematically \emph{easier} to segment but \emph{less type-consistent} than real data, so
 counterfactual benchmarks must be scored arm-vs-control and with strict mPQ alongside mPQ.
 
-\paragraph{Dead as a cross-domain phenomenon.} Dead PQ $\le$0.006 on PUMA for all three
-architectures---despite Dead being the most text-recognisable class for CONCH and the class our
+\paragraph{Dead as a cross-domain phenomenon.} Dead PQ collapsing to 0.002--0.033 on PUMA for
+all three architectures (in domain 0.13--0.18)---despite Dead being the most text-recognisable
+class for CONCH and the class our
 in-domain models type at 0.69 accuracy when detected---suggests the in-domain Dead cue (dark
 pyknotic chromatin at 40$\times$) does not transfer to apoptotic bodies in melanoma H\&E.
 Any Dead-specific contribution must be validated cross-domain, not only on PanNuke folds.
