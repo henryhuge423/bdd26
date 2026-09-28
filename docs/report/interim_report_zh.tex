@@ -1,4 +1,4 @@
-% 中文平行版中期报告：结构、数字、图表与 interim_report.tex 完全一致。
+% 中文平行版阶段报告一：结构、数字、图表与 interim_report.tex 完全一致。
 % 编译（LM2，两遍）：export PATH=/data6/jinxinhao/texlive/2026/bin/x86_64-linux:$PATH
 %   xelatex interim_report_zh.tex && xelatex interim_report_zh.tex
 \documentclass[11pt]{article}
@@ -21,8 +21,8 @@
 
 \title{\bfseries PanNuke 稀有细胞核的瓶颈在检测：\\
 诊断、两项失败的数据侧修复与反事实压力测试\\[6pt]
-\large 中期报告（课程项目 bdd26）}
-\author{金鑫豪（Xinhao Jin）}
+\large 阶段报告一（课程项目 bdd26）}
+\author{}
 \date{2026 年 9 月 28 日}
 
 \begin{document}
@@ -30,7 +30,7 @@
 
 \begin{abstract}
 在 PanNuke 上，更换 backbone 只能带来 1--2 个 mPQ 点的收益，而\textbf{Dead}（凋亡）类
-的 PQ 在所有已发表模型中停滞在 0.13--0.18。本中期报告回答两个问题：Dead 为何停滞，以及病理
+的 PQ 在所有已发表模型中停滞在 0.13--0.18。本阶段报告回答两个问题：Dead 为何停滞，以及病理
 视觉--语言模型与可控生成模型这两类“新范式”能否改善稀有类缺陷或改进鲁棒性评测。我们首先
 在官方 3-fold 协议下复现两个基线（HoVer-Net 0.456 mPQ、CellViT-UNI 0.500），并加入第三
 个评估器 HoVer-NeXt-T（0.458）——其初始移植得分 0.358 被证明源于解码伪影，而非模型差距。

@@ -1,4 +1,4 @@
-% Interim report (English). Build on LM2 (two passes), in docs/report/:
+% Stage Report I (English). Build on LM2 (two passes), in docs/report/:
 %   export PATH=/data6/jinxinhao/texlive/2026/bin/x86_64-linux:$PATH && pdflatex interim_report.tex
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
@@ -11,8 +11,8 @@
 
 \title{\bfseries Rare Nuclei on PanNuke Are a Detection Problem:\\
 Diagnosis, Two Failed Data-Side Fixes, and a\\ Counterfactual Stress-Test Evaluation\\[6pt]
-\large Interim Report (Course Project bdd26)}
-\author{Xinhao Jin}
+\large Stage Report I (Course Project bdd26)}
+\author{}
 \date{September 28, 2026}
 
 \begin{document}
@@ -21,7 +21,7 @@ Diagnosis, Two Failed Data-Side Fixes, and a\\ Counterfactual Stress-Test Evalua
 \begin{abstract}
 On PanNuke, swapping backbones moves mean panoptic quality (mPQ) by only 1--2 points, while the
 \emph{Dead} (apoptotic) class stagnates at PQ $\approx$ 0.13--0.18 for every published model. This
-interim report asks why, and whether recent ``new paradigms'' (pathology vision--language models
+stage report asks why, and whether recent ``new paradigms'' (pathology vision--language models
 and controllable generative models) can address either the rare-class deficit or robustness
 evaluation. We first reproduce two baselines under the official 3-fold protocol (HoVer-Net
 0.456 mPQ, CellViT-UNI 0.500) and add a third evaluator, HoVer-NeXt-T (0.458), after diagnosing
