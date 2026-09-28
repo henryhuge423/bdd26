@@ -20,7 +20,7 @@ Diagnosis, Two Failed Data-Side Fixes, and a\\ Counterfactual Stress-Test Evalua
 
 \begin{abstract}
 On PanNuke, swapping backbones moves mean panoptic quality (mPQ) by only 1--2 points, while the
-\emph{Dead} (apoptotic) class stagnates at PQ $\approx$ 0.13--0.18 for every published model. This
+\emph{Dead} (apoptotic) class stagnates at PQ $\approx$ 0.13--0.19 for every published model. This
 stage report asks why, and whether recent ``new paradigms'' (pathology vision--language models
 and controllable generative models) can address either the rare-class deficit or robustness
 evaluation. We first reproduce two baselines under the official 3-fold protocol (HoVer-Net
@@ -45,7 +45,7 @@ test but not a transfer surrogate, and that the Dead detection deficit is common
 architecture family we evaluated (a ViT-L/16, a full-resolution ResNet-50 and a ConvNeXt
 decoder share near-identical size--miss curves): it is robust to every loss-level and
 data-level intervention we tested, and follows the models out-of-domain (mean Dead PQ
-0.002--0.033 on PUMA, vs 0.13--0.18 in domain).
+0.002--0.033 on PUMA, vs 0.13--0.19 in domain).
 \end{abstract}
 
 \section{Introduction}
@@ -54,11 +54,12 @@ data-level intervention we tested, and follows the models out-of-domain (mean De
 Nuclei instance segmentation and classification is a standard workload in computational
 pathology, and PanNuke~\cite{gamper2019pannuke} its standard benchmark: 205,000 annotated nuclei
 across 19 tissues, evaluated by tissue-averaged mean panoptic quality (mPQ). The published
-leaderboard is lopsided: five years of architectural progress compress into
-$\sim$1--2 mPQ points (HoVer-Net~\cite{graham2019hovernet} 0.463 $\rightarrow$
-CellViT-SAM-H~\cite{horta2024cellvit} 0.498 $\rightarrow$ best current models
-$\approx$0.51), while the \emph{Dead} (apoptotic bodies) class stays at PQ
-0.13--0.18 and touching-nucleus merge/split errors persist. Two recent paradigm families
+leaderboard is lopsided: five years of architectural progress span only $\sim$5 mPQ points
+(HoVer-Net~\cite{graham2019hovernet} 0.463 $\rightarrow$ CellViT-SAM-H~\cite{horta2024cellvit}
+0.498 $\rightarrow$ best current models $\approx$0.51, with the last generation spread over
+$\sim$2 points between them---and Sec.~\ref{sec:baselines} shows released evaluation recipes
+can inflate reported numbers by a further $\sim$0.02), while the \emph{Dead} (apoptotic
+bodies) class stays at PQ 0.13--0.19 and touching-nucleus merge/split errors persist. Two recent paradigm families
 promise more than backbone engineering: pathology vision--language models
 (VLMs)~\cite{lu2024conch} as priors for type classification, and controllable generative
 models~\cite{le2025pixcell} as ``tissue simulators'' that can synthesise targeted training data
@@ -561,7 +562,7 @@ account for 57\% of all false negatives, so small-nucleus claims must be stratif
 contact.
 
 \paragraph{Dead as a cross-domain phenomenon.} Dead PQ collapsing to 0.002--0.033 on PUMA for
-all three architectures (in domain 0.13--0.18)---despite Dead being the most text-recognisable
+all three architectures (in domain 0.13--0.19)---despite Dead being the most text-recognisable
 class for CONCH and the class our
 in-domain models type at 0.69 accuracy when detected---suggests the in-domain Dead cue (dark
 pyknotic chromatin at 40$\times$) does not transfer to apoptotic bodies in melanoma H\&E.
