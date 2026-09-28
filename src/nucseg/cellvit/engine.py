@@ -144,8 +144,9 @@ def train(cfg: TrainConfig, train_folds: list[int], val_folds: list[int], device
     state = torch.load(ckpt_path, map_location="cpu", weights_only=False) if ckpt_path.exists() else None
     model = (model or build_model(cfg, pretrained=state is None)).to(device)
     if cfg.upscale > 1:
-        # 512x512 x ViT-L unfrozen does not fit a 80 GB A100 at bs 16 without activation
-        # checkpointing; the frozen phase is unaffected (no grads -> no checkpoints used)
+        # 512x512 x ViT-L unfrozen needs per-block activation checkpointing (applied inside
+        # UNIEncoder.forward; timm's own hook only fires in forward_features, which we override).
+        # The frozen phase is unaffected: no grad flows through the encoder, so nothing recomputes.
         model.encoder.set_grad_checkpointing()
     opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, betas=(0.85, 0.95), weight_decay=cfg.weight_decay)
     sched = torch.optim.lr_scheduler.ExponentialLR(opt, cfg.gamma)
@@ -232,6 +233,27 @@ def validate(model, dl, device, cfg: TrainConfig | None = None) -> dict:
 
 # ---------------------------------------------------------------- inference
 
+def res_tag(upscale: int) -> str:
+    """Artifact-name tag for the working resolution (empty at the native 256, e.g. '_x2')."""
+    return "" if upscale <= 1 else f"_x{upscale}"
+
+
+def run_upscale(run, override: int | None = None) -> int:
+    """Working resolution of a run dir: explicit CLI override wins, else config.json, else native."""
+    if override is not None:
+        return override
+    cfg = Path(run) / "config.json"
+    return int(json.loads(cfg.read_text()).get("upscale", 1)) if cfg.exists() else 1
+
+
+def instance_table_rows(inst_final: np.ndarray, inst_model: np.ndarray, prob: np.ndarray, img_idx: int):
+    """Rows for the per-instance type-prob table: ids are enumerated from the FINAL (saved) instance
+    map so every row is present in it (nearest downsampling to native resolution can drop ids),
+    while mean type probabilities still average over the model-resolution nucleus."""
+    ids = np.unique(inst_final)[1:]
+    return np.full(len(ids), img_idx), ids, instance_mean_probs(inst_model, prob, ids)
+
+
 def _forward_probs(model, imgs_u8: torch.Tensor) -> dict:
     """imgs_u8 (B, H, W, 3) uint8 on device -> NHWC softmaxed np/tp, raw hv, tissue probs."""
     mean = torch.tensor(UNI_MEAN, device=imgs_u8.device)
@@ -260,9 +282,10 @@ def _tta_forward(model, x: torch.Tensor) -> dict:
 def predict_fold(model, fold_ds, device="cuda", batch_size=32, workers=16, tta: bool = False,
                  inst_probs: bool = False, upscale: int = 1):
     """Returns (inst, type, tissue_probs) for every patch of a fold, in fold order; with inst_probs=True
-    also a per-instance table (img index, inst id, mean type probabilities (M, 6)). With upscale>1 the
-    inputs are bilinearly upsampled (matching training), post-processing runs at the higher resolution,
-    and the instance/type maps are downsampled (nearest) back to the fold's native size."""
+    also a per-instance table (img index, inst id, mean type probabilities (M, 6); ids are enumerated
+    from the final map, probabilities averaged at model resolution). With upscale>1 the inputs are
+    bilinearly upsampled (matching training), post-processing runs at the higher resolution, and the
+    instance/type maps are downsampled (nearest) back to the fold's native size."""
     model.eval()
     insts, types, tissues, tab = [], [], [], ([], [], [])
     hw = fold_ds.images.shape[1:3][::-1]  # (W, H) native
@@ -277,19 +300,22 @@ def predict_fold(model, fold_ds, device="cuda", batch_size=32, workers=16, tta: 
             tp = p["tp"].argmax(-1, keepdim=True).float()
             maps = torch.cat([tp, p["np"][..., 1:], p["hv"]], -1).cpu().numpy()
             res = pool.map(_post, ((m,) for m in maps), chunksize=2)
-            if inst_probs:
-                # per-instance type probabilities use the model-resolution map, BEFORE downsampling
-                prob = p["tp"].cpu().numpy()
-                for b, (inst_hi, _) in enumerate(res):
-                    ids = np.unique(inst_hi)[1:]
-                    tab[0].append(np.full(len(ids), s + b))
-                    tab[1].append(ids)
-                    tab[2].append(instance_mean_probs(inst_hi, prob[b], ids))
             if upscale > 1:
-                res = [(cv2.resize(r[0], hw, interpolation=cv2.INTER_NEAREST).astype(np.int32),
-                        cv2.resize(r[1], hw, interpolation=cv2.INTER_NEAREST)) for r in res]
-            insts += [r[0] for r in res]
-            types += [r[1] for r in res]
+                res_native = [(cv2.resize(r[0], hw, interpolation=cv2.INTER_NEAREST).astype(np.int32),
+                               cv2.resize(r[1], hw, interpolation=cv2.INTER_NEAREST)) for r in res]
+            else:
+                res_native = res
+            if inst_probs:
+                # ids from the final (downsampled) map so every row exists in the saved inst map;
+                # type probs still average over the model-resolution nucleus
+                prob = p["tp"].cpu().numpy()
+                for b, (inst_n, _) in enumerate(res_native):
+                    img, ids, pr = instance_table_rows(inst_n, res[b][0], prob[b], s + b)
+                    tab[0].append(img)
+                    tab[1].append(ids)
+                    tab[2].append(pr)
+            insts += [r[0] for r in res_native]
+            types += [r[1] for r in res_native]
             tissues.append(p["tissue"].cpu().numpy())
     out = (np.stack(insts), np.stack(types), np.concatenate(tissues))
     if inst_probs:

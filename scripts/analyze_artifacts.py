@@ -18,6 +18,8 @@ and pass --hovernext /tmp/hnxt. Splits with missing eval dirs are skipped with a
 
     python scripts/analyze_artifacts.py [--hovernext /tmp/hnxt] [--out-gt runs/analysis/artifacts_gt.csv.gz]
 
+--out-gt is opt-in (no default): pass it to cache the per-GT consensus frame for ad-hoc analysis.
+
 The consensus section uses the two splits with DISTINCT test folds (1 and 3 -> test folds 3 and 1)
 so no GT nucleus is counted twice; the per-model section uses all three splits.
 """
@@ -29,9 +31,9 @@ import numpy as np
 import pandas as pd
 from scipy.spatial import cKDTree
 
-from nucseg.constants import CLASS_NAMES, TISSUES
+from nucseg.constants import CLASS_NAMES
 from nucseg.data.pannuke import PanNukeFold
-from nucseg.metrics.instance import relabel
+from nucseg.metrics.instance import centroids, relabel
 
 TEST_FOLD = {1: 3, 2: 3, 3: 1}  # official split -> test fold
 BINS = [(0, 60), (60, 100), (100, 256), (256, 10**6)]
@@ -53,11 +55,12 @@ def load_gt(root: Path, split: int) -> pd.DataFrame | None:
 
 
 def border_and_centroids(fold: int) -> tuple[np.ndarray, np.ndarray]:
-    """Per-GT border flag and centroid, in the evaluator's relabelled instance order."""
+    """Per-GT border flag and centroid (cy, cx), in the evaluator's relabelled instance order."""
     f = PanNukeFold(fold)
-    borders, cys, cxs = [], [], []
+    borders, cen = [], []
     for i in range(len(f)):
-        lab, n = relabel(np.asarray(f.inst[i]))
+        inst = np.asarray(f.inst[i])
+        lab, n = relabel(inst)
         if n == 0:
             continue
         edge_ids = set()
@@ -65,13 +68,10 @@ def border_and_centroids(fold: int) -> tuple[np.ndarray, np.ndarray]:
             edge_ids.update(np.unique(edge).tolist())
         b = np.zeros(n + 1, bool)
         b[list(edge_ids)] = True
-        cnt = np.bincount(lab.ravel(), minlength=n + 1)[1:]
-        ys, xs = np.nonzero(lab)
-        l = lab[ys, xs]
-        cys.append(np.bincount(l, ys, minlength=n + 1)[1:] / cnt)
-        cxs.append(np.bincount(l, xs, minlength=n + 1)[1:] / cnt)
+        _, c = centroids(inst)  # relabels identically; returns (n, 2) in xy order
         borders.append(b[1:])
-    return np.concatenate(borders), np.stack([np.concatenate(cys), np.concatenate(cxs)], 1)
+        cen.append(c[:, ::-1])  # -> (cy, cx)
+    return np.concatenate(borders), np.concatenate(cen)
 
 
 def fmt_pq(z: np.ndarray, tissue: np.ndarray, exclude: str) -> float:
@@ -89,9 +89,11 @@ def per_model(name: str, root: Path) -> dict:
             print(f"[warn] {name}: split {split} missing")
             continue
         s = json.load(open(d / "summary.json"))
-        tissue = PanNukeFold(TEST_FOLD[split]).tissue
-        tis = np.array([t if isinstance(t, str) else TISSUES[t] for t in tissue])
         z = np.load(d / "per_image.npz")
+        # per-image tissue straight from the eval dir's gt_records (no PanNuke re-load needed);
+        # images without GT nuclei get NaN but their class_PQ is NaN anyway, so `has` masks them
+        tis = (pd.read_csv(d / "gt_records.csv.gz").drop_duplicates("image")
+               .set_index("image")["tissue"].reindex(range(z["class_PQ"].shape[0])).values)
         dead = z["class_PQ"][:, 3]
         has = ~np.isnan(dead)
         ut = has & (tis == "Uterus")
@@ -111,7 +113,7 @@ def per_model(name: str, root: Path) -> dict:
 
 
 def consensus(models: dict[str, Path], splits=(1, 3)) -> pd.DataFrame:
-    frames, statuses = {}, {}
+    frames = {}
     for split in splits:
         fold = TEST_FOLD[split]
         gs, miss = {}, {}
@@ -197,7 +199,6 @@ def main():
     base = df[(df.c != "Dead") & (~df.border)]
     print(f"\n== context: interior non-Dead all-{n_models}-missed near (<40px) vs far from a consensus-missed Dead: "
           f"{r[r.near].miss3.mean():.3f} vs {r[~r.near].miss3.mean():.3f} (baseline {float((base.k == n_models).mean()):.3f})")
-    dd = df[df.c == "Dead"]
     clustered = []
     for (_, _), s in df.groupby(["fold", "image"]):
         dead = s[s.c == "Dead"]

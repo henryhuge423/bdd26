@@ -23,6 +23,7 @@ from pathlib import Path
 import numpy as np
 import torch
 
+from nucseg.cellvit.engine import res_tag, run_upscale
 from nucseg.constants import CLASS_NAMES
 from nucseg.data.pannuke import PanNukeFold, split_folds
 from nucseg.metrics.fast_retype import RetypeEvaluator
@@ -34,6 +35,9 @@ p = argparse.ArgumentParser()
 p.add_argument("--run", type=Path, required=True)
 p.add_argument("--split", type=int, required=True)
 p.add_argument("--tta", action="store_true")
+p.add_argument("--upscale", type=int, default=None,
+               help="override the run's working resolution (default: config.json upscale); must "
+                    "match the predict_cellvit.py run that produced the pred_fold*.npz files")
 p.add_argument("--radius", type=float, default=32)
 p.add_argument("--protos", default="weights/text_protos/conch_v1.pt")
 p.add_argument("--full-eval", nargs="*", default=["seg+bias", "seg*zs", "seg*lin", "seg*lin+bias"],
@@ -41,7 +45,9 @@ p.add_argument("--full-eval", nargs="*", default=["seg+bias", "seg*zs", "seg*lin
 a = p.parse_args()
 
 tr, va, te = split_folds(a.split)
-tag = "_tta" if a.tta else ""
+# resolution tag mirrors predict_cellvit.py naming (pred_fold{k}{tag}.npz) so 256/512-prediction
+# artifacts and their CONCH embedding caches never collide
+tag = res_tag(run_upscale(a.run, a.upscale)) + ("_tta" if a.tta else "")
 R = int(a.radius)
 prior = None
 

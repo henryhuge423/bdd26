@@ -14,6 +14,7 @@ from collections import OrderedDict
 import torch
 import torch.nn as nn
 from timm.models.vision_transformer import VisionTransformer
+from torch.utils.checkpoint import checkpoint as _checkpoint
 
 from ..constants import NUM_CLASSES, TISSUES
 
@@ -44,7 +45,13 @@ class UNIEncoder(VisionTransformer):
         x = self.norm_pre(self.patch_drop(self._pos_embed(self.patch_embed(x))))
         feats = []
         for i, blk in enumerate(self.blocks, 1):
-            x = blk(x)
+            # timm only checkpoints inside forward_features, which this override bypasses, so apply
+            # it here per block; use_reentrant=False also stays inert while the encoder is frozen
+            # (nothing requiring grad flows through -> no recompute in backward)
+            if self.grad_checkpointing and self.training and torch.is_grad_enabled():
+                x = _checkpoint(blk, x, use_reentrant=False)
+            else:
+                x = blk(x)
             if i in self.extract_layers:
                 feats.append(x)
         return x[:, 0], feats

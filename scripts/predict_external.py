@@ -24,6 +24,8 @@ p.add_argument("--ckpt", type=Path, help="hovernet checkpoint (defaults to <run>
 p.add_argument("--data", required=True, help="external dataset name, e.g. conic / monusac")
 p.add_argument("--tta", action="store_true")
 p.add_argument("--bs", type=int, default=32)
+p.add_argument("--upscale", type=int, default=None,
+               help="cellvit: override the run's working resolution (default: config.json upscale)")
 a = p.parse_args()
 
 data_path = Path(a.data)
@@ -32,11 +34,14 @@ if data_path.parent != Path("."):
     a.data = data_path.name  # report dir name: keep it flat even when --data is a path
 else:
     ds = ExternalSet(a.data)
+ext_tag = ""
 if a.model == "cellvit":
-    from nucseg.cellvit.engine import build_model, predict_fold
+    from nucseg.cellvit.engine import build_model, predict_fold, res_tag, run_upscale
     model = build_model(pretrained=False).cuda()
     model.load_state_dict(torch.load(a.run / "final.pth", map_location="cpu", weights_only=False)["model"])
-    inst, typ, _ = predict_fold(model, ds, tta=a.tta, batch_size=a.bs)
+    upscale = run_upscale(a.run, a.upscale)  # a 512-trained model must be fed 512 px inputs
+    ext_tag = res_tag(upscale)
+    inst, typ, _ = predict_fold(model, ds, tta=a.tta, batch_size=a.bs, upscale=upscale)
 elif a.model == "hovernext":
     # run dir mirrors the official weight pack (params.toml / train/best_model / param dict)
     from nucseg.hovernext.engine import build_model, predict_fold
@@ -48,7 +53,7 @@ else:
     model.load_state_dict(torch.load(ckpt, map_location="cpu", weights_only=False)["model"])
     inst, typ = predict_fold(model, ds, tta=a.tta, batch_size=a.bs)
 
-out = (a.run or a.ckpt.parent) / f"eval_ext_{a.data}{'_tta' if a.tta else ''}"
+out = (a.run or a.ckpt.parent) / f"eval_ext_{a.data}{ext_tag}{'_tta' if a.tta else ''}"
 out.mkdir(parents=True, exist_ok=True)
 np.savez_compressed(out / "pred.npz", inst=inst.astype(np.int32), type=typ)
 res = evaluate(ds.gt_channels, ds.inst, ds.type, ds.tissue, inst, typ,

@@ -688,3 +688,28 @@ bibliography corrections; see git).
   mapping is NOT documented -> resolve empirically on validation folds before any test-fold run
   (never tune on test). Integration plan: vendor their decode, feed instance/type outputs into
   `nucseg.metrics.pannuke_eval` like HoVer-NeXt-T.
+
+## 2026-09-29 (early hours) — post-review fixes to the phase-2 upscale plumbing
+Code review of d2deb93/a70ac15 found 5 correctness bugs; all fixed with tests (32 passed).
+- **inst_probs table vs downsampled map** (engine.py): the per-instance table was built from the
+  512-px map while the saved inst map is nearest-downsampled to 256 — ids living only on odd
+  rows/cols (1-2 px Dead fragments) stayed in the table but vanished from the map, crashing
+  retype_conch (lut[ids]) or inflating npred. Table ids are now enumerated from the FINAL map
+  (`instance_table_rows`), type probs still average at model resolution. The B1 run's own auto
+  eval was never affected (train_cellvit uses inst_probs=False).
+- **encoder grad checkpointing was a no-op**: timm 1.0.9 only checkpoints inside
+  forward_features; UNIEncoder overrides forward. Now applied per block (use_reentrant=False,
+  inert while frozen). The live B1 run trained the unfrozen phase WITHOUT checkpointing
+  (48.7 GB, fits — only the code comment's claim was wrong); future bs increases are safe.
+- **resolution now resolves from the run's config.json everywhere** (`run_upscale`):
+  train_cellvit --skip-train, predict_external (cellvit branch) no longer silently evaluate a
+  512-trained model at 256; predict_cellvit's ad-hoc logic replaced by the shared helper.
+- **artifacts encode working resolution** (`res_tag`, "_x2"): pred_fold{k}[_x2][_tta].npz,
+  eval_test_fold{t}[_x2][_tta], eval_ext_{data}[_x2][_tta], conch cache conch_fold{k}[_x2...].
+  Native 256 runs keep the old names (no migration). NOTE: the in-flight B1 run (old code in
+  memory on LM2) will write UNTAGGED pred_test_fold3[_tta].npz — its results are the x2 ones;
+  re-running predict on synced code regenerates them tagged.
+- analyze_artifacts.py cleanup: reuses metrics.instance.centroids + gt_records tissue (output
+  verified byte-identical), dead scaffolding removed, --out-gt documented as opt-in.
+- LM2 `/data6/jinxinhao/bdd26` is a plain rsync'd tree (not a git clone): the fixed files
+  were rsync'd over directly (edits on disk cannot affect the running B1 process).

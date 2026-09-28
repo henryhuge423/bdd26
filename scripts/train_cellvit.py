@@ -11,7 +11,7 @@ import numpy as np
 import torch
 
 from nucseg.cellvit.data import tissue_ids
-from nucseg.cellvit.engine import TrainConfig, build_model, predict_fold, train
+from nucseg.cellvit.engine import TrainConfig, build_model, predict_fold, res_tag, run_upscale, train
 from nucseg.data.pannuke import PanNukeFold, split_folds
 from nucseg.metrics.pannuke_eval import evaluate, format_summary, save_report
 
@@ -37,19 +37,21 @@ p.add_argument("--cp-area", type=int, nargs=2, default=[50, 400], help="copy-pas
 p.add_argument("--cp-clearance", type=int, default=8, help="copy-paste: min px distance to other nuclei")
 p.add_argument("--synth", type=str, default=None, help="synthetic dir (images/inst/type/base .npy)")
 p.add_argument("--synth-frac", type=float, default=0.0, help="synthetic samples as a fraction of |real|")
-p.add_argument("--upscale", type=int, default=1,
-               help="working-resolution multiplier (2 = 512px; phase-2 B1 resolution ablation)")
+p.add_argument("--upscale", type=int, default=None,
+               help="working-resolution multiplier (2 = 512px; phase-2 B1). Default: the run's "
+                    "config.json (resume / --skip-train), else native 256.")
 p.add_argument("--skip-train", action="store_true")
 p.add_argument("--tta", action="store_true", help="also evaluate with 8x dihedral TTA")
 a = p.parse_args()
 
 tr, va, te = split_folds(a.split)
+upscale = run_upscale(a.out, a.upscale)
 cfg = TrainConfig(split=a.split, out_dir=str(a.out), epochs=a.epochs, unfreeze_epoch=a.unfreeze_epoch,
                   batch_size=a.batch, lr=a.lr, workers=a.workers, val_every=a.val_every,
                   seed=a.seed, sampling_gamma=a.sampling_gamma, np_wce=a.np_wce, dead_w=a.dead_w, small_w=a.small_w,
                   small_area=a.small_area, cp_prob=a.cp_prob, cp_lam=a.cp_lam, cp_dead_w=a.cp_dead_w,
                   cp_area=tuple(a.cp_area), cp_clearance=a.cp_clearance,
-                  synth=a.synth, synth_frac=a.synth_frac, upscale=a.upscale)
+                  synth=a.synth, synth_frac=a.synth_frac, upscale=upscale)
 if not a.skip_train:
     train(cfg, [tr], [va])
 
@@ -57,8 +59,8 @@ model = build_model(cfg, pretrained=False).cuda()
 model.load_state_dict(torch.load(a.out / "final.pth", map_location="cpu", weights_only=False)["model"])
 f = PanNukeFold(te)
 for tta in [False] + ([True] if a.tta else []):
-    tag = f"test_fold{te}" + ("_tta" if tta else "")
-    inst, typ, tissue = predict_fold(model, f, tta=tta, upscale=a.upscale)
+    tag = f"test_fold{te}{res_tag(upscale)}" + ("_tta" if tta else "")
+    inst, typ, tissue = predict_fold(model, f, tta=tta, upscale=upscale)
     np.savez_compressed(a.out / f"pred_{tag}.npz", inst=inst.astype(np.int32), type=typ, tissue_prob=tissue)
     res = evaluate(f.gt_channels, f.inst, f.type, f.tissue, inst, typ)
     res["summary"]["tissue_acc"] = float((tissue.argmax(-1) == tissue_ids(f.tissue)).mean())
