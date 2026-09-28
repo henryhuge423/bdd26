@@ -670,3 +670,21 @@ intervention = interior Dead recall + Uterus-excluded Dead PQ with bPQ non-regre
 3-split × multi-seed; the resolution hypothesis needs a detection-first or 2×-resolution test,
 not a third dense decoder. Stage report 1 (EN+ZH) revised accordingly this date (wording +
 bibliography corrections; see git).
+
+## 2026-09-28 (late evening) — Phase 2 launched: B1 (2x resolution) training; A1 assets staged
+- **B1 run live**: `runs/cellvit_uni_x2/split1` (LM2 GPU7, seed 19, `--upscale 2 --tta`): the exact
+  CellViT-UNI split-1 recipe with the working resolution doubled to 512 (bilinear image upsample
+  AFTER augmentation / nearest labels — single-variable change; commit d2deb93). Encoder gradient
+  checkpointing on (measured bs16@512 unfrozen: 39.8 GB peak); epoch time 242 s -> ~9 h for 130
+  epochs. Prediction post-processes at 512 and downsamples to 256 for the standard evaluator
+  (per-instance type-prob table computed at model resolution — a resolution mismatch caught by
+  the smoke test). Compare vs baseline seeds 19/1/2 with `scripts/compare_runs.py` + the
+  artifact-aware Dead views (same rule as above: 3 seeds × 3 splits before any claim).
+- **A1 assets staged** (ugradx `/tmp/cgf2604/weights_a1`, 10.3 GB): LKCell-L per-fold
+  `model_best.pth` + config.yaml for all three splits (fold mapping verified from the run
+  configs, see survey §4) and `KongNet_PanNuke_{1,2,3}.pth`; repos cloned
+  (`hustvl/LKCell`, `Jiaqi-Lv/KongNet_Inference_Main`). KongNet is a 6-head CenterNet-style
+  detector (per-class heatmap + regression channels, NMS post-proc, patch 256); its fold->ckpt
+  mapping is NOT documented -> resolve empirically on validation folds before any test-fold run
+  (never tune on test). Integration plan: vendor their decode, feed instance/type outputs into
+  `nucseg.metrics.pannuke_eval` like HoVer-NeXt-T.
