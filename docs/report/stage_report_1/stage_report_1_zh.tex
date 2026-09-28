@@ -44,9 +44,10 @@ copy-paste（Dead PQ $-0.031$）与标签自洽的上下文内扩散合成（mPQ
 集。反事实压力测试\textbf{反转}了真实跨域排序（6 个评估点 Spearman $-0.89$；架构均值
 $-1.00$）：轴分解显示架构间的真实迁移差异几乎全部位于检测轴，而标签固定的渲染在构造
 上便无法触及检测；在它能施压的分型轴上，反事实排序与真实迁移一致。结论：反事实渲染是
-有效的\emph{分型}压力测试而非迁移代理；Dead 检测缺陷是架构性的——我们测试的所有损失级
-与数据级干预都对它无效，且该缺陷跨域依然存在（三架构在 PUMA 上的平均 Dead PQ 仅
-0.002--0.033，域内为 0.13--0.18）。
+有效的\emph{分型}压力测试而非迁移代理；Dead 检测缺陷为我们评测的所有架构家族所共有
+（ViT-L/16、全分辨率 ResNet-50 与 ConvNeXt 三种解码器的尺寸--漏检曲线几乎重合）——我们
+测试的所有损失级与数据级干预都对它无效，且该缺陷跨域依然存在（三架构在 PUMA 上的平均
+Dead PQ 仅 0.002--0.033，域内为 0.13--0.18）。
 \end{abstract}
 
 \section{引言}
@@ -256,6 +257,16 @@ $<$60\,px，其它类 6\%），但外观效应在尺寸分层后依然存在：�
 多为核碎裂碎片与乏染色质的嗜酸性小体，也有一部分是标注本身模糊的核。结论：要么改检测，
 要么改数据——支柱 B 由此而来。
 
+事后分解（三评估器，测试折 3+1；\texttt{scripts/analyze\_artifacts.py}）从两方面细化了这
+一诊断。其一，Dead 之外的“漏检小核”大多是贴片边界碎片：$<$60\,px 的真值核中 89\% 接触
+256\,px 图块边界；只看\emph{内部}（不贴边）核，Neo/Inf/Epi/Con 的漏检率为
+.037/.027/.028/.095，而 Dead 为 .31，且 $\geq$256\,px 的 Dead 仍有 .17。其二，官方逐类
+PQ 只在\emph{含有该类}的图上逐图平均：Dead 只由折 3 的 97 张、折 1 的 65 张图决定，而折
+3 中有 34 张 Uterus 的 Dead 图，其 Dead PQ 在所有架构上都只有 .01--.05（腺腔内淡染脱落
+细胞团；其内部 Dead 核的 69\% 被三架构一致漏检）。剔除 Uterus 图后，CellViT-UNI 三个
+split 的 Dead PQ 为 .195/.227/.231（官方 .142/.162/.224）：折间 Dead 差距来自测试折的
+图像组成，而非模型行为。
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.86\linewidth]{figs/dead_missed.jpg}
@@ -316,7 +327,9 @@ Inflammatory $-1.0$--$1.6$ 点。按预注册规则判定：无效。
 \subsection{支柱 B 判定}
 在不重训生成器条件的前提下，Dead/小核检测缺陷无法被现有的数据侧手段修复：真实外观移植
 （CP1）反而损害 Dead 分型，标签自洽的上下文内合成（SYN1）无效。连同支柱 A 的三项无效结
-果（重分类、找回、损失重加权），所有证据都指向同一结论：该缺陷是架构性的。
+果（重分类、找回、损失重加权），所有证据都指向同一结论：该缺陷为我们测试的全部三种稠
+密解码器架构所共有（\S\ref{sec:diagnosis}）；检测优先家族能否逃脱仍属未知
+（\S\ref{sec:status}）。
 
 \section{支柱 C：跨域与反事实评测}
 \label{sec:pillarC}
@@ -474,16 +487,22 @@ $|\rho|=1$ 对应的精确 $p=1/3$；更有力的证据是 3 架构 $\times$ 2 s
 （语言先验）或数据（合成样本），而非检测架构。诊断结果恰恰相反：前景头在 83\%
 的漏检 Dead 核上不触发（仅在 17\% 的核中有响应），类型分支却已经“看见”它们；语言侧融合、
 后处理找回、损失重加权
-（3 种子）、真实外观移植、标签自洽的上下文内合成都未能撼动检测。这一缺陷与“NP 头在
-40$\times$ 下的分辨率/架构不足”的假设相吻合；该假设尚未经架构层面的检验（例如提高前景
-监督的分辨率），是主要的开放方向。
+（3 种子）、真实外观移植、标签自洽的上下文内合成都未能撼动检测。事后对比表明该缺陷
+\emph{并非} ViT token 分辨率所特有——全分辨率 ResNet-50 与 ConvNeXt 解码器的尺寸--漏检
+曲线与 ViT-L/16 几乎重合，$<$60\,px 真值核的 62\% 被三者一致漏检——真正尚未检验的是
+\emph{检测优先}家族（点/质心提示器、逐类质心热图）：其论文自报的 Dead F1（.46--.59；
+严格解码下我们的三种为 .23--.36）从未在验证折调参的解码下复现，更未转化为 Dead PQ。
+对这些已发布按折权重的严格重评，加上直接的 $2\times$ 输入分辨率消融，是主要的开放方向。
 
-\paragraph{评测方法论。}三条教训，每一条都有证据支撑：(1) PanNuke 的种子噪声依赖类别（mPQ 0.002 vs
+\paragraph{评测方法论。}五条教训，每一条都有证据支撑：(1) PanNuke 的种子噪声依赖类别（mPQ 0.002 vs
 Dead 0.007），且验证折的 Dead 信号可能与测试相反（CP1：$+0.024$ vs $-0.031$）——单种子、
 单折的 Dead 结论不可信；(2) 已发布的评测配方可能内嵌相当于约 0.02 mPQ 的测试侧调参收益
 （我们的 HoVer-NeXt-T 解码研究），比排行榜上的典型名次差距还大；(3) 生成的评测数据系统
 性地\emph{更易分割}但\emph{类型一致性更差}，因此反事实基准必须以干预臂对 control 的方式
-评分，并同时报告 strict mPQ 与 mPQ。
+评分，并同时报告 strict mPQ 与 mPQ；(4) 官方逐类 PQ 是图子集指标——Dead 只在含 Dead 的
+图上平均（折 3/1 分别为 97/65 张），其中折 3 的 34 张 Uterus 图在所有模型上都只有
+.01--.05，Dead PQ 必须同时报告剔除 Uterus 的版本；(5) $<$60\,px 真值核的 89\% 贴图块边
+界、贴边对象占全部假阴性的 57\%，小核结论必须按是否贴边分层。
 
 \paragraph{Dead 作为跨域现象。}尽管 Dead 是 CONCH 文本上最可识别的类，也是域内模型检出
 后能以 0.69 正确分类的类，三架构在 PUMA 上的 Dead PQ 却跌至 0.002--0.033（域内
@@ -497,32 +516,48 @@ Dead 的改进都必须经过跨域验证，而不能只在 PanNuke 折上验证
 所有预注册实验已完成：基线复现（课程要求 (a)(b)）与错误分解、类$\times$组织分析（课程
 要求 (c)）均已完成；支柱 A/B 以负结果收官，支柱 C 以一个机理性的评测结果收官。最终报告
 还需要：三架构的组织$\times$类热力图与错误分解图、一套精简的主表、可选的额外外部集
-（MoNuSeg、NuInsSeg；仅 bPQ/AJI），以及文字润色。可选的开放方向（未预注册）：从架构侧
-着手解决 Dead 检测缺陷，以及布局干预的反事实——用于探测仅外观 CF 无法触及的检测轴。
+（MoNuSeg、NuInsSeg；仅 bPQ/AJI），以及文字润色。阶段二方向（2026-09-28 确定，未预先
+注册）：(A) 用本协议严格重评已发布的检测优先按折权重（PromptNucSeg、LKCell、CellVTA、
+KongNet），并采用上述对伪影更稳健的 Dead 报告口径；(B) 以 $2\times$ 输入分辨率/检测优先
+路线作为方法主攻；(C) 更大的无泄漏训练数据（STHELAR、手工实例集、外部 Dead 标签池化）
+与分子（虚拟 caspase-3）试点。
 
 \begin{thebibliography}{99}\small
-\bibitem{gamper2019pannuke} J.~Gamper et al., ``PanNuke Dataset Name, Instance Segmentation and
-Classification in Hematoxylin \& Eosin Stained Histology Images,'' \emph{Medical Image Analysis},
-2020.
-\bibitem{graham2019hovernet} S.~Graham et al., ``HoVer-Net: Simultaneous Segmentation and
-Classification of Nuclei in Multi-Tissue Histology Images,'' \emph{Medical Image Analysis}, 2019.
-\bibitem{horta2024cellvit} J.~S.~Horta~Malo et al., ``CellViT: Vision Transformers for Precise
-Cell Instance Segmentation,'' \emph{Medical Image Analysis}, 2024. arXiv:2306.15350.
-\bibitem{horta2025cellvitpp} J.~S.~Horta~Malo et al., ``CellViT++,'' arXiv:2501.05269, 2025.
-\bibitem{hovenext} S.~D.~Bhattacharjee et al., ``HoVer-NeXt: Exploring Reliable and Efficient
-Lifted ViT Baselines for Nuclei Segmentation,'' \emph{MIDL}, 2024.
-\bibitem{cppnet} Y.~Zhou et al., ``CPP-Net: A Unified Framework for Nuclei Instance Segmentation
-and Classification,'' arXiv:2102.06867, 2021.
-\bibitem{promptnucseg} S.~Graham et al., ``PromptNucSeg: A Text-Driven Nuclei Instance
-Segmentation Method,'' \emph{ECCV}, 2024. arXiv:2311.15939.
-\bibitem{lu2024conch} R.~Lu et al., ``A Visual-Language Foundation Model for Computational
-Pathology (CONCH),'' \emph{Nature Medicine}, 2024. arXiv:2307.12914.
-\bibitem{mindthegap} ``Mind the Gap: Meta-Analysis of Foundation Models for Pathology Image
-Analysis,'' arXiv:2502.02471, 2025.
-\bibitem{le2025pixcell} M.~Le et al., ``PixCell: A Generative Model for Digital Pathology
-Slides,'' arXiv:2506.05127, 2025.
-\bibitem{nucleimix} ``NucleiMix: Diffusion-Based Rare-Nuclei Synthesis,'' arXiv:2410.16671, 2024.
-\bibitem{cfstress} ``Counterfactual Stress Testing of Medical Imaging Models,'' arXiv:2605.10894, 2026.
+\bibitem{gamper2019pannuke} J.~Gamper, N.~Alemi~Koohbanani, K.~Benet, A.~Khuram, N.~Rajpoot,
+``PanNuke: An Open Pan-Cancer Histology Dataset for Nuclei Instance Segmentation and
+Classification,'' \emph{ECDP}, LNCS 11435, pp.~11--19, 2019; and J.~Gamper et al., ``PanNuke
+Dataset Extension, Insights and Baselines,'' arXiv:2003.10778, 2020.
+\bibitem{graham2019hovernet} S.~Graham, Q.~D.~Vu, S.~E.~A.~Raza, A.~Azam, Y.-W.~Tsang,
+J.~Kwak, N.~Rajpoot, ``HoVer-Net: Simultaneous Segmentation and Classification of Nuclei in
+Multi-Tissue Histology Images,'' \emph{Medical Image Analysis}, 58:101563, 2019.
+\bibitem{horta2024cellvit} F.~H\"orst, M.~Rempe, L.~Heine, J.~Kleesiek, ``CellViT: Vision
+Transformers for Precise Cell Segmentation and Classification,'' \emph{Medical Image Analysis},
+94:103143, 2024.
+\bibitem{horta2025cellvitpp} F.~H\"orst, M.~Rempe, H.~Becker, L.~Heine, J.~Keyl, J.~Kleesiek,
+``CellViT++: Energy-Efficient and Adaptive Cell Segmentation and Classification Using
+Foundation Models,'' \emph{Computer Methods and Programs in Biomedicine}, 277:109206, 2026.
+\bibitem{hovenext} E.~Baumann, B.~Dislich, J.~L.~Rumberger, I.~D.~Nagtegaal,
+M.~Rodr\'iguez~Mart\'inez, I.~Zlobec, ``HoVer-NeXt: A Fast Nuclei Segmentation and
+Classification Pipeline for Next Generation Histopathology,'' \emph{MIDL}, PMLR 250:61--86,
+2024.
+\bibitem{cppnet} S.~Chen, C.~Ding, M.~Liu, J.~Cheng, D.~Tao, ``CPP-Net: A Unified Framework for
+Nuclei Instance Segmentation and Classification,'' \emph{IEEE Transactions on Image Processing},
+32:980--994, 2023.
+\bibitem{promptnucseg} Z.~Shui, Y.~Zhang, K.~Yao, C.~Zhu, S.~Zheng, J.~Li, H.~Li, Y.~Sun,
+R.~Guo, L.~Yang, ``Unleashing the Power of Prompt-Driven Nucleus Instance Segmentation
+(PromptNucSeg),'' \emph{ECCV}, LNCS 15085, pp.~288--304, 2024.
+\bibitem{lu2024conch} M.~Y.~Lu et al., ``A Visual-Language Foundation Model for Computational
+Pathology (CONCH),'' \emph{Nature Medicine}, 30:863--874, 2024.
+\bibitem{mindthegap} V.~Vadori, A.~Peruffo, J.-M.~Gra\"ic, L.~Finos, E.~Grisan, ``Mind the Gap:
+Evaluating Patch Embeddings from General-Purpose and Histopathology Foundation Models for Cell
+Segmentation and Classification,'' arXiv:2502.02471, 2025.
+\bibitem{le2025pixcell} S.~Yellapragada et al., ``PixCell: A Generative Foundation Model for
+Digital Histopathology Images,'' arXiv:2506.05127, 2025.
+\bibitem{nucleimix} J.~Wang, J.~T.~Kwak, ``NucleiMix: Realistic Data Augmentation for Nuclei
+Instance Segmentation,'' arXiv:2410.16671, 2024.
+\bibitem{cfstress} M.~Stammel, F.~De~Sousa~Ribeiro, R.~Mehta, M.~Roschewitz, B.~Glocker,
+``Counterfactual Stress Testing for Image Classification Models,'' MICCAI workshop (FAIMI),
+arXiv:2605.10894, 2026.
 \end{thebibliography}
 
 \end{document}

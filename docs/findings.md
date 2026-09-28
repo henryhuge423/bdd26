@@ -610,3 +610,63 @@ permutation p; `logs/analyze_cf3.log` on LM2, `runs/analysis/ext_hovernext.json`
   |rho|=1 has exact p=.33; the defensible evidence is perfect sign inversion across 3 archs x
   2 splits plus the axis mechanism), external typing-axis differences are small (real typing
   gap range .069-.088 vs detection range .007-.176).
+
+## 2026-09-28 (evening) — Benchmark artifacts: border fragments, the Uterus Dead subpopulation, cross-architecture consensus
+`scripts/analyze_artifacts.py` over the per-GT records of our three evaluators (CellViT-UNI /
+HoVer-Net / HoVer-NeXt-T; HoVer-NeXt-T + HoVer-Net split-2 eval dirs rsynced from LM2 to
+LM1/`/tmp`). Consensus stats use splits 1+3 = test folds 3+1 (129,872 GT nuclei; rows verified
+aligned across models: identical image/cls/area); per-model stats use all 3 splits. Frame
+cached at `runs/analysis/artifacts_gt.csv.gz`. Survey of the same date (leaderboard / datasets
+/ multimodal / generators): `docs/survey_2026_09.md`.
+
+**1. Most "missed small nuclei" outside Dead are patch-border fragments.**
+- 89% of GT nuclei < 60 px touch the 256 px patch border (31% of all GT do); 62% of < 60 px GT
+  are missed by ALL 3 models (interior < 60 px: 33%).
+- Border-touching objects are 57% of CellViT-UNI false negatives (missed_bg + missed_shape);
+  40% of FNs are border AND < 100 px.
+- Interior-only missed_bg: Neo .037 / Inf .027 / Epi .028 / Con .095 / **Dead .310** (Dead with
+  border .351). ⇒ the stage-1 "small nuclei are missed for every class" observation is a
+  border-fragment effect except for Dead; M2's < 100 px up-weighting mostly up-weighted
+  fragments (its null result is unsurprising in retrospect).
+
+**2. The Dead deficit is class-specific and shared by all three DENSE decoders.**
+- Size–missed_bg curves coincide across ViT-L/16 / full-resolution ResNet-50 / ConvNeXt:
+  < 60 px .73/.75/.76, 60–100 .33/.37/.33, 100–256 .11/.14/.14, ≥ 256 .03/.04/.05.
+- Dead interior missed_bg by size (CellViT): .67 / .30 / .19 / .17 across the same bins
+  (all-3-consensus .48/.18/.12/.13) — the appearance effect survives every size bin.
+- Dead F_c (HoVer-Net def., 3-split means): CellViT-UNI .359 (.314/.322/.441),
+  HoVer-NeXt-T .349 (.303/.322/.422), HoVer-Net .230 (.202/.213/.274). Reference points:
+  HoVer-NeXt paper .49 (test-fold-tuned per-class thresholds + 16 stochastic TTA views),
+  detection-first KongNet .59 [paper-reported, unverified]. ⇒ "the deficit is architectural"
+  is narrowed to "shared across the dense decoders tested"; the detection-first family is
+  untested under our strict protocol (phase-2 line A).
+
+**3. Official Dead PQ is an image-subset metric; the split-to-split Dead gap is test-fold composition.**
+- Official per-class PQ averages per-image PQ over images CONTAINING the class: Dead is scored
+  on 97 images (fold 3) / 65 (fold 1); the top-10 Dead images hold 43% / 51% of all Dead GT.
+- Fold 3 contains 34 Uterus Dead images (fold 1: 2). Their Dead PQ is .01–.05 for every
+  architecture; interior Dead there are intraluminal clusters of pale shed cells (visual
+  audit), missed by all 3 models on 69% of nuclei, median area 156 px (NOT small).
+- Excluding Uterus images, Dead PQ per split (official → excluded):
+  CellViT-UNI .195/.227/.231 (.142/.162/.224), HoVer-Net .133/.147/.175 (.103/.108/.170),
+  HoVer-NeXt-T .143/.171/.197 (.102/.116/.191). Published CellVTA Dead (.145/.169/.240) shows
+  the same fold-3 dip. ⇒ cross-split Dead comparisons (and any "Dead improved" claim) must
+  control for image composition.
+- Dead GT concentration (folds 3+1, n=2,024): Lung 54% + Colon 20% + Uterus 9%. Lung is the
+  worst tissue overall (CellViT 3-split mPQ .402; 23% of its nuclei < 100 px); Colon has the
+  highest merge rate (.089) and lowest bPQ (.570).
+
+**4. No local-suppression halo; clustering hurts Dead.**
+- Interior non-Dead nuclei within 40 px of a consensus-missed Dead are all-3-missed at .045 vs
+  .033 far (baseline .027): no meaningful co-missing of neighbours.
+- Dead in same-class clusters (≥ 3 Dead within 40 px; 58% of Lung / 78% of Colon Dead) are
+  consensus-missed .237 vs .159 for scattered Dead (interior) — dense Dead fields are harder,
+  consistent with the karyorrhexis-cluster merge finding, but isolation does not protect Dead
+  either (stage-1 mining: isolated Dead miss .39–.42).
+
+**Implications (phase 2, agreed with the user 2026-09-28):** report Dead four ways (official /
+Uterus-excluded / interior recall / per-nucleus F_c); pre-registered endpoints for any Dead
+intervention = interior Dead recall + Uterus-excluded Dead PQ with bPQ non-regression, always
+3-split × multi-seed; the resolution hypothesis needs a detection-first or 2×-resolution test,
+not a third dense decoder. Stage report 1 (EN+ZH) revised accordingly this date (wording +
+bibliography corrections; see git).

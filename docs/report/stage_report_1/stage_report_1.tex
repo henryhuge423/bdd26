@@ -41,9 +41,11 @@ $-1.00$ on architecture means): an axis decomposition shows real between-archite
 differences live almost entirely on the detection axis, which label-fixed rendering cannot
 stress by construction, while on the typing axis, which it does stress, counterfactual ranking
 agrees with real transfer. We conclude counterfactual rendering is a valid \emph{typing} stress
-test but not a transfer surrogate, and that the Dead detection deficit is architectural: it is
-robust to every loss-level and data-level intervention we tested, and follows the models
-out-of-domain (mean Dead PQ 0.002--0.033 on PUMA, vs 0.13--0.18 in domain).
+test but not a transfer surrogate, and that the Dead detection deficit is common to every
+architecture family we evaluated (a ViT-L/16, a full-resolution ResNet-50 and a ConvNeXt
+decoder share near-identical size--miss curves): it is robust to every loss-level and
+data-level intervention we tested, and follows the models out-of-domain (mean Dead PQ
+0.002--0.033 on PUMA, vs 0.13--0.18 in domain).
 \end{abstract}
 
 \section{Introduction}
@@ -280,6 +282,19 @@ $<$60\,px vs 6\%), but an appearance effect survives size stratification: large 
 chromatin-poor eosinophilic bodies, and ambiguous annotations. Conclusion: fix detection or the
 data---which defines pillar B.
 
+A post-hoc decomposition over all three evaluators (test folds 3+1;
+\texttt{scripts/analyze\_artifacts.py}) refines this diagnosis in two ways. First, outside Dead
+the ``missed small nuclei'' are mostly patch-border fragments: 89\% of GT nuclei $<$60\,px
+touch the 256\,px border, and among \emph{interior} (non-border) nuclei the missed rates are
+.037/.027/.028/.095 for Neo/Inf/Epi/Con---but .31 for Dead, which stays at .17 even for
+$\geq$256\,px nuclei. Second, the official per-class PQ averages per-image PQ over the images
+that \emph{contain} the class: Dead is scored on only 97 images (fold 3) and 65 (fold 1), and
+fold 3 contains 34 Uterus Dead images whose Dead PQ is .01--.05 for every architecture
+(intraluminal clusters of pale shed cells; 69\% of their interior Dead nuclei are missed by all
+three models). Excluding Uterus images, CellViT-UNI Dead PQ is .195/.227/.231 across splits
+(official .142/.162/.224): the split-to-split Dead gap is test-fold composition, not model
+behaviour.
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.86\linewidth]{figs/dead_missed.jpg}
@@ -349,7 +364,9 @@ express class-targeted appearance (no generated object is readable as Dead).}
 The Dead/small-nucleus detection deficit is not fixable by the data-side levers available
 without retraining the generator's conditioning: real-appearance transplant (CP1) actively harms
 Dead typing, and in-context synthesis with self-consistent labels (SYN1) is null. Together with
-pillar A's nulls (re-typing, recovery, loss re-weighting), the deficit looks architectural.
+pillar A's nulls (re-typing, recovery, loss re-weighting), the deficit is common to all three
+dense-decoder architectures tested (Sec.~\ref{sec:diagnosis}); whether the detection-first
+family escapes it is open (Sec.~\ref{sec:status}).
 
 \section{Pillar C: Cross-Domain and Counterfactual Evaluation}
 \label{sec:pillarC}
@@ -520,17 +537,28 @@ the foreground head fails to fire on 83\% of the missed Dead nuclei (it activate
 of them) while the type branch already ``sees'' them, and neither language-side fusion, post-hoc
 recovery, loss re-weighting
 (3 seeds), real-appearance transplant, nor in-context synthesis with self-consistent labels
-moved detection. The deficit is consistent with the resolution/architecture of the NP head at
-40$\times$, a hypothesis we have not yet tested architecturally (e.g.\ higher-resolution
-foreground supervision) and which is the main open direction.
+moved detection. A post-hoc comparison across our three evaluators shows the deficit is
+\emph{not} specific to ViT token resolution---the full-resolution ResNet-50 and ConvNeXt
+decoders share the same size--miss curve, and 62\% of sub-60\,px GT nuclei are missed by all
+three---so what remains untested is the \emph{detection-first} family (point/centroid
+prompters, per-class centroid heatmaps): their published Dead F1 (.46--.59, vs .23--.36 for
+our three under strict val-tuned decoding) has never been reproduced under val-tuned decodes,
+let alone converted into Dead PQ. Strict re-evaluation of those released per-fold weights,
+plus a direct $2\times$-input-resolution ablation, is the main open direction.
 
-\paragraph{Evaluation methodology.} Three lessons, each with evidence: (1) seed noise on PanNuke is
+\paragraph{Evaluation methodology.} Five lessons, each with evidence: (1) seed noise on PanNuke is
 class-dependent (mPQ 0.002 vs Dead 0.007) and validation-fold Dead signals can point opposite
 to test (CP1: $+0.024$ vs $-0.031$)---single-seed, single-fold Dead claims are uninterpretable;
 (2) released evaluation recipes can embed test-side tuning worth $\sim$0.02 mPQ (our
 HoVer-NeXt-T decode study), larger than typical leaderboard gaps; (3) generated evaluation data
 is systematically \emph{easier} to segment but \emph{less type-consistent} than real data, so
-counterfactual benchmarks must be scored arm-vs-control and with strict mPQ alongside mPQ.
+counterfactual benchmarks must be scored arm-vs-control and with strict mPQ alongside mPQ;
+(4) the official per-class PQ is an image-subset metric---Dead is averaged over only the images
+containing Dead (97 on fold 3, 65 on fold 1), 34 of the fold-3 images being Uterus images that
+sit at .01--.05 for every model, so Dead PQ must be reported alongside a Uterus-excluded
+variant; (5) 89\% of sub-60\,px GT nuclei touch the patch border and border-touching objects
+account for 57\% of all false negatives, so small-nucleus claims must be stratified by border
+contact.
 
 \paragraph{Dead as a cross-domain phenomenon.} Dead PQ collapsing to 0.002--0.033 on PUMA for
 all three architectures (in domain 0.13--0.18)---despite Dead being the most text-recognisable
@@ -547,33 +575,49 @@ All pre-registered experiments are complete: baselines reproduced (course requir
 with negative verdicts, pillar C closed with a mechanistic evaluation result. Remaining for the
 final report: per-tissue$\times$class heatmaps and error-decomposition figures for all three
 architectures, a compacted main table set, optional additional external sets (MoNuSeg,
-NuInsSeg; bPQ/AJI only), and copy-editing. Optional open directions (not pre-registered):
-architecture-side attack on the Dead detection deficit, and layout-intervention counterfactuals
-to probe the detection axis that appearance-only CF cannot.
+NuInsSeg; bPQ/AJI only), and copy-editing. Phase-2 directions (agreed 2026-09-28, not
+pre-registered): (A) strict re-evaluation of the released per-fold detection-first weights
+(PromptNucSeg, LKCell, CellVTA, KongNet) under this protocol, with the artifact-aware Dead
+reporting introduced above; (B) a $2\times$-input-resolution / detection-first attack on the
+Dead deficit as the main method line; (C) larger leak-free training data (STHELAR, manual
+instance sets, pooled external Dead labels) with molecular (virtual caspase-3) pilots.
 
 \begin{thebibliography}{99}\small
-\bibitem{gamper2019pannuke} J.~Gamper et al., ``PanNuke Dataset Name, Instance Segmentation and
-Classification in Hematoxylin \& Eosin Stained Histology Images,'' \emph{Medical Image Analysis},
-2020.
-\bibitem{graham2019hovernet} S.~Graham et al., ``HoVer-Net: Simultaneous Segmentation and
-Classification of Nuclei in Multi-Tissue Histology Images,'' \emph{Medical Image Analysis}, 2019.
-\bibitem{horta2024cellvit} J.~S.~Horta~Malo et al., ``CellViT: Vision Transformers for Precise
-Cell Instance Segmentation,'' \emph{Medical Image Analysis}, 2024. arXiv:2306.15350.
-\bibitem{horta2025cellvitpp} J.~S.~Horta~Malo et al., ``CellViT++,'' arXiv:2501.05269, 2025.
-\bibitem{hovenext} S.~D.~Bhattacharjee et al., ``HoVer-NeXt: Exploring Reliable and Efficient
-Lifted ViT Baselines for Nuclei Segmentation,'' \emph{MIDL}, 2024.
-\bibitem{cppnet} Y.~Zhou et al., ``CPP-Net: A Unified Framework for Nuclei Instance Segmentation
-and Classification,'' arXiv:2102.06867, 2021.
-\bibitem{promptnucseg} S.~Graham et al., ``PromptNucSeg: A Text-Driven Nuclei Instance
-Segmentation Method,'' \emph{ECCV}, 2024. arXiv:2311.15939.
-\bibitem{lu2024conch} R.~Lu et al., ``A Visual-Language Foundation Model for Computational
-Pathology (CONCH),'' \emph{Nature Medicine}, 2024. arXiv:2307.12914.
-\bibitem{mindthegap} ``Mind the Gap: Meta-Analysis of Foundation Models for Pathology Image
-Analysis,'' arXiv:2502.02471, 2025.
-\bibitem{le2025pixcell} M.~Le et al., ``PixCell: A Generative Model for Digital Pathology
-Slides,'' arXiv:2506.05127, 2025.
-\bibitem{nucleimix} ``NucleiMix: Diffusion-Based Rare-Nuclei Synthesis,'' arXiv:2410.16671, 2024.
-\bibitem{cfstress} ``Counterfactual Stress Testing of Medical Imaging Models,'' arXiv:2605.10894, 2026.
+\bibitem{gamper2019pannuke} J.~Gamper, N.~Alemi~Koohbanani, K.~Benet, A.~Khuram, N.~Rajpoot,
+``PanNuke: An Open Pan-Cancer Histology Dataset for Nuclei Instance Segmentation and
+Classification,'' \emph{ECDP}, LNCS 11435, pp.~11--19, 2019; and J.~Gamper et al., ``PanNuke
+Dataset Extension, Insights and Baselines,'' arXiv:2003.10778, 2020.
+\bibitem{graham2019hovernet} S.~Graham, Q.~D.~Vu, S.~E.~A.~Raza, A.~Azam, Y.-W.~Tsang,
+J.~Kwak, N.~Rajpoot, ``HoVer-Net: Simultaneous Segmentation and Classification of Nuclei in
+Multi-Tissue Histology Images,'' \emph{Medical Image Analysis}, 58:101563, 2019.
+\bibitem{horta2024cellvit} F.~H\"orst, M.~Rempe, L.~Heine, J.~Kleesiek, ``CellViT: Vision
+Transformers for Precise Cell Segmentation and Classification,'' \emph{Medical Image Analysis},
+94:103143, 2024.
+\bibitem{horta2025cellvitpp} F.~H\"orst, M.~Rempe, H.~Becker, L.~Heine, J.~Keyl, J.~Kleesiek,
+``CellViT++: Energy-Efficient and Adaptive Cell Segmentation and Classification Using
+Foundation Models,'' \emph{Computer Methods and Programs in Biomedicine}, 277:109206, 2026.
+\bibitem{hovenext} E.~Baumann, B.~Dislich, J.~L.~Rumberger, I.~D.~Nagtegaal,
+M.~Rodr\'iguez~Mart\'inez, I.~Zlobec, ``HoVer-NeXt: A Fast Nuclei Segmentation and
+Classification Pipeline for Next Generation Histopathology,'' \emph{MIDL}, PMLR 250:61--86,
+2024.
+\bibitem{cppnet} S.~Chen, C.~Ding, M.~Liu, J.~Cheng, D.~Tao, ``CPP-Net: A Unified Framework for
+Nuclei Instance Segmentation and Classification,'' \emph{IEEE Transactions on Image Processing},
+32:980--994, 2023.
+\bibitem{promptnucseg} Z.~Shui, Y.~Zhang, K.~Yao, C.~Zhu, S.~Zheng, J.~Li, H.~Li, Y.~Sun,
+R.~Guo, L.~Yang, ``Unleashing the Power of Prompt-Driven Nucleus Instance Segmentation
+(PromptNucSeg),'' \emph{ECCV}, LNCS 15085, pp.~288--304, 2024.
+\bibitem{lu2024conch} M.~Y.~Lu et al., ``A Visual-Language Foundation Model for Computational
+Pathology (CONCH),'' \emph{Nature Medicine}, 30:863--874, 2024.
+\bibitem{mindthegap} V.~Vadori, A.~Peruffo, J.-M.~Gra\"ic, L.~Finos, E.~Grisan, ``Mind the Gap:
+Evaluating Patch Embeddings from General-Purpose and Histopathology Foundation Models for Cell
+Segmentation and Classification,'' arXiv:2502.02471, 2025.
+\bibitem{le2025pixcell} S.~Yellapragada et al., ``PixCell: A Generative Foundation Model for
+Digital Histopathology Images,'' arXiv:2506.05127, 2025.
+\bibitem{nucleimix} J.~Wang, J.~T.~Kwak, ``NucleiMix: Realistic Data Augmentation for Nuclei
+Instance Segmentation,'' arXiv:2410.16671, 2024.
+\bibitem{cfstress} M.~Stammel, F.~De~Sousa~Ribeiro, R.~Mehta, M.~Roschewitz, B.~Glocker,
+``Counterfactual Stress Testing for Image Classification Models,'' MICCAI workshop (FAIMI),
+arXiv:2605.10894, 2026.
 \end{thebibliography}
 
 \end{document}
