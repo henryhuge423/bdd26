@@ -142,8 +142,9 @@
   在 CF 能施压的**分型轴**上排序与真实一致（typing rho +1.00 架构均值）。
 - 结论：PanNuke-CF = 分型压力测试，**不是**跨域迁移代理。三个支柱全部关闭；
   剩余工作 = 最终报告与图表（组织×类热力图、错误分解、合成/CF 样例、主表）。
-- **阶段报告一已出**：`docs/report/stage_report_1.tex`（英文 LaTeX，12 页，7 表 4 图，
-  LM2 TeXLive 2026 编译，PDF 入库；中文平行版 `stage_report_1_zh.tex`，11 页）。覆盖三支柱
+- **阶段报告一已出**：`docs/report/stage_report_1/stage_report_1.tex`（英文 LaTeX，12 页，6 表 4 图，
+  LM2 TeXLive 2026 编译，PDF 入库；中文平行版 `stage_report_1_zh.tex`，11 页；报告一所有文件
+  （含 figs/）集中在 `docs/report/stage_report_1/`，后续报告各占一个子目录）。覆盖三支柱
   全部结论；最终报告还需补组织×类热力图、错误分解图、以及可选的 MoNuSeg/NuInsSeg 外部集。
 
 **据此对 §2.1（支柱 A）的修订**：原"语言锚定类型头"针对分类，而瓶颈在检测，故改为以**检测**为目标——
