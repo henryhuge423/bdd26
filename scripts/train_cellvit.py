@@ -37,6 +37,8 @@ p.add_argument("--cp-area", type=int, nargs=2, default=[50, 400], help="copy-pas
 p.add_argument("--cp-clearance", type=int, default=8, help="copy-paste: min px distance to other nuclei")
 p.add_argument("--synth", type=str, default=None, help="synthetic dir (images/inst/type/base .npy)")
 p.add_argument("--synth-frac", type=float, default=0.0, help="synthetic samples as a fraction of |real|")
+p.add_argument("--upscale", type=int, default=1,
+               help="working-resolution multiplier (2 = 512px; phase-2 B1 resolution ablation)")
 p.add_argument("--skip-train", action="store_true")
 p.add_argument("--tta", action="store_true", help="also evaluate with 8x dihedral TTA")
 a = p.parse_args()
@@ -47,7 +49,7 @@ cfg = TrainConfig(split=a.split, out_dir=str(a.out), epochs=a.epochs, unfreeze_e
                   seed=a.seed, sampling_gamma=a.sampling_gamma, np_wce=a.np_wce, dead_w=a.dead_w, small_w=a.small_w,
                   small_area=a.small_area, cp_prob=a.cp_prob, cp_lam=a.cp_lam, cp_dead_w=a.cp_dead_w,
                   cp_area=tuple(a.cp_area), cp_clearance=a.cp_clearance,
-                  synth=a.synth, synth_frac=a.synth_frac)
+                  synth=a.synth, synth_frac=a.synth_frac, upscale=a.upscale)
 if not a.skip_train:
     train(cfg, [tr], [va])
 
@@ -56,7 +58,7 @@ model.load_state_dict(torch.load(a.out / "final.pth", map_location="cpu", weight
 f = PanNukeFold(te)
 for tta in [False] + ([True] if a.tta else []):
     tag = f"test_fold{te}" + ("_tta" if tta else "")
-    inst, typ, tissue = predict_fold(model, f, tta=tta)
+    inst, typ, tissue = predict_fold(model, f, tta=tta, upscale=a.upscale)
     np.savez_compressed(a.out / f"pred_{tag}.npz", inst=inst.astype(np.int32), type=typ, tissue_prob=tissue)
     res = evaluate(f.gt_channels, f.inst, f.type, f.tissue, inst, typ)
     res["summary"]["tissue_acc"] = float((tissue.argmax(-1) == tissue_ids(f.tissue)).mean())

@@ -6,6 +6,7 @@ probabilities for post-hoc re-typing (pillar A).
 -> <run>/pred_fold2[_tta].npz with inst, type, tissue_prob, inst_img, inst_id, inst_prob
 """
 import argparse
+import json
 from pathlib import Path
 
 import numpy as np
@@ -21,12 +22,17 @@ p.add_argument("--fold", type=int, required=True)
 p.add_argument("--ckpt", default="final.pth")
 p.add_argument("--tta", action="store_true")
 p.add_argument("--no-eval", action="store_true")
+p.add_argument("--upscale", type=int, default=None,
+               help="override the run's working resolution (default: config.json upscale)")
 a = p.parse_args()
+
+run_cfg = json.loads((a.run / "config.json").read_text()) if (a.run / "config.json").exists() else {}
+upscale = a.upscale if a.upscale is not None else int(run_cfg.get("upscale", 1))
 
 model = build_model(pretrained=False).cuda()
 model.load_state_dict(torch.load(a.run / a.ckpt, map_location="cpu", weights_only=False)["model"])
 f = PanNukeFold(a.fold)
-inst, typ, tissue, (ii, iid, ip) = predict_fold(model, f, tta=a.tta, inst_probs=True)
+inst, typ, tissue, (ii, iid, ip) = predict_fold(model, f, tta=a.tta, inst_probs=True, upscale=upscale)
 tag = f"fold{a.fold}" + ("_tta" if a.tta else "")
 np.savez_compressed(a.run / f"pred_{tag}.npz", inst=inst.astype(np.int32), type=typ, tissue_prob=tissue,
                     inst_img=ii, inst_id=iid, inst_prob=ip)

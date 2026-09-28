@@ -9,6 +9,7 @@ pipeline so differences between models are attributable to the networks, not to 
 
 from __future__ import annotations
 
+import cv2
 import json
 import time
 from collections import defaultdict
@@ -64,6 +65,9 @@ class TrainConfig:
     # synthetic data mixing (pillar B): dir with images/inst/type/base .npy, appended at frac of |real|
     synth: str | None = None
     synth_frac: float = 0.0
+    # working-resolution multiplier (phase-2 B1): images/targes are built at 256*upscale; predictions
+    # are post-processed at that resolution and downsampled to 256 for the standard evaluation
+    upscale: int = 1
 
 
 def focal_tversky(p: torch.Tensor, t: torch.Tensor, alpha=0.7, beta=0.3, gamma=4 / 3, smooth=1e-6,
@@ -139,6 +143,10 @@ def train(cfg: TrainConfig, train_folds: list[int], val_folds: list[int], device
     ckpt_path = out / "last.pth"
     state = torch.load(ckpt_path, map_location="cpu", weights_only=False) if ckpt_path.exists() else None
     model = (model or build_model(cfg, pretrained=state is None)).to(device)
+    if cfg.upscale > 1:
+        # 512x512 x ViT-L unfrozen does not fit a 80 GB A100 at bs 16 without activation
+        # checkpointing; the frozen phase is unaffected (no grads -> no checkpoints used)
+        model.encoder.set_grad_checkpointing()
     opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, betas=(0.85, 0.95), weight_decay=cfg.weight_decay)
     sched = torch.optim.lr_scheduler.ExponentialLR(opt, cfg.gamma)
     ep0, global_step = 0, 0
@@ -153,12 +161,13 @@ def train(cfg: TrainConfig, train_folds: list[int], val_folds: list[int], device
                          area=tuple(cfg.cp_area), clearance=cfg.cp_clearance) if cfg.cp_prob else None
     train_ds = PanNukeCellViT(train_folds, train=True, small_area=cfg.small_area, copy_paste=cp,
                               synth=Path(cfg.synth) if cfg.synth else None,
-                              synth_frac=cfg.synth_frac)
+                              synth_frac=cfg.synth_frac, upscale=cfg.upscale)
     sampler = WeightedRandomSampler(cell_tissue_weights(train_ds, cfg.sampling_gamma), len(train_ds),
                                     replacement=True, generator=torch.Generator().manual_seed(cfg.seed))
     train_dl = DataLoader(train_ds, batch_size=cfg.batch_size, sampler=sampler, drop_last=True,
                           num_workers=cfg.workers, pin_memory=True, persistent_workers=True)
-    val_dl = DataLoader(PanNukeCellViT(val_folds, train=False, small_area=cfg.small_area), batch_size=32, num_workers=cfg.workers)
+    val_dl = DataLoader(PanNukeCellViT(val_folds, train=False, small_area=cfg.small_area,
+                                       upscale=cfg.upscale), batch_size=32, num_workers=cfg.workers)
 
     for ep in range(ep0, cfg.epochs):
         model.freeze_encoder(ep < cfg.unfreeze_epoch)
@@ -249,28 +258,39 @@ def _tta_forward(model, x: torch.Tensor) -> dict:
 
 @torch.no_grad()
 def predict_fold(model, fold_ds, device="cuda", batch_size=32, workers=16, tta: bool = False,
-                 inst_probs: bool = False):
+                 inst_probs: bool = False, upscale: int = 1):
     """Returns (inst, type, tissue_probs) for every patch of a fold, in fold order; with inst_probs=True
-    also a per-instance table (img index, inst id, mean type probabilities (M, 6))."""
+    also a per-instance table (img index, inst id, mean type probabilities (M, 6)). With upscale>1 the
+    inputs are bilinearly upsampled (matching training), post-processing runs at the higher resolution,
+    and the instance/type maps are downsampled (nearest) back to the fold's native size."""
     model.eval()
     insts, types, tissues, tab = [], [], [], ([], [], [])
+    hw = fold_ds.images.shape[1:3][::-1]  # (W, H) native
     with Pool(workers) as pool:
         for s in range(0, len(fold_ds), batch_size):
-            x = torch.from_numpy(np.asarray(fold_ds.images[s:s + batch_size])).to(device)
+            imgs = np.asarray(fold_ds.images[s:s + batch_size])
+            if upscale > 1:
+                imgs = np.stack([cv2.resize(im, None, fx=upscale, fy=upscale,
+                                             interpolation=cv2.INTER_LINEAR) for im in imgs])
+            x = torch.from_numpy(imgs).to(device)
             p = _tta_forward(model, x) if tta else _forward_probs(model, x)
             tp = p["tp"].argmax(-1, keepdim=True).float()
             maps = torch.cat([tp, p["np"][..., 1:], p["hv"]], -1).cpu().numpy()
             res = pool.map(_post, ((m,) for m in maps), chunksize=2)
+            if inst_probs:
+                # per-instance type probabilities use the model-resolution map, BEFORE downsampling
+                prob = p["tp"].cpu().numpy()
+                for b, (inst_hi, _) in enumerate(res):
+                    ids = np.unique(inst_hi)[1:]
+                    tab[0].append(np.full(len(ids), s + b))
+                    tab[1].append(ids)
+                    tab[2].append(instance_mean_probs(inst_hi, prob[b], ids))
+            if upscale > 1:
+                res = [(cv2.resize(r[0], hw, interpolation=cv2.INTER_NEAREST).astype(np.int32),
+                        cv2.resize(r[1], hw, interpolation=cv2.INTER_NEAREST)) for r in res]
             insts += [r[0] for r in res]
             types += [r[1] for r in res]
             tissues.append(p["tissue"].cpu().numpy())
-            if inst_probs:
-                prob = p["tp"].cpu().numpy()
-                for b, (inst, _) in enumerate(res):
-                    ids = np.unique(inst)[1:]
-                    tab[0].append(np.full(len(ids), s + b))
-                    tab[1].append(ids)
-                    tab[2].append(instance_mean_probs(inst, prob[b], ids))
     out = (np.stack(insts), np.stack(types), np.concatenate(tissues))
     if inst_probs:
         out += (tuple(np.concatenate(t) for t in tab),)

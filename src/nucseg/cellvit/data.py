@@ -54,6 +54,16 @@ def small_nuclei(inst: np.ndarray, max_area: int) -> np.ndarray:
     return area[inst] < max_area
 
 
+def upsample_patch(img: np.ndarray, inst: np.ndarray, typ: np.ndarray, k: int) -> tuple[np.ndarray, ...]:
+    """Bilinear x2 (image) / nearest (labels) upsampling, applied AFTER augmentation and BEFORE
+    normalisation/target construction so the only change vs the 256 recipe is the working
+    resolution (single-variable ablation, phase-2 line B1)."""
+    img = cv2.resize(img, None, fx=k, fy=k, interpolation=cv2.INTER_LINEAR)
+    inst = cv2.resize(inst, None, fx=k, fy=k, interpolation=cv2.INTER_NEAREST)
+    typ = cv2.resize(typ, None, fx=k, fy=k, interpolation=cv2.INTER_NEAREST)
+    return img, inst.astype(np.int32), typ.astype(np.int32)
+
+
 def tissue_ids(names) -> np.ndarray:
     lut = {t: i for i, t in enumerate(TISSUES)}
     return np.array([lut[str(t)] for t in names], np.int64)
@@ -62,11 +72,13 @@ def tissue_ids(names) -> np.ndarray:
 class PanNukeCellViT(Dataset):
     def __init__(self, folds: list[int], train: bool, small_area: int = 100,
                  copy_paste: CopyPasteConfig | None = None, synth: Path | None = None,
-                 synth_frac: float = 0.0):
+                 synth_frac: float = 0.0, upscale: int = 1):
         self.folds = [PanNukeFold(k) for k in folds]
         self.index = [("r", fi, j) for fi, f in enumerate(self.folds) for j in range(len(f))]
         self.train = train
-        self.small_area = small_area
+        self.upscale = upscale
+        # pixel-area thresholds live at the working resolution (areas quadruple at 2x)
+        self.small_area = small_area * upscale * upscale
         self.augs = cellvit_train_augs() if train else None
         self.copy_paste = copy_paste if (train and copy_paste is not None) else None
         self.bank = NucleusBank(self.folds) if self.copy_paste is not None else None
@@ -131,6 +143,8 @@ class PanNukeCellViT(Dataset):
                     np.random.default_rng(np.random.randint(2**31)))
             r = self.augs(image=img, mask=np.stack([inst, typ], -1))
             img, inst, typ = r["image"], r["mask"][..., 0], r["mask"][..., 1]
+        if self.upscale > 1:
+            img, inst, typ = upsample_patch(img, inst, typ, self.upscale)
         return {
             "img": torch.from_numpy(normalize(img)),                     # (3, 256, 256) float
             "np_map": torch.from_numpy((inst > 0).astype(np.int64)),     # (256, 256)
