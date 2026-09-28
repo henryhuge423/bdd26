@@ -226,7 +226,8 @@ CONCH linear alone               & .3645 & .3821 & .145 \\
 \subsection{Training-free recovery: null}
 A 96-configuration sweep over foreground mixing, dead-prior boosting, blob thresholds and
 orphan recovery on the raw NP/HV/TP maps (3 splits; selection on validation): every family lands
-within $\pm0.0004$ test mPQ of the threshold-only control. The missed Dead nuclei are not
+within $\pm0.0004$ test mPQ of the official config, and the threshold-only control does as well as
+any recovery variant. The missed Dead nuclei are not
 recoverable from this model's outputs.
 
 \subsection{Loss-side ablations: null or a trade}
@@ -257,6 +258,15 @@ Epithelial   & .837 & .042 & .075 & .036 & .011 & .930 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.92\linewidth]{figs/chart_decomp.png}
+\caption{Error decomposition of CellViT-UNI on fold 3 (IoU 0.5; share of GT nuclei per class),
+visualising Table~\ref{tab:decomp}: the Dead row is dominated by missed detections (38.5\% of
+Dead nuclei have no overlapping prediction; other classes 8--15\%), not by typing errors.}
+\label{fig:decomp_bar}
+\end{figure}
 
 Table~\ref{tab:decomp}: 38.5\% of Dead nuclei have \emph{no overlapping prediction at all}
 (other classes 8--15\%), while Dead type-when-matched is 0.69---the loss is detection-first.
@@ -385,6 +395,15 @@ On PUMA no model collapses in detection ($F_d$ 0.85--0.88)---the loss there is \
 drop (in-domain minus mean external mPQ) ranks architectures CellViT 0.154 $<$ HoVer-NeXt-T
 0.199 $<$ HoVer-Net 0.246, consistently on every dataset.
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.8\linewidth]{figs/chart_dead_puma.png}
+\caption{Dead PQ per architecture, in domain (PanNuke, 3-split mean) vs.\ zero-shot on PUMA:
+the class nearly vanishes cross-domain for every architecture (0.002--0.033 vs.\
+0.127--0.176 in domain).}
+\label{fig:deadpuma}
+\end{figure}
+
 \subsection{PanNuke-CF: label-fixed counterfactual rendering}
 \label{sec:cf}
 
@@ -461,6 +480,15 @@ detection $F_d$: $-0.83$ ($p{=}.058$) / $-1.00$;\quad typing: $+0.71$ / $\mathbf
 \end{tabular}
 \end{table}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.92\linewidth]{figs/chart_axes.png}
+\caption{Axis decomposition (architecture means; Table~\ref{tab:axes}): real transfer separates
+architectures on the detection axis ($F_d$ drop, left), whereas CF context-swap stress is
+homogeneous in detection and orders only the typing axis (right).}
+\label{fig:axes_bar}
+\end{figure}
+
 Table~\ref{tab:axes} gives the mechanism. Real transfer differences between architectures
 concentrate on the \emph{detection} axis (CellViT loses 0.007 $F_d$; HoVer-Net loses 0.163---its
 MoNuSAC collapse), while typing-gap increase is similar for all (0.07--0.09). But label-fixed
@@ -486,8 +514,9 @@ clutter, artefact), not appearance.
 \paragraph{Why all three pillars went negative, together.} The pillars shared one implicit
 hypothesis---that Dead performance is limited by information (language priors) or data
 (synthetic examples) rather than by the detection architecture. The diagnosis says otherwise:
-missed Dead nuclei produce no foreground response at 83\% pixel level, the type branch
-already ``sees'' them, and neither language-side fusion, post-hoc recovery, loss re-weighting
+the foreground head fails to fire on 83\% of the missed Dead nuclei (it activates in only 17\%
+of them) while the type branch already ``sees'' them, and neither language-side fusion, post-hoc
+recovery, loss re-weighting
 (3 seeds), real-appearance transplant, nor in-context synthesis with self-consistent labels
 moved detection. The deficit is consistent with the resolution/architecture of the NP head at
 40$\times$, a hypothesis we have not yet tested architecturally (e.g.\ higher-resolution

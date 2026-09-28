@@ -42,8 +42,8 @@ copy-paste（Dead PQ $-0.031$）与标签自洽的上下文内扩散合成（mPQ
 了三架构 $\times$ 三数据集的零样本跨域基准（CoNIC、MoNuSAC、PUMA）与
 \emph{PanNuke-CF}——固定 PanNuke 标签、对组织上下文与染色做干预后重渲染的反事实测试
 集。反事实压力测试\textbf{反转}了真实跨域排序（6 个评估点 Spearman $-0.89$；架构均值
-$-1.00$）：轴分解显示架构间的真实迁移差异几乎全部位于检测轴，而标签固定的渲染从构造
-上就无法触及检测；在它能施压的分型轴上，反事实排序与真实迁移一致。结论：反事实渲染是
+$-1.00$）：轴分解显示架构间的真实迁移差异几乎全部位于检测轴，而标签固定的渲染在构造
+上便无法触及检测；在它能施压的分型轴上，反事实排序与真实迁移一致。结论：反事实渲染是
 有效的\emph{分型}压力测试而非迁移代理；Dead 检测缺陷是架构性的——我们测试的所有损失级
 与数据级干预都对它无效，且该缺陷跨域依然存在（三架构在 PUMA 上的平均 Dead PQ 仅
 0.002--0.033，域内为 0.13--0.18）。
@@ -72,8 +72,8 @@ CellViT-SAM-H~\cite{horta2024cellvit} 0.498 $\rightarrow$ 当前最佳约 0.51�
 \item \textbf{单一严格协议下的复现}（\S\ref{sec:setup}）：HoVer-Net、CellViT-UNI
 由我们自行训练并按同一协议评测（一律取 last checkpoint、解码超参仅在验证折上调节）；
 HoVer-NeXt-T 使用官方发布的分折（per-fold）权重（其验证折选出的 checkpoint；折划分已核对，
-与我们的完全一致），配以同样仅在验证折上调好的解码。并顺带量化了一个已发布评测配方（16 个随机颜色 TTA 视图 + 在\emph{测试折}上
-调阈值）能把分数抬高多少（\S\ref{sec:baselines}）。
+与我们的完全一致），配以同样仅在验证折上调好的解码。并在此过程中量化了一个已发布评测配方
+（16 个随机空间+颜色 TTA 视图 + 在\emph{测试折}上调阈值）能把分数抬高多少（\S\ref{sec:baselines}）。
 \item \textbf{Dead 缺陷的分解}（\S\ref{sec:diagnosis}）：它是一个集中在小核与孤立核上
 的\emph{检测}失败——前景头看不见，类型头却部分“看见”——这正是所有类型侧干预都失败的原因。
 \item \textbf{预注册的负结果}（\S\ref{sec:pillarA}、\S\ref{sec:pillarB}）：CONCH 重分
@@ -173,8 +173,8 @@ fg/seed 阈值），只在每个 split 的\emph{验证}折上调参（与其它�
 \section{支柱 A：Dead 缺陷是检测缺陷}
 \label{sec:pillarA}
 
-\subsection{CONCH 的类别语义只在上下文尺度出现（可行性）}
-我们在真值核上直接测试零样本 CONCH 分类：紧裁剪接近随机水平（32\,px 裁剪为 0.27）；改用
+\subsection{CONCH 的类别语义只在上下文尺度上显现（可行性）}
+我们在真值核上直接测试零样本 CONCH 分类：紧裁剪下接近随机水平（32\,px 裁剪为 0.27）；改用
 全上下文 patch 加半径受限注意力池化后，平衡准确率达到 0.695（R\,=\,32\,px，每 patch 一次
 前向）；用 LLM 形态学描述替代纯类名，再提高 8--11 个点。在五类之中，Dead 是 CONCH 文本
 识别效果最好的一类（召回 0.88），而分割模型恰恰在 Dead 上表现最差。不过在自然分布下，
@@ -205,8 +205,9 @@ CONCH 线性单独                   & .3645 & .3821 & .145 \\
 
 \subsection{免训练找回：无效}
 在原始 NP/HV/TP 图上扫描 96 个配置，覆盖前景混合、Dead 先验增强、blob 阈值、孤立体找回
-四族（3 个 split，配置在验证集上挑选）：每个族与仅调阈值的对照相比，差距都在
-$\pm0.0004$ test mPQ 之内。漏检的 Dead 核无法从该模型的输出中找回。
+四族（3 个 split，配置在验证集上挑选）：每个族与官方默认配置相比，差距都在
+$\pm0.0004$ test mPQ 之内——仅调阈值的对照与任何找回变体效果相当。漏检的 Dead 核
+无法从该模型的输出中找回。
 
 \subsection{损失侧消融：无效或是交换}
 split 1 上的像素加权前景 CE，配 3 种子基线：Dead 像素权 $\times$11（M1）无效；完全均衡
@@ -235,6 +236,15 @@ Epithelial   & .837 & .042 & .075 & .036 & .011 & .930 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.92\linewidth]{figs/chart_decomp.png}
+\caption{CellViT-UNI 在折 3 上的错误分解（IoU 0.5；占该类真值核比例），即
+表~\ref{tab:decomp} 的图形版：Dead 一行由漏检主导（38.5\% 的 Dead 核没有任何重叠预测，
+其它类为 8--15\%），而非类型判错。}
+\label{fig:decomp_bar}
+\end{figure}
 
 表~\ref{tab:decomp} 显示，38.5\% 的 Dead 核\emph{没有任何重叠预测}（其它类为
 8--15\%），而 Dead 匹配后的类型正确率为 0.69——性能损失首先出在检测。在漏检的 Dead 核内
@@ -351,6 +361,14 @@ mPQ 0.31 vs mPQ 0.38）；而且尽管 PUMA 有 1,991 个凋亡真值核，\text
 MoNuSAC $-0.001$）。真实跨域降幅（域内 mPQ 减外部均值）给出的架构排序为 CellViT 0.154
 $<$ HoVer-NeXt-T 0.199 $<$ HoVer-Net 0.246，且在每个数据集上都一致。
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.8\linewidth]{figs/chart_dead_puma.png}
+\caption{各架构的 Dead PQ：域内（PanNuke，3-split 均值）与 PUMA 零样本跨域对比。该类随
+模型跨域几乎归零（0.002--0.033，域内为 0.127--0.176）。}
+\label{fig:deadpuma}
+\end{figure}
+
 \subsection{PanNuke-CF：标签固定的反事实渲染}
 \label{sec:cf}
 
@@ -424,6 +442,15 @@ HoVer-NeXt-T & .199 & \textbf{.045} & +.085 & .163 & .090 & +.064 \\
 \end{tabular}
 \end{table}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.92\linewidth]{figs/chart_axes.png}
+\caption{轴分解（架构均值；表~\ref{tab:axes}）：真实迁移的架构差异集中在检测轴（左图
+$F_d$ 降幅），而 CF 上下文交换压力对检测的影响在架构间齐平、只对分型轴携带排序信息
+（右图）。}
+\label{fig:axes_bar}
+\end{figure}
+
 表~\ref{tab:axes} 给出了机理。架构间的真实迁移差异集中在\emph{检测}轴（CellViT 的
 $F_d$ 损失 0.007；HoVer-Net 0.163——其 MoNuSAC 崩溃），分型间隙增量则彼此接近
 （0.07--0.09）。但标签固定的渲染\emph{无法}对检测施压：生成器在固定位置重渲染形态完好
@@ -442,8 +469,9 @@ $|\rho|=1$ 对应的精确 $p=1/3$；更有力的证据是 3 架构 $\times$ 2 s
 \label{sec:discussion}
 
 \paragraph{为什么三个支柱都以负结果收场。}三个支柱共享一个隐含假设——Dead 性能受限于信息
-（语言先验）或数据（合成样本），而非检测架构。诊断结果恰恰相反：漏检 Dead 核在 83\%
-的像素上没有前景响应，类型分支却已经“看见”它们；语言侧融合、后处理找回、损失重加权
+（语言先验）或数据（合成样本），而非检测架构。诊断结果恰恰相反：前景头在 83\%
+的漏检 Dead 核上不触发（仅在 17\% 的核中有响应），类型分支却已经“看见”它们；语言侧融合、
+后处理找回、损失重加权
 （3 种子）、真实外观移植、标签自洽的上下文内合成都未能撼动检测。这一缺陷与“NP 头在
 40$\times$ 下的分辨率/架构不足”的假设相吻合；该假设尚未经架构层面的检验（例如提高前景
 监督的分辨率），是主要的开放方向。
