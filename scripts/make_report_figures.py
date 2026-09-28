@@ -44,15 +44,18 @@ mpl.rcParams.update({
     # mpl 3.7 (the sans-serif alias expansion drops the fallback) -- DejaVu
     # first (latin), Droid Sans Fallback catches CJK.
     "font.family": ["DejaVu Sans", "Droid Sans Fallback"],
-    "font.size": 11.5,
+    # Figures are displayed at ~0.82-0.95\linewidth (scale ~0.87-0.9 of the
+    # authored size), so everything is authored >= 12.5pt to land >= 10-11pt
+    # in the PDFs.
+    "font.size": 14,
     "axes.edgecolor": BASE,
-    "axes.linewidth": 1.1,
+    "axes.linewidth": 1.2,
     "axes.labelcolor": INK2,
     "text.color": INK,
     "xtick.color": MUTED,
     "ytick.color": INK2,
-    "xtick.labelsize": 10.5,
-    "ytick.labelsize": 11,
+    "xtick.labelsize": 13,
+    "ytick.labelsize": 14,
     "figure.dpi": 300,
     "savefig.dpi": 300,
 })
@@ -83,9 +86,9 @@ DECOMP_LABELS = ["matched", "merged", "missed (no overlap)", "missed (poor shape
 DECOMP_COLORS = [C1, C2, C3, C4, C5]
 
 
-def decomp_chart(path, classes, groups, class_display=None):
+def decomp_chart(path, classes, groups, class_display=None, legend_ncol=None):
     """groups: list of (display_label, color, [source indices summed])."""
-    fig, ax = plt.subplots(figsize=(7.2, 3.2))
+    fig, ax = plt.subplots(figsize=(6.6, 3.5))
     y = range(len(classes))[::-1]
     for row, cls in zip(y, classes):
         vals = DECOMP[cls]
@@ -97,7 +100,7 @@ def decomp_chart(path, classes, groups, class_display=None):
                     edgecolor="white", linewidth=2.0)
             if v >= 0.055:  # direct-label segments wide enough to hold text
                 ax.text(left + v / 2, row, f"{v * 100:.0f}", ha="center", va="center",
-                        fontsize=10, color=seg_text_color(colr))
+                        fontsize=13, color=seg_text_color(colr))
             left += v
     names = [class_display.get(c, c) if class_display else c for c in classes]
     ax.set_yticks(list(y), names)
@@ -110,9 +113,10 @@ def decomp_chart(path, classes, groups, class_display=None):
     style_ax(ax)
     ax.legend(handles=[plt.Rectangle((0, 0), 1, 1, fc=colr, ec="none")
                        for _, colr, _ in groups],
-              labels=[lbl for lbl, _, _ in groups], ncol=len(groups), loc="lower left",
-              bbox_to_anchor=(0, 1.0), frameon=False, fontsize=10.5,
-              handlelength=1.6, handleheight=1.6, columnspacing=1.6)
+              labels=[lbl for lbl, _, _ in groups],
+              ncol=legend_ncol or len(groups), loc="lower left",
+              bbox_to_anchor=(0, 1.0), frameon=False, fontsize=13,
+              handlelength=1.6, handleheight=1.6, columnspacing=1.4)
     fig.tight_layout()
     fig.savefig(path, bbox_inches="tight")
     plt.close(fig)
@@ -125,7 +129,7 @@ CF_FD, CF_TYP = (.102, .090, .084), (.082, .064, .034)
 
 
 def axes_chart(path, arch_names, panel_titles, ser_labels):
-    fig, axs = plt.subplots(1, 2, figsize=(7.4, 3.2), sharey=True)
+    fig, axs = plt.subplots(1, 2, figsize=(6.6, 3.5), sharey=True)
     x = range(len(ARCHS))
     w = 0.34
     for ax, fd, typ, title in zip(axs, [REAL_FD, CF_FD], [REAL_TYP, CF_TYP], panel_titles):
@@ -133,18 +137,21 @@ def axes_chart(path, arch_names, panel_titles, ser_labels):
         ax.bar([i + w / 2 for i in x], typ, width=w, color=C2, edgecolor="white", linewidth=2.0)
         for i, v in enumerate(fd):  # label the detection bars only (the story)
             ax.text(i - w / 2, v + .007, f"{v:.3f}".lstrip("0"), ha="center",
-                    fontsize=10, color=INK2)
-        ax.set_title(title, fontsize=11.5, color=INK2, loc="left", pad=8)
+                    fontsize=13, color=INK2)
+        ax.set_title(title, fontsize=14, color=INK2, loc="left", pad=10)
         ax.set_ylim(0, 0.20)
         style_ax(ax)
         ax.yaxis.grid(True, color=GRID, linewidth=0.9)
         ax.xaxis.grid(False)
         ax.set_xticks(list(x), arch_names)
+        if len(arch_names) == 3 and max(len(a) for a in arch_names) > 10:
+            # 13pt arch names are wider than the category slot; stagger the
+            # middle label one line down instead of shrinking the font
+            ax.set_xticklabels([arch_names[0], "\n" + arch_names[1], arch_names[2]])
     axs[0].set_yticks([0, .05, .10, .15, .20], ["0", ".05", ".10", ".15", ".20"])
-    fig.suptitle("")
     handles = [plt.Rectangle((0, 0), 1, 1, fc=c, ec="none") for c in (C1, C2)]
-    fig.legend(handles, ser_labels, ncol=2, loc="upper center", bbox_to_anchor=(0.5, 1.06),
-               frameon=False, fontsize=10.5, handlelength=1.6, handleheight=1.6)
+    fig.legend(handles, ser_labels, ncol=2, loc="upper center", bbox_to_anchor=(0.5, 1.08),
+               frameon=False, fontsize=13, handlelength=1.6, handleheight=1.6)
     fig.tight_layout()
     fig.savefig(path, bbox_inches="tight")
     plt.close(fig)
@@ -156,25 +163,26 @@ DEAD_IN, DEAD_PUMA = (.176, .136, .127), (.002, .005, .033)
 
 def dumbbell_chart(path, arch_names, ser_labels, in_vals, puma_vals):
     import matplotlib.patheffects as pe
-    fig, ax = plt.subplots(figsize=(6.8, 2.6))
+    fig, ax = plt.subplots(figsize=(5.8, 2.35))
     y = list(range(len(arch_names)))[::-1]
     for row, iv, pv in zip(y, in_vals, puma_vals):
-        ax.plot([pv, iv], [row, row], color=MUTED, linewidth=2.8, zorder=1)
-        ax.scatter([iv], [row], s=90, color=C1, zorder=2)
-        ax.scatter([pv], [row], s=90, color=C2, zorder=2)
-        halo = [pe.withStroke(linewidth=3.5, foreground="white")]
-        ax.text(iv + .008, row, f"{iv:.3f}".lstrip("0"), va="center", fontsize=10.5,
+        ax.plot([pv, iv], [row, row], color=MUTED, linewidth=3.0, zorder=1)
+        ax.scatter([iv], [row], s=100, color=C1, zorder=2)
+        ax.scatter([pv], [row], s=100, color=C2, zorder=2)
+        halo = [pe.withStroke(linewidth=4.0, foreground="white")]
+        ax.text(iv + .008, row, f"{iv:.3f}".lstrip("0"), va="center", fontsize=13,
                 color=INK2, path_effects=halo, zorder=3)
-        ax.text(pv + .008, row, f"{pv:.3f}".lstrip("0"), va="center", fontsize=10.5,
+        ax.text(pv + .008, row, f"{pv:.3f}".lstrip("0"), va="center", fontsize=13,
                 color=INK2, path_effects=halo, zorder=3)
     ax.set_yticks(y, arch_names)
-    ax.set_xlim(0, 0.21)
+    ax.set_xlim(0, 0.235)  # room for the .176 value label inside the axes
+    ax.set_ylim(-0.45, len(arch_names) - 0.4)
     ax.set_xticks([0, .05, .10, .15, .20], ["0", ".05", ".10", ".15", ".20"])
     style_ax(ax)
     ax.legend(handles=[plt.Line2D([], [], marker="o", ls="", color=c, markersize=10)
                        for c in (C1, C2)],
-              labels=ser_labels, ncol=2, loc="lower left", bbox_to_anchor=(0, 1.02),
-              frameon=False, fontsize=10.5)
+              labels=ser_labels, ncol=2, loc="lower center", bbox_to_anchor=(0.5, 1.06),
+              frameon=False, fontsize=12.5, columnspacing=1.6, handletextpad=0.4)
     fig.tight_layout()
     fig.savefig(path, bbox_inches="tight")
     plt.close(fig)
@@ -186,7 +194,7 @@ def main():
     en_groups = [("matched", C1, [0]), ("merged", C2, [1]),
                  ("missed (no overlap)", C3, [2]), ("miss (shape)", C4, [3]),
                  ("split", C5, [4])]
-    decomp_chart(FIGS / "chart_decomp.png", list(DECOMP), en_groups)
+    decomp_chart(FIGS / "chart_decomp.png", list(DECOMP), en_groups, legend_ncol=3)
     axes_chart(FIGS / "chart_axes.png", ARCHS,
                ["Real transfer drop", "CF context-swap drop"],
                ["detection ($F_d$ drop)", "typing (gap increase)"])
@@ -194,7 +202,7 @@ def main():
                    ["in domain (PanNuke)", "cross domain (PUMA)"], DEAD_IN, DEAD_PUMA)
     # -- plain-language summary (Chinese labels, simplified categories)
     zh_classes = {"Neoplastic": "肿瘤核", "Inflammatory": "炎症核", "Connective": "结缔核",
-                  "Dead": "凋亡核（Dead）", "Epithelial": "上皮核"}
+                  "Dead": "凋亡核 (Dead)", "Epithelial": "上皮核"}
     zh_groups = [("检出", C1, [0]), ("完全漏检", C2, [2]), ("其它错误", C3, [1, 3, 4])]
     decomp_chart(FIGS / "chart_decomp_zh.png", list(DECOMP), zh_groups,
                  class_display=zh_classes)

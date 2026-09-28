@@ -75,8 +75,11 @@
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.86\linewidth]{figs/dead_missed.jpg}
-\caption{模型漏检凋亡核示例：绿色是人工标注的凋亡核，黄色是模型画出的核。上两行中的绿色
-轮廓没有任何黄色与之对应——模型完全没看见它们。}
+\caption{模型找核的示例（CellViT-UNI，折 3；每组 4 个视野）：绿色是人工标注的目标核，
+黄色是模型画出的核，青色是图中其它标注。上排“Dead missed”：凋亡核的绿色轮廓没有任何
+黄框对应——模型完全没看见它们（407 个）；中排“Dead matched”：被正常检出的凋亡核
+（绿黄重合）；下排“other classes missed”：其它类型漏检的对照——漏检率只有凋亡核的
+约 1/3 到 1/5。}
 \label{fig:deadmissed}
 \end{figure}
 

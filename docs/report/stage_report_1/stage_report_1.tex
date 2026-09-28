@@ -283,9 +283,11 @@ data---which defines pillar B.
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.86\linewidth]{figs/dead_missed.jpg}
-\caption{Dead ground-truth nuclei (green) vs.\ predictions (yellow), CellViT-UNI on fold 3:
-missed Dead are tiny dark fragments and chromatin-poor apoptotic bodies that carry no foreground
-response.}
+\caption{Dead ground truth (green) vs.\ predictions (yellow) for CellViT-UNI on fold 3
+(cyan: other ground truth); four crops per group. Top ``Dead missed'': no prediction corresponds
+to the green outline. Middle ``Dead matched'': recovered nuclei. Bottom ``other classes
+missed'': misses are far rarer off the Dead class. Missed Dead are tiny dark fragments and
+chromatin-poor apoptotic bodies that carry no foreground response.}
 \label{fig:dead}
 \end{figure}
 
