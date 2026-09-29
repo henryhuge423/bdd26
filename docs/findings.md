@@ -713,3 +713,132 @@ Code review of d2deb93/a70ac15 found 5 correctness bugs; all fixed with tests (3
   verified byte-identical), dead scaffolding removed, --out-gt documented as opt-in.
 - LM2 `/data6/jinxinhao/bdd26` is a plain rsync'd tree (not a git clone): the fixed files
   were rsync'd over directly (edits on disk cannot affect the running B1 process).
+
+## 2026-09-29 (morning) — KongNet fold mapping resolved empirically: identity; class channels verified
+`scripts/kongnet_foldmap.py` (ugradx GPU0, 200 imgs/fold linspace-sampled, vendored
+`KongNet_Inference_Main` model + decode at repo defaults: ImageNet norm, fp16 autocast, peak
+threshold .5 / min_distance 11). Pooled detection F1 (centroid pairing r = 12 px, per image as in
+pannuke_eval), ckpt x fold:
+| ckpt | fold1 | fold2 | fold3 | -> train fold (split: train/val/test) |
+|---|---|---|---|---|
+| 1 | **.9051** | .7807 | .7777 | 1 (1/2/3) |
+| 2 | .7845 | **.9435** | .7795 | 2 (2/1/3) |
+| 3 | .7690 | .7730 | **.9121** | 3 (3/2/1) |
+- **`KongNet_PanNuke_k.pth` = official split k** (train fold k; diagonal train-fold F1 margin
+  >= .13 over both held-out folds, clean permutation). Decision rule = argmax train-fold F1
+  (memorisation), so the identified test folds' numbers never entered any decision; nothing tuned.
+- **Channel map confirmed on the train folds only**: matched-pair confusion (pred x gt) is
+  diagonally dominant, class agreement .970/.986/.976; Dead diagonal 71/26/36 with ~0 off-diagonal.
+  So heads = [overall] + 5 classes, heatmap = 3rd channel of each head ([5,8,11,14,17] =
+  neoplastic..epithelial, official order) exactly as the repo's `cell_channel_map` claims.
+- Checkpoints are {epoch, model, optimizer} (~2.1 GB each, 176.9 M params: tf_efficientnetv2_l
+  encoder + 6 SMP decoders; epochs 56/87/67). **The released inference pipeline outputs detection
+  POINTS only** — no instance masks — so strict-protocol PQ needs the other 2 channels per head
+  (their `prediction_utils` suggests seg + contour semantics, `multihead_seg_post_process`) or a
+  point-detection evaluation; any decode thresholds must be chosen on VAL folds only.
+- Artifact: `runs/analysis/kongnet_foldmap.json` (ugradx + LM1). `segmentation-models-pytorch`
+  0.5.0 installed into the ugrad venv via uv. Probe gotchas fixed en route: type.npy classes are
+  1..5 (off-by-one vs channel indices), torch.load of consecutive 2.1 GB ckpts breaches the ugrad
+  16 GB address-space cap (del between loads), pairing must be per image (fold-level Munkres is
+  O(n^3) on 40k points).
+- (2026-09-29 audit erratum for the 2026-09-28 evening entry, point 3: the two parentheticals in
+  "official -> excluded" are swapped — Uterus Dead PQ is near 0, so excluding Uterus RAISES Dead
+  PQ; split-1 seed-19 no-TTA is official .142 / Uterus-excluded .195. The table's per-split
+  numbers are the same values, just mislabeled.)
+
+## 2026-09-29 (midday) — B1 (2x resolution) split-1 result: every Dead endpoint positive, but a uniform bPQ tax
+Run `runs/cellvit_uni_x2/split1` (LM2 GPU7, seed 19, 130 epochs @ ~326 s = 12.6 h; eval + TTA
+done 12:00; pulled to LM1 — the run's untagged `eval_test_fold3[_tta]` ARE the x2 results per the
+in-flight-run note). Compare vs 3 baseline seeds (19/1/2) with `scripts/compare_runs.py`
+(2000-draw paired image bootstrap; JSONs `runs/analysis/x2_split1_{tta,notta}_vs_base.json`;
+Dead views `runs/analysis/x2_dead_views.py`):
+
+| metric (TTA) | base mean (seed std) | x2 s19 | delta [95% CI] |
+|---|---|---|---|
+| mPQ | .4979 (.0032) | .4800 | -.0180 [-.0238,-.0122] |
+| bPQ | .6708 (.0018) | .6447 | **-.0261** [-.0308,-.0219] |
+| Dead PQ (official) | .1429 (.0054) | .1614 | **+.0185** [+.0019,+.0364] |
+
+No-TTA is the same story (dDead +.0202 [+.0029,+.0389], dbPQ -.0286).
+
+- **All pre-registered Dead endpoints positive** (TTA; base = mean over seeds 19/1/2):
+  Uterus-excluded Dead PQ .198 (.188-.204) -> **.219**; interior Dead missed_bg .352 (.343-.365)
+  -> **.251** (-.101, ~10x the seed spread); interior Dead matched share .50 -> .56; Dead F_c
+  .310 -> .356; pooled DQ+ .352 -> .371; even Uterus intraluminal clusters .041 -> .055.
+- **bPQ non-regression FAILS**: -.0261 = 13x the seed std, negative in ALL 19 tissues (Thyroid
+  -.000 .. Pancreatic -.048), and every non-Dead class regresses (Neo -.036, Epi -.021, Con -.020,
+  Inf -.011). A pure Dead-for-everything-else trade.
+- Interpretation: the -10 pt interior Dead miss is exactly where the 2026-09-28 artifact analysis
+  placed the class-specific Dead deficit, so working resolution IS a Dead bottleneck (the
+  resolution hypothesis survives on the Dead side). But the tax is uniform, not Dead-adjacent —
+  consistent with a decode-side cost (512 -> 256 nearest-downsample of the instance map) rather
+  than per-class model damage; one cheap follow-up before believing a model-level trade: re-decode
+  variants (e.g. downsample probability maps, not label ids). Per the pre-registered combined
+  endpoint (Dead + bPQ non-regression), **x2-as-is is not a win**; the grid continues for the
+  science claim only.
+- **Follow-up runs launched 12:30 (LM2, fixed code -> tagged `eval_test_fold{t}_x2[_tta]`)**:
+  GPU7 chain split2/s19 -> split1/s1; GPU1 chain split3/s19 -> split1/s2; outs
+  `runs/cellvit_uni_x2/{split2,split3,split1_seed1,split1_seed2}`, logs
+  `runs/_x2_chain_gpu{7,1}.log`. ETA split2+split3 ~01:30, chained seed pair ~14:30 tomorrow
+  (~13 h/run; GPUs shared at 100% util). Full 3x3 still needs split2/3 seeds 1+2 — decide after
+  this wave. Baselines exist for all splits (seed 19; extra seeds only on split1).
+- KongNet (A1) verified quiescent on ugradx: no processes; foldmap artifacts safe (ugradx + LM1
+  `runs/analysis/`); ugradx script copy identical to LM1 (`kongnet_foldmap.py` md5 b156b11e).
+
+## 2026-09-29 (evening) — x2 deep-dive: decode-downsample hypothesis REFUTED; bPQ tax = fixed-px decode constants at 512 (large-nucleus over-segmentation + tiny fragments)
+Re-analysis of the same four TTA runs from per-nucleus `gt_records`/`pred_records` (join key
+image+cumcount; base = 3-seed mean). The midday interpretation ("uniform bPQ tax ~ decode-side
+512->256 nearest downsample of the instance map") is **wrong in mechanism**; montages
+`runs/analysis/x2_montage_{damage,gain,fragments}.png` (script `runs/analysis/x2_montage.py`,
+x2 preds pulled from LM2 `pred_test_fold3_tta.npz`).
+
+- **The tax is not colocated with the Dead gain**: per image (97 Dead-bearing), corr(dbPQ, dDead)
+  = +.23; median dbPQ = +.003 among dDead>0 images vs **-.027** among dDead<=0. Images that
+  gained Dead are bPQ-neutral; the losing images are the ones without Dead.
+- **Size, not class, is the axis** (nonDead GT-area bins, match-rate / matched-IoU, x2-base):
+  0-200 px **+.104 / +.094** (n=15802); 200-400 -.010/+.001; 400-800 -.020/-.010;
+  800-1600 -.029/-.023; 1600-3200 **-.070/-.048**; 3200-6400 -.115/-.070. Dead 0-200 +.091/+.082.
+  x2 helps small nuclei everywhere (incl. Dead) and hurts large ones monotonically.
+- **Boundary quality of matched nuclei is unchanged**: matched IoU by n_touch 0..4:
+  -.004/-.003/+.000/+.005/-.003. The nearest-downsample of label maps costs ~nothing measurable
+  (also matched median pred areas ~unchanged) — refutes the decode-downsample story for bPQ.
+- **Error composition**: split rate up in every class (Neo .009->.017, Con .013->.025, Dead
+  .010->.026); among large (>=1600 px) nonDead: split .072->.104, merged .003->.009, missed_bg
+  .024->.054. Pred side: fp_split ~doubles (Neo .018->.037, Con .026->.049, Dead .015->.047),
+  fp_bg +40-80%. **#preds/image 24->27; <80 px pred share .034->.109 (3.2x)** — over-segmentation
+  plus a small-fragment flood.
+- **Mechanism (code-verified)**: `third_party/hover_net/models/hovernet/post_proc.py::process`
+  hardcodes pixel-unit constants applied to the 512-res maps: `remove_small_objects(min_size=10)`
+  (AREA, skimage semantics -> 2.5 native-px^2 equiv at u=2) on both the np blob and the marker
+  map, and `Sobel(ksize=21)` (LENGTH -> 10.5 native-px equiv) on the HV maps. At x2 every
+  threshold relaxes in native units -> spurious markers survive and fragment -> large nuclei
+  split/merge; tiny blobs pass -> fp_bg/fp_split. Small-nucleus detection gain is real model
+  resolution benefit (missed_bg halves; matched Dead IoU +.08).
+- **Pre-registered re-decode follow-up (decode-only, no retraining)**: scale px-unit constants
+  by u — min_size 10 -> 10*u^2 (=40), ksize 21 -> nearest odd *u (=41) — re-run
+  `predict_fold` + eval on the existing x2 checkpoints (split1 ckpt is `final.pth` on LM2).
+  Prediction: recovers most of bPQ (-.026 -> ~0) while keeping the Dead gains, since boundary
+  quality is already at parity and the Dead gain lives in detection, not decode. If it does,
+  x2 + scaled decode should be re-judged against the combined endpoint before writing B1 off.
+- **Visual verdict (sonnet vision subagent on the three montages, tile-level + re-measured)**:
+  confirms all four numeric claims with refinements. (i) Damage visible in 11/12 sampled large
+  nuclei, dominant mode = **interior fragmentation** (img 477: one nucleus -> 7-piece mosaic
+  with axis-aligned stair-step dividers; outer contour stays on the GT in 12/12, GT coverage
+  .866->.871) — marker/watershed seed plateaus on chromatin texture, NOT boundary wander;
+  2/12 true merges, 0 misses, 1/12 an IoU-threshold artifact (no visible difference). If
+  anything x2 boundaries adhere slightly better (img 275: base's inset/shrinkage disappears).
+  (ii) Small-Dead gains 12/12, mean IoU .70, centroid offset <= 1.6 px. (iii) Tiny-FP surplus
+  mostly genuine (8/12 x2-only specks on stroma/lumen/chromatin gaps) BUT ~1/3 of sampled
+  fragments are **border-clipping slivers** of nuclei both models detect (3/4 of those at
+  y=0-2 or x=0 of the 256-px patch) and 1-2 sit on unannotated pyknotic dots (plausible real
+  biology) — the 3.2x fragment figure overstates new hallucination somewhat. (iv) No erosion,
+  halo, or double-contour artifacts anywhere.
+- **Decode-fix menu updated by the visuals** (all decode-only, pre-registered): (1) scale the
+  px constants (min_size*u^2, ksize*u) — attacks fragmentation + fragments; (2) post-hoc merge
+  of same-class adjacent instances — img 477-style mosaics have clean outer boundaries, so
+  merging may convert the damage into a net win; (3) drop edge-touching components (border
+  slivers). Also noted: base itself under-covers 25-42% of the GT in 4/12 damage cases —
+  "base matched" is a low bar for large nuclei.
+- Status note: evening progress — GPU7 split2 epoch 84/130 (~01:50 finish), GPU1 split3 epoch
+  75/130 (~04:15, shared-GPU slower than the 01:30 estimate). `LM2COPY/` (9-file staging dir
+  from the 03:42 rsync push) verified byte-identical to HEAD and deleted.
