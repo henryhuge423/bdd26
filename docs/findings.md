@@ -842,3 +842,22 @@ x2 preds pulled from LM2 `pred_test_fold3_tta.npz`).
 - Status note: evening progress — GPU7 split2 epoch 84/130 (~01:50 finish), GPU1 split3 epoch
   75/130 (~04:15, shared-GPU slower than the 01:30 estimate). `LM2COPY/` (9-file staging dir
   from the 03:42 rsync push) verified byte-identical to HEAD and deleted.
+
+## 2026-09-30 (night) — pre-registered decode-fix re-decode CONFIRMED: scaled px constants own ~2/3 of the x2 bPQ tax and ~3/4-9/10 of the mPQ+ loss; Dead gain kept and slightly enlarged
+`--decode-u` (predict_cellvit.py) scales `min_size 10 -> 10*u^2` and the Sobel aperture `21 -> odd(21*u)`
+(=41). cv2.Sobel caps at 31, so aperture >31 uses the official 21-tap operator's impulse-response kernels
+linearly resampled (identity at 21, tested; u=1 path bit-exact, tests/test_decode_scale.py). Artifacts
+`eval_fold{f}_x2_du2{,_tta}/` on LM2; split1 built-in x2 evals keep the pre-res_tag names
+`eval_test_fold3{,_tta}`. du2 ran on idle LM2 GPUs 0/3 via watchers while the chains kept GPU 1/7.
+3-split test means (last ckpt), base / x2 / x2+du2:
+- TTA:   mPQ .5047/.4848/.4926  bPQ .6706/.6488/.6620  mPQ+ .5227/.5070/.5189  Dead .1768/.1786/.1810
+- noTTA: mPQ .4995/.4791/.4894  bPQ .6654/.6413/.6583  mPQ+ .5178/.5012/.5158  Dead .1760/.1816/.1831
+Verdict vs the prediction ("recovers most of bPQ -.026 -> ~0, keeps Dead"): bPQ tax recovered 61% (TTA
+-.0218 -> -.0086) and 70% (noTTA -.0240 -> -.0071) — most, but not to ~0; mPQ+ nearly closes (-.0158 ->
+-.0038 TTA, 76%; -.0166 -> -.0020 noTTA, 88%); mPQ recovers only ~40-50%. Dead gain is kept and slightly
+larger after du2 (TTA +.0019 -> +.0042; noTTA +.0056 -> +.0071). Per-split Dead: the x2 gain is fold3-driven
+(s1 noTTA +.0171, s2 +.0091) while s3 (fold1) shows a small x2 Dead loss (-.0094) that du2 partly recovers
+(-.0032) — consistent with the known fold3/fold1 Dead asymmetry. Combined endpoint: x2+du2 still nets
+slightly below base (bPQ -.007..-.009, mPQ -.010..-.012, mPQ+ -.002..-.004), so x2 remains unjustified for
+overall metrics; residual suspects = the unscaled 5x5 marker-open kernel and genuine fp_split at 512 —
+next decode-menu levers: post-hoc merge of same-class adjacent instances, drop edge-touching slivers.
