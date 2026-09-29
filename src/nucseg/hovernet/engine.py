@@ -16,6 +16,7 @@ from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 
 from ..constants import NUM_CLASSES
+from ..postproc.recovery import decode_pred_map
 from .data import PAD, PanNukeHoVer, pad_image
 from .official import (
     HoVerNet, convert_pytorch_checkpoint, dice_loss, msge_loss, mse_loss, post_process, xentropy_loss,
@@ -189,8 +190,13 @@ def validate(model, dl, device, amp=False) -> dict:
 # ---------------------------------------------------------------- inference
 
 def _post(args):
-    pred_map, = args
-    inst, info = post_process(pred_map, nr_types=NR_TYPES)
+    """Decode one network output map; args = (pred_map,) or (pred_map, decode_u) with the px-unit
+    decode constants scaled by u (nucseg.postproc.recovery.decode_pred_map, u=1 = official)."""
+    pred_map, *rest = args
+    if rest and rest[0] != 1.0:
+        inst, info = decode_pred_map(pred_map, nr_types=NR_TYPES, u=rest[0])
+    else:
+        inst, info = post_process(pred_map, nr_types=NR_TYPES)
     typ = np.zeros(inst.shape, np.uint8)
     keep = np.zeros(inst.shape, bool)
     for iid, d in info.items():

@@ -60,22 +60,60 @@ def foreground(np_fg: np.ndarray, tp_prob: np.ndarray, cfg: Recovery) -> np.ndar
     return fg
 
 
-def proc_np_hv(pred: np.ndarray, thr: float = 0.5, orphans: bool = False) -> np.ndarray:
-    """Official __proc_np_hv with a configurable blob threshold and optional orphan-blob recovery.
-    pred (H, W, 3): foreground probability, horizontal map, vertical map."""
+def scaled_min_size(u: float) -> int:
+    """Official AREA constant (remove_small_objects min_size=10 px^2 at the native 256 px), scaled to
+    a u x working resolution by area (docs/findings.md 2026-09-29 pre-registered decode fix)."""
+    return max(1, int(round(10 * u * u)))
+
+
+def scaled_ksize(u: float) -> int:
+    """Official Sobel LENGTH constant (ksize=21 px at the native 256 px), scaled by u, kept odd."""
+    k = max(1, int(round(21 * u)))
+    return k if k % 2 else k - 1
+
+
+def _rescaled_sobel_kernels(ksize: int):
+    """Separable kernels of cv2.Sobel(ksize=21) resampled to an odd ksize > 31 (OpenCV hard-caps the
+    Sobel aperture at 31, so the pre-registered u-scaled 41 is not directly expressible). The official
+    operator's kernels are measured from its impulse response and linearly resampled, preserving its
+    profile shape while scaling the support; the following cv2.normalize makes kernel scale moot."""
+    d = np.zeros((63, 63))
+    d[31, 31] = 1.0
+    r = cv2.Sobel(d, cv2.CV_64F, 1, 0, ksize=21)
+    kx = r[31, 21:42] / np.abs(r[31, 21:42]).max()    # x profile through the impulse row (21 taps)
+    ky = r[21:42, 33] / np.abs(r[21:42, 33]).max()    # y profile; +2 off center (x kernel is 0 there)
+    kx = cv2.resize(kx.reshape(21, 1), (1, ksize), interpolation=cv2.INTER_LINEAR)
+    ky = cv2.resize(ky.reshape(21, 1), (1, ksize), interpolation=cv2.INTER_LINEAR)
+    return kx, ky
+
+
+def _sobel_hv(h_dir: np.ndarray, v_dir: np.ndarray, ksize: int):
+    """The official (dx=1, dy=0) Sobel pair at aperture ksize."""
+    if ksize <= 31:
+        return (cv2.Sobel(h_dir, cv2.CV_64F, 1, 0, ksize=ksize),
+                cv2.Sobel(v_dir, cv2.CV_64F, 0, 1, ksize=ksize))
+    kx, ky = _rescaled_sobel_kernels(ksize)
+    return (cv2.sepFilter2D(h_dir, cv2.CV_64F, kx, ky),
+            cv2.sepFilter2D(v_dir, cv2.CV_64F, ky, kx))
+
+
+def proc_np_hv(pred: np.ndarray, thr: float = 0.5, orphans: bool = False, u: float = 1.0) -> np.ndarray:
+    """Official __proc_np_hv with a configurable blob threshold, optional orphan-blob recovery, and
+    u-scaling of the px-unit decode constants (min_size 10 -> 10*u^2, Sobel ksize 21 -> odd(21*u);
+    u=1 is bit-identical to the official function). pred (H, W, 3): foreground probability,
+    horizontal map, vertical map."""
     pred = np.array(pred, dtype=np.float32)
     blb_raw, h_dir_raw, v_dir_raw = pred[..., 0], pred[..., 1], pred[..., 2]
 
     blb = np.array(blb_raw >= thr, dtype=np.int32)
     blb = label(blb)[0]
-    blb = remove_small_objects(blb, min_size=10)
+    blb = remove_small_objects(blb, min_size=scaled_min_size(u))
     blb_lab = blb.copy()
     blb[blb > 0] = 1
 
     h_dir = cv2.normalize(h_dir_raw, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
     v_dir = cv2.normalize(v_dir_raw, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
-    sobelh = cv2.Sobel(h_dir, cv2.CV_64F, 1, 0, ksize=21)
-    sobelv = cv2.Sobel(v_dir, cv2.CV_64F, 0, 1, ksize=21)
+    sobelh, sobelv = _sobel_hv(h_dir, v_dir, scaled_ksize(u))
     sobelh = 1 - cv2.normalize(sobelh, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
     sobelv = 1 - cv2.normalize(sobelv, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
 
@@ -92,7 +130,7 @@ def proc_np_hv(pred: np.ndarray, thr: float = 0.5, orphans: bool = False) -> np.
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
     marker = cv2.morphologyEx(marker, cv2.MORPH_OPEN, kernel)
     marker = label(marker)[0]
-    marker = remove_small_objects(marker, min_size=10)
+    marker = remove_small_objects(marker, min_size=scaled_min_size(u))
 
     inst = watershed(dist, markers=marker, mask=blb)
     if orphans:
@@ -103,6 +141,20 @@ def proc_np_hv(pred: np.ndarray, thr: float = 0.5, orphans: bool = False) -> np.
             inst[blb_lab == o] = nxt
             nxt += 1
     return inst
+
+
+def decode_pred_map(pred_map: np.ndarray, nr_types: int = NR_TYPES, u: float = 1.0):
+    """Official `process` with the px-unit decode constants scaled by u (pre-registered x2 re-decode,
+    docs/findings.md 2026-09-29: min_size 10 -> 10*u^2, Sobel ksize 21 -> odd(21*u)). u=1 is the
+    unmodified official decode."""
+    if u == 1.0:
+        return _official.process(pred_map, nr_types=nr_types)
+    # official `process` looks the instance function up as a module global at call time
+    _official.__dict__["__proc_np_hv"] = lambda p: proc_np_hv(p, u=u)
+    try:
+        return _official.process(pred_map, nr_types=nr_types)
+    finally:
+        _official.__dict__["__proc_np_hv"] = _ORIGINAL
 
 
 def postprocess(np_fg: np.ndarray, hv: np.ndarray, tp_prob: np.ndarray, cfg: Recovery = Recovery()):
