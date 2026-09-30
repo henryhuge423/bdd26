@@ -959,3 +959,17 @@ Dead F_c, +.028 Dead DQ+, +.009 Uterus-excluded Dead PQ, +.071 interior-Dead mat
   predicting (watcher), split2_seed1 ep116, split2_seed2 ep77, split3_seed2 ep35 (~11 h).
   Watcher alive (PID 1996666); the old session's summation cron is dead — grid summation is
   manual on LM2 completion (~13:00), then the pre-registered 3x3 seed-noise verdict for B1.
+- **Grid extended to the levered arm + split1 3x3 complete** (02:00): lever applied with the
+  frozen constants to split1_seed1/2 and split3_seed1 du2 preds; central evals written under
+  canonical names `eval_test_fold{T}_du2{,lev}` in each seed dir (`runs/analysis/x2_grid_sum.py`
+  sums whatever exists). split1 3-seed table (mean±std; base / du2 / du2lev): mPQ
+  .4928±.0021 / .4846±.0019 / .4863±.0021; bPQ .6661±.0015 / .6565±.0003 / .6590±.0002;
+  Dead PQ .1393±.0074 / .1504±.0107 / .1508±.0112; interior-Dead miss .400±.015 / .348±.008 /
+  .348±.008. Paired per-seed du2lev-vs-base: Dead PQ + 3/3 seeds (+.020/+.009/+.006),
+  interior-Dead miss - 3/3 (-.045/-.039/-.074), Dead F_c + 3/3; mPQ - 3/3 (-.007/-.007/-.006),
+  bPQ - 3/3 (-.008/-.006/-.007). **The Dead-detection gain is seed-robust (3/3, effect ~1.5x
+  the seed std); so is the price (~4x std).** split3_seed1 du2 (.4987/.6598/Dead .2415) beats
+  its seed19 (.4964/.6620/.2204) — split3 seed spread is the larger one. Lever on the new
+  seed runs (split1 s1/s2, split3 s1): dmPQ +.0014/+.0015/+.0021, dbPQ +.0022/+.0023/+.0030,
+  Dead +.0005/-.0007/+.0004 — the PASS verdict replicates across seeds (6/6 runs so far
+  positive on both mPQ and bPQ over the 3 splits' available seeds).
