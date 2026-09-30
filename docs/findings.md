@@ -894,3 +894,28 @@ to 1.0; seg then hit its 0.2 edge, extended to 0.1. Test folds ran once with the
   a detection-density problem. Artifacts: `runs/kongnet/{sweep_c*.json, pred_*.npz,
   split{k}/eval_test_fold{3,3,1}}` (LM1), ugradx `/tmp/cgf2604/bdd26/runs/kongnet/` (same sweeps);
   queue script `scripts/ugrad_kongnet_queue.sh` (grid + seq A/B runner, reusable for other ckpts).
+
+## 2026-09-30 late night — ugrad ops + batch A/B + lever M/S selection (verdict pending)
+
+Full operational record: `findings/findings_2026-09-30_phase2.md`; A/B: `runs/_ab_verdict.md`.
+
+- **Batch size is result-invariant on ugrad**: preallocation refactor bit-identical (0.00e+00);
+  batch 2 vs 32 differs <= 2.82e-05 on all rate metrics (4/~66k instances, cudnn algorithm
+  noise). UGRAD_BS=2 adopted under the ENFORCED ~3.6 GiB per-process L4 cap (old "6.9 GB"
+  corrected in CLAUDE.md); `expandable_segments` is rejected by that cap — never set it there.
+  Five ugrad run-killing modes diagnosed and fixed today (VA preallocation, astype
+  default-copy, GPU cap, VMM rejection, in-process eval on 16 GB VA) — predicts and evals are
+  now separate processes, evals run centrally on LM1/LM2.
+- **Lever M/S chosen VAL-only: (frac 0.25, a_min 40) for all splits** (du2 VAL sweeps: bPQ
+  rises on all three, mPQ +.0014/+.0012/+.0018; rule bPQ >= baseline-.002, max mPQ). The same
+  pair wins the first extended sweep (split1 du2mk2 VAL: .4845/.6486 vs baseline .4836/.6455).
+- du2lev TEST (eval_test_fold{3,3,1}_du2lev, rsynced to LM1): mPQ mean .4910, bPQ mean .6608,
+  Dead PQ .162/.169/.219, Uterus-excluded Dead PQ mean .2266, interior-Dead miss pooled
+  .3041. vs x1 CellViT-UNI (mPQ .4995, bPQ .6654, Utex DeadPQ .2175, interior-Dead miss
+  .3738): the levered x2+du2 trades ~.008 mPQ/bPQ for +.009 Uterus-excluded Dead PQ and
+  −.070 interior-Dead miss. Pre-registered PASS/FAIL vs un-levered du2 lands when the du2
+  test evals finish (never yet computed; running on LM2, pickup cron 00:53).
+- Seed grid started: split1 test fold3 seed1 .4825/.6568/DeadPQ .1392, seed2 .4854/.6565/
+  .1515 (seed19 = the du2 eval, pending). split1_seed1/seed2 chains DONE; split2_seed1 ep103,
+  split3_seed1 ep121, split2_seed2 ep63, split3_seed2 ep23 at 23:43 — all four alive under
+  the LM2 watcher; grid summation cron 2026-10-02 10:07.

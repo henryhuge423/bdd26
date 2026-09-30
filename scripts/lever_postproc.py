@@ -170,8 +170,9 @@ def main():
     inst, typ = d["inst"], d["type"]
     if args.mode == "apply":
         _AP.update(inst=inst, typ=typ, cfg=(parse_frac(args.frac), args.a_min))
+        n = len(inst) if args.limit is None else min(args.limit, len(inst))
         with Pool(args.workers) as pool:
-            merged = pool.map(_apply_one, range(len(inst)), chunksize=8)
+            merged = pool.map(_apply_one, range(n), chunksize=8)
         out = np.stack(merged).astype(inst.dtype, copy=False)
         args.out = args.out or args.pred.with_name(args.pred.stem + "_lev.npz")
         np.savez_compressed(args.out, inst=out, type=typ,
