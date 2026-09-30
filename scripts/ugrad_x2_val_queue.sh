@@ -12,7 +12,10 @@
 #  c (ugradv GPU0): du2 + marker-u2, split1 val fold 2
 #  d (ugradv GPU1): plain x2, split3 val fold 2
 set -u
-export MALLOC_ARENA_MAX=2 MALLOC_TRIM_THRESHOLD_=16777216 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+export MALLOC_ARENA_MAX=2 MALLOC_TRIM_THRESHOLD_=16777216
+# NO PYTORCH_CUDA_ALLOC_CONF=expandable_segments here: the VMM-based allocator is rejected
+# by this driver's per-process GPU cap ("CUDA driver error: out of memory" at model load,
+# even 1 GiB; plain cudaMalloc reaches 3.5 GiB fine).
 cd /tmp/cgf2604/bdd26 || exit 1
 source scripts/ugrad_env.sh
 PY=python
