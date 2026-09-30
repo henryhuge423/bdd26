@@ -919,3 +919,43 @@ Full operational record: `findings/findings_2026-09-30_phase2.md`; A/B: `runs/_a
   .1515 (seed19 = the du2 eval, pending). split1_seed1/seed2 chains DONE; split2_seed1 ep103,
   split3_seed1 ep121, split2_seed2 ep63, split3_seed2 ep23 at 23:43 — all four alive under
   the LM2 watcher; grid summation cron 2026-10-02 10:07.
+
+## 2026-10-01 (early) — Lever VERDICT: PASS, strict test improvement; B1 final standing (3-split, seed 19)
+
+The pending du2 TEST evals (eval_test_fold{3,3,1}_du2) finished on LM2 and were rsynced to LM1
+(the dead session's 00:53 pickup cron never fired — done manually). Verdict script
+`runs/analysis/lever_verdict_views.py` (+ `compare_runs.py` paired bootstraps,
+`runs/analysis/lever_s{1,2,3}_du2_vs_du2lev.json`).
+
+- **PASS: the VAL-only-selected lever (frac 0.25, a_min 40) is a strict improvement on TEST.**
+  du2lev - du2 per split: mPQ +.0020/+ .0016/+.0014, bPQ +.0030/+.0025/+.0021 — all six
+  95% paired image-bootstrap CIs exclude 0 on the positive side. Dead PQ unchanged
+  (+.0015/+.0005/-.0018, CIs straddle 0); every Dead view within ±.002 (interior-Dead miss
+  .3023 -> .3023, Uterus-excluded .2262 -> .2266). npred 27.1 -> 26.6/image — the lever removes
+  ~0.5 fragments+slivers per image and nothing else measurable. Selection generalised with zero
+  test-fold tuning; all FOUR extended VAL sweeps (plain x2 x3 splits + du2mk2) independently
+  pick the same (0.25, 40) — the choice is robust across decode variants.
+- **B1 final standing, 3-split means (noTTA, last ckpt, `lever_verdict_views.py` table)**:
+
+| arm | mPQ | bPQ | mPQ+ | DeadPQ | DeadPQ -Uterus | Dead F_c | Dead DQ+ | int-Dead miss | npred |
+|---|---|---|---|---|---|---|---|---|---|
+| base (x1) | .4995 | .6653 | .5178 | .1760 | .2175 | .359 | .396 | .372 | 25.5 |
+| x2+du2 | .4894 | .6583 | .5157 | .1831 | .2262 | .395 | .424 | .302 | 27.1 |
+| x2+du2+lever | .4910 | .6608 | .5171 | .1832 | .2266 | .393 | .422 | .302 | 26.6 |
+
+(int-Dead miss = missed_bg+missed_shape among non-border Dead GT, mean of per-split rates;
+the 2026-09-30 entry's .3041/.3738 are pooled-count versions of the same quantities. mPQ+ is
+at parity; mPQ/bPQ are not, so per the pre-registered combined endpoint **x2 is not a default
+win** — it is a priced trade: -.0085 mPQ / -.0045 bPQ buys -.070 interior-Dead miss, +.036
+Dead F_c, +.028 Dead DQ+, +.009 Uterus-excluded Dead PQ, +.071 interior-Dead matched share.)
+- **The x2 cost is now fully accounted**: decode constants (du2) ~2/3 of the bPQ tax, lever
+  M/S ~1/8 more (.6583 -> .6608), residual -.0045 vs base. du2mk2 (marker-open kernel scaled
+  too) evaluated on split1 VAL: best (0.25,40) .4845/.6486 vs du2's .4850/.6478 — worse mPQ,
+  NOT adopted (the marker-open kernel is not the residual).
+- Bookkeeping: the watcher's built-in `eval_fold{TF}_x2_du2` dirs are bit-identical to the
+  central `eval_test_fold{TF}_du2` ones (verified on split1: mPQ/bPQ/Dead to 17 digits) — two
+  names, one eval; prefer the `eval_test_*` name when citing.
+- Grid at 01:12: 5/9 du2 test evals in hand (split1 x3, split2 s19, split3 s19); split3_seed1
+  predicting (watcher), split2_seed1 ep116, split2_seed2 ep77, split3_seed2 ep35 (~11 h).
+  Watcher alive (PID 1996666); the old session's summation cron is dead — grid summation is
+  manual on LM2 completion (~13:00), then the pre-registered 3x3 seed-noise verdict for B1.

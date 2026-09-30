@@ -1,8 +1,9 @@
 # 2026-09-30 evening/night — ugrad ops saga, batch A/B, lever M/S selection, seed grid start
 
 Companion to the `docs/findings.md` entries of the same date; this file holds the operational
-record. Verdict entry (lever endpoint) lands in docs/findings.md once the du2 test evals finish
-(pickup cron 2026-10-01 00:53).
+record. Verdict entry (lever endpoint) landed 2026-10-01 early: **PASS** — see the 2026-10-01
+entry in docs/findings.md (the 00:53 pickup cron died with its session; pickup + verdict were
+done manually).
 
 ## ugrad L4 hard limits — five run-killing modes, all diagnosed 2026-09-30
 
