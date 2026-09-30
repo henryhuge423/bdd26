@@ -973,3 +973,53 @@ Dead F_c, +.028 Dead DQ+, +.009 Uterus-excluded Dead PQ, +.071 interior-Dead mat
   seed runs (split1 s1/s2, split3 s1): dmPQ +.0014/+.0015/+.0021, dbPQ +.0022/+.0023/+.0030,
   Dead +.0005/-.0007/+.0004 — the PASS verdict replicates across seeds (6/6 runs so far
   positive on both mPQ and bPQ over the 3 splits' available seeds).
+
+## 2026-10-01 (morning) — LKCell-L strict-protocol re-eval: paper gap is uniform ~-.015; better segmenter, worse typer; no Dead gain
+
+First entry of the A1 external pool (survey §A): released LKCell-L per-fold checkpoints
+(HF `xiazhi/LKCell-L`; UniRepLKNet-S + RepLK decoder + CellViT np/hv/tp heads; `model_best`
+= val-selected, like HoVer-NeXt), predicted through the shared pipeline — LKCell norm
+(mean/std .5), official decode at 256, no TTA — and evaluated with
+`nucseg.metrics.pannuke_eval` on all 3 folds (`runs/lkcell/split{1,2,3}/eval_fold{3,3,1}`).
+
+| arm | mPQ | bPQ | mPQ+ | DeadPQ | DeadPQ -Uterus | Dead F_c | Dead DQ+ | int-Dead miss |
+|---|---|---|---|---|---|---|---|---|
+| LKCell-L strict (ours) | .4923 | .6729 | .5235 | .1542 | .2010 | .382 | .418 | .347 |
+| CellViT-UNI base (seed19) | .4995 | .6653 | .5178 | .1760 | .2175 | .359 | .396 | .372 |
+| x2+du2+lever (seed19) | .4910 | .6608 | .5171 | .1832 | .2266 | .393 | .422 | .302 |
+| LKCell-L paper | .508 | .685 | — | .172 | — | — | — | — |
+
+Per-split strict: mPQ .4857/.4855/.5057, Dead PQ .1150/.1415/.2062 (splits 1/2/3).
+
+- **Uniform ~-.015 vs the paper on every headline metric** (mPQ -.016, bPQ -.012, Dead -.018)
+  — a protocol translation, not a broken pipeline (a fold/norm error craters metrics, it does
+  not shift them all by the same amount). No TTA applied; checkpoint = their released
+  `model_best`. Cannot be resolved further from the paper alone; recorded as-is for the
+  architecture table.
+- **Under matched conditions LKCell-L does not beat our base where it counts**: mPQ -.0072,
+  Dead PQ -.0218 vs CellViT-UNI, despite bPQ +.0076 and mPQ+ +.0057. Decomposition: LKCell is
+  the better *segmenter* (mPQ+/bPQ up; Dead F_c .382 vs .359 — it FINDS Dead nuclei better)
+  but a worse *typer* — its detected Dead nuclei still fail class-PQ pairing (type/segmentation
+  of matched pairs), so better detection does not become better Dead PQ. Same direction as the
+  KongNet verdict (line A): general architecture strength does not transfer into Dead or
+  typing gains under a matched protocol. Even our costliest arm (x2+du2+lever) is at mPQ parity
+  with strict LKCell (.4910 vs .4923) while winning every Dead endpoint.
+- Pillar-C rank pool: LKCell joins with full Dead endpoints (n=4 architectures).
+- Sanity: predicted density tracks GT block-wise (fold3 opens with a sparse tissue: GT 12.9
+  vs pred 13 instances/img on the first 40 patches); per-split Dead ordering (3 >> 2 > 1)
+  matches the base's.
+- Ops (ugradx, recorded in memory): the vendored `CellViT()` constructs itself ON GPU (blocks
+  `.to(device)` in `__init__`), so construction counts against the enforced ~3.6 GiB per-USER
+  GPU budget — two concurrent predicts died silently (SIGKILL, no traceback); ONE sequential
+  chain at `--batch-size 3` is stable and does 2722 patches in ~2 min/fold.
+  `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` is rejected by the cap (re-hit today
+  despite the 09-30 note — reread the memory file before ugrad launches).
+- Grid 7/9 (04:55): split2_seed1 du2+lever picked up from LM2 (lever dmPQ +.0011, dbPQ +.0023,
+  Dead +.0006 — the PASS verdict is now 7/7 runs); `x2_grid_sum.py` ARMS globbed so remaining
+  seed evals are picked up automatically. split2_seed2 (~08:30) and split3_seed2 (~14:45)
+  still to land for the pre-registered 3x3 seed-noise verdict.
+- LM1 env repair in passing: the 09-30 torch-2.14 incident had left cu13/unsuffixed nvidia
+  packages shadowing the cu12 sonames (torch linked cuDNN 9.24 -> every CUDA conv
+  `CUDNN_STATUS_NOT_INITIALIZED`; no LM1 GPU job ran in that window — first caught by pytest).
+  Purged the cu13 family + `--force-reinstall` of the cu12 pins; `torch.backends.cudnn.version()`
+  back to 9.1.0.70, 49/49 tests pass.
