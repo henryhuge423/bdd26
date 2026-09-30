@@ -131,6 +131,23 @@ def _one_image(j: int) -> list:
             for frac, a_min in _G["grid"]]
 
 
+_AP: dict = {}
+
+
+def _apply_one(j: int) -> np.ndarray:
+    """Worker for apply mode: the chosen (frac, a_min) for image j. Class array is dense over
+    1..max_id (x2 nearest downsampling can drop ids — see _one_image)."""
+    inst, typ = _AP["inst"], _AP["typ"]
+    frac, a_min = _AP["cfg"]
+    inst_j = np.asarray(inst[j])
+    geo = image_geometry(inst_j)
+    cls = instance_classes(inst_j, np.asarray(typ[j]))[1]
+    ids = np.unique(inst_j)
+    cls_dense = np.zeros(int(inst_j.max()) + 1, cls.dtype)
+    cls_dense[ids[ids > 0]] = cls
+    return apply_levers(inst_j, geo, frac, a_min, cls_dense)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--pred", type=Path, required=True)
@@ -152,11 +169,10 @@ def main():
     d = np.load(args.pred)
     inst, typ = d["inst"], d["type"]
     if args.mode == "apply":
-        out = np.empty_like(inst)
-        for j in range(len(inst)):
-            geo = image_geometry(inst[j])
-            _, cls = instance_classes(inst[j], typ[j])
-            out[j] = apply_levers(inst[j], geo, parse_frac(args.frac), args.a_min, cls)
+        _AP.update(inst=inst, typ=typ, cfg=(parse_frac(args.frac), args.a_min))
+        with Pool(args.workers) as pool:
+            merged = pool.map(_apply_one, range(len(inst)), chunksize=8)
+        out = np.stack(merged).astype(inst.dtype, copy=False)
         args.out = args.out or args.pred.with_name(args.pred.stem + "_lev.npz")
         np.savez_compressed(args.out, inst=out, type=typ,
                             **({k: d[k] for k in ("inst_img", "inst_id", "inst_prob", "tissue_prob")
