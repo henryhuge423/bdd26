@@ -21,18 +21,22 @@ source scripts/ugrad_env.sh
 PY=python
 R=runs/cellvit_uni_x2
 
-pred () {  # $1 gpu  $2 split  $3 fold  $4 extra-flags  $5 logfile
+pred () {  # $1 gpu  $2 split  $3 fold  $4 extra-flags  $5 logfile  $6 tag-suffix ("" or "_du2_mk2")
   CUDA_VISIBLE_DEVICES=$1 $PY scripts/predict_cellvit.py --run $R/split$2 --fold $3 \
-    --batch-size ${UGRAD_BS:-2} --no-inst-probs $4 > $R/split$2/$5 2>&1
+    --batch-size ${UGRAD_BS:-2} --no-inst-probs --no-eval $4 > $R/split$2/$5 2>&1
+  # eval in a FRESH process: in-process would decompress gt_channels (1.54 GiB uint16) on top
+  # of the inference process's address space (death #5, 2026-09-30 evening)
+  $PY scripts/eval_pannuke.py --pred $R/split$2/pred_fold$3_x2$6.npz --fold $3 \
+    --out $R/split$2/eval_fold$3_x2$6 >/dev/null 2>&1 || true
 }
 
 case ${1:-} in
-  a) pred 0 1 2 ""                          predict_val2.log
-     pred 0 2 1 ""                          predict_val1.log
+  a) pred 0 1 2 ""                          predict_val2.log ""
+     pred 0 2 1 ""                          predict_val1.log ""
      echo "$(date '+%F %T') seq a done" >> runs/_ugrad_x2_val.log ;;
-  c) pred 0 1 2 "--decode-u 2 --marker-u 2" predict_val2_du2mk2.log
+  c) pred 0 1 2 "--decode-u 2 --marker-u 2" predict_val2_du2mk2.log "_du2_mk2"
      echo "$(date '+%F %T') seq c done" >> runs/_ugrad_x2_val.log ;;
-  d) pred 1 3 2 ""                          predict_val2.log
+  d) pred 1 3 2 ""                          predict_val2.log ""
      echo "$(date '+%F %T') seq d done" >> runs/_ugrad_x2_val.log ;;
   *) echo "usage: $0 a|c|d"; exit 2 ;;
 esac
