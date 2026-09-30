@@ -40,7 +40,7 @@ a = p.parse_args()
 
 a.out.mkdir(parents=True, exist_ok=True)
 ck = torch.load(a.ckpt, map_location="cpu", weights_only=False)
-model = build_lkcell(ck["model_state_dict"])  # strict; frees nothing else from the 1.5 GB file
+model = build_lkcell(ck["model_state_dict"]).cuda()  # strict; frees nothing else from the 1.5 GB file
 del ck
 print(f"loaded {a.ckpt.name} (epoch tag ignored; val-selected best)")
 
