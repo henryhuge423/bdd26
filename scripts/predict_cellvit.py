@@ -32,6 +32,9 @@ p.add_argument("--decode-u", type=float, default=1.0,
 p.add_argument("--marker-u", type=float, default=1.0,
                help="scale the 5x5 marker-open kernel (odd(5*u)); 1 = official kernel "
                     "(findings 2026-09-30 residual x2 decode suspect)")
+p.add_argument("--batch-size", type=int, default=32,
+               help="forward batch; lower it on small GPUs (x2 at 512px needs ~4 on a "
+                    "6.9 GB L4; 32 is the A100 default)")
 a = p.parse_args()
 
 upscale = run_upscale(a.run, a.upscale)
@@ -39,7 +42,8 @@ model = build_model(pretrained=False).cuda()
 model.load_state_dict(torch.load(a.run / a.ckpt, map_location="cpu", weights_only=False)["model"])
 f = PanNukeFold(a.fold)
 inst, typ, tissue, (ii, iid, ip) = predict_fold(model, f, tta=a.tta, inst_probs=True, upscale=upscale,
-                                                decode_u=a.decode_u, marker_u=a.marker_u)
+                                                decode_u=a.decode_u, marker_u=a.marker_u,
+                                                batch_size=a.batch_size)
 tag = (f"fold{a.fold}{res_tag(upscale)}" + (f"_du{a.decode_u:g}" if a.decode_u != 1.0 else "")
        + (f"_mk{a.marker_u:g}" if a.marker_u != 1.0 else "") + ("_tta" if a.tta else ""))
 np.savez_compressed(a.run / f"pred_{tag}.npz", inst=inst.astype(np.int32), type=typ, tissue_prob=tissue,
