@@ -207,7 +207,7 @@ def mode_predict(model, args, device) -> None:
         if (i // args.batch_size) % 100 == 0:
             print(f"{i + n}/{len(fold)}", flush=True)
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    np.savez_compressed(args.out, inst=inst, type=typ)
+    np.savez_compressed(args.out, inst=inst, type=typ.astype(np.uint8))
     print(f"wrote {args.out}")
 
 

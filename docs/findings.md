@@ -861,3 +861,36 @@ larger after du2 (TTA +.0019 -> +.0042; noTTA +.0056 -> +.0071). Per-split Dead:
 slightly below base (bPQ -.007..-.009, mPQ -.010..-.012, mPQ+ -.002..-.004), so x2 remains unjustified for
 overall metrics; residual suspects = the unscaled 5x5 marker-open kernel and genuine fp_split at 512 —
 next decode-menu levers: post-hoc merge of same-class adjacent instances, drop edge-touching slivers.
+
+## 2026-09-30 (morning) — Line A verdict (KongNet under the strict protocol): NEGATIVE — detection-first does not fix Dead; paper Dead F_c .59 does not replicate
+Phase-2 line A executed end-to-end in ~35 min on the idle ugradx L4s (sweeps + 3 full-fold test
+predicts ~5 min; LM1 strict evals ~12 min). Released per-split checkpoints (`KongNet_PanNuke_k.pth`
+= official split k, train-fold F1 margin >= .13 — legal for test, unlike the all-data releases);
+6-head decode = per-class seg-minus-contour masks + argmax conflict resolve + per-class CC
+(`src/nucseg/kongnet/decode.py`, tests/test_kongnet_decode.py). Protocol: decode thresholds tuned on
+VAL folds ONLY (800-img linspace subsets, `light` scoring), grid extended twice until the optimum was
+bracketed on both axes — contour hit its 0.8 edge with the gradient unflattened (+.008/step), extended
+to 1.0; seg then hit its 0.2 edge, extended to 0.1. Test folds ran once with the frozen constants.
+- **Val sweep verdict: the contour channel is NET-HARMFUL at 40x — every checkpoint's optimum disables
+  the cut (contour_thr 1.0)**; final constants c1 seg .1 / c2 seg .2 / c3 seg .1, all contour 1.0.
+  Val mPQ c1 .3237->.3445 and bPQ .4545->.4731 from the extensions alone. The repo's contour-cut
+  recipe (thr .3) over-splits nuclei at this scale.
+- **Test 3-split means: mPQ .3460 / bPQ .4706 / Dead PQ .053 / Dead F_c .344** (per-split mPQ/bPQ/DeadPQ/
+  F_c: s1 .3480/.4706/.049/.344, s2 .3372/.4640/.044/.277, s3 .3527/.4772/.067/.411). vs dense decoders:
+  mPQ 11 pts below the WORST (HoVer-Net .4564, HNXT-T .4579, CellViT-UNI .4995); bPQ 17-19 pts below.
+- **Pre-registered Dead endpoints all fail**: official Dead PQ .053 (dense .127-.176); Uterus-excluded
+  Dead PQ .070 (dense .152-.218); interior-Dead miss .496 on the shared splits-1+3 frame (CellViT-UNI
+  .354, HoVer-Net .413). Only per-nucleus Dead F_c is mid-pack (.344 vs .359/.349/.230).
+- **Error profile**: same-class touching nuclei FUSE — merged-GT rate .121-.175 (CellViT-UNI .044,
+  HoVer-Net .049); missed_bg .11-.15. With the contour cut disabled the decode is plain per-class CC,
+  which cannot separate touching instances; the contour channel was doing (imperfect) separation work
+  — cutting hurts individual nuclei more than it helps separation at this scale.
+- Interpretation: the 2026-09-28 conclusion strengthens from "shared across the dense decoders tested"
+  to "shared across decoder FAMILIES tested" — the detection-first architecture, given its best val
+  decode, is WORSE on interior Dead recall and Dead PQ, not better. KongNet's paper Dead F_c .59
+  (their decode, their eval) does not transfer to the strict protocol. Line A is closed as a negative
+  result; the x2-resolution line (B) remains the live lever, and the merged-heavy KongNet profile is
+  consistent with Dead's karyorrhexis-cluster merge failure being an instance-separation problem, not
+  a detection-density problem. Artifacts: `runs/kongnet/{sweep_c*.json, pred_*.npz,
+  split{k}/eval_test_fold{3,3,1}}` (LM1), ugradx `/tmp/cgf2604/bdd26/runs/kongnet/` (same sweeps);
+  queue script `scripts/ugrad_kongnet_queue.sh` (grid + seq A/B runner, reusable for other ckpts).

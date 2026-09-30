@@ -146,12 +146,16 @@ def main():
     ap.add_argument("--hovernet", type=Path, default=Path("runs/hovernet"))
     ap.add_argument("--hovernext", type=Path, default=None,
                     help="local root with HoVer-NeXt-T eval dirs (rsync from LM2 runs/hovernext_t)")
+    ap.add_argument("--kongnet", type=Path, default=None,
+                    help="local root with KongNet eval dirs (line A, 2026-09-30)")
     ap.add_argument("--out-gt", type=Path, default=None, help="write the per-GT consensus frame here")
     a = ap.parse_args()
 
     models = {"CellViT-UNI": a.cellvit, "HoVer-Net": a.hovernet}
     if a.hovernext:
         models["HoVer-NeXt-T"] = a.hovernext
+    if a.kongnet:
+        models["KongNet"] = a.kongnet
     for name, root in models.items():
         per_model(name, root)
 
