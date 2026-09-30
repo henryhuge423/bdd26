@@ -35,19 +35,25 @@ p.add_argument("--marker-u", type=float, default=1.0,
 p.add_argument("--batch-size", type=int, default=32,
                help="forward batch; lower it on small GPUs (x2 at 512px needs ~4 on a "
                     "6.9 GB L4; 32 is the A100 default)")
+p.add_argument("--no-inst-probs", action="store_true",
+               help="skip the per-instance retype table (inst_img/inst_id/inst_prob) for a "
+                    "memory-light run — enough for decode/lever experiments, not for pillar-A "
+                    "re-typing")
 a = p.parse_args()
 
 upscale = run_upscale(a.run, a.upscale)
 model = build_model(pretrained=False).cuda()
 model.load_state_dict(torch.load(a.run / a.ckpt, map_location="cpu", weights_only=False)["model"])
 f = PanNukeFold(a.fold)
-inst, typ, tissue, (ii, iid, ip) = predict_fold(model, f, tta=a.tta, inst_probs=True, upscale=upscale,
-                                                decode_u=a.decode_u, marker_u=a.marker_u,
-                                                batch_size=a.batch_size)
+res = predict_fold(model, f, tta=a.tta, inst_probs=not a.no_inst_probs, upscale=upscale,
+                   decode_u=a.decode_u, marker_u=a.marker_u, batch_size=a.batch_size)
+inst, typ, tissue = res[0], res[1], res[2]
 tag = (f"fold{a.fold}{res_tag(upscale)}" + (f"_du{a.decode_u:g}" if a.decode_u != 1.0 else "")
        + (f"_mk{a.marker_u:g}" if a.marker_u != 1.0 else "") + ("_tta" if a.tta else ""))
-np.savez_compressed(a.run / f"pred_{tag}.npz", inst=inst.astype(np.int32), type=typ, tissue_prob=tissue,
-                    inst_img=ii, inst_id=iid, inst_prob=ip)
+payload = dict(inst=inst.astype(np.int32), type=typ.astype(np.uint8), tissue_prob=tissue)
+if not a.no_inst_probs:
+    payload.update(inst_img=res[3][0], inst_id=res[3][1], inst_prob=res[3][2])
+np.savez_compressed(a.run / f"pred_{tag}.npz", **payload)
 if not a.no_eval:
     res = evaluate(f.gt_channels, f.inst, f.type, f.tissue, inst, typ)
     save_report(res, a.run / f"eval_{tag}")

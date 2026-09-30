@@ -319,7 +319,7 @@ def predict_fold(model, fold_ds, device="cuda", batch_size=32, workers=16, tta: 
                     tab[1].append(ids)
                     tab[2].append(pr)
             insts += [r[0] for r in res_native]
-            types += [r[1] for r in res_native]
+            types += [r[1].astype(np.uint8) for r in res_native]
             tissues.append(p["tissue"].cpu().numpy())
     out = (np.stack(insts), np.stack(types), np.concatenate(tissues))
     if inst_probs:

@@ -1,36 +1,32 @@
 #!/usr/bin/env bash
 # ugrad L4 queue: x2 VAL-fold predicts feeding the decode-menu extension (2026-09-30).
-# VAL folds only (split1->2, split2->1, split3->2); predict_cellvit.py auto-evals each
-# fold, so the val mPQ/bPQ baselines for the lever sweeps come out on the same machine.
-#  seq a (GPU0): plain x2 decode, split1 + split2 val folds
-#  seq b (GPU1): du2 + marker-u2 decode, split1 val fold, then plain x2 split3 val fold
-# batch-size 4: 512^2 activations fit the 6.9 GB L4 budget (32 is the A100 default).
+# VAL folds only (split1->2, split2->1, split3->2); predict_cellvit.py auto-evals each fold,
+# so the val mPQ/bPQ baselines for the lever sweeps come out on the same machine.
+# Memory-light for the 6.9 GB / 16 GB-address-space L4s (first x2 attempt died at engine
+# predict_fold line 315 with DefaultCPUAllocator after minutes of batch churn): batch 2,
+# --no-inst-probs (no retype table; lever sweeps consume inst/type only), trimmed arenas.
+#  a (ugradx GPU0): plain x2, split1 val fold 2, then split2 val fold 1
+#  c (ugradv GPU0): du2 + marker-u2, split1 val fold 2
+#  d (ugradv GPU1): plain x2, split3 val fold 2
 set -u
+export MALLOC_ARENA_MAX=2 MALLOC_TRIM_THRESHOLD_=16777216
 cd /tmp/cgf2604/bdd26 || exit 1
 source scripts/ugrad_env.sh
 PY=python
 R=runs/cellvit_uni_x2
 
-seq_a () {
-  mkdir -p $R/split1 $R/split2
-  CUDA_VISIBLE_DEVICES=0 $PY scripts/predict_cellvit.py --run $R/split1 --fold 2 --batch-size 4 \
-    > $R/split1/predict_val2.log 2>&1
-  CUDA_VISIBLE_DEVICES=0 $PY scripts/predict_cellvit.py --run $R/split2 --fold 1 --batch-size 4 \
-    > $R/split2/predict_val1.log 2>&1
-  echo "$(date '+%F %T') seq a done" >> runs/_ugrad_x2_val.log
-}
-
-seq_b () {
-  mkdir -p $R/split1 $R/split3
-  CUDA_VISIBLE_DEVICES=1 $PY scripts/predict_cellvit.py --run $R/split1 --fold 2 \
-    --decode-u 2 --marker-u 2 --batch-size 4 > $R/split1/predict_val2_du2mk2.log 2>&1
-  CUDA_VISIBLE_DEVICES=1 $PY scripts/predict_cellvit.py --run $R/split3 --fold 2 --batch-size 4 \
-    > $R/split3/predict_val2.log 2>&1
-  echo "$(date '+%F %T') seq b done" >> runs/_ugrad_x2_val.log
+pred () {  # $1 gpu  $2 split  $3 fold  $4 extra-flags  $5 logfile
+  CUDA_VISIBLE_DEVICES=$1 $PY scripts/predict_cellvit.py --run $R/split$2 --fold $3 \
+    --batch-size 2 --no-inst-probs $4 > $R/split$2/$5 2>&1
 }
 
 case ${1:-} in
-  a) seq_a ;;
-  b) seq_b ;;
-  *) echo "usage: $0 a|b"; exit 2 ;;
+  a) pred 0 1 2 ""                          predict_val2.log
+     pred 0 2 1 ""                          predict_val1.log
+     echo "$(date '+%F %T') seq a done" >> runs/_ugrad_x2_val.log ;;
+  c) pred 0 1 2 "--decode-u 2 --marker-u 2" predict_val2_du2mk2.log
+     echo "$(date '+%F %T') seq c done" >> runs/_ugrad_x2_val.log ;;
+  d) pred 1 3 2 ""                          predict_val2.log
+     echo "$(date '+%F %T') seq d done" >> runs/_ugrad_x2_val.log ;;
+  *) echo "usage: $0 a|c|d"; exit 2 ;;
 esac
