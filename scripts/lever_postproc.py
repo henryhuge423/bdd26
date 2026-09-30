@@ -69,8 +69,8 @@ def image_geometry(inst: np.ndarray) -> dict:
 def apply_levers(inst: np.ndarray, geo: dict, frac: float | None, a_min: float,
                  cls_of: np.ndarray) -> np.ndarray:
     """lever S (border slivers, area < a_min; 0 disables) then lever M (same-class merge,
-    shared >= frac*min perimeter; frac=None disables). cls_of[i-1] = majority class of
-    instance i (1..5) as pannuke_eval computes it."""
+    shared >= frac*min perimeter; frac=None disables). cls_of is dense over ids 1..inst.max():
+    cls_of[i-1] = majority class of instance i (1..5) as pannuke_eval computes it."""
     n = geo["n"]
     drop = geo["border"] & (geo["areas"] < a_min) if a_min > 0 else np.zeros(n, bool)
     keep = ~drop
@@ -115,12 +115,18 @@ def _one_image(j: int) -> list:
 
     inst, typ = _G["inst"], _G["typ"]
     fold = _G["fold"]
-    gj = image_geometry(np.asarray(inst[j]))
-    cls = instance_classes(np.asarray(inst[j]), np.asarray(typ[j]))[1]
+    inst_j = np.asarray(inst[j])
+    gj = image_geometry(inst_j)
+    cls = instance_classes(inst_j, np.asarray(typ[j]))[1]
+    # x2 nearest downsampling can drop ids, so id -> row index is NOT id-1: dense-ify the
+    # per-instance class array over 1..max_id (the geometry arrays are already dense over max)
+    ids = np.unique(inst_j)
+    cls_dense = np.zeros(int(inst_j.max()) + 1, cls.dtype)
+    cls_dense[ids[ids > 0]] = cls
     gt_i, gt_t = np.asarray(fold.inst[j]), np.asarray(fold.type[j])
     gt_ch = np.stack([np.where(gt_t == c + 1, gt_i, 0) for c in range(5)], -1).astype(np.uint16)
     return [light.image_stats(gt_ch, gt_i, gt_t,
-                              apply_levers(np.asarray(inst[j]), gj, frac, a_min, cls),
+                              apply_levers(inst_j, gj, frac, a_min, cls_dense),
                               np.asarray(typ[j]))
             for frac, a_min in _G["grid"]]
 
