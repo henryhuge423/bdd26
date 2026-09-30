@@ -190,11 +190,13 @@ def validate(model, dl, device, amp=False) -> dict:
 # ---------------------------------------------------------------- inference
 
 def _post(args):
-    """Decode one network output map; args = (pred_map,) or (pred_map, decode_u) with the px-unit
-    decode constants scaled by u (nucseg.postproc.recovery.decode_pred_map, u=1 = official)."""
+    """Decode one network output map; args = (pred_map,) or (pred_map, decode_u[, marker_u]) with the
+    px-unit decode constants scaled by u (nucseg.postproc.recovery.decode_pred_map, u=1 = official;
+    marker_u additionally scales the 5x5 marker-open kernel, default 1 = official kernel)."""
     pred_map, *rest = args
-    if rest and rest[0] != 1.0:
-        inst, info = decode_pred_map(pred_map, nr_types=NR_TYPES, u=rest[0])
+    if rest and (rest[0] != 1.0 or (len(rest) > 1 and rest[1] != 1.0)):
+        inst, info = decode_pred_map(pred_map, nr_types=NR_TYPES, u=rest[0],
+                                     marker_u=rest[1] if len(rest) > 1 else 1.0)
     else:
         inst, info = post_process(pred_map, nr_types=NR_TYPES)
     typ = np.zeros(inst.shape, np.uint8)

@@ -72,6 +72,14 @@ def scaled_ksize(u: float) -> int:
     return k if k % 2 else k - 1
 
 
+def scaled_marker_ksize(u: float) -> int:
+    """Official marker-open kernel (cv2 ellipse (5, 5) px at the native 256 px), scaled by u with the
+    same round-down-to-odd rule as `scaled_ksize` (findings 2026-09-30: residual x2 decode suspect —
+    at u=2 the fixed 5x5 open relaxes to 2.5 native px and lets spurious markers through)."""
+    k = max(3, int(round(5 * u)))
+    return k if k % 2 else k - 1
+
+
 def _rescaled_sobel_kernels(ksize: int):
     """Separable kernels of cv2.Sobel(ksize=21) resampled to an odd ksize > 31 (OpenCV hard-caps the
     Sobel aperture at 31, so the pre-registered u-scaled 41 is not directly expressible). The official
@@ -97,11 +105,12 @@ def _sobel_hv(h_dir: np.ndarray, v_dir: np.ndarray, ksize: int):
             cv2.sepFilter2D(v_dir, cv2.CV_64F, ky, kx))
 
 
-def proc_np_hv(pred: np.ndarray, thr: float = 0.5, orphans: bool = False, u: float = 1.0) -> np.ndarray:
+def proc_np_hv(pred: np.ndarray, thr: float = 0.5, orphans: bool = False, u: float = 1.0,
+               marker_u: float | None = None) -> np.ndarray:
     """Official __proc_np_hv with a configurable blob threshold, optional orphan-blob recovery, and
     u-scaling of the px-unit decode constants (min_size 10 -> 10*u^2, Sobel ksize 21 -> odd(21*u);
-    u=1 is bit-identical to the official function). pred (H, W, 3): foreground probability,
-    horizontal map, vertical map."""
+    u=1 is bit-identical to the official function). marker_u scales the 5x5 marker-open kernel the
+    same way (None = follow u). pred (H, W, 3): foreground probability, horizontal map, vertical map."""
     pred = np.array(pred, dtype=np.float32)
     blb_raw, h_dir_raw, v_dir_raw = pred[..., 0], pred[..., 1], pred[..., 2]
 
@@ -127,7 +136,9 @@ def proc_np_hv(pred: np.ndarray, thr: float = 0.5, orphans: bool = False, u: flo
     marker = blb - overall
     marker[marker < 0] = 0
     marker = binary_fill_holes(marker).astype("uint8")
-    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+    mu = u if marker_u is None else marker_u
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,
+                                       (scaled_marker_ksize(mu), scaled_marker_ksize(mu)))
     marker = cv2.morphologyEx(marker, cv2.MORPH_OPEN, kernel)
     marker = label(marker)[0]
     marker = remove_small_objects(marker, min_size=scaled_min_size(u))
@@ -143,14 +154,17 @@ def proc_np_hv(pred: np.ndarray, thr: float = 0.5, orphans: bool = False, u: flo
     return inst
 
 
-def decode_pred_map(pred_map: np.ndarray, nr_types: int = NR_TYPES, u: float = 1.0):
+def decode_pred_map(pred_map: np.ndarray, nr_types: int = NR_TYPES, u: float = 1.0,
+                    marker_u: float = 1.0):
     """Official `process` with the px-unit decode constants scaled by u (pre-registered x2 re-decode,
-    docs/findings.md 2026-09-29: min_size 10 -> 10*u^2, Sobel ksize 21 -> odd(21*u)). u=1 is the
+    docs/findings.md 2026-09-29: min_size 10 -> 10*u^2, Sobel ksize 21 -> odd(21*u)); marker_u scales
+    the 5x5 marker-open kernel (findings 2026-09-30 residual suspect; default 1 = official kernel, so
+    `--decode-u 2` keeps exactly the du2 semantics of the findings entry). u=1 + marker_u=1 is the
     unmodified official decode."""
-    if u == 1.0:
+    if u == 1.0 and marker_u == 1.0:
         return _official.process(pred_map, nr_types=nr_types)
     # official `process` looks the instance function up as a module global at call time
-    _official.__dict__["__proc_np_hv"] = lambda p: proc_np_hv(p, u=u)
+    _official.__dict__["__proc_np_hv"] = lambda p: proc_np_hv(p, u=u, marker_u=marker_u)
     try:
         return _official.process(pred_map, nr_types=nr_types)
     finally:

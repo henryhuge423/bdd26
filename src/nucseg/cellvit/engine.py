@@ -280,13 +280,16 @@ def _tta_forward(model, x: torch.Tensor) -> dict:
 
 @torch.no_grad()
 def predict_fold(model, fold_ds, device="cuda", batch_size=32, workers=16, tta: bool = False,
-                 inst_probs: bool = False, upscale: int = 1, decode_u: float = 1.0):
+                 inst_probs: bool = False, upscale: int = 1, decode_u: float = 1.0,
+                 marker_u: float = 1.0):
     """Returns (inst, type, tissue_probs) for every patch of a fold, in fold order; with inst_probs=True
     also a per-instance table (img index, inst id, mean type probabilities (M, 6); ids are enumerated
     from the final map, probabilities averaged at model resolution). With upscale>1 the inputs are
     bilinearly upsampled (matching training), post-processing runs at the higher resolution, and the
     instance/type maps are downsampled (nearest) back to the fold's native size. decode_u>1 scales the
-    px-unit decode constants with the working resolution (nucseg.postproc.recovery.decode_pred_map)."""
+    px-unit decode constants with the working resolution (nucseg.postproc.recovery.decode_pred_map);
+    marker_u additionally scales the 5x5 marker-open kernel (default 1 = official kernel, so du2
+    semantics are unchanged from findings 2026-09-30)."""
     model.eval()
     insts, types, tissues, tab = [], [], [], ([], [], [])
     hw = fold_ds.images.shape[1:3][::-1]  # (W, H) native
@@ -300,7 +303,7 @@ def predict_fold(model, fold_ds, device="cuda", batch_size=32, workers=16, tta: 
             p = _tta_forward(model, x) if tta else _forward_probs(model, x)
             tp = p["tp"].argmax(-1, keepdim=True).float()
             maps = torch.cat([tp, p["np"][..., 1:], p["hv"]], -1).cpu().numpy()
-            res = pool.map(_post, ((m, decode_u) for m in maps), chunksize=2)
+            res = pool.map(_post, ((m, decode_u, marker_u) for m in maps), chunksize=2)
             if upscale > 1:
                 res_native = [(cv2.resize(r[0], hw, interpolation=cv2.INTER_NEAREST).astype(np.int32),
                                cv2.resize(r[1], hw, interpolation=cv2.INTER_NEAREST)) for r in res]

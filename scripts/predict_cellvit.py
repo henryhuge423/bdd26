@@ -29,6 +29,9 @@ p.add_argument("--upscale", type=int, default=None,
 p.add_argument("--decode-u", type=float, default=1.0,
                help="scale the px-unit decode constants (min_size 10*u^2, Sobel ksize odd(21*u)); "
                     "1 = official decode (findings 2026-09-29 pre-registered x2 re-decode)")
+p.add_argument("--marker-u", type=float, default=1.0,
+               help="scale the 5x5 marker-open kernel (odd(5*u)); 1 = official kernel "
+                    "(findings 2026-09-30 residual x2 decode suspect)")
 a = p.parse_args()
 
 upscale = run_upscale(a.run, a.upscale)
@@ -36,9 +39,9 @@ model = build_model(pretrained=False).cuda()
 model.load_state_dict(torch.load(a.run / a.ckpt, map_location="cpu", weights_only=False)["model"])
 f = PanNukeFold(a.fold)
 inst, typ, tissue, (ii, iid, ip) = predict_fold(model, f, tta=a.tta, inst_probs=True, upscale=upscale,
-                                                decode_u=a.decode_u)
+                                                decode_u=a.decode_u, marker_u=a.marker_u)
 tag = (f"fold{a.fold}{res_tag(upscale)}" + (f"_du{a.decode_u:g}" if a.decode_u != 1.0 else "")
-       + ("_tta" if a.tta else ""))
+       + (f"_mk{a.marker_u:g}" if a.marker_u != 1.0 else "") + ("_tta" if a.tta else ""))
 np.savez_compressed(a.run / f"pred_{tag}.npz", inst=inst.astype(np.int32), type=typ, tissue_prob=tissue,
                     inst_img=ii, inst_id=iid, inst_prob=ip)
 if not a.no_eval:
