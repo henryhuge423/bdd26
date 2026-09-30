@@ -51,7 +51,13 @@ res = predict_fold(model, f, tta=a.tta, inst_probs=not a.no_inst_probs, upscale=
 inst, typ, tissue = res[0], res[1], res[2]
 tag = (f"fold{a.fold}{res_tag(upscale)}" + (f"_du{a.decode_u:g}" if a.decode_u != 1.0 else "")
        + (f"_mk{a.marker_u:g}" if a.marker_u != 1.0 else "") + ("_tta" if a.tta else ""))
-payload = dict(inst=inst.astype(np.int32), type=typ.astype(np.uint8), tissue_prob=tissue)
+# predict_fold already returns int32/uint8; guard instead of astype (astype copies by default
+# even when the dtype matches — 663+158 MB extra at the exact worst moment on 16 GB-VA hosts)
+if inst.dtype != np.int32:
+    inst = inst.astype(np.int32)
+if typ.dtype != np.uint8:
+    typ = typ.astype(np.uint8)
+payload = dict(inst=inst, type=typ, tissue_prob=tissue)
 if not a.no_inst_probs:
     payload.update(inst_img=res[3][0], inst_id=res[3][1], inst_prob=res[3][2])
 np.savez_compressed(a.run / f"pred_{tag}.npz", **payload)
