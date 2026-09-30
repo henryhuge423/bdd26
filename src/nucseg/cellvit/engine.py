@@ -289,10 +289,16 @@ def predict_fold(model, fold_ds, device="cuda", batch_size=32, workers=16, tta: 
     instance/type maps are downsampled (nearest) back to the fold's native size. decode_u>1 scales the
     px-unit decode constants with the working resolution (nucseg.postproc.recovery.decode_pred_map);
     marker_u additionally scales the 5x5 marker-open kernel (default 1 = official kernel, so du2
-    semantics are unchanged from findings 2026-09-30)."""
+    semantics are unchanged from findings 2026-09-30). Outputs are written into preallocated
+    (N, H, W) maps — constant host memory (the old list+np.stack pattern doubled the peak at the
+    very end and died on 16 GB-address-space hosts after a full fold of inference). batch_size
+    only groups forwards; every patch is decoded independently, so results never depend on it."""
     model.eval()
-    insts, types, tissues, tab = [], [], [], ([], [], [])
-    hw = fold_ds.images.shape[1:3][::-1]  # (W, H) native
+    n, h, w = fold_ds.images.shape[:3]
+    inst_out = np.empty((n, h, w), np.int32)
+    type_out = np.empty((n, h, w), np.uint8)
+    tissues, tab = [], ([], [], [])
+    hw = (w, h)  # cv2 wants (W, H)
     with Pool(workers) as pool:
         for s in range(0, len(fold_ds), batch_size):
             imgs = np.asarray(fold_ds.images[s:s + batch_size])
@@ -304,11 +310,9 @@ def predict_fold(model, fold_ds, device="cuda", batch_size=32, workers=16, tta: 
             tp = p["tp"].argmax(-1, keepdim=True).float()
             maps = torch.cat([tp, p["np"][..., 1:], p["hv"]], -1).cpu().numpy()
             res = pool.map(_post, ((m, decode_u, marker_u) for m in maps), chunksize=2)
-            if upscale > 1:
-                res_native = [(cv2.resize(r[0], hw, interpolation=cv2.INTER_NEAREST).astype(np.int32),
-                               cv2.resize(r[1], hw, interpolation=cv2.INTER_NEAREST)) for r in res]
-            else:
-                res_native = res
+            res_native = ([(cv2.resize(r[0], hw, interpolation=cv2.INTER_NEAREST).astype(np.int32),
+                            cv2.resize(r[1], hw, interpolation=cv2.INTER_NEAREST)) for r in res]
+                          if upscale > 1 else res)
             if inst_probs:
                 # ids from the final (downsampled) map so every row exists in the saved inst map;
                 # type probs still average over the model-resolution nucleus
@@ -318,10 +322,11 @@ def predict_fold(model, fold_ds, device="cuda", batch_size=32, workers=16, tta: 
                     tab[0].append(img)
                     tab[1].append(ids)
                     tab[2].append(pr)
-            insts += [r[0] for r in res_native]
-            types += [r[1].astype(np.uint8) for r in res_native]
+            for b, r in enumerate(res_native):
+                inst_out[s + b] = r[0]
+                type_out[s + b] = r[1]
             tissues.append(p["tissue"].cpu().numpy())
-    out = (np.stack(insts), np.stack(types), np.concatenate(tissues))
+    out = (inst_out, type_out, np.concatenate(tissues))
     if inst_probs:
         out += (tuple(np.concatenate(t) for t in tab),)
     return out

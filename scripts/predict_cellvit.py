@@ -33,8 +33,9 @@ p.add_argument("--marker-u", type=float, default=1.0,
                help="scale the 5x5 marker-open kernel (odd(5*u)); 1 = official kernel "
                     "(findings 2026-09-30 residual x2 decode suspect)")
 p.add_argument("--batch-size", type=int, default=32,
-               help="forward batch; lower it on small GPUs (x2 at 512px needs ~4 on a "
-                    "6.9 GB L4; 32 is the A100 default)")
+               help="forward batch; lower it on small GPUs (32 is the A100 default). Results "
+                    "are batch-invariant: patches are decoded independently into preallocated "
+                    "maps")
 p.add_argument("--no-inst-probs", action="store_true",
                help="skip the per-instance retype table (inst_img/inst_id/inst_prob) for a "
                     "memory-light run — enough for decode/lever experiments, not for pillar-A "
