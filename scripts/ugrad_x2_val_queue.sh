@@ -2,16 +2,17 @@
 # ugrad L4 queue: x2 VAL-fold predicts feeding the decode-menu extension (2026-09-30).
 # VAL folds only (split1->2, split2->1, split3->2); predict_cellvit.py auto-evals each fold,
 # so the val mPQ/bPQ baselines for the lever sweeps come out on the same machine.
-# Memory-light for the 16 GB-address-space L4s (two x2 attempts died host-side: DefaultCPUAllocator
-# mid-run, then _ArrayMemoryError at the final np.stack after a full fold of inference — the engine
-# now preallocates the output maps). batch ${UGRAD_BS:-4}: batch size only groups forwards, every
-# patch decodes independently, so results are batch-invariant (A/B-verified on LM2, runs/_ab_*).
-# --no-inst-probs skips the retype table (lever sweeps consume inst/type only); trimmed arenas.
+# Memory-light for the ugrad L4s — TWO hard limits, both hit today: (1) a PER-PROCESS GPU
+# cap of ~3.6 GiB (third attempt: CUDA OOM at 3.61 GiB in use while 18.4 GiB was free;
+# batch 2 sits at a stable 3.33 GiB — do not raise UGRAD_BS above 2); (2) the 16 GB host
+# address space (fixed in engine.py by preallocating the output maps, 9af4c99).
+# Batch size is result-invariant: patches decode independently (A/B-verified on LM2,
+# runs/_ab_*). --no-inst-probs skips the retype table (lever sweeps consume inst/type only).
 #  a (ugradx GPU0): plain x2, split1 val fold 2, then split2 val fold 1
 #  c (ugradv GPU0): du2 + marker-u2, split1 val fold 2
 #  d (ugradv GPU1): plain x2, split3 val fold 2
 set -u
-export MALLOC_ARENA_MAX=2 MALLOC_TRIM_THRESHOLD_=16777216
+export MALLOC_ARENA_MAX=2 MALLOC_TRIM_THRESHOLD_=16777216 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 cd /tmp/cgf2604/bdd26 || exit 1
 source scripts/ugrad_env.sh
 PY=python
@@ -19,7 +20,7 @@ R=runs/cellvit_uni_x2
 
 pred () {  # $1 gpu  $2 split  $3 fold  $4 extra-flags  $5 logfile
   CUDA_VISIBLE_DEVICES=$1 $PY scripts/predict_cellvit.py --run $R/split$2 --fold $3 \
-    --batch-size ${UGRAD_BS:-4} --no-inst-probs $4 > $R/split$2/$5 2>&1
+    --batch-size ${UGRAD_BS:-2} --no-inst-probs $4 > $R/split$2/$5 2>&1
 }
 
 case ${1:-} in
