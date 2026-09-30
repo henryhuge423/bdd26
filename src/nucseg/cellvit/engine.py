@@ -254,10 +254,12 @@ def instance_table_rows(inst_final: np.ndarray, inst_model: np.ndarray, prob: np
     return np.full(len(ids), img_idx), ids, instance_mean_probs(inst_model, prob, ids)
 
 
-def _forward_probs(model, imgs_u8: torch.Tensor) -> dict:
-    """imgs_u8 (B, H, W, 3) uint8 on device -> NHWC softmaxed np/tp, raw hv, tissue probs."""
-    mean = torch.tensor(UNI_MEAN, device=imgs_u8.device)
-    std = torch.tensor(UNI_STD, device=imgs_u8.device)
+def _forward_probs(model, imgs_u8: torch.Tensor, norm=(UNI_MEAN, UNI_STD)) -> dict:
+    """imgs_u8 (B, H, W, 3) uint8 on device -> NHWC softmaxed np/tp, raw hv, tissue probs.
+    norm = (mean, std) per channel; the default is the UNI recipe, LKCell passes (0.5,)*3
+    mean/std (its albumentations Normalize config — findings 2026-10-01)."""
+    mean = torch.tensor(norm[0], device=imgs_u8.device)
+    std = torch.tensor(norm[1], device=imgs_u8.device)
     x = ((imgs_u8.float() / 255.0 - mean) / std).permute(0, 3, 1, 2).contiguous()
     with torch.autocast("cuda", dtype=torch.bfloat16):
         p = to_nhwc(model(x))
@@ -265,12 +267,12 @@ def _forward_probs(model, imgs_u8: torch.Tensor) -> dict:
             "tissue": F.softmax(p["tissue"], -1)}
 
 
-def _tta_forward(model, x: torch.Tensor) -> dict:
+def _tta_forward(model, x: torch.Tensor, norm=(UNI_MEAN, UNI_STD)) -> dict:
     """8-fold dihedral TTA (same transforms and HV remapping as the HoVer-Net pipeline)."""
     acc = None
     for k in range(4):
         for flip in (False, True):
-            p = _forward_probs(model, dihedral(x, k, flip))
+            p = _forward_probs(model, dihedral(x, k, flip), norm)
             tissue = p.pop("tissue")
             p = undo_dihedral(p, k, flip)
             p["tissue"] = tissue
@@ -281,7 +283,7 @@ def _tta_forward(model, x: torch.Tensor) -> dict:
 @torch.no_grad()
 def predict_fold(model, fold_ds, device="cuda", batch_size=32, workers=16, tta: bool = False,
                  inst_probs: bool = False, upscale: int = 1, decode_u: float = 1.0,
-                 marker_u: float = 1.0):
+                 marker_u: float = 1.0, norm=(UNI_MEAN, UNI_STD)):
     """Returns (inst, type, tissue_probs) for every patch of a fold, in fold order; with inst_probs=True
     also a per-instance table (img index, inst id, mean type probabilities (M, 6); ids are enumerated
     from the final map, probabilities averaged at model resolution). With upscale>1 the inputs are
@@ -306,7 +308,7 @@ def predict_fold(model, fold_ds, device="cuda", batch_size=32, workers=16, tta: 
                 imgs = np.stack([cv2.resize(im, None, fx=upscale, fy=upscale,
                                              interpolation=cv2.INTER_LINEAR) for im in imgs])
             x = torch.from_numpy(imgs).to(device)
-            p = _tta_forward(model, x) if tta else _forward_probs(model, x)
+            p = _tta_forward(model, x, norm) if tta else _forward_probs(model, x, norm)
             tp = p["tp"].argmax(-1, keepdim=True).float()
             maps = torch.cat([tp, p["np"][..., 1:], p["hv"]], -1).cpu().numpy()
             res = pool.map(_post, ((m, decode_u, marker_u) for m in maps), chunksize=2)

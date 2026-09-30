@@ -15,6 +15,9 @@ src/nucseg/            our package (pip install -e .)
   hovernet/            official HoVer-Net (third_party) + our full-patch PanNuke plumbing, TTA
   cellvit/             CellViT-UNI (UNI ViT-L/16 + CellViT decoder), CellViT PanNuke recipe; shares
                        HoVer-Net post-processing / TTA / eval
+  lkcell/              vendored LKCell network (UniRepLKNet-S + RepLK decoder; needs monai==1.3.2,
+                       install with pip --no-deps — findings 2026-10-01) for strict-protocol
+                       re-evaluation of the released per-fold checkpoints
   text/                CONCH prompt prototypes, radius-restricted CONCH nucleus embeddings, re-typing
 configs/text/          nucleus prompt bank (LLM-written morphology descriptions)
 docs/findings.md       experiment log with all numbers
