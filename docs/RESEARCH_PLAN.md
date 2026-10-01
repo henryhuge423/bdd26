@@ -173,9 +173,13 @@
   Dead 不动。B1 终局（3 折均值）：mPQ .4910 / bPQ .6608（vs 基线 .4995/.6653）换 Dead F_c +.034、
   Dead DQ+ +.026、内部 Dead 漏检 -.070——**按预注册联合端点 x2 不是默认胜利，是明码标价的权衡**；
   mPQ+ 已打平（.5171 vs .5178）。mk2（marker-open 核缩放）验证折更差，未采纳。
-- 3×3 种子网格（x2+du2）在 LM2 watcher 下推进（8/9 完成：split1/2 三种子齐，split1 的 Dead 增益
-  与代价均 3/3 种子稳健；split3_seed2 训练中，ETA 10-01 ~14:45）；lever PASS 已在全部 8 条已落地
-  链上复现。x2 线的最终种子噪声判定待 split3_seed2 收齐。
+- 3×3 种子网格（x2+du2）**9/9 收齐**（split3_seed2 10-01 14:38 落地；canonical 中心复算与 watcher
+  位相同，第三链验证；lever PASS 9/9）。**预注册种子噪声判定**：代价稳健——dmPQ -.0098、
+  dbPQ -.0069 为最大分裂种子 std（.0021/.0013）的 4.7×/5.3×，逐 run 同号；Dead 增益脆弱——
+  +.0049 仅为单种子 Dead std（.0068-.0112）的 0.4-0.7×，成对种子 4/5 胜（split3 s19 翻负 -.0032），
+  分裂级种子均值 +.0111（split1，3/3 种子）/ -.0015（split2 翻负）/ +.0051（split3，2/3）。
+  3 分裂均值（9 run）：du2 mPQ .4889 bPQ .6579 Dead .1799，du2lev .4905/.6603/.1801；较 seed19-only
+  表几乎不动（du2lev vs base mPQ -.0083、bPQ -.0045、Dead +.0051、内部 Dead 漏检 -.069）。
 - 运维：ugrad L4 五种杀进程模式全部诊断修复（16GB 地址空间预分配、astype 拷贝、**强制 3.6 GiB
   GPU 上限**（旧"6.9GB"有误）、expandable_segments 被拒、推理+评测拆进程）；batch 2 vs 32 结果
   不变性已验证（<=2.8e-05）。详见 docs/ops_2026-09-30_phase2.md 与 docs/findings.md 同日条目。

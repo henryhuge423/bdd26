@@ -1049,3 +1049,28 @@ Per-split strict: mPQ .4857/.4855/.5057, Dead PQ .1150/.1415/.2062 (splits 1/2/3
   and matched docs to 4 digits. `github.token` is ignored via `.gitignore` `*.token` (not
   tracked). One env note: bare `python` on LM1 is `mybase` (no pytest) — CLAUDE.md commands
   assume the nuclei env is active.
+
+## 2026-10-01 (evening) — grid 9/9: 3x3 seed grid complete; pre-registered seed-noise verdict
+
+- split3_seed2 landed on LM2 (final epoch ~14:10, watcher predict+eval 14:17->14:38 — 21 min,
+  GPU3 no longer shared with a training run); preds + evals pulled to LM1, canonical
+  `eval_test_fold1_du2` recomputed centrally — **bit-identical to the watcher's
+  `eval_fold1_x2_du2`** (summary.json equal; per_image arrays equal under `equal_nan`; third
+  chain verified after split1 s19 and split2_seed2). split3_seed2 du2: .4973/.6596,
+  Dead PQ .2241 F_c .5025 — between its siblings (s19 .4964/.6620/.2204, s1 .4987/.6598/.2415).
+- split3_seed2 lever (frozen 0.25/40): dmPQ +.0017, dbPQ +.0024, Dead +.0000 — **lever PASS
+  9/9 runs** (every chain that landed).
+- Full 3x3 du2 per-split seed means (mean±std over seeds {19,1,2}, from `runs/analysis/x2_grid_sum.py`):
+  split1 mPQ .4846±.0019 bPQ .6565±.0003 Dead .1504±.0107; split2 .4847±.0009 .6568±.0005
+  .1606±.0068; split3 .4975±.0012 .6605±.0013 .2287±.0112 (s1 .2415 is the grid's Dead high).
+  3-split means: du2 mPQ .4889 bPQ .6579 Dead .1799 F_c .3938 DQ+ .4220 int-Dead miss .3068;
+  du2lev .4905/.6603/.1801 miss .3070. vs the seed19-only table the 3-split means barely move
+  (du2lev-vs-base: mPQ -.0082 -> -.0083, bPQ -.0043 -> -.0045, Dead +.0057 -> +.0051,
+  int-Dead miss -.070 -> -.069).
+- **Seed-noise verdict (pre-registered)**: the trade prices are seed-robust — dmPQ -.0098 and
+  dbPQ -.0069 (du2 vs x1 base) are 4.7x/5.3x the largest per-split seed std (.0021/.0013),
+  same sign on every run. The Dead gain is the fragile endpoint: +.0049 on 3-split means is
+  only 0.4-0.7x the per-seed Dead std (.0068-.0112); paired seeds 4/5 favor du2 (split3 s19
+  flips, -.0032) and split seed-means go +.0111 (split1, 3/3 seeds) / -.0015 (split2, flip)
+  / +.0051 (split3, 2/3 seeds). x1 stays ahead on mPQ/bPQ at ~5x seed noise; x2's Dead
+  advantage is real on split1, present-but-noisy on split3, a wash on split2.
