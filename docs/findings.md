@@ -946,8 +946,10 @@ The pending du2 TEST evals (eval_test_fold{3,3,1}_du2) finished on LM2 and were 
 (int-Dead miss = missed_bg+missed_shape among non-border Dead GT, mean of per-split rates;
 the 2026-09-30 entry's .3041/.3738 are pooled-count versions of the same quantities. mPQ+ is
 at parity; mPQ/bPQ are not, so per the pre-registered combined endpoint **x2 is not a default
-win** — it is a priced trade: -.0085 mPQ / -.0045 bPQ buys -.070 interior-Dead miss, +.036
-Dead F_c, +.028 Dead DQ+, +.009 Uterus-excluded Dead PQ, +.071 interior-Dead matched share.)
+win** — it is a priced trade: -.0085 mPQ / -.0045 bPQ buys -.070 interior-Dead miss, +.034
+Dead F_c, +.026 Dead DQ+, +.009 Uterus-excluded Dead PQ, +.071 interior-Dead matched share.
+[2026-10-01 correction: F_c/DQ+ were first written as the du2-arm deltas +.036/+.028; all
+figures in this sentence are now the levered arm, matching the table row above.])
 - **The x2 cost is now fully accounted**: decode constants (du2) ~2/3 of the bPQ tax, lever
   M/S ~1/8 more (.6583 -> .6608), residual -.0045 vs base. du2mk2 (marker-open kernel scaled
   too) evaluated on split1 VAL: best (0.25,40) .4845/.6486 vs du2's .4850/.6478 — worse mPQ,
@@ -1023,3 +1025,27 @@ Per-split strict: mPQ .4857/.4855/.5057, Dead PQ .1150/.1415/.2062 (splits 1/2/3
   `CUDNN_STATUS_NOT_INITIALIZED`; no LM1 GPU job ran in that window — first caught by pytest).
   Purged the cu13 family + `--force-reinstall` of the cu12 pins; `torch.backends.cudnn.version()`
   back to 9.1.0.70, 49/49 tests pass.
+
+## 2026-10-01 (midday) — grid 8/9: split2 complete; lever PASS replicates 8/8; docs/artifact audit clean
+
+- split2_seed2 landed on LM2 (watcher predict+eval 06:33, built-in x2/x2-TTA evals 07:13/07:46);
+  preds + evals pulled to LM1, canonical `eval_test_fold3_du2` recomputed centrally —
+  **bit-identical to the watcher's `eval_fold3_x2_du2`** (first verified on split1 seed19,
+  now on a second chain). Lever applied with the frozen constants (0.25, 40) ->
+  `eval_test_fold3_du2lev`.
+- split2_seed2 lever: dmPQ +.0011, dbPQ +.0021, Dead +.0004 — the PASS verdict is now
+  **8/8 runs** (original 3 splits + every subsequent seed chain). split2 3-seed means
+  (du2 / du2lev): mPQ .4847±.0009 / .4860±.0011, bPQ .6568±.0005 / .6591±.0005,
+  Dead PQ .1606±.0068 / .1611±.0068, int-Dead miss .3395 / .3391 — split2's seed spread is
+  the small one, like split1's bPQ; Dead stays the noisiest endpoint everywhere.
+- 8/9 3-split means barely move vs the seed19-only table (du2lev vs base: mPQ -.0082,
+  bPQ -.0043, Dead +.0057, int-Dead miss -.070) — the B1 trade prices are stable under
+  seed pooling. Remaining: split3_seed2 training on LM2 GPU1 (ep103 at 10:19, ETA ~14:45),
+  after which the pre-registered 3x3 seed-noise verdict is computed from `x2_grid_sum.py`.
+- Audit (this session): `pytest` 49/49 in the nuclei env; the 2026-10-01 B1 standing table,
+  split1 3-seed table, lever PASS CIs (all six mPQ/bPQ CIs > 0, Dead straddling 0), the
+  7/7-run lever replication numbers, and the LKCell table (incl. exact 3-fold bPQ mean
+  .672947 -> .6729, DeadPQ-Uterus .2010, int-Dead miss .347) all re-derived from artifacts
+  and matched docs to 4 digits. `github.token` is ignored via `.gitignore` `*.token` (not
+  tracked). One env note: bare `python` on LM1 is `mybase` (no pytest) — CLAUDE.md commands
+  assume the nuclei env is active.

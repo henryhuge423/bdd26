@@ -164,10 +164,12 @@
   预注册修复 `--decode-u 2`（du2）：bPQ 税收回 61-70%，mPQ+ 差距收回 76-88%，Dead 增益保留放大。
 - **杠杆 M/S（同类合并 + 边缘细条丢弃）**：仅验证折选择 (frac .25, a_min 40)，四个扩展验证折
   扫描独立同选；**test 判定 PASS**：mPQ +.0014~+.0020、bPQ +.0021~+.0030（全部 bootstrap CI>0），
-  Dead 不动。B1 终局（3 折均值）：mPQ .4910 / bPQ .6608（vs 基线 .4995/.6653）换 Dead F_c +.036、
-  Dead DQ+ +.028、内部 Dead 漏检 -.070——**按预注册联合端点 x2 不是默认胜利，是明码标价的权衡**；
+  Dead 不动。B1 终局（3 折均值）：mPQ .4910 / bPQ .6608（vs 基线 .4995/.6653）换 Dead F_c +.034、
+  Dead DQ+ +.026、内部 Dead 漏检 -.070——**按预注册联合端点 x2 不是默认胜利，是明码标价的权衡**；
   mPQ+ 已打平（.5171 vs .5178）。mk2（marker-open 核缩放）验证折更差，未采纳。
-- 3×3 种子网格（x2+du2）在 LM2 watcher 下推进（5/9 完成）；x2 线的最终种子噪声判定待网格收齐。
+- 3×3 种子网格（x2+du2）在 LM2 watcher 下推进（8/9 完成：split1/2 三种子齐，split1 的 Dead 增益
+  与代价均 3/3 种子稳健；split3_seed2 训练中，ETA 10-01 ~14:45）；lever PASS 已在全部 8 条已落地
+  链上复现。x2 线的最终种子噪声判定待 split3_seed2 收齐。
 - 运维：ugrad L4 五种杀进程模式全部诊断修复（16GB 地址空间预分配、astype 拷贝、**强制 3.6 GiB
   GPU 上限**（旧"6.9GB"有误）、expandable_segments 被拒、推理+评测拆进程）；batch 2 vs 32 结果
   不变性已验证（<=2.8e-05）。详见 findings/ 与 docs/findings.md 同日条目。
