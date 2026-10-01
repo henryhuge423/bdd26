@@ -1074,3 +1074,31 @@ Per-split strict: mPQ .4857/.4855/.5057, Dead PQ .1150/.1415/.2062 (splits 1/2/3
   flips, -.0032) and split seed-means go +.0111 (split1, 3/3 seeds) / -.0015 (split2, flip)
   / +.0051 (split3, 2/3 seeds). x1 stays ahead on mPQ/bPQ at ~5x seed noise; x2's Dead
   advantage is real on split1, present-but-noisy on split3, a wash on split2.
+
+## 2026-10-01 (night) — Stage report II built (EN+ZH+digest), all numbers re-derived first
+
+- docs/report/stage_report_2/: stage_report_2.tex (EN, 12pp, 7 tables 5 figs),
+  stage_report_2_zh.tex (10pp), summary_plain_zh.tex (4pp digest). Compiled on LM2
+  TeXLive 2026 (pdflatex EN / xelatex ZH, two passes each, 0 errors 0 overfull after
+  fixing two overfull boxes: an unbreakable \texttt path in ZH, the digest footer line);
+  PDFs pulled to LM1. figs/ self-contained (6 charts EN+ZH + 3 montages copied).
+- Every table number was re-derived from artifacts BEFORE writing
+  (scripts/report2_numbers.py -> runs/analysis/report2_numbers.txt): architecture table
+  (KongNet .3460/.4706/Dead .0534/F_c .344; HoVer-Net row now with full Dead endpoints
+  .1268/.1517/.230/.275/imiss .404; LKCell-L .4923/.6729/.1542/.2010/.382/.418/.347),
+  du2 recovery (bPQ 61% TTA / 71% noTTA, mPQ+ 76/87%, mPQ 39/50%), lever CIs (6/6
+  mPQ/bPQ positive, Dead straddle), 3x3 grid per-split means+-std, B1-initial Dead
+  endpoint battery (Uterus Dead PQ .041->.055 on the 34 images; interior missed_bg
+  .352->.251), size-binned mechanism (+.104 ... -.115; Dead 0-200 +.091), error
+  composition, npred 25.5->28.4 (TTA, split1), <80px share .034->.109, KongNet
+  pooled interior-Dead miss .496 (shared s1+s3 frame), foldmap diagonal .905/.944/.912.
+  Two findings-entry errata found by the re-derivation and corrected IN THE REPORT
+  (docs entries stand): npred "24->27" (09-29 evening) should be 25.5->28.4 TTA
+  split-1; findings' size-bin "matched-IoU" column was actually mean best-IoU over ALL
+  bin nuclei (report uses both, labeled). Also note base TTA Dead 3-split mean is
+  .1767 (findings wrote .1768 once).
+- Missing eval dirs pulled from LM2 into the LM1 runs tree (needed for the tables):
+  split2/eval_test_fold3_x2{,_tta}, split3/eval_test_fold1_x2{,_tta} (the x2 pre-du2
+  test evals; split1's stay untagged), and the du2-TTA evals under their watcher names
+  eval_fold{3,3,1}_x2_du2_tta. Bibliography verified against arXiv metadata
+  (KongNet = Lv et al., arXiv:2510.23559; LKCell = Cui et al., arXiv:2407.18054).

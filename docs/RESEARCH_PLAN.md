@@ -184,6 +184,20 @@
   GPU 上限**（旧"6.9GB"有误）、expandable_segments 被拒、推理+评测拆进程）；batch 2 vs 32 结果
   不变性已验证（<=2.8e-05）。详见 docs/ops_2026-09-30_phase2.md 与 docs/findings.md 同日条目。
 
+**2026-10-01（晚）— 阶段报告二已出**
+- `docs/report/stage_report_2/`：英文版 `stage_report_2.tex`（12 页，7 表 5 图）、中文平行版
+  `stage_report_2_zh.tex`（10 页）、面向零背景读者的导读 `summary_plain_zh.tex`（4 页，标题
+  《把图像放大一倍，AI 就能看见将死的细胞了吗？》）；LM2 TeXLive 2026 编译（pdflatex/xelatex
+  各两遍，0 错误 0 overfull），PDF 已入库。figs/ 自含（6 张图表 EN+ZH 双版 + 3 张 montage 复制）。
+- 全部表格数字于写前从 artifacts 重新导出核验（`scripts/report2_numbers.py` →
+  `runs/analysis/report2_numbers.txt`）：架构总表（KongNet/HoVer-Net/LKCell/base/x2 手臂）、
+  du2 回收、杠杆 CI、3×3 网格、B1 初始 Dead 端点电池、尺寸分箱机制、误差构成、npred、
+  Uterus Dead PQ——与 findings 条目一致，仅两处以 artifact 为准修正了笔记笔误
+  （npred TTA 25.5→28.4 而非"24→27"；du2 回收 noTTA bPQ 71%）。LM2 的 split2/3 `eval_test_fold*_x2{,_tta}`
+  与 du2-TTA evals 已拉回 LM1 入 runs 树。
+- 新增图表脚本 `scripts/make_report_figures2.py`（dataviz 调色板同报告一；尺寸分箱/du2 回收/
+  种子网格，中英双版）。
+
 ---
 
 ## 1. 调研结论要点
