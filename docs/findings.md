@@ -751,7 +751,7 @@ Run `runs/cellvit_uni_x2/split1` (LM2 GPU7, seed 19, 130 epochs @ ~326 s = 12.6 
 done 12:00; pulled to LM1 — the run's untagged `eval_test_fold3[_tta]` ARE the x2 results per the
 in-flight-run note). Compare vs 3 baseline seeds (19/1/2) with `scripts/compare_runs.py`
 (2000-draw paired image bootstrap; JSONs `runs/analysis/x2_split1_{tta,notta}_vs_base.json`;
-Dead views `runs/analysis/x2_dead_views.py`):
+Dead views `scripts/x2_dead_views.py`):
 
 | metric (TTA) | base mean (seed std) | x2 s19 | delta [95% CI] |
 |---|---|---|---|
@@ -789,7 +789,7 @@ No-TTA is the same story (dDead +.0202 [+.0029,+.0389], dbPQ -.0286).
 Re-analysis of the same four TTA runs from per-nucleus `gt_records`/`pred_records` (join key
 image+cumcount; base = 3-seed mean). The midday interpretation ("uniform bPQ tax ~ decode-side
 512->256 nearest downsample of the instance map") is **wrong in mechanism**; montages
-`runs/analysis/x2_montage_{damage,gain,fragments}.png` (script `runs/analysis/x2_montage.py`,
+`runs/analysis/x2_montage_{damage,gain,fragments}.png` (script `scripts/x2_montage.py`,
 x2 preds pulled from LM2 `pred_test_fold3_tta.npz`).
 
 - **The tax is not colocated with the Dead gain**: per image (97 Dead-bearing), corr(dbPQ, dDead)
@@ -924,7 +924,7 @@ Full operational record: `docs/ops_2026-09-30_phase2.md`; A/B: `runs/_ab_verdict
 
 The pending du2 TEST evals (eval_test_fold{3,3,1}_du2) finished on LM2 and were rsynced to LM1
 (the dead session's 00:53 pickup cron never fired — done manually). Verdict script
-`runs/analysis/lever_verdict_views.py` (+ `compare_runs.py` paired bootstraps,
+`scripts/lever_verdict_views.py` (+ `compare_runs.py` paired bootstraps,
 `runs/analysis/lever_s{1,2,3}_du2_vs_du2lev.json`).
 
 - **PASS: the VAL-only-selected lever (frac 0.25, a_min 40) is a strict improvement on TEST.**
@@ -963,7 +963,7 @@ figures in this sentence are now the levered arm, matching the table row above.]
   manual on LM2 completion (~13:00), then the pre-registered 3x3 seed-noise verdict for B1.
 - **Grid extended to the levered arm + split1 3x3 complete** (02:00): lever applied with the
   frozen constants to split1_seed1/2 and split3_seed1 du2 preds; central evals written under
-  canonical names `eval_test_fold{T}_du2{,lev}` in each seed dir (`runs/analysis/x2_grid_sum.py`
+  canonical names `eval_test_fold{T}_du2{,lev}` in each seed dir (`scripts/x2_grid_sum.py`
   sums whatever exists). split1 3-seed table (mean±std; base / du2 / du2lev): mPQ
   .4928±.0021 / .4846±.0019 / .4863±.0021; bPQ .6661±.0015 / .6565±.0003 / .6590±.0002;
   Dead PQ .1393±.0074 / .1504±.0107 / .1508±.0112; interior-Dead miss .400±.015 / .348±.008 /
@@ -1060,7 +1060,7 @@ Per-split strict: mPQ .4857/.4855/.5057, Dead PQ .1150/.1415/.2062 (splits 1/2/3
   Dead PQ .2241 F_c .5025 — between its siblings (s19 .4964/.6620/.2204, s1 .4987/.6598/.2415).
 - split3_seed2 lever (frozen 0.25/40): dmPQ +.0017, dbPQ +.0024, Dead +.0000 — **lever PASS
   9/9 runs** (every chain that landed).
-- Full 3x3 du2 per-split seed means (mean±std over seeds {19,1,2}, from `runs/analysis/x2_grid_sum.py`):
+- Full 3x3 du2 per-split seed means (mean±std over seeds {19,1,2}, from `scripts/x2_grid_sum.py`):
   split1 mPQ .4846±.0019 bPQ .6565±.0003 Dead .1504±.0107; split2 .4847±.0009 .6568±.0005
   .1606±.0068; split3 .4975±.0012 .6605±.0013 .2287±.0112 (s1 .2415 is the grid's Dead high).
   3-split means: du2 mPQ .4889 bPQ .6579 Dead .1799 F_c .3938 DQ+ .4220 int-Dead miss .3068;
