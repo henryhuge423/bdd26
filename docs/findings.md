@@ -35,7 +35,7 @@ Takeaways
 - LLM descriptions beat class names by 8-11 points everywhere; tissue-conditioning HURTS zero-shot.
 - Dead is the most text-recognisable class (recall 0.88) although it is the worst class for
   segmentation models (PQ ~0.15) -> pillar A redesigned as a dense CONCH prior fused with / adapted
-  into the per-instance type decision (see RESEARCH_PLAN.md §2.1 update).
+  into the per-instance type decision (see docs/RESEARCH_PLAN.md §2.1 update).
 - Caveat: balanced sampling; real Dead prevalence is ~1.5%, so precision must be checked in-pipeline.
 
 Natural class distribution (ALL GT nuclei of each fold, `nucseg.text.conch_prior.ConchNucleusPrior`,
@@ -897,7 +897,7 @@ to 1.0; seg then hit its 0.2 edge, extended to 0.1. Test folds ran once with the
 
 ## 2026-09-30 late night — ugrad ops + batch A/B + lever M/S selection (verdict pending)
 
-Full operational record: `findings/findings_2026-09-30_phase2.md`; A/B: `runs/_ab_verdict.md`.
+Full operational record: `docs/ops_2026-09-30_phase2.md`; A/B: `runs/_ab_verdict.md`.
 
 - **Batch size is result-invariant on ugrad**: preallocation refactor bit-identical (0.00e+00);
   batch 2 vs 32 differs <= 2.82e-05 on all rate metrics (4/~66k instances, cudnn algorithm

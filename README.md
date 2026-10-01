@@ -1,6 +1,6 @@
 # bdd26 — PanNuke nuclei instance segmentation (course project 5)
 
-Research plan: [RESEARCH_PLAN.md](RESEARCH_PLAN.md). Course brief: `our_project5_nuclei_segmentation.pdf`.
+Research plan: [docs/RESEARCH_PLAN.md](docs/RESEARCH_PLAN.md). Course brief: `docs/our_project5_nuclei_segmentation.pdf`.
 
 ## Layout
 ```
@@ -20,7 +20,9 @@ src/nucseg/            our package (pip install -e .)
                        re-evaluation of the released per-fold checkpoints
   text/                CONCH prompt prototypes, radius-restricted CONCH nucleus embeddings, re-typing
 configs/text/          nucleus prompt bank (LLM-written morphology descriptions)
-docs/findings.md       experiment log with all numbers
+docs/                  RESEARCH_PLAN.md (research plan + progress log), findings.md (experiment log
+                       with all numbers), ops_2026-09-30_phase2.md (phase-2 ugrad ops record),
+                       survey_2026_09.md (survey), report/ (stage reports EN+ZH), course brief PDF
 scripts/               CLIs + machine sync (see below)
 tests/                 pytest: metrics vs official code, HoVer-Net targets/TTA
 third_party/           pinned upstream repos (scripts/fetch_third_party.sh)
@@ -58,12 +60,17 @@ ugrad constraints and how they are handled:
 - `/tmp` is purged after 10 days without access -> `ugrad_bootstrap.sh` installs a daily cron that
   touches `/tmp/cgf2604`; `scripts/push_ugrad.sh` restores everything idempotently from LM1.
 - **Hard 16 GB address-space limit per process** (`limits.conf: @users hard as`). torch+CUDA use ~9 GB of
-  it, leaving **at most ~6.9 GB usable GPU memory per process** on the L4s (with the env tweaks in
-  `ugrad_env.sh`); host-side memory (model copies, memory-mapped folds) eats into the same budget, so
-  big models get less. Measured 2026-09-25 with CellViT-UNI: inference bs 16 OK (3.7 GB peak,
-  ~16 ms/patch), bs 32 OOM at ~4.2 GB; training (even frozen encoder, bs 4) fails. CONCH nucleus
-  prior: 2.6 GB peak. HoVer-Net training needs 20-36 GB -> all training on A100s. There is also a per-process CPU
-  time limit (~7 days); long jobs must be resumable.
+  it; host-side memory (model copies, memory-mapped folds, eval arrays) eats into the same budget, so
+  `predict_fold` preallocates its output maps (constant host memory, batch-invariant) and evaluation
+  runs as a separate process (`scripts/eval_pannuke.py`), never inside the inference process. CONCH
+  nucleus prior: 2.6 GB peak. There is also a per-process CPU time limit (~7 days); long jobs must be
+  resumable.
+- **Per-process GPU memory is ENFORCED at ~3.6 GiB** on the L4s (2026-09-30: CUDA OOM at 3.61 GiB in use
+  with 18.4 GiB free; the pre-2026-09-30 "6.9 GB" figure was wrong). x2 inference at batch 2 sits at a
+  stable 3.33 GiB -> keep UGRAD_BS=2; batch size is result-invariant (<= 2.8e-05 on every rate metric,
+  `runs/_ab_verdict.md`). `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` is REJECTED by the cap —
+  never set it on ugrad. Training needs 20-36 GB -> all training on the A100s; ugrad is
+  inference / CONCH / eval only.
 - Downloads from huggingface.co / Google Drive are much faster on ugrad than LM1; download there and
   `scripts/pull_ugrad.sh --weights`. hf-mirror.com (LM1 default) does not serve gated repos.
 

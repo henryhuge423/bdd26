@@ -4,7 +4,7 @@ Architecture follows CellViT / CellViT++ (third_party/CellViT-plus-plus/cellvit/
 ViT tokens from blocks 6/12/18/24 are upsampled through shared skip decoders into three HoVer-style
 branches (NP 2ch, HV 2ch, TP 6ch) plus a tissue classifier on the class token. The only structural
 change is that each branch ends in a *feature* map (64 ch) followed by a separate `head`, so the type
-head can be swapped (linear vs. text-anchored, see RESEARCH_PLAN.md pillar A).
+head can be swapped (linear vs. text-anchored, see docs/RESEARCH_PLAN.md pillar A).
 """
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-"""Frozen CONCH text prototypes for the nucleus classes (RESEARCH_PLAN.md pillar A).
+"""Frozen CONCH text prototypes for the nucleus classes (docs/RESEARCH_PLAN.md pillar A).
 
 Encodes `configs/text/nuclei_prompts.yaml` with the CONCH v1 text tower into L2-normalised 512-d
 prototypes in three flavours (the pillar-A ablation axis):

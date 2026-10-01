@@ -26,7 +26,7 @@
 
 ---
 
-## 进展记录（详细数据见 [docs/findings.md](docs/findings.md)）
+## 进展记录（详细数据见 [docs/findings.md](findings.md)）
 
 **2026-09-25**
 - 基线：HoVer-Net（官方 fast 模式，全 patch 监督）3 折训练中；**CellViT-UNI 复现**（`scripts/train_cellvit.py`，
@@ -158,6 +158,12 @@
   3 折 test mPQ .346 / bPQ .471 / Dead PQ .053——比最弱稠密解码器还低 11 分；融合率 .12-.18
   （稠密 .044-.049），内部 Dead 漏检 .496（CellViT .354）。论文 Dead F_c .59 在严格协议下不复现。
   ⇒ Dead 缺陷跨解码器家族共有，"检测优先"架构不解决问题；karyorrhexis 碎片群的失败是实例分离问题。
+- **LKCell-L 严格复评（A1 外部池首条，2026-10-01）**：发布按折权重（HF `xiazhi/LKCell-L`）经共享
+  管线复评——比论文均匀低 ~.015（mPQ .4923 vs .508；协议转换而非管线问题）。同等条件（无 TTA、
+  last ckpt）下 mPQ -.0072 / Dead PQ -.0218 逊于 CellViT-UNI 基线，但 bPQ +.0076 / mPQ+ +.0057：
+  **分割更好、分型更差**——Dead F_c .382 > .359（找得到 Dead）但检测到的 Dead 无法通过类型配对
+  转化为 Dead PQ。与 KongNet 判定同向：架构整体优势在匹配协议下不转化为 Dead/分型增益。
+  Pillar-C rank pool 扩至 4 架构。
 - **B 线（B1，2× 工作分辨率 512）**：split1 全部预注册 Dead 端点正向（内部 Dead 漏检 .35→.25，
   Uterus 剔除 Dead PQ +.02）但 bPQ -.026 全面税。深挖（含视觉审查）定位机制：**解码器像素单位
   常数在 512 下放松**（min_size 10、Sobel ksize 21 不随分辨率缩放）→ 大核碎裂 + 微碎片洪泛。
@@ -172,7 +178,7 @@
   链上复现。x2 线的最终种子噪声判定待 split3_seed2 收齐。
 - 运维：ugrad L4 五种杀进程模式全部诊断修复（16GB 地址空间预分配、astype 拷贝、**强制 3.6 GiB
   GPU 上限**（旧"6.9GB"有误）、expandable_segments 被拒、推理+评测拆进程）；batch 2 vs 32 结果
-  不变性已验证（<=2.8e-05）。详见 findings/ 与 docs/findings.md 同日条目。
+  不变性已验证（<=2.8e-05）。详见 docs/ops_2026-09-30_phase2.md 与 docs/findings.md 同日条目。
 
 ---
 
@@ -325,6 +331,9 @@
 ---
 
 ## 7. 立即可做的事（下一步）
+
+> 2026-09-24 制定时的原始清单，三项均已完成；当前状态与下一步见顶部进展记录。
+
 1. 提交 CONCH / UNI / UNI2-h / PixCell 的 HF 访问申请。
 2. LM2 `/data3` 下载 PanNuke 三折 → 转 uint8/uint16 → 同步到 ugradx。
 3. clone `TIO-IKIM/CellViT`、`vqdang/hover_net`、`TissueImageAnalytics/PanNuke-metrics`、`windygoo/PromptNucSeg`、`digitalpathologybern/hover_next_train`；下载 HoVer-NeXt / PromptNucSeg 的按折权重做评测管线校验。
