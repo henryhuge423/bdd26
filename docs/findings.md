@@ -897,7 +897,7 @@ to 1.0; seg then hit its 0.2 edge, extended to 0.1. Test folds ran once with the
 
 ## 2026-09-30 late night — ugrad ops + batch A/B + lever M/S selection (verdict pending)
 
-Full operational record: `docs/ops_2026-09-30_phase2.md`; A/B: `runs/_ab_verdict.md`.
+Full operational record: `docs/ops/ugrad_2026-09-30_phase2.md`; A/B: `runs/_ab_verdict.md`.
 
 - **Batch size is result-invariant on ugrad**: preallocation refactor bit-identical (0.00e+00);
   batch 2 vs 32 differs <= 2.82e-05 on all rate metrics (4/~66k instances, cudnn algorithm

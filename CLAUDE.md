@@ -1,6 +1,7 @@
 # CLAUDE.md
 
-Read README.md (layout, machines, commands) and docs/RESEARCH_PLAN.md (goals) first.
+Read README.md (layout, commands) and docs/RESEARCH_PLAN.md (goals) first; machines + ops
+runbook: docs/ops/README.md.
 
 Hard rules for this project:
 - Never unpack PanNuke float64 zips to disk; use `scripts/prepare_pannuke.py` (streams from zip).

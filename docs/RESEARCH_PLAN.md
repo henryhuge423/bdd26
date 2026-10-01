@@ -182,7 +182,7 @@
   表几乎不动（du2lev vs base mPQ -.0083、bPQ -.0045、Dead +.0051、内部 Dead 漏检 -.069）。
 - 运维：ugrad L4 五种杀进程模式全部诊断修复（16GB 地址空间预分配、astype 拷贝、**强制 3.6 GiB
   GPU 上限**（旧"6.9GB"有误）、expandable_segments 被拒、推理+评测拆进程）；batch 2 vs 32 结果
-  不变性已验证（<=2.8e-05）。详见 docs/ops_2026-09-30_phase2.md 与 docs/findings.md 同日条目。
+  不变性已验证（<=2.8e-05）。详见 docs/ops/ugrad_2026-09-30_phase2.md 与 docs/findings.md 同日条目。
 
 **2026-10-01（晚）— 阶段报告二已出**
 - `docs/report/stage_report_2/`：英文版 `stage_report_2.tex`（12 页，7 表 5 图）、中文平行版
