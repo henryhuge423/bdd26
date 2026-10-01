@@ -22,47 +22,49 @@ Resolution Buys Dead at a Priced Trade\\[6pt]
 \maketitle
 
 \begin{abstract}
-Stage report I located the PanNuke \emph{Dead} (apoptotic) class deficit in \emph{detection}
----38.5\% of Dead ground-truth nuclei receive no overlapping prediction---and showed it
-survives every loss-level and data-level intervention we tried, across three dense-decoder
-architectures. Two escapes were left untested: the \emph{detection-first} architecture family,
-whose published Dead numbers are the strongest in the literature, and \emph{working
-resolution}. This report tests both under the same strict protocol (official 3-fold split,
-last checkpoint, validation-only tuning, artifact-aware Dead reporting). \textbf{Line A
-(negative).} The released per-fold KongNet checkpoints---a six-head CenterNet-style
-detector whose fold mapping we first resolve empirically---score 0.346 mPQ under a
-validation-tuned decode, 11 points below the \emph{weakest} dense decoder; its contour-cut
-channel is net-harmful at 40$\times$ (every optimum disables it), same-class touching nuclei
-fuse (merged rate 0.12--0.18 vs 0.04--0.05 for watershed decoders), interior-Dead miss is
-\emph{worse} (0.50 vs 0.35), and the paper's Dead $F_c$ 0.59 falls to 0.34. LKCell-L, the
-strongest released per-fold weights we could find, reproduces uniformly $\sim$0.015 below its
-paper and, under matched conditions, is a \emph{better segmenter but worse typer} than our
-CellViT-UNI baseline (bPQ $+$0.008, Dead PQ $-$0.022): architecture strength does not convert
-into Dead or typing gains. \textbf{Line B (a priced trade).} Doubling working resolution to
-512\,px as a single-variable change makes every pre-registered Dead endpoint positive
-(interior-Dead miss $0.35\!\to\!0.25$) at a uniform bPQ tax of $-$0.026. Error analysis
-refutes the downsample hypothesis and traces most of the tax to a hidden confound: the
-watershed decode applies \emph{fixed pixel-unit constants} (minimum object size, Sobel
-aperture) that silently relax in native units at $2\times$. The pre-registered fix---scaling
-those constants by the resolution factor---recovers 50--87\% of the mPQ/bPQ/mPQ$^+$ cost while
-keeping (slightly enlarging) the Dead gain; a validation-only post-processing lever
-(same-class instance merging $+$ edge-sliver dropping) then passes a strict test improvement
-on all 9 runs of a $3{\times}3$ split$\times$seed grid. The pre-registered seed-noise verdict
-on that grid: the \emph{prices} are seed-robust ($4.7$--$5.3\times$ the largest seed std,
-same sign on every run), the \emph{Dead gain} is fragile ($0.4$--$0.7\times$ the per-seed Dead
-std; one split's seed-mean flips sign). Final standing: $-$0.008 mPQ / $-$0.005 bPQ buys
-$-$0.069 interior-Dead miss, $+$0.034 Dead $F_c$, and mPQ$^+$ parity---not a default win, an
-explicitly priced trade. We conclude that the Dead deficit is not an architecture-family
-artifact but a resolution$\times$separation problem that current decoders price in different
-currencies, and that pixel-unit decode constants are a first-class confound that any
-resolution study must control for.
+Stage report I located the PanNuke \emph{Dead} (apoptotic) class deficit in
+\emph{detection}---38.5\% of Dead ground-truth nuclei receive no overlapping prediction---and
+showed it survives every loss-level and data-level intervention we tried, across three
+dense-decoder architectures. Two escapes were left untested: the \emph{detection-first}
+architecture family, whose published Dead numbers are the strongest in the literature, and
+\emph{working resolution}. This report tests both under the same strict protocol (official
+3-fold split, last checkpoint, validation-only tuning, artifact-aware Dead reporting).
+\textbf{Line A (negative).} The released per-fold KongNet checkpoints---a six-head
+CenterNet-style detector whose fold mapping we first resolve empirically---score 0.346 mPQ
+under a validation-tuned decode, 11 points below the \emph{weakest} dense decoder; its
+contour-cut channel is net-harmful at 40$\times$ (every optimum disables it), same-class
+touching nuclei fuse (merged rate 0.12--0.18 vs 0.04--0.05 for watershed decoders),
+interior-Dead miss is \emph{worse} (0.50 vs 0.35), and the paper's Dead $F_c$ 0.59 falls to
+0.34. LKCell-L, the strongest released per-fold weights we could find, reproduces
+$\sim$0.015 uniformly below its published numbers and, under matched conditions, is a
+\emph{better segmenter but worse typer} than our CellViT-UNI baseline (bPQ $+$0.008, Dead PQ
+$-$0.022): architecture strength does not convert into Dead or typing gains. \textbf{Line B
+(a priced trade).} Doubling working resolution to 512\,px as a single-variable change makes
+every pre-registered Dead endpoint positive (interior-Dead miss $0.35\!\to\!0.25$) but pays a
+uniform bPQ tax of $-$0.026. Error analysis refutes the downsample hypothesis (that mapping
+512 predictions back to 256 destroys boundaries) and traces most of the tax to a hidden
+confound: the watershed decode applies \emph{fixed pixel-unit constants} (minimum object
+size, Sobel aperture) that silently relax in native units at $2\times$. The pre-registered
+fix---scaling those constants by the resolution factor---recovers 50--87\% of the
+mPQ/bPQ/mPQ$^+$ cost while keeping---and slightly enlarging---the Dead gain; a
+validation-only post-processing lever (same-class instance merging $+$ edge-sliver dropping)
+then yields a strict improvement on the test folds in all 9 runs of a $3{\times}3$
+split$\times$seed grid. The pre-registered seed-noise verdict on that grid: the
+\emph{prices} are seed-robust ($4.7$--$5.3\times$ the largest seed std, same sign on every
+run), the \emph{Dead gain} is fragile ($0.4$--$0.7\times$ the per-seed Dead std; one split's
+seed-mean flips sign). Final standing: $-$0.008 mPQ / $-$0.005 bPQ buys $-$0.069
+interior-Dead miss, $+$0.034 Dead $F_c$, and mPQ$^+$ parity---not a default win, an
+explicitly priced trade. We conclude that the Dead deficit is not an artifact of one
+architecture family: more pixels buy real detection gains, while separating---and
+typing---what those pixels newly resolve remains unsolved, and pixel-unit decode constants
+are a first-class confound that any resolution study must control for.
 \end{abstract}
 
 \section{Introduction}
 \label{sec:intro}
 
 Stage report I ended with a closed diagnosis: on PanNuke~\cite{gamper2019pannuke}, the Dead
-(apoptotic-body) class fails at \emph{ detection}, not classification. The foreground head is
+(apoptotic-body) class fails at \emph{detection}, not classification. The foreground head is
 silent on 83\% of missed Dead nuclei while the type branch already assigns them
 P(Dead)$\approx$0.26; re-typing with a pathology VLM, training-free recovery, loss
 re-weighting, copy-paste augmentation, and in-context synthesis were all null or harmful; and
@@ -81,13 +83,14 @@ end-to-end---resolving their undocumented fold mapping empirically first---and r
 LKCell-L~\cite{cui2024lkcell}, the strongest released per-fold weights of the CellViT
 lineage, in the same pipeline.
 \item \textbf{Resolution (Line B):} the failure reflects the 256\,px working resolution:
-Dead nuclei are small (median 107\,px vs 368 for other classes) and 31\% of interior Dead
-nuclei are missed even at $\geq$256\,px, so more pixels should help detection regardless of
-decoder. We double the working resolution of the unchanged CellViT-UNI recipe (single-variable
-change), then follow the error trail wherever it leads: an initial uniform bPQ tax, a
-mechanism diagnosis that overturns the obvious explanation, a pre-registered decode fix, a
-validation-only post-processing lever, and a $3{\times}3$ split$\times$seed grid whose
-seed-noise verdict was written down before the last runs landed.
+Dead nuclei are small (median 107\,px vs 368 for other classes), 31\% of interior Dead nuclei
+are missed, and even among Dead nuclei of at least 256\,px the miss rate is 17\%---so more
+pixels should help detection regardless of decoder. We double the working resolution of the
+unchanged CellViT-UNI recipe (single-variable change), then follow the error trail wherever
+it leads: an initial uniform bPQ tax, a mechanism diagnosis that overturns the obvious
+explanation, a pre-registered decode fix, a validation-only post-processing lever, and a
+$3{\times}3$ split$\times$seed grid whose seed-noise verdict was written down before the last
+runs landed.
 \end{enumerate}
 
 Contributions:
@@ -97,9 +100,9 @@ Contributions:
 KongNet's released per-fold weights, given their best validation-tuned decode, are 11 mPQ
 points below the weakest dense decoder, fuse touching nuclei, and miss \emph{more} interior
 Dead nuclei; the paper's Dead $F_c$ 0.59 does not replicate (0.34 strict). LKCell-L is a
-better segmenter and worse typer under matched conditions. Generalisable lesson:
+better segmenter and worse typer under matched conditions. The generalizable lesson:
 published Dead advantages so far reflect evaluation recipes and segmentation--typing
-trade-offs, not a solved Dead detector.
+trade-offs rather than genuinely better Dead detection.
 \item \textbf{A mechanism study of resolution in nuclei decoding}
 (Sec.~\ref{sec:mechanism}--\ref{sec:du2}): the $2\times$ bPQ tax is size-axis-monotone,
 not class-localised; boundary quality of matched nuclei is unchanged; and the dominant cause
@@ -108,22 +111,23 @@ aperture) that relax in native units when resolution doubles. Scaling them by th
 factor ($du2$) recovers 50--87\% of the aggregate cost. To our knowledge this confound is
 undocumented in the nuclei-segmentation literature, and it applies to \emph{any} pipeline
 built on the HoVer-Net post-processing stack.
-\item \textbf{A pre-registered, fully replicated priced-trade characterisation of $2\times$
-resolution} (Sec.~\ref{sec:lever}--\ref{sec:final}): a validation-only lever (same-class
+\item \textbf{A pre-registered, fully replicated characterization of the priced trade}
+(Sec.~\ref{sec:lever}--\ref{sec:final}): a validation-only lever (same-class
 merge + edge-sliver drop, frozen constants) strictly improves the $du2$ arm on all 9
 grid runs; the $3{\times}3$ seed grid separates robust prices from a fragile Dead gain; and
 the final standing prices every Dead improvement in mPQ/bPQ units.
 \item \textbf{Two further evaluation-methodology results}: the KongNet fold mapping of
-released checkpoints can be recovered from memorisation alone (train-fold detection F1 margin
+released checkpoints can be recovered from memorization alone (train-fold detection F1 margin
 $\geq$0.13, no test-fold information used); and LKCell-L's paper-to-strict gap is
 \emph{uniform} ($\sim$0.015 on every headline metric), the signature of a protocol
 translation rather than a pipeline error---the second released model, after HoVer-NeXt-T in
-report I, whose recipe gap exceeds typical leaderboard gaps.
+report I, whose published-to-strict gap exceeds the spacing between leaderboard neighbors.
 \end{enumerate}
 
-Everything runs in one codebase; every number comes from the same bit-exact evaluator, and
-all tables in this report were re-derived from stored prediction artifacts on 2026-10-01
-(script \texttt{scripts/report2\_numbers.py}, output archived in the repository).
+All results come from a single codebase and the same bit-exact evaluator; every table in
+this report was re-derived from stored prediction artifacts on 2026-10-01
+(script \texttt{scripts/report2\_numbers.py}; the extracted numbers are archived with the
+run artifacts).
 
 \section{Related Work}
 \label{sec:related}
@@ -145,21 +149,21 @@ released weights are queued for the same re-evaluation (Sec.~\ref{sec:status}).
 
 \paragraph{Resolution in nuclei segmentation.} Higher input or working resolution is an
 evergreen lever (CellViT-SAM-H at 512; LKCell's multi-scale large kernels; HoVer-NeXt's
-pyramid), but published ablations compare end-to-end configurations, not the resolution
-variable with the decode held accountable. The closest antecedent to our finding is the
-classic scale-space literature: watershed markers and morphological floors are
-pixel-unit operators, so their effective scale changes with image resolution---a fact that,
-to our knowledge, has not been called out as a confound in learned nuclei-segmentation
-pipelines, where these constants are inherited verbatim from HoVer-Net's released
-post-processing code.
+pyramid), but published ablations compare end-to-end configurations rather than isolating
+the resolution variable with the decode held to account. The closest antecedent to our
+finding is the classic scale-space literature: watershed markers and morphological floors
+are pixel-unit operators, so their effective scale changes with image resolution---a fact
+that, to our knowledge, has not been called out as a confound in learned
+nuclei-segmentation pipelines, where these constants are inherited verbatim from HoVer-Net's
+released post-processing code.
 
 \section{Experimental Setup}
 \label{sec:setup}
 
 \paragraph{Protocol (unchanged from report I).} PanNuke folds 1--3, official assignment
 (train/val/test $=1/2/3$, $2/1/3$, $3/2/1$); last checkpoint for our trained runs, released
-per-fold (validation-selected) checkpoints for the re-evaluated models; no test-fold tuning
-of anything; official tissue-averaged mPQ/bPQ from our bit-exact evaluator; TTA (8 dihedral
+per-fold (validation-selected) checkpoints for the re-evaluated models; nothing is tuned on
+test folds; official tissue-averaged mPQ/bPQ from our bit-exact evaluator; TTA (8 dihedral
 views, HV remapped) reported separately. Dead endpoints are reported four ways as in
 report I: official Dead PQ, Uterus-excluded Dead PQ (the official per-class PQ averages only
 over images containing the class, and fold 3 contains 34 Uterus images near zero for every
@@ -169,7 +173,7 @@ Dead miss rate.
 \paragraph{Released-weight re-evaluation rules (Line A).} (1) The fold mapping of released
 checkpoints must be established without touching test folds: for KongNet we run each
 checkpoint on 200-image subsamples of every \emph{train} fold and read the mapping off the
-memorisation diagonal (Sec.~\ref{sec:kongnet}). (2) Any decode thresholds are tuned on
+memorization diagonal (Sec.~\ref{sec:kongnet}). (2) Any decode thresholds are tuned on
 validation folds only, with grids extended until the optimum is bracketed; test folds run
 once with frozen constants. (3) Class-channel semantics of vendored decoders are verified on
 train folds only (matched-pair confusion diagonal $\geq$0.97). LKCell-L uses its released
@@ -201,11 +205,11 @@ pre-registered before the last grid runs landed (Sec.~\ref{sec:grid}).
 (176.9M parameters, tf\_efficientnetv2\_L encoder + six SMP decoders: one overall head + five
 per-class heads, each with heatmap/segmentation/contour channels) ship with no fold
 documentation. Running all three checkpoints on 200-image subsamples of every \emph{train}
-fold gives a clean memorisation diagonal (pooled detection F1, centroid pairing at 12\,px):
+fold gives a clean memorization diagonal (pooled detection F1, centroid pairing at 12\,px):
 checkpoint $k$ wins train fold $k$ at 0.905/0.944/0.912 with margin $\geq$0.13 over both
 held-out folds---\texttt{\_k.pth} is official split $k$, resolved without any test-fold
 information. Class-channel semantics were verified on train folds (matched-pair class
-agreement 0.97--0.99, Dead diagonal $\approx$0 off-diagonal).
+agreement 0.97--0.99, with near-zero off-diagonal mass for Dead).
 
 \paragraph{The contour cut is net-harmful at 40$\times$.} The released inference recipe
 assembles instances as per-class segmentation-minus-contour masks. We swept the two decode
@@ -240,8 +244,9 @@ x2 $+$ du2 $+$ lever & .4910 & .6608 & .5171 & .183 & .227 & .393 & .422 & .302 
 \end{table}
 
 \paragraph{Test verdict.} Table~\ref{tab:arch}, top block: with the frozen best decode,
-KongNet reaches \textbf{0.346 mPQ / 0.471 bPQ}---11 and 17--19 points below the weakest dense
-decoder---and every pre-registered Dead endpoint fails: official Dead PQ 0.053 (dense
+KongNet reaches \textbf{0.346 mPQ / 0.471 bPQ}---11 mPQ and 17--19 bPQ points below the
+weakest dense decoder---and every pre-registered Dead endpoint fails: official Dead PQ 0.053
+(dense
 0.127--0.176), Uterus-excluded 0.070, interior-Dead miss 0.50 \emph{vs} 0.354 (CellViT-UNI)
 and 0.413 (HoVer-Net) on the shared splits-1+3 frame. Only per-nucleus Dead $F_c$ is
 mid-pack (0.344). The error profile explains why: \emph{same-class touching nuclei fuse}.
@@ -265,9 +270,9 @@ shared pipeline (its normalisation, its 256\,px decode, no TTA):
 \begin{itemize}
 \item \textbf{The paper gap is uniform:} strict 0.4923/0.6729/0.154 vs published
 0.508/0.685/0.172---$-$0.016/$-$0.012/$-$0.018 on every headline metric. A fold or
-normalisation error craters metrics; a uniform shift is the signature of a protocol
-translation (checkpoint selection, decode, TTA recipe). Recorded as-is; it cannot be
-resolved further from the paper alone.
+normalization error collapses metrics outright; a uniform shift is the signature of a
+protocol translation (checkpoint selection, decode, TTA recipe). Recorded as-is; the gap
+cannot be attributed further from the paper alone.
 \item \textbf{Under matched conditions, no Dead gain:} vs our CellViT-UNI baseline
 (Table~\ref{tab:arch}), LKCell-L is $-$0.007 mPQ and $-$0.022 Dead PQ while $+$0.008 bPQ and
 $+$0.006 mPQ$^+$. Decomposition: it \emph{finds} Dead nuclei better (Dead $F_c$ 0.382 vs
@@ -290,7 +295,8 @@ $F_c$ 0.393 vs 0.382; Dead DQ$^+$ 0.422 vs 0.418).
 \begin{table}[t]
 \centering\small
 \caption{B1 initial result (split 1, TTA): $2\times$ resolution vs the 3-seed baseline
-(seed std in parentheses; $\Delta$ with paired, tissue-stratified image-bootstrap 95\% CIs).}
+(seed std in parentheses; $\Delta$ with paired, tissue-stratified image-bootstrap 95\% CIs;
+per-class rows show $\Delta$ only).}
 \label{tab:b1}
 \begin{tabular}{lccc}
 \toprule
@@ -385,8 +391,8 @@ benefit.
 \subsection{The pre-registered decode fix ($du2$)}
 \label{sec:du2}
 
-The fix follows from the diagnosis and was registered before running it: scale the pixel-unit
-constants by the resolution factor $u$---$\mathrm{min\_size} \to 10u^2$, Sobel aperture
+The fix follows from the diagnosis and was registered before it was run: scale the
+pixel-unit constants by the resolution factor $u$---$\mathrm{min\_size} \to 10u^2$, Sobel aperture
 $\to$ the nearest odd multiple of $21u$ (41). (OpenCV caps Sobel apertures at 31; beyond
 that we linearly resample the official 21-tap operator's impulse-response kernels, exact at
 $u{=}1$, unit-tested bit-exact.) Re-decoding the existing checkpoints---no retraining:
@@ -426,11 +432,12 @@ baseline.}
 \label{fig:du2}
 \end{figure}
 
-Table~\ref{tab:du2}/Fig.~\ref{fig:du2}: the two constants own most of the tax---50--87\% of
-the mPQ/bPQ/mPQ$^+$ cost depending on metric and TTA---and the Dead gain is kept and slightly
-enlarged (no-TTA $+$.006$\to+$.007). Exactly as predicted from the mechanism (boundary quality
+Table~\ref{tab:du2}/Fig.~\ref{fig:du2}: the two constants account for most of the
+tax---50--87\% of the mPQ/bPQ/mPQ$^+$ cost depending on metric and TTA---and the Dead gain is
+kept and slightly enlarged (no-TTA $+$.006$\to+$.007), exactly as the mechanism predicted
+(boundary quality
 was already at parity; the Dead gain lives in detection, not decode). Per split, the x2 Dead
-gain is fold-3-driven (split-1 $+$.017, split-2 $+$.009 no TTA) while split-3 (test fold 1)
+gain is fold-3-driven (split-1 $+$.017, split-2 $+$.009, no TTA) while split-3 (test fold 1)
 shows a small loss ($-$.009) that $du2$ largely recovers ($-$.003)---consistent with the
 known fold-composition asymmetry of Dead. The residual gap ($-$.007 bPQ no TTA) is genuine
 fp-split at 512, not decode: scaling the third constant (the marker-open kernel, $du2mk2$)
@@ -441,11 +448,11 @@ was evaluated on validation and \emph{rejected} (worse mPQ at equal bPQ).
 
 The visual analysis of the residual suggested two decode-side moves: merge same-class
 adjacent instances (the mosaics have clean outer boundaries) and drop edge-touching slivers
-(a third of the tiny FPs are border-clipping fragments). Both have knobs; both were selected
-on \emph{validation} folds only, on the $du2$ arm, under the rule "bPQ $\geq$ baseline
-$-$ .002, then max mPQ". All three splits' validation sweeps---and a fourth, extended sweep
-on a decode variant---independently choose the same pair: merge fraction 0.25, sliver area
-floor 40\,px.
+(a third of the tiny FPs are border-clipping fragments). Both have free parameters, and both
+were selected on \emph{validation} folds only, on the $du2$ arm, under the rule "bPQ
+$\geq$ baseline $-$ .002, then max mPQ". All three splits' validation sweeps---and a fourth,
+extended sweep on a decode variant---independently choose the same pair: merge fraction 0.25,
+sliver area floor 40\,px.
 
 Frozen, applied to test:
 
@@ -469,7 +476,7 @@ Split & $\Delta$mPQ [CI] & $\Delta$bPQ [CI] & $\Delta$Dead PQ [CI] \\
 Table~\ref{tab:lever}: a strict test improvement---all six mPQ/bPQ CIs exclude zero on the
 positive side, every Dead view within $\pm$.002, predicted instances drop 27.2$\to$26.6 per
 image (the lever removes $\sim$0.5 fragments and slivers per image and nothing else
-measurable). Selection generalised with zero test-fold tuning.
+measurable). The selection generalized with zero test-fold tuning.
 
 \subsection{The $3{\times}3$ seed grid and the pre-registered seed-noise verdict}
 \label{sec:grid}
@@ -509,9 +516,9 @@ Split & Arm & mPQ & bPQ & Dead PQ \\
 \end{tabular}
 \end{table}
 
-The grid (Table~\ref{tab:grid}, Fig.~\ref{fig:grid}) was completed for the pre-registered
-seed-noise verdict: compare each Line-B effect against the per-seed standard deviation of the
-identical recipe.
+The grid (Table~\ref{tab:grid}, Fig.~\ref{fig:grid}) exists for one purpose: the
+pre-registered seed-noise verdict, which compares each Line-B effect against the per-seed
+standard deviation of the identical recipe.
 
 \begin{itemize}
 \item \textbf{The prices are seed-robust.} $\Delta$mPQ $-$0.0098 and $\Delta$bPQ $-$0.0069
@@ -520,7 +527,7 @@ std (0.0021 / 0.0013), same sign on every one of the 9 runs. x1 stays ahead on m
 $\sim$5$\times$ seed noise.
 \item \textbf{The Dead gain is fragile.} $+$.0049 on 3-split means is only
 $0.4$--$0.7\times$ the per-seed Dead std (0.0068--0.0112). Paired same-seed comparisons
-favour $du2$ on 4 of 5 pairs (split-3 seed 19 flips, $-$.0032), and split-level seed means go
+favor $du2$ on 4 of 5 pairs (split-3 seed 19 flips, $-$.0032), and split-level seed means go
 $+$.0111 (split 1, 3/3 seeds) / $-$.0015 (split 2, flips) / $+$.0051 (split 3, 2/3). The x2
 Dead advantage is real on split 1, present-but-noisy on split 3, a wash on split 2.
 \end{itemize}
@@ -528,9 +535,9 @@ Dead advantage is real on split 1, present-but-noisy on split 3, a wash on split
 \subsection{Final standing: the priced trade}
 \label{sec:final}
 
-Table~\ref{tab:arch}, bottom block, collects the standing (3-split means, seed 19, no TTA):
-the levered $2\times$ arm trades $-$.0085 mPQ / $-$.0045 bPQ for interior-Dead miss
-$-$.070 ($0.372\!\to\!0.302$), Dead $F_c$ $+$.035, Dead DQ$^+$ $+$.026, Uterus-excluded Dead
+Table~\ref{tab:arch}, bottom block, collects the final standing (3-split means, seed 19, no
+TTA): the levered $2\times$ arm trades $-$.0085 mPQ / $-$.0045 bPQ for interior-Dead miss
+$-$.070 ($0.372\!\to\!0.302$), Dead $F_c$ $+$.034, Dead DQ$^+$ $+$.026, Uterus-excluded Dead
 PQ $+$.009, and interior-Dead matched share $+$.07; mPQ$^+$ is at parity ($-$.0005 on the
 pooled grid; $-$.0007 seed 19). Per the pre-registered combined endpoint, $2\times$ working
 resolution with the corrected decode is \textbf{not a default win}---it is an explicitly
@@ -556,15 +563,15 @@ is detected to the same machinery as before.
 implication beyond this project: every pipeline built on HoVer-Net's post-processing (which
 is most of the field) carries resolution-hardcoded constants. Any resolution, patch-size, or
 backbone-stride change silently re-scales the effective decode; published resolution
-ablations that do not correct for it measure the change \emph{plus} an artefact that points
+ablations that do not correct for it measure the change \emph{plus} an artifact biased
 against higher resolution. We found no discussion of this in the nuclei-segmentation
-literature; the two-line fix is in our released decode.
+literature; the two-line fix is in our repository's decode.
 
 \paragraph{Honest effect sizes, pre-registered.} The seed grid separates what survives
 pooling from what does not. The prices survive at $\sim$5$\times$ seed noise with uniform
 sign; the Dead PQ gain does not survive at all as a headline ($0.4$--$0.7\times$ seed std,
 one split flipped). What \emph{is} solid on the Dead side are the detection-geometry
-endpoints---interior-Dead miss $-$.070 and Dead $F_c$ $+$.035, replicated in sign on every
+endpoints---interior-Dead miss $-$.070 and Dead $F_c$ $+$.034, replicated in sign on every
 run---while the class-PQ aggregation over 65--97 Dead-bearing images remains the noisiest
 measurement in the benchmark. This is report I's noise calibration doing its job: the
 headline number is not the one to trust, and we say which one is.
