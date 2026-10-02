@@ -8,7 +8,7 @@
 > [完整结果、置信区间与来源](P0_P3_RESULTS_2026-10-02.md) 优先于下面的历史解释。
 > P3 仅为 split1 的 128 张验证图尺度交叉，不与完整测试均值混列。
 > 已尝试的合成方案无效不等于所有数据方法无效；当前 CF 排序失败不等于固定标签测试无法施加检测压力。
-> 本轮没有新训练或 LM1/LM2 GPU 任务；原始受限推理在 ugrad 完成，v2 只重跑 CPU 阶段，没有补训种子。
+> 本轮没有新训练或 GPU 推理；复用原始预测，v2 只重跑 CPU 阶段，没有补训种子。
 
 > 制定日期 2026-09-24。文献调研由 4 路并行检索完成（WebSearch 被限流，主要通过 arXiv / HF / GitHub API 获取原文与表格）。标 **[未核实]** 的条目需要你在引用前自行确认；2026 年的 arXiv 预印本大多尚无正式 venue。
 
@@ -84,7 +84,7 @@
   "漏检 Dead 均为孤立核"），prob 0.5 × Poisson(3)；**在几何/色彩增强之前**粘贴使粘贴核同步增强。
   视觉审查（sonnet 子代理）抓到单测漏掉的真 bug：v1 有边界裁剪碎片、增强顺序漏洞（粘贴核未增强=
   可学习捷径）、与未标注核碰撞、色调失配；v2 已修（边界 donor 剔除、基质色偏移、Otsu 暗区防护、
-  先粘贴后增强）。run `split1_cp1`（seed 19）已在 LM2 训练。
+  先粘贴后增强）。run `split1_cp1`（seed 19）已启动训练。
 - **PixCell LoRA 管线**（`scripts/train_pixcell_lora.py` + `nucseg.pixcell`）：DiT attention LoRA
   8.3M 参数，ControlNet/VAE 冻结，条件协议与推理完全一致（CFG dropout=0.1，dropped rows 零贡献，
   加性注入已核实）；fold1 条件缓存；5000 步约 40 分钟。定量评估器 `scripts/pixcell_eval.py`
@@ -118,11 +118,11 @@
   但不显著、以 bPQ -.0024 为代价）。
 - 下一步（支柱 C，计划 §2.3）：跨域零样本（CoNIC/Lizard 剔除 PanNuke 重叠、MoNuSAC、PUMA，
   类别映射 + bPQ/AJI/PQ）+ PanNuke-CF 反事实渲染（复用已锁定配方：基座+配对上下文+Reinhard），
-  验证 CF 排序与真实跨域排序的一致性（Spearman）。注意 /data7 已满，新数据集放 LM2 /data6。
+  验证 CF 排序与真实跨域排序的一致性（Spearman）。
 
 **2026-09-26（深夜）— 支柱 C 启动：跨域数据转换完成并审查通过；PanNuke-CF 渲染器验证通过**
 - CoNIC（剔除 112 张 PanNuke 重叠、20×→2×上采样、四分裂 256）= 19,476 tiles；MoNuSAC test
-  （RGBA→RGB、Ambiguous 剔除、256 tiling）= 443 tiles；均存 LM2（/data7 满）。Sonnet 拼接图
+  （RGBA→RGB、Ambiguous 剔除、256 tiling）= 443 tiles；存于 `data/external/`。Sonnet 拼接图
   审查：无转换 bug（亚像素对齐、尺寸方向正确、插值平滑）。
 - 评测管线打通（evaluate 可选 tissue_names；external.py 镜像 PanNukeFold、惰性 gt_channels；
   predict_external / collect_external）。修复静默仓库 bug：.gitignore 的 `data/` 吞掉了
@@ -130,8 +130,8 @@
 - PanNuke-CF：固定 fold3 GT 标签，context {配对,换组织} × Reinhard {自身, donor} 因子设计
   （control/stain/ctx/tissue 四臂 + real 参照 + control 3 种子重复）。冒烟（8 patch）：control
   比真实还容易（bPQ .71→.80）但 strict 掉（外观-类型不一致）；tissue 臂强压力信号（.28）。
-  审查修复：空白 patch 剔除（context 是内容通道）、donor 亮度护栏。全量 500/臂在 LM2 GPU7。
-- 在跑：CellViT-UNI 3 splits × {conic, monusac} × {plain, TTA}（LM2 GPU1）；HoVer-Net 随后。
+  审查修复：空白 patch 剔除（context 是内容通道）、donor 亮度护栏。全量 500/臂渲染中。
+- 在跑：CellViT-UNI 3 splits × {conic, monusac} × {plain, TTA}；HoVer-Net 随后。
 
 **2026-09-27 — 外部零样本表 + CF 首轮分析 + 第三评估器就绪**（详见 findings.md）
 - 外部零样本（3-split mean mPQ）：CoNIC CellViT .335 / HoVer-Net .261；MoNuSAC .250 / .037
@@ -153,7 +153,7 @@
 - 结论：PanNuke-CF = 分型压力测试，**不是**跨域迁移代理。三个支柱全部关闭；
   剩余工作 = 最终报告与图表（组织×类热力图、错误分解、合成/CF 样例、主表）。
 - **阶段报告一已出**：`docs/report/stage_report_1/stage_report_1.tex`（英文 LaTeX，12 页，6 表 4 图，
-  LM2 TeXLive 2026 编译，PDF 入库；中文平行版 `stage_report_1_zh.tex`，11 页；报告一所有文件
+  TeXLive 2026 编译，PDF 入库；中文平行版 `stage_report_1_zh.tex`，11 页；报告一所有文件
   （含 figs/）集中在 `docs/report/stage_report_1/`，后续报告各占一个子目录）。覆盖三支柱
   全部结论；最终报告还需补组织×类热力图、错误分解图、以及可选的 MoNuSeg/NuInsSeg 外部集。
 
@@ -190,21 +190,20 @@
   分裂级种子均值 +.0111（split1，3/3 种子）/ -.0015（split2 翻负）/ +.0051（split3，2/3）。
   3 分裂均值（9 run）：du2 mPQ .4889 bPQ .6579 Dead .1799，du2lev .4905/.6603/.1801；较 seed19-only
   表几乎不动（du2lev vs base mPQ -.0083、bPQ -.0045、Dead +.0051、内部 Dead 漏检 -.069）。
-- 运维：ugrad L4 五种杀进程模式全部诊断修复（16GB 地址空间预分配、astype 拷贝、**强制 3.6 GiB
-  GPU 上限**（旧"6.9GB"有误）、expandable_segments 被拒、推理+评测拆进程）；batch 2 vs 32 结果
-  不变性已验证（<=2.8e-05）。详见 docs/ops/ugrad_2026-09-30_phase2.md 与 docs/findings.md 同日条目。
+- 推理内存优化不改变评测语义：输出预分配、避免不必要拷贝，并将推理与评测拆为独立进程；
+  batch 2 vs 32 结果不变性已验证（<=2.8e-05），见 findings.md 同日条目。
 
 **2026-10-01（晚）— 阶段报告二已出**
 - `docs/report/stage_report_2/`：英文版 `stage_report_2.tex`（12 页，7 表 5 图）、中文平行版
   `stage_report_2_zh.tex`（10 页）、面向零背景读者的导读 `summary_plain_zh.tex`（4 页，标题
-  《把图像放大一倍，AI 就能看见将死的细胞了吗？》）；LM2 TeXLive 2026 编译（pdflatex/xelatex
+  《把图像放大一倍，AI 就能看见将死的细胞了吗？》）；TeXLive 2026 编译（pdflatex/xelatex
   各两遍，0 错误 0 overfull），PDF 已入库。figs/ 自含（6 张图表 EN+ZH 双版 + 3 张 montage 复制）。
 - 全部表格数字于写前从 artifacts 重新导出核验（`scripts/report2_numbers.py` →
   `runs/analysis/report2_numbers.txt`）：架构总表（KongNet/HoVer-Net/LKCell/base/x2 手臂）、
   du2 回收、杠杆 CI、3×3 网格、B1 初始 Dead 端点电池、尺寸分箱机制、误差构成、npred、
   Uterus Dead PQ——与 findings 条目一致，仅两处以 artifact 为准修正了笔记笔误
-  （npred TTA 25.5→28.4 而非"24→27"；du2 回收 noTTA bPQ 71%）。LM2 的 split2/3 `eval_test_fold*_x2{,_tta}`
-  与 du2-TTA evals 已拉回 LM1 入 runs 树。
+  （npred TTA 25.5→28.4 而非"24→27"；du2 回收 noTTA bPQ 71%）。split2/3 `eval_test_fold*_x2{,_tta}`
+  与 du2-TTA evals 已汇总到 runs 树。
 - 新增图表脚本 `scripts/make_report_figures2.py`（dataviz 调色板同报告一；尺寸分箱/du2 回收/
   种子网格，中英双版）。
 
@@ -302,15 +301,15 @@
 
 ---
 
-## 4. 算力与存储分配
+## 4. 复现资源与存储
 
-| 资源 | 现状（2026-09-24 实测） | 用途 |
-|---|---|---|
-| **ugradx + ugradv**（共 4×L4-24G，空闲） | home 显示 1.4T 可用，quota 按 15G 规划 | HoVer-Net 基线 3 折训练；全部评测与错误分析；LLM 生成描述 / CONCH 文本编码；PanNuke 压缩版（uint8/uint16 ≈ 2–3GB） |
-| **LM2**（8×A100-80G，GPU2 近空闲，其它卡 13–60G 空余） | `/data3` 剩 143G | **主力**：FM-backbone 训练、支柱 A 消融、生成器微调与采样；存放模型权重与合成数据 |
-| **LM1 本机**（8×A100-80G，多数卡满载） | `/data7` **仅剩 24G** | 代码、日志、小文件；GPU 只做机会性补位（利用率 100% 会慢） |
+机器清单、资源分配和同步方式不属于项目协议；具体部署记录仅在本地维护。
+训练需要足够的 GPU 显存，推理与 CPU 评测可分开运行；根据可用资源设置 batch size，
+改变批大小后核对结果不变性，不改变训练/验证/测试划分。
 
-**存储红线**：PanNuke 官方 npy 为 float64，解压 ~37GB —— **不要在 /data7 解压**。在 LM2 `/data3` 解压后立即转成 uint8 图像 + uint16/int32 掩码（≈2–3GB），再同步到其它机器；或直接用 HF `RationAI/PanNuke`（~834MB parquet）。
+**存储红线**：PanNuke 官方 npy 为 float64，完整解压约 37GB。**不要解压到磁盘**；
+使用 `scripts/prepare_pannuke.py` 从 zip 流式转换为 uint8 图像与 uint16 掩码（约 2–3GB）。
+数据默认放在 `data/pannuke/`，可通过 `PANNUKE_ROOT` 指定其它位置。
 
 **GPU 预算估计**（推测，按 A100 计；L4 约慢 2–3×）：
 
@@ -331,7 +330,7 @@
 
 | 周 | 里程碑 | 交付 / Go-No-Go |
 |---|---|---|
-| **W0（立即）** | 申请门控权重：CONCH、UNI、UNI2-h（Mahmood Lab，需机构邮箱，用 JHU 邮箱）、PixCell；下载 PanNuke 到 LM2 并压缩 | 权限到位 |
+| **W0（立即）** | 申请门控权重：CONCH、UNI、UNI2-h（Mahmood Lab，需机构邮箱）、PixCell；下载并流式转换 PanNuke | 权限到位 |
 | **W1** | 数据管线 + 官方评测脚本跑通；用 HoVer-NeXt / PromptNucSeg **按折权重**直接评测，验证评测管线（应复现其论文数字 ±0.01） | 评测数字对得上 → Go |
 | **W2–3** | **HoVer-Net 基线**（vqdang 官方，fast 模式，Py3.9 + torch2 + numpy 1.23.5，输入反射填充到 348，自写 PanNuke loader）3 折；CellViT-UNI+adapter 3 折；错误分解分析 | 目标 HoVer-Net mPQ ≈ 0.44–0.46；**课程 (a) 部分完成** |
 | **W4–5** | 支柱 A 实现 + fold-1 消融 | 相对"线性头+同等重加权"Dead PQ 有提升 → Go；否则转为以 B 为主 |
@@ -363,9 +362,9 @@
 > 2026-09-24 制定时的原始清单，三项均已完成；当前状态与下一步见顶部进展记录。
 
 1. 提交 CONCH / UNI / UNI2-h / PixCell 的 HF 访问申请。
-2. LM2 `/data3` 下载 PanNuke 三折 → 转 uint8/uint16 → 同步到 ugradx。
+2. 下载 PanNuke 三折 zip → 用 `scripts/prepare_pannuke.py` 流式转为 uint8/uint16。
 3. clone `TIO-IKIM/CellViT`、`vqdang/hover_net`、`TissueImageAnalytics/PanNuke-metrics`、`windygoo/PromptNucSeg`、`digitalpathologybern/hover_next_train`；下载 HoVer-NeXt / PromptNucSeg 的按折权重做评测管线校验。
-   - 调研代理已临时下载：`/tmp/hn`（hover_net clone）、`/tmp/hnres/hn_pannuke.tar`（HoVer-Net PanNuke 全量权重，**仅可作 sanity check**）。
+   - HoVer-Net PanNuke 全量权重**仅可作 sanity check**，不能用于测试结论。
 
 ---
 

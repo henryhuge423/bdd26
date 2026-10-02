@@ -13,9 +13,9 @@ Runs the vendored KongNet (third-party repo on the machine, --repo) on PanNuke f
 via the compact memory-mapped format; per-class F1 also verifies the head->class
 channel map ([5,8,11,14,17] = neoplastic..epithelial) on the train folds only.
 
-Usage (ugrad, venv + ugrad_env.sh):
-  python scripts/kongnet_foldmap.py --repo /tmp/cgf2604/repos/KongNet_Inference_Main \
-      --weights-dir /tmp/cgf2604/weights_a1/kongnet --out runs/analysis/kongnet_foldmap.json
+Usage:
+  python scripts/kongnet_foldmap.py --repo third_party/KongNet_Inference_Main \
+      --weights-dir weights/kongnet --out runs/analysis/kongnet_foldmap.json
 """
 from __future__ import annotations
 
@@ -138,7 +138,7 @@ def main():
     model = build_model(args.repo, args.device)
     results, table = [], {}
     for j in args.checkpoints:
-        # 16 GB address-space cap on ugrad: CUDA context (~9 GB) + one 2.1 GB ckpt at a time
+        # Under a 16 GB address-space cap: CUDA context (~9 GB) + one 2.1 GB ckpt at a time
         ckpt = torch.load(args.weights_dir / f"KongNet_PanNuke_{j}.pth",
                           map_location="cpu", weights_only=True)
         epoch = ckpt.get("epoch")

@@ -5,7 +5,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 export HF_TOKEN="${HF_TOKEN:-$(tr -d '\n ' < "$ROOT/hg-token.txt")}"
 export HF_HUB_ENABLE_HF_TRANSFER=0
 export HF_HUB_DOWNLOAD_TIMEOUT=120 HF_HUB_ETAG_TIMEOUT=60
-# hf-mirror does not serve gated LFS files; go to the origin (through the proxy on LM1/LM2).
+# hf-mirror does not serve gated LFS files; use the upstream endpoint for gated downloads.
 export HF_ENDPOINT="${HF_ENDPOINT_GATED:-https://huggingface.co}"
 PY="${PY:-python}"
 REPOS=("$@"); [ ${#REPOS[@]} -eq 0 ] && REPOS=(MahmoodLab/CONCH MahmoodLab/UNI MahmoodLab/UNI2-h)

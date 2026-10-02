@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 """Dump CellViT-UNI network outputs of a fold for post-processing sweeps (GPU stage).
 
-    python scripts/dump_cellvit_maps.py --run runs/cellvit_uni/split1 --fold 2 --out /tmp/cgf2604/scratch/maps/split1
+    python scripts/dump_cellvit_maps.py --run runs/cellvit_uni/split1 --fold 2 --out data/cache/maps/split1
 
 Writes <out>/maps_fold{k}[_tta].npy, float16 (N, 256, 256, 9): [P_NP(fg), HV_h, HV_v, P_TP(0..5)]
 (~1.2 MB per patch, ~3.2 GB per fold) + <out>/tissue_fold{k}[_tta].npy. Written to a .tmp file and
-renamed when complete. Keep these OUT of runs/ (pull_ugrad.sh syncs runs/ back to LM1).
+renamed when complete. Keep these large intermediate maps separate from final run artifacts.
 """
 import argparse
 import os
@@ -41,7 +41,7 @@ f = PanNukeFold(a.fold)
 tmp = a.out / f"maps_{tag}.tmp.npy"
 shape = (len(f), 256, 256, 9)
 tissue = np.zeros((len(f), 19), np.float32)
-# stream to disk (no memmap: a mapping of the whole file would count against ugrad's 16 GB address space)
+# stream to disk (no memmap: mapping the whole file consumes the process's address-space budget)
 with open(tmp, "wb") as fh, torch.no_grad():
     np.lib.format.write_array_header_1_0(fh, {"descr": np.lib.format.dtype_to_descr(np.dtype(np.float16)),
                                               "fortran_order": False, "shape": shape})

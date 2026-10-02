@@ -1,7 +1,16 @@
+# Local-only operations, agent state and machine instructions
+/ops/
+/CLAUDE.local.md
+/.superpowers/
+
 # secrets
 hg-token.txt
 *.token
-# data / weights / outputs (large; LM1 is the source of truth, synced by scripts/)
+.env
+.env.*
+*.pem
+*.key
+# data / weights / outputs (large; not part of the source repository)
 /data/
 weights/
 runs/

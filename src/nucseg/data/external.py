@@ -4,7 +4,7 @@ Mirrors the `PanNukeFold` interface (images / inst / type / tissue memmaps) so t
 prediction and evaluation plumbing works unchanged. Class ids follow PanNuke (1..5 in
 `constants.CLASS_NAMES` order); classes the source dataset lacks simply never occur.
 `gt_channels` is built lazily per image (the evaluate() hot loop indexes it one image at a
-time), keeping host RAM flat — required on the address-space-limited ugrad machines.
+time), keeping host RAM flat on address-space-limited machines.
 """
 
 from __future__ import annotations
@@ -21,7 +21,7 @@ from ..constants import NUM_CLASSES
 
 
 def external_root() -> Path:
-    """External-data root; override with $EXTERNAL_ROOT (kept off /data7, which is full)."""
+    """External-data root; override data/external with $EXTERNAL_ROOT."""
     default = Path(__file__).resolve().parents[3] / "data" / "external"
     return Path(os.environ.get("EXTERNAL_ROOT", default))
 

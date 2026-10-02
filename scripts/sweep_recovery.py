@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Sweep training-free nucleus-recovery post-processing on saved CellViT-UNI outputs (CPU stage).
 
-    python scripts/sweep_recovery.py --split 1 --maps-dir /tmp/cgf2604/scratch/maps/split1 \
+    python scripts/sweep_recovery.py --split 1 --maps-dir data/cache/maps/split1 \
         --run runs/cellvit_uni/split1 --out runs/recovery/cellvit_uni_split1 --workers 30
 
 Needs maps_fold{val,test}.npy from dump_cellvit_maps.py. Every configuration is scored on the
@@ -13,7 +13,7 @@ is then scored once on the TEST fold. Families (nucseg.postproc.recovery.Recover
   beta      mix NP with the TP-branch foreground (+ threshold)
   dead      boost the foreground with P_TP(Dead) (+ threshold)
   all       best over the full grid
-Does not import torch (ugrad 16 GB address-space limit: forked workers share the parent's mappings).
+Does not import torch, saving address space; forked workers share the parent's mappings.
 """
 import argparse
 import itertools

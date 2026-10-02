@@ -157,15 +157,20 @@ src/nucseg/            our package (pip install -e .)
   metrics/fast_retype.py   exact fast mPQ when only instance classes change (tuning on val)
 configs/text/          nucleus prompt bank (LLM-written morphology descriptions)
 docs/                  RESEARCH_PLAN.md (plan + progress log), findings.md (experiment log with
-                       all numbers), report/ (stage reports EN+ZH + digests, PDFs), ops/
-                       (machines + runbook), survey_2026_09.md, course brief PDF — index: docs/
-scripts/               CLIs + machine sync (docs/ops/)
+                       all numbers), report/ (stage reports EN+ZH + digests, PDFs),
+                       survey_2026_09.md, course brief PDF — index: docs/
+scripts/               portable data, training, inference, evaluation and analysis CLIs
 tests/                 pytest: metrics vs official code, decode scaling, copy-paste, recovery
 third_party/           pinned upstream repos (scripts/fetch_third_party.sh)
-data/ weights/ runs/ logs/   large, git-ignored; LM1 is the source of truth
+data/ weights/ runs/ logs/   large local inputs and outputs, git-ignored
 ```
 
-## Common commands (LM1, env `~/.conda/envs/nuclei`)
+## Common commands
+
+Run from the repository root in a Python 3.10 environment with the dependencies in
+`env/requirements.txt` and this package installed (`pip install --no-deps -e .`).
+The validated stack uses PyTorch 2.5.1+cu124 and NumPy 1.23.5; no machine-specific
+bootstrap script is required by these commands.
 ```bash
 python scripts/prepare_pannuke.py                       # data/raw/fold_{1,2,3}.zip -> data/pannuke
 python -m pytest -q                                     # metric + plumbing tests
@@ -180,10 +185,16 @@ python scripts/synth_pannuke.py ...                                             
 python scripts/predict_external.py --run RUN --data conic [--tta]                    # cross-domain zero-shot
 ```
 CONCH (text/image towers) is installed with `pip install --no-deps -e third_party/CONCH`
-(done by `lm_env_setup.sh` / `ugrad_bootstrap.sh`).
+after fetching the upstream repositories with `scripts/fetch_third_party.sh`.
 Official splits (train/val/test): 1 = 1/2/3, 2 = 2/1/3, 3 = 3/2/1. Always test the LAST checkpoint.
 
-## Machines & ops
+## Local-only workspace content
 
-Machines, code/data sync (`scripts/push_ugrad.sh` / `pull_ugrad.sh` / `push_lm2.sh`), the
-ugrad L4 constraints, and known operational gotchas live in **[docs/ops/](docs/ops/README.md)**.
+Git tracks portable project code, configuration, tests, research documentation and reports.
+Machine configuration, SSH/sync/job orchestration and operational notes belong in local
+`ops/`; machine-specific assistant instructions belong in `CLAUDE.local.md`. Both are ignored
+and are not part of a GitHub checkout. Credentials, datasets, checkpoints and run outputs
+also remain untracked. Keep portable experiment commands in `scripts/`, not in `ops/`.
+
+This separation applies to the current tree and future commits; it does not remove files
+from existing Git history.

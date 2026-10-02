@@ -8,7 +8,7 @@ applied to saved network outputs:
               kept as instances
 Everything else (markers, watershed, per-instance majority type vote, contour sanity filter) is the
 official code. With beta = 0, k = 0, thr = 0.5, orphans = False the output is identical to the official
-post-processing (tests/test_recovery.py). This module does not import torch (ugrad address-space limit).
+post-processing (tests/test_recovery.py). This module does not import torch, saving address space.
 """
 
 from __future__ import annotations

@@ -18,7 +18,7 @@ monusac: HF RationAI/MoNuSAC parquets (whole images at 40x). Official test split
          Epithelial -> Epithelial, Lymphocyte/Macrophage/Neutrophil -> Inflammatory, tiled
          256x256 non-overlapping; only full tiles with >= 1 kept nucleus are written.
 
-Memory-safe two passes (count, then write through a memmap) so LM1 / ugrad can run it too.
+Memory-safe two passes (count, then write through a memmap) for memory-constrained hosts.
 """
 
 from __future__ import annotations

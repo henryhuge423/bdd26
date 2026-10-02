@@ -18,9 +18,9 @@ Modes:
   sweep   forward a VAL-fold subset once + decode-threshold grid -> val mPQ/bPQ
   predict full-fold forward + decode -> pred_fold{k}_kong_c{ckpt}.npz for eval_pannuke.py
 
-Usage (ugrad, after `source /tmp/cgf2604/bdd26/scripts/ugrad_env.sh`):
-  python scripts/kongnet_eval.py --repo /tmp/cgf2604/repos/KongNet_Inference_Main \
-      --weights-dir /tmp/cgf2604/weights_a1/kongnet --ckpt 1 --mode probe
+Usage:
+  python scripts/kongnet_eval.py --repo third_party/KongNet_Inference_Main \
+      --weights-dir weights/kongnet --ckpt 1 --mode probe
 """
 from __future__ import annotations
 
@@ -142,7 +142,7 @@ _KONG: dict = {}
 def _decode_stats(j: int) -> list:
     """Worker: decode subset image j (= fold image _KONG['idx'][j]) at every (seg_thr,
     contour_thr) and score vs ITS fold image. GT class channels are rebuilt per image
-    from inst+type (the full-fold gt_channels npz breaches the ugrad 16 GB address-space
+    from inst+type (the full-fold gt_channels npz breaches the 16 GB address-space
     cap next to the model + CUDA context)."""
     from nucseg.metrics import light
 
@@ -249,7 +249,7 @@ def main():
     if args.mode == "sweep" and args.n_images == 64:
         args.n_images = 800
     model = build_model(args.repo, args.device)
-    # every GPU mode runs the released checkpoint (2.1 GB; the ugrad 16 GB address-space
+    # every GPU mode runs the released checkpoint (2.1 GB; the 16 GB address-space
     # cap needs one ckpt at a time, del after load)
     ckpt = torch.load(args.weights_dir / f"KongNet_PanNuke_{args.ckpt}.pth",
                       map_location="cpu", weights_only=True)

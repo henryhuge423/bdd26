@@ -13,7 +13,7 @@ from ..constants import SPLITS
 
 
 def data_root() -> Path:
-    """PanNuke root; override with $PANNUKE_ROOT (e.g. /tmp/cgf2604/bdd26/data/pannuke on ugrad)."""
+    """PanNuke root; override the default data/pannuke location with $PANNUKE_ROOT."""
     default = Path(__file__).resolve().parents[3] / "data" / "pannuke"
     return Path(os.environ.get("PANNUKE_ROOT", default))
 

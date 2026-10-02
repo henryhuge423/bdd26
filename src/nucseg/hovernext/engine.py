@@ -8,7 +8,7 @@ Decoding: we use the hover_next_train VALIDATION decode — flat fg/seed thresho
 typing, no size/hole filters (``make_prediction`` in ``src/validation.py``). The official release
 number (0.477) additionally uses 16 stochastic spatial+COLOR aug views and per-class fg/seed
 thresholds tuned ON THE TEST FOLD (``evaluate.py --tta 16`` + ``get_pp_params``) — not reproduced
-here (see logs/hn_pp_ablation + hn_thresh_sweep on LM2): with our decode the port reaches
+here (see logs/hn_pp_ablation and scripts/hn_thresh_sweep.py): with our decode the port reaches
 mPQ ~.43-.45 on fold 3 (their own inference-repo decode on our maps: ~.36). Optional
 ``<weights>/decode.json`` ({"fg": .., "seed": ..}) overrides the 0.7/0.3 defaults, e.g. written
 by ``scripts/hn_thresh_sweep.py --out`` tuned on a VAL fold. The per-class path stays available

@@ -62,7 +62,7 @@ if not a.no_inst_probs:
     payload.update(inst_img=res[3][0], inst_id=res[3][1], inst_prob=res[3][2])
 np.savez_compressed(a.run / f"pred_{tag}.npz", **payload)
 if not a.no_eval:
-    # NB on 16 GB-address-space hosts (ugrad) the eval is best run as a separate process
+    # NB on 16 GB-address-space hosts the eval is best run as a separate process
     # (scripts/eval_pannuke.py, fresh VA: gt_channels alone decompresses to 1.54 GiB uint16);
     # in-process is for big-RAM hosts.
     res = evaluate(f.gt_channels, f.inst, f.type, f.tissue, inst, typ)

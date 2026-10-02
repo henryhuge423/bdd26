@@ -1,7 +1,7 @@
 """Shared helpers for the PixCell-256 Cell-ControlNet pipeline (pillar B).
 
 Loading convention: the ControlNet pipeline, the SD3.5 VAE and UNI2-h weights all live under
-weights/ (LM1 paths; synced to LM2 by scripts/push_lm2.sh --weights). The conditioning protocol
+weights/ in the project root. The conditioning protocol
 follows the model card: controlnet_input = 3-channel binary mask (0/255 RGB), uni_embeds =
 UNI2-h CLS embedding of the paired context image, CFG negative = the learned uncond_embedding.
 """

@@ -79,7 +79,7 @@ print()
 # ---------------------------------------------------------------- [B] du2 recovery
 print("========== [B] du2 recovery, 3-split seed-19 means (base / x2 / x2+du2) ==========")
 for tta, tag in [(False, ""), (True, "_tta")]:
-    # split1's x2 evals are untagged (in-flight run); splits 2/3 tagged _x2 (pulled from LM2).
+    # split1's x2 evals are untagged; archived splits 2/3 use the _x2 tag.
     # du2: noTTA = eval_test_fold{tf}_du2, TTA = eval_test_fold{tf}_du2_tta.
     X2 = {1: "runs/cellvit_uni_x2/split1/eval_test_fold3" + tag,
           2: "runs/cellvit_uni_x2/split2/eval_test_fold3_x2" + tag,

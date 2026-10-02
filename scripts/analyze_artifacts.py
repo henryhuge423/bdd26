@@ -11,8 +11,8 @@ Reproduces the tables in docs/findings.md (2026-09-28 evening entry) from existi
   6. Dead co-missing / clustering context stats.
 
 Inputs are the `eval_test_fold*` directories written by scripts/eval_pannuke.py (summary.json,
-per_image.npz, gt_records.csv.gz). CellViT-UNI and HoVer-Net live in runs/ on LM1; HoVer-NeXt-T
-evals live on LM2 under runs/hovernext_t/ -- rsync them into one local root, e.g.
+per_image.npz, gt_records.csv.gz). Collect CellViT-UNI, HoVer-Net and HoVer-NeXt-T
+artifacts under local roots before running this analysis, e.g.
   /tmp/hnxt/split1/eval_test_fold3, /tmp/hnxt/split2/eval_test_fold3, /tmp/hnxt/split3/eval_test_fold1
 and pass --hovernext /tmp/hnxt. Splits with missing eval dirs are skipped with a warning.
 
@@ -145,7 +145,7 @@ def main():
     ap.add_argument("--cellvit", type=Path, default=Path("runs/cellvit_uni"))
     ap.add_argument("--hovernet", type=Path, default=Path("runs/hovernet"))
     ap.add_argument("--hovernext", type=Path, default=None,
-                    help="local root with HoVer-NeXt-T eval dirs (rsync from LM2 runs/hovernext_t)")
+                    help="local root with HoVer-NeXt-T eval dirs (e.g. runs/hovernext_t)")
     ap.add_argument("--kongnet", type=Path, default=None,
                     help="local root with KongNet eval dirs (line A, 2026-09-30)")
     ap.add_argument("--out-gt", type=Path, default=None, help="write the per-GT consensus frame here")
