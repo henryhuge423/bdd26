@@ -23,7 +23,7 @@ launch_train () {  # $1 split  $2 outdir  $3 seed  $4 gpu
 }
 
 while true; do
-  [ -f runs/cellvit_uni_x2/split1_seed1/final.pth ] && launch_train 2 split2_seed2 1 7
+  [ -f runs/cellvit_uni_x2/split1_seed1/final.pth ] && launch_train 2 split2_seed2 2 7
   [ -f runs/cellvit_uni_x2/split1_seed2/final.pth ] && launch_train 3 split3_seed2 2 1
   for d in "${!TF[@]}"; do
     dir=runs/cellvit_uni_x2/$d

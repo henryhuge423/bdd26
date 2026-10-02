@@ -17,6 +17,7 @@ Diagnosis, Two Failed Data-Side Fixes, and a\\ Counterfactual Stress-Test Evalua
 
 \begin{document}
 \maketitle
+\input{audit_2026_10_02_en.tex}
 
 \begin{abstract}
 On PanNuke, swapping backbones moves mean panoptic quality (mPQ) by only 1--2 points, while the
@@ -284,7 +285,7 @@ chromatin-poor eosinophilic bodies, and ambiguous annotations. Conclusion: fix d
 data---which defines pillar B.
 
 A post-hoc decomposition over all three evaluators (test folds 3+1;
-\texttt{scripts/analyze\_artifacts.py}) refines this diagnosis in two ways. First, outside Dead
+\nolinkurl{scripts/analyze_artifacts.py}) refines this diagnosis in two ways. First, outside Dead
 the ``missed small nuclei'' are mostly patch-border fragments: 89\% of GT nuclei $<$60\,px
 touch the 256\,px border, and among \emph{interior} (non-border) nuclei the missed rates are
 .037/.027/.028/.095 for Neo/Inf/Epi/Con---but .31 for Dead, which stays at .17 even for

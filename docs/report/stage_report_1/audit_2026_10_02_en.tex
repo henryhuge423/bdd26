@@ -1,0 +1,19 @@
+\section*{Scope correction: October 2, 2026}
+This document retains the September 28 results as a historical record. The following
+clarifications supersede broader interpretations in the original body. Negative results
+apply to the tested loss, copy--paste and generator configurations, not to every possible
+data-side intervention. Multi-seed evidence applies only to experiments that actually
+included repeated runs. Fixed labels do not inherently prevent detection stress; the
+particular counterfactual generator failed to reproduce the observed real-domain ranking.
+There are three independent architecture families in that comparison, not six: the exact
+architecture-mean permutation test has $p=0.333$, so the six-point result is not strong
+independent-family evidence.
+
+The implemented \texttt{missed\_bg} category means maximum IoU below 0.1, not necessarily
+zero overlap. mPQ$^+$ is class-aware, and $F_c$ includes both detection and typing errors.
+Released validation-selected weights are not the same checkpoint-selection protocol as our
+own final checkpoints. Detection is a substantial deficit in the studied baseline, not
+proof that typing is irrelevant. The subsequent P0--P3 audit (v2, including the pre-merge
+shared-boundary and official-GT-channel corrections) is recorded in
+\texttt{P0\_P3\_RESULTS\_2026-10-02.md} in the repository's docs directory.
+\clearpage

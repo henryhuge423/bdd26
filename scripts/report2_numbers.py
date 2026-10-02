@@ -1,4 +1,7 @@
-"""Stage-report-2 number extraction: every table figure re-derived from run artifacts.
+"""Historical stage-report-2 extraction (pre-2026-10-02 audit outputs).
+
+The old du2lev outputs and run-grid summaries are retained for audit, not corrected
+M/S or distinct-seed claims. Use scripts/p0p3_numbers.py for the corrected follow-up.
 
 Dumps (stdout, save to runs/analysis/report2_numbers.txt):
   [A] strict-protocol architecture table: KongNet / LKCell-L / CellViT-UNI base / x2 arms,

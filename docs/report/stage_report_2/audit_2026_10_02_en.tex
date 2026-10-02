@@ -1,0 +1,39 @@
+\section*{Audit and follow-up v2: October 2, 2026}
+\textbf{This addendum supersedes conflicting historical claims and the first audit's v1 results.}
+The initial M/S repair fixed class indexing and background perimeter contamination, but
+pre-merge review found that shared contacts were overwritten between directions and that
+validation reconstructed lossy GT class channels. Both are now fixed. P0--P2 and their
+bootstrap were rerun on CPU with the same validation-only menus and cached predictions;
+old outputs remain archived, not relabelled as corrected experiments.
+
+The nine historical x2 runs were \emph{not} a complete three-distinct-seed grid:
+split 2 used $\{19,1,1\}$; baseline coverage was 3/1/1. Run spread is not fully paired
+seed uncertainty. mPQ$^+$ is class-aware, $F_c$ mixes detection and typing errors, and
+\texttt{missed\_bg} means maximum IoU below 0.1, not necessarily zero overlap. Released
+validation-selected checkpoints differ from our own final-checkpoint protocol;
+a uniform paper gap alone does not prove pipeline correctness.
+
+\begin{center}\small
+\begin{tabular}{lrrrr}
+\toprule
+Corrected v2, seed 19, three splits & mPQ & bPQ & Dead PQ & strict Dead PQ\\
+\midrule
+x1 + M/S & .4998 & .6656 & .1767 & .1340\\
+x2 + scaled decode + M/S & .4906 & .6601 & .1850 & .1249\\
+Conservative additions (P2) & .4999 & .6652 & .1835 & .1371\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+P2 freezes rules on validation and retains identity on split 1. Against x1+M/S v2,
+mean changes are $+$.000072 mPQ, $-$.000448 bPQ, $+$.006846 Dead PQ and
+$+$.003003 strict Dead PQ. Only split 3's Dead gain excludes zero in the paired
+image bootstrap; training-seed robustness is untested, and strict Dead has no CI here.
+Strict mPQ decreases slightly. This is a candidate, not an established overall win;
+using both models' predictions has an unmeasured deployment cost.
+
+P1 finds a transferable typing component with fixed x2 geometry (mPQ .4906 to .4974).
+P3 reuses the same 128 split-1 validation images; scale mismatch degrades performance,
+but this is not a full test benchmark. No new training or GPU inference was needed for v2.
+See \texttt{P0\_P3\_RESULTS\_2026-10-02.md} in docs for protocols, uncertainty and provenance.
+\clearpage

@@ -1,11 +1,14 @@
-"""B1 3x3 seed-grid summation (du2 + du2lev arms vs x1 base), as evals land.
+"""Historical B1 run-grid summation (pre-audit du2/du2lev outputs vs x1 base).
 
-Grid = 3 splits x seeds {19,1,2} for x2+du2 (pre-registered) plus the frozen-constant
-levered variant. Base x1 has seed 19 on all splits, seeds 1/2 on split1 only
-(runs/cellvit_abl) -> seed std is fully populated on split1 and reported there.
-Prints per-split mean +- std over available seeds, the 3-split mean of seed-means,
-and per-seed Dead endpoints. Rerun as more evals appear."""
+The intended x2 seeds were {19,1,2}, but split2 actually ran {19,1,1}; base coverage
+is 3/1/1. Values below are descriptive means/stds over RUNS, not a symmetric
+three-distinct-seed experiment. Actual seeds come from configs, never directory
+names; missing configs remain unknown. Corrected M/S results live under the
+versioned P0–P3 analysis directory and are summarized by p0p3_numbers.py.
+"""
 import glob, json, os, sys
+from pathlib import Path
+from p0p3_numbers import seed_from_run
 import numpy as np, pandas as pd
 sys.path.insert(0, "src")
 from nucseg.metrics.instance import relabel
@@ -55,20 +58,23 @@ def views(d, tf):
 
 KEYS = ["mPQ", "bPQ", "mpq", "dead", "dutex", "fc", "dq", "imiss"]
 arm_means = {}
+print("AUDIT: historical M/S outputs; run SD is not independent-seed uncertainty. "
+      "Split2 has a repeated seed1; base seed coverage is asymmetric.")
 for arm, pat in ARMS.items():
     print(f"===== {arm} =====")
     means = {}
     for s, tf in SPLITS.items():
         ds = dirs(pat(s, tf), s, tf)  # drops half-synced dirs without summary.json
-        rows = [views(d, tf) | {"dir": d.split("/")[-2] + "/" + d.split("/")[-1]} for d in ds]
+        rows = [views(d, tf) | {"dir": d.split("/")[-2] + "/" + d.split("/")[-1],
+                               "actual_seed": seed_from_run(Path(d).parent)} for d in ds]
         if not rows:
             print(f" split{s}: (none yet)"); continue
         for r in rows:
-            print(f"  split{s} {r['dir']:32s} " + " ".join(f"{k}={r[k]:.4f}" for k in KEYS) + f" ({r['nmiss']}/{r['nint']})")
+            print(f"  split{s} {r['dir']:32s} actual_seed={r['actual_seed']} " + " ".join(f"{k}={r[k]:.4f}" for k in KEYS) + f" ({r['nmiss']}/{r['nint']})")
         m = {k: float(np.mean([r[k] for r in rows])) for k in KEYS}
         sd = {k: (float(np.std([r[k] for r in rows], ddof=1)) if len(rows) > 1 else float("nan")) for k in KEYS}
         m["imiss_pooled"] = sum(r["nmiss"] for r in rows) / sum(r["nint"] for r in rows)
-        print(f"  split{s} MEAN (n={len(rows)}) " + " ".join(f"{k}={m[k]:.4f}±{sd[k]:.4f}" for k in KEYS))
+        print(f"  split{s} RUN MEAN/SD (n_runs={len(rows)}, actual_seeds={[r['actual_seed'] for r in rows]}) " + " ".join(f"{k}={m[k]:.4f}±{sd[k]:.4f}" for k in KEYS))
         means[s] = m
     have = sorted(means)
     if len(have) == 3:

@@ -6,12 +6,15 @@ import sys
 from pathlib import Path
 
 import torch
+import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from nucseg.lkcell import CellViT, LKCellAdapter
 
 
+@pytest.mark.skipif(not torch.cuda.is_available(),
+                    reason="vendored LKCell constructs decoder blocks on CUDA")
 def test_lkcell_adapter_contract():
     m = CellViT()
     m.eval()
@@ -22,6 +25,8 @@ def test_lkcell_adapter_contract():
     assert out["tp"].shape == (1, 6, 64, 64) and out["tissue"].shape == (1, 19)
 
 
+@pytest.mark.skipif(not torch.cuda.is_available(),
+                    reason="vendored LKCell constructs decoder blocks on CUDA")
 def test_lkcell_state_layout():
     """Key layout must include BOTH UniRepLKNet bodies (the class inherits UniRepLKNet and
     its released checkpoints carry the untouched default super body alongside encoder.*)."""

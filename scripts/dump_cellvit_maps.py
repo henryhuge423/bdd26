@@ -14,7 +14,7 @@ from pathlib import Path
 import numpy as np
 import torch
 
-from nucseg.cellvit.engine import _forward_probs, _tta_forward, build_model
+from nucseg.cellvit.engine import _forward_probs, _tta_forward, build_model, run_upscale
 from nucseg.data.pannuke import PanNukeFold
 
 p = argparse.ArgumentParser()
@@ -25,6 +25,9 @@ p.add_argument("--ckpt", default="final.pth")
 p.add_argument("--batch", type=int, default=16)
 p.add_argument("--tta", action="store_true")
 a = p.parse_args()
+if run_upscale(a.run) != 1:
+    raise SystemExit("dump_cellvit_maps supports native-scale checkpoints only; "
+                     "use probe_cellvit_scales.py for explicit cross-scale experiments")
 
 tag = f"fold{a.fold}" + ("_tta" if a.tta else "")
 a.out.mkdir(parents=True, exist_ok=True)
