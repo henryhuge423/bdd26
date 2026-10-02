@@ -1159,3 +1159,38 @@ Per-split strict: mPQ .4857/.4855/.5057, Dead PQ .1150/.1415/.2062 (splits 1/2/3
   test evals; split1's stay untagged), and the du2-TTA evals under their watcher names
   eval_fold{3,3,1}_x2_du2_tta. Bibliography verified against arXiv metadata
   (KongNet = Lv et al., arXiv:2510.23559; LKCell = Cui et al., arXiv:2407.18054).
+
+## 2026-10-03 — Typing-confidence audit (P0-P3 §7 follow-up): confidence gates typing, not existence
+
+- Descriptive audit of predicted-class confidence vs typing consistency on the cached P0-P3 v2
+  predictions; no thresholds selected, no training. New code: `src/nucseg/postproc/typing_audit.py`,
+  `scripts/analyze_typing_confidence.py`, `scripts/typing_audit_numbers.py`,
+  `tests/test_typing_confidence.py` (9 tests; full CPU suite 137 passed / 3 CUDA-skipped).
+  Artifacts + exact commands: `runs/analysis/typing_audit_20261003/` (per-split JSONs with input
+  hashes, `summary.json/md`, `commands.md`).
+- The three x1 **test** folds were re-predicted on ugradx (L4, batch 2, no TTA, ~8 GPU-min total)
+  to obtain per-instance probability tables (val folds already had tables). Sanity vs the cached
+  maps: 0.05-0.09% of instances per side have no IoU>0.5 counterpart, type agreement 99.98% on
+  strong pairs — distribution-equivalent, NOT bit-identical; all headline P0-P3 numbers remain
+  bound to the cached artifacts.
+- Replay fidelity: re-applying the frozen P2 rule reproduces the val selections exactly
+  (split2 added 1713, split3 2604 = the recorded `added` counts).
+- **Typing accuracy among matched** (3-split mean): x1 .8640 vs x2 .8617 (test). **Dead:
+  x1 .5539 vs x2 .5788 (test), .5735 vs .6144 (val)** — du2 types matched Dead BETTER than x1.
+  The P1 type-swap advantage of x1 is therefore not located in Dead typing nor in the stable-pair
+  disagreement population: agree rate 93.2%, and on disagreements base is right 1101 vs x2 right
+  1038 (test; both wrong 729) — near-symmetric. x2 confidence is slightly higher when x2 is
+  right (.765) than when base is right (.735): a weak arbitration signal, not deployable alone.
+- **Map-majority vs mean-prob argmax disagreement** (1.2% x1 / 1.6% x2 of instances): typing
+  accuracy collapses to .16-.20 (vs .66-.69 when consistent) on both scales — a free wrongness
+  marker (abstention/flag candidate for the matched-seed round).
+- **P2 added candidates (test)**: match rate .39-.43, typing acc given matched .86-.88; added
+  Dead acc .821 (split3, p>=.7) but **.667 on split2 (p>=.9) vs .850 on its own val** — the
+  split2 Dead typing quality did not transfer val->test. Rejected near-threshold candidates:
+  match .32-.34, acc .75-.77, Dead .44-.60. Confidence orders typing risk (sharpest for Dead),
+  but the dominant cost is **existence**: 57-61% of additions match no GT instance (pure FPs).
+- Conventions: the anchor uses raw-du2 candidates vs raw x1 (P2's convention; P1's candidate
+  table counted M/S'd-x2 candidates — different population by design, 3879 vs 3304 on split1 val).
+- **Matched-seed round candidates (recorded, not tested here)**: an existence-side filter for
+  additions (the frontier is detection precision, not type precision); map-vs-row consistency
+  abstention; per-class Dead thresholds. Per the frozen-v2 rule, no new menus were run on test.

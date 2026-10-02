@@ -207,6 +207,21 @@
 - 新增图表脚本 `scripts/make_report_figures2.py`（dataviz 调色板同报告一；尺寸分箱/du2 回收/
   种子网格，中英双版）。
 
+**2026-10-03 — 类别置信度与分型一致性审计（P0-P3 §7 建议的第一步，描述性、无阈值选择）**
+- 消费 P0-P3 v2 缓存预测 + ugradx 重推的 3 个 x1 test 概率表（L4 顺序 batch2/无 TTA，共约
+  8 GPU 分钟；重推与缓存图 0.05-0.09% 实例无 IoU>0.5 对应、强配对类型一致率 99.98%）。
+  冻结 P2 规则重放精确复现验证折添加数（split2 1713 / split3 2604）。
+- 核心结论：**置信度门控的是分型而非存在性**——P2 添加候选 test 匹配率仅 .39-.43（57-61%
+  纯 FP），但匹配者分型正确率 .86-.88；被拒候选 .75-.77、Dead .44-.60，置信度确实排序
+  分型风险（Dead 最陡）。split2 的 p≥0.9 添加 Dead 分型 val .850 → test .667 未迁移；
+  split3 p≥0.7 保持 .821。
+- **du2 对已匹配 Dead 的分型反而更好**（test .5788 vs x1 .5539；val .6144 vs .5735）；P1
+  类型交换优势不在 Dead 分型也不在稳定配对分歧群（base 对 1101 vs x2 对 1038，近对称）。
+  像素多数票 vs 概率表 argmax 不一致（1.2-1.6%）时正确率崩到 .16-.20 —— 免费错误信号。
+- 匹配种子轮候选（仅记录未测试）：存在性侧过滤、map-vs-row 一致性弃权、按类 Dead 阈值。
+  代码/产物：`src/nucseg/postproc/typing_audit.py`、`scripts/analyze_typing_confidence.py`、
+  `scripts/typing_audit_numbers.py`、`runs/analysis/typing_audit_20261003/`（含 commands.md）。
+
 ---
 
 ## 1. 调研结论要点
