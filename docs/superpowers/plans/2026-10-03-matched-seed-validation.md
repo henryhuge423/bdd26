@@ -70,6 +70,15 @@ Disk guard: a launch requires ≥ 10 GB
 free on /data7 (currently ~21 GB; the disk is 100% full from other users); `last.pth` (4.4 GB,
 resume-only) is deleted after each successful run, keeping `final.pth`, config, tb and logs.
 ~2.5–3 h per x1 run (70 s/epoch × 130); x2 longer (~512 compute). Predictions/evals afterwards.
+Update 2026-10-04 06:26 (new user authorization, superseding the 18:40 decision for x2): the
+LM1 GPU2 holder (77.7 GB, 0% util) had not moved for >23 h and the x2 run is the only remaining
+critical path, so the split2 seed-2 x2 run moved to the idle LM2 GPU4 (fresh start, epoch 0;
+~28.7 GB in use at 98% util). The LM2 copy of the v2-round duplicate was renamed
+`split2_seed1_dup` first (same rename as LM1 2026-10-03) to free the output directory. The LM1
+GPU2 watcher was stopped by PID and logged MIGRATED. Cross-machine move is already covered by
+the resume/cross-machine precedent above. After completion: rsync back to LM1
+(final.pth+config+log+tb+auto preds/eval, no last.pth), then prob-table val (fold 1) / test
+(fold 3) predictions with `--upscale 2 --decode-u 2` per protocol.
 
 ## Boundaries
 
