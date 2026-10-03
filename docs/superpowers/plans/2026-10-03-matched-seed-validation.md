@@ -60,7 +60,13 @@ a run-level replicate, never as an independent seed).
 
 Training on LM1 GPUs 2/3/4 only (user authorization 2026-10-03; LM2 GPU and ugrad training are
 excluded). GPU3 (~34 GB free) starts first; GPU4 and GPU2 queues wait for their holders to
-release memory (0%-util processes currently occupy them). Disk guard: a launch requires ≥ 10 GB
+release memory (0%-util processes currently occupy them).
+Update 2026-10-03 ~18:40 (new user authorization, superseding the placement above for the x1
+chain only): with LM1 GPU4 held indefinitely, the split2 x1 pair moved to LM2 GPUs 1/2 in
+parallel (~2 h; seed1 resumed from its verified last.pth). The x2 run stays on the LM1 GPU2
+watcher. Same env (torch 2.5.1+cu124 A100); the protocol already tolerates RNG-stream changes
+(resume precedent), so cross-machine training does not affect the matched-seed pairing.
+Disk guard: a launch requires ≥ 10 GB
 free on /data7 (currently ~21 GB; the disk is 100% full from other users); `last.pth` (4.4 GB,
 resume-only) is deleted after each successful run, keeping `final.pth`, config, tb and logs.
 ~2.5–3 h per x1 run (70 s/epoch × 130); x2 longer (~512 compute). Predictions/evals afterwards.
