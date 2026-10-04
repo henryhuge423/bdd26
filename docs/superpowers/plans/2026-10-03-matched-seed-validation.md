@@ -80,7 +80,20 @@ the resume/cross-machine precedent above. After completion: rsync back to LM1
 (final.pth+config+log+tb+auto preds/eval, no last.pth), then prob-table val (fold 1) / test
 (fold 3) predictions with `--upscale 2 --decode-u 2` per protocol.
 
+Update 2026-10-05 ~04:05 (mid-phase-1 code fix): the 2026-10-04 22:15 lane failures were
+diagnosed — `validate_run_context` hardcoded `actual_seed == 19` (a v2-round invariant), so
+every non-seed19 `p2_val` aborted on entry; P0 stages were unaffected. Fix: the check now
+takes an `expected_seed` (default 19, P1 CLI unchanged) and `run_scale_fusion.py` gains
+`--expect-seed`, binding both arms to the declared pair seed; menus, selection rules and the
+evaluator are untouched. CPU suite 138 passed / 3 CUDA-skipped after the change. The
+split1_seed19 P2 selection, frozen under the old code fingerprint, was archived
+(`logs/archive_p2_split1_seed19_v1`) and is re-derived under the fixed code with the same
+frozen menu — expected to reproduce NO_GO/identity; a different outcome halts the round for
+audit. Remaining stages run from `logs/pair_commands_r2.json` (P2 commands carry
+`--expect-seed`); test stages still start only after all 18 val selections are frozen.
+
 ## Boundaries
+
 
 - Nothing in this round may read test-fold predictions before the val selections are frozen.
 - The typing-audit candidates from 2026-10-03 (existence-side filter, map-vs-row abstention,
