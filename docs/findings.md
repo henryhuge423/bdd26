@@ -1194,3 +1194,37 @@ Per-split strict: mPQ .4857/.4855/.5057, Dead PQ .1150/.1415/.2062 (splits 1/2/3
 - **Matched-seed round candidates (recorded, not tested here)**: an existence-side filter for
   additions (the frontier is detection precision, not type precision); map-vs-row consistency
   abstention; per-class Dead thresholds. Per the frozen-v2 rule, no new menus were run on test.
+
+## 2026-10-05 — Matched-seed verdict (pre-registered rule): P2 is NOT a robust improvement; the Dead gain is real and seed-robust, the bPQ price is not free
+
+- Round `runs/analysis/matched_seed_20261004/`: 18/18 val selections frozen before any test-fold
+  read; 9 (split, seed) matched pairs trained/evaluated to the frozen protocol (5 new runs from
+  2026-10-03/04, incl. LM2 cross-machine placements). P0 M/S selections replicate the v2
+  split-level choices; P2 val: 8/9 GO, only split1_seed19 NO_GO (identity) — same as v2's split1.
+- Incident + fix (commit da3b934): `validate_run_context` hardcoded seed19 and aborted every
+  non-seed19 `p2_val` on entry (lanes died 2026-10-04 22:15, watcher timed out 00:01). The check
+  now binds both arms to the declared pair seed (`run_scale_fusion --expect-seed`); the
+  split1_seed19 P2 redo reproduced the archived v1 selection **bit-exactly** (same sweep rows,
+  NO_GO/identity), proving the fix is validation-only.
+- **Pre-registered decision (scripts/matched_seed_stats.py, stats/stats.json):**
+  - ΔDead PQ 3-split seed-mean **+.00742** ≥ 1× largest per-split seed std (.00312) — PASS
+  - Dead sign count **9/9 pairs ≥ 0** (≥ 7/9 required) — PASS
+  - ΔbPQ **−.00087** < −1× its largest per-split seed std (.00064) — **FAIL** → verdict:
+    **robust_improvement = false**; per the frozen rule P2 stays a conditional candidate
+    (no new menus, no test-driven re-selection, no endpoint substitution).
+- Per-split deltas (P2 − x1+M/S baseline, seed-mean±std; tissue-stratified paired-image
+  bootstrap 2000, seed 20261004): split1 Dead **+.0039±.0030**, CI [+0.0006,+0.0078] (excl. 0);
+  split2 Dead +.0020±.0016, CI [−0.0009,+0.0053] (straddles); split3 Dead **+.0163±.0031**,
+  CI [+0.0062,+0.0283] (excl. 0) with bPQ −.0018, CI [−0.0031,−0.0006] (excl. 0). mPQ CIs all
+  straddle 0. The Dead gain concentrates in split3 and its price is split3's bPQ.
+- Interpretation vs the 2026-10-01 3×3 grid: raw du2's Dead endpoint was seed-fragile (4/5
+  pairs, 0.4–0.7× seed std); the gated P2 additions turn it seed-robust (9/9 pairs, Δ ≥ 2.4×
+  max seed std) but do not remove the bPQ tax — the 9-seed evidence prices P2 as a
+  **Dead-for-bPQ trade**, not a free win. M/S secondary (same pairing): ΔmPQ +.00028,
+  ΔbPQ +.00030, ΔDead +.00046 — tiny, consistently ≥0, seed-robust by sign.
+- Bootstrap bug found & fixed during verification: the first implementation
+  resampled *positions within a tissue* instead of absolute image indices, shifting CIs off the
+  point estimates (caught because CIs excluded their own points); regression test uses unequal
+  tissue sizes/levels (constants cannot catch index bugs). Buggy outputs archived in
+  `stats_v1_indexbug/`; decision-rule inputs (summary-level) were unaffected.
+- CPU suite after both fixes: **142 passed / 3 CUDA-skipped**.

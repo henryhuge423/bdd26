@@ -64,7 +64,7 @@ def bootstrap(deltas: dict[str, np.ndarray], tissue: np.ndarray, boot: int, seed
     for t in TISSUES:
         rows = np.where(tissue == t)[0]
         if len(rows):
-            idx_all[:, rows] = rng.integers(0, len(rows), (boot, len(rows)))
+            idx_all[:, rows] = rows[rng.integers(0, len(rows), (boot, len(rows)))]
     pooled = np.mean([d[idx_all] for d in deltas.values()], axis=0)  # (B, n, 3)
     tissue_rows = [np.where(tissue == t)[0] for t in TISSUES if (tissue == t).any()]
     mPQ = np.mean([np.nanmean(pooled[:, i, 0], axis=1) for i in tissue_rows], axis=0)  # (B,)

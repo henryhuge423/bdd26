@@ -111,6 +111,26 @@ def test_decision_rule_fails_on_dead_std_or_sign_or_mpq_guard(tmp_path):
     assert d3["robust_improvement"] is False and any("mPQ" in f for f in d3["failed"])
 
 
+def test_bootstrap_resamples_absolute_indices_within_tissue():
+    """Unequal tissue sizes and levels: resampling positions instead of absolute
+    image indices silently reads the wrong tissue and shifts the bootstrap center."""
+    from scripts.matched_seed_stats import bootstrap
+    import warnings
+    tissue = np.array(["Lung"] * 4 + ["Colon"] * 2)
+    # mPQ deltas: Lung images vary around mean +.02, Colon around -.04; bPQ/Dead unused
+    d = np.zeros((6, 3))
+    d[:4, 0] = [.04, .03, .02, -.01]
+    d[4:, 0] = [.00, -.08]
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", RuntimeWarning)
+        out = bootstrap({19: d, 1: d}, tissue, boot=2000, seed=7)
+    # the official pooled delta weights tissues equally: mean(+.02, -.04) = -.01
+    series_mean = (out["mPQ"]["ci95"][0] + out["mPQ"]["ci95"][1]) / 2
+    assert abs(series_mean - (-.01)) < .01
+    ci = out["mPQ"]["ci95"]
+    assert ci[0] <= -.01 <= ci[1]
+
+
 def test_stats_refuse_missing_pair_or_inconsistent_summary(tmp_path):
     dead = {(s, e): .01 for s in (1, 2, 3) for e in SEEDS}
     root = make_root(tmp_path, dead)

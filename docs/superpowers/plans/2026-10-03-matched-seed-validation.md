@@ -92,6 +92,17 @@ frozen menu — expected to reproduce NO_GO/identity; a different outcome halts 
 audit. Remaining stages run from `logs/pair_commands_r2.json` (P2 commands carry
 `--expect-seed`); test stages still start only after all 18 val selections are frozen.
 
+Outcome 2026-10-05 ~06:00: 18/18 val selections frozen before any test-fold read; all 9 pairs
+evaluated to the frozen protocol (val: 8/9 GO, only split1_seed19 NO_GO — same split1 shape as
+v2). Pre-registered verdict (`stats/stats.json`): **robust_improvement = false** — the Dead arms
+passed (3-split seed-mean +.00742 ≥ 1× max seed std .00312; 9/9 pairs ≥ 0) but ΔbPQ −.00087
+< −1× its max seed std (.00064). P2 stays a conditional candidate per the frozen rule: a
+seed-robust Dead-for-bPQ trade (split3 Dead +.0163, CI excl. 0; split3 bPQ −.0018, CI excl. 0),
+not a free win. Bootstrap CI implementation had an index bug caught in verification (CIs
+excluded their own points); fixed with a regression test; buggy outputs archived
+`stats_v1_indexbug/`; the summary-level decision inputs were unaffected. Full entry:
+docs/findings.md 2026-10-05.
+
 ## Boundaries
 
 
