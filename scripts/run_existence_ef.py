@@ -70,7 +70,7 @@ def _apply(j):
     bi, bt, xi, xt = (_G[k][j] for k in ("bi", "bt", "xi", "xt"))
     conf = image_confidence(xi, xt, _G["prob"].get(j, {}))
     p2, m = _G["p2cfg"], _G["chosen"]
-    if p2 is None:
+    if m["name"] == "identity" or p2 is None:
         pi, pt, added = bi, bt, []
     else:
         allowed = None

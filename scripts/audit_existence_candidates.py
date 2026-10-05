@@ -144,7 +144,7 @@ def main():
               f"Dead typed {sum(r['typed'] and r['class'] == 4 for r in added)}", flush=True)
     keys = np.array([r["pair"] for r in records])
     cols = {}
-    for k in FEATURES + ("class", "image", "id", "matched", "typed", "gt_class",
+    for k in FEATURES + ("border", "class", "image", "id", "matched", "typed", "gt_class",
                          "gt_already_by_base", "added", "iou_best"):
         cols[k] = np.array([r[k] for r in records])
     np.savez_compressed(a.out / "records.npz", pair=keys, **cols)
@@ -160,7 +160,7 @@ def main():
                    "added_by_pmax": bins_summary(added, "pmax", (.5, .7, .8, .9, 1.01)),
                    "added_by_margin": bins_summary(added, "margin", (0, .3, .6, .9, 1.01)),
                    "added_by_border": [{"bin": str(b), **{k: v for k, v in
-                        bins_summary([r for r in added if r["border"] == b], "area", (0, 1, 10**9))[0].items()
+                        bins_summary([r for r in added if r["border"] == b], "area", (0, float("inf")))[0].items()
                         if k != "bin"}} for b in (True, False)],
                    "added_by_class": bins_summary(added, "class", (0, 1, 2, 3, 4, 5, 6)),
                }}

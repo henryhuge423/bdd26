@@ -57,3 +57,52 @@ def test_distance_to_base_gaps_and_contact():
 def test_distance_map_error_on_empty_base():
     with pytest.raises(ValueError):
         distance_to_base_map(np.zeros((8, 8), bool))
+
+
+@pytest.mark.parametrize("choice, expected_added", [("identity", 0), ("off", 1)])
+def test_ef_apply_respects_identity_when_stage1_has_additions(choice, expected_added, monkeypatch):
+    import sys
+    from pathlib import Path
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1] / "scripts"))
+    import run_existence_ef as runner
+
+    base = np.zeros((1, 16, 16), dtype=np.int32)
+    candidate = base.copy()
+    candidate[0, 5:9, 5:9] = 1
+    types = candidate * 4
+    runner._G.update(bi=base, bt=base.copy(), xi=candidate, xt=types,
+                     prob={0: {1: np.array([0., 0., 0., 0., 1., 0.])}},
+                     p2cfg={"max_area": 200, "min_prob": 0., "interior_only": False},
+                     chosen={"name": choice})
+    try:
+        _, inst, typ, added = runner._apply(0)
+        assert added == expected_added
+        assert np.count_nonzero(inst) == 16 * expected_added
+        assert np.count_nonzero(typ) == 16 * expected_added
+    finally:
+        runner._G.clear()
+
+
+def test_existence_audit_border_bins_include_all_areas(tmp_path, monkeypatch):
+    import json
+    import sys
+    from pathlib import Path
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1] / "scripts"))
+    import audit_existence_candidates as audit
+
+    rows = []
+    for area, border, matched in [(1, True, False), (30, True, True), (80, False, True)]:
+        rows.append(dict(pair="split1_seed19", area=area, border=border, matched=matched,
+                         typed=matched, gt_already_by_base=False, extent=.7, circularity=.8,
+                         dist=2., pmax=.9, margin=.8, image=0, id=len(rows)+1,
+                         gt_class=4, added=True, iou_best=.8 if matched else 0., **{"class": 4}))
+    # Isolate expensive prediction loading; exercise the real serialization/aggregation.
+    monkeypatch.setattr(audit, "audit_pair", lambda *args: rows)
+    out = tmp_path / "audit"
+    monkeypatch.setattr(sys, "argv", ["audit", "--out", str(out), "--pairs", "split1_seed19"])
+    audit.main()
+    tables = json.loads((out / "summary.json").read_text())["tables"]
+    assert [r["n"] for r in tables["added_by_border"]] == [2, 1]
+    assert [r["matched"] for r in tables["added_by_border"]] == [1, 1]
+    with np.load(out / "records.npz") as records:
+        assert records["border"].tolist() == [True, True, False]
