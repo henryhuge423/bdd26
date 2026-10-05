@@ -1,7 +1,19 @@
 import numpy as np
 import pytest
 
-from nucseg.postproc.existence import candidate_geometry, distance_to_base, distance_to_base_map
+from nucseg.postproc.existence import (candidate_geometry, distance_to_base, distance_to_base_map,
+                                       existence_pass)
+
+
+def test_existence_pass_matches_the_frozen_ef_menu_semantics():
+    # a30: plain area floor at the boundary
+    assert existence_pass({"area": 29, "class": 3}, min_area=30) is False
+    assert existence_pass({"area": 30, "class": 3}, min_area=30) is True
+    # a30d: Dead additions are exempt from the floor, non-Dead are not
+    assert existence_pass({"area": 4, "class": 4}, min_area=30, dead_exempt=True) is True
+    assert existence_pass({"area": 4, "class": 3}, min_area=30, dead_exempt=True) is False
+    # off: no floor keeps everything
+    assert existence_pass({"area": 1, "class": 1}, min_area=0) is True
 
 
 def disk(centre, r, shape=(64, 64)):

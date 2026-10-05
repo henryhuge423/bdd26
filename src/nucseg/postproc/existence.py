@@ -34,3 +34,10 @@ def distance_to_base(mask, dist_map):
     if mask.shape != np.asarray(dist_map).shape or not mask.any():
         raise ValueError("mask must be non-empty and aligned with the distance map")
     return float(np.asarray(dist_map)[mask].min())
+
+
+def existence_pass(candidate, min_area=0, dead_exempt=False):
+    """EF menu predicate (plan 2026-10-05): area floor on additions, Dead optionally exempt."""
+    if int(candidate["class"]) == 4 and dead_exempt:
+        return True
+    return int(candidate["area"]) >= int(min_area)

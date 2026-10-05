@@ -1228,3 +1228,47 @@ Per-split strict: mPQ .4857/.4855/.5057, Dead PQ .1150/.1415/.2062 (splits 1/2/3
   tissue sizes/levels (constants cannot catch index bugs). Buggy outputs archived in
   `stats_v1_indexbug/`; decision-rule inputs (summary-level) were unaffected.
 - CPU suite after both fixes: **142 passed / 3 CUDA-skipped**.
+
+## 2026-10-05 (later) — EF-P2 round: the existence filter clears the bPQ guard; P2 becomes a robust improvement under the pre-registered rule
+
+Round `runs/analysis/existence_ef_20261005/` (plan `docs/superpowers/plans/2026-10-05-existence-filter-p2.md`,
+menu frozen BEFORE any EF sweep; CPU only — no new training or inference, all inputs are the
+matched-seed round's frozen artifacts).
+
+- **Val-side existence audit first** (`scripts/audit_existence_candidates.py`,
+  `runs/analysis/existence_audit_20261005/`): 17,359 frozen-P2 val additions over the 9 pairs,
+  43.7% match a GT instance. Area is the ONLY separating axis (<30 px: 20% matched, n=2294;
+  30–60: 44%; 60–100: 49%); distance to the nearest base instance shows NONE (39–44% per bin —
+  the "FPs are fragments adjacent to detected nuclei" hypothesis is false); circularity/extent
+  weak; additions never re-detect a base-matched GT (0/17359). Audit correctness: reproduced the
+  frozen stage-1 added counts exactly (split2_seed19 1713, split3_seed19 2604) after fixing an
+  empty-base-image skip (110 zero-base val images contribute candidates).
+- **Frozen menu**: {identity, off (=frozen P2 unchanged), a30 (area ≥30 px), a30d (Dead exempt),
+  a60}; P2 gate + selection rule and the matched-seed decision rule verbatim. The runner
+  (`scripts/run_existence_ef.py`) hard-asserts its `off` row reproduces the frozen stage-1 row —
+  held bit-exact on all 9 pairs.
+- **Val selections (9/9 frozen before any test read)**: 7× a30, 1× a30d (split1_seed1), 1×
+  identity (split1_seed19 — its P2 was already identity).
+- **Pre-registered verdict (`stats/stats.json`): robust_improvement = TRUE** — all arms pass:
+  ΔDead PQ +.00699 ≥ 1× max per-split seed std .00337 (2.1×) with 9/9 pairs ≥ 0; ΔmPQ +.00068
+  and ΔbPQ −.0000091 both ≥ −1× their stds (.00073/.00028). The bPQ tax is gone (P2: −.00087);
+  94% of the Dead gain survives (+.00742 → +.00699). strict mPQ −.00104 → −.00030; mPQ+
+  +.0031 → +.0038.
+- Per-split seed means (EF−baseline): split1 Dead +.00426 (CI [+0.00096,+0.00796] excl. 0),
+  split2 +.00150 (straddles), split3 +.01520 (CI [+0.00572,+0.02625] excl. 0); split3 bPQ now
+  −.00040 (CI straddles 0; was −.0018 excl. 0 under plain P2). mPQ CIs straddle everywhere;
+  sign counts mPQ 9/9, bPQ 5/9, Dead 9/9.
+- **Attribution (EF − plain P2, per pair)**: bPQ improves on all 8 non-identity pairs
+  (+.0005…+.0019), mPQ likewise (+.0003…+.0016); Dead cost is small and mixed (−.0023…+.0010,
+  seed-mean ≈ −.0004) — the audit-predicted trade (sub-30 px additions are 80% FP but hold 43
+  Dead-typed val TPs).
+- Verification: raw-summary deltas match recorded stats to <1e-12 on 3 spot-checked pairs; the
+  decision rule re-derived independently; the identity pair's EF eval is byte-identical to its
+  P0 baseline eval; CPU suite **150 passed / 3 CUDA-skipped**.
+- Interpretation: a 30 px area floor on the additions converts the Dead-for-bPQ trade into a
+  (small) free win under the frozen rule — the existence-side filter the typing audit predicted.
+  Honest caveats: (i) the margin is thin (mPQ/bPQ CIs straddle 0; the win is Dead-centred);
+  (ii) this is the THIRD pre-registered read of these test folds (v2, matched-seed, EF) — within-
+  round selection is val-only, but cross-round test reuse is a multiplicity caveat on any single
+  round's significance; (iii) EF-P2 is a post-processing arm on top of x1+M/S+P2, not a new
+  model. Per the frozen plan, EF-P2 replaces P2 as the reported candidate arm.

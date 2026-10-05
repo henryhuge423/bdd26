@@ -84,3 +84,15 @@ TPs incl. 43/699 Dead-typed); the verdict may land near the boundary either way.
 CPU only (fusion sweeps + canonical evals), reusing existing predictions. ~5
 configs × 9 val folds (~2–4 min each), then 9 test applies + evals (~4 min each),
 run as lanes via `ops/scripts/matched_seed_phase.py` with a fresh command table.
+
+## Outcome 2026-10-05 ~10:10 (all stages executed to the frozen protocol)
+
+9/9 EF val selections frozen before any test-fold read (7× a30, 1× a30d, 1× identity
+for the pair whose P2 was identity); the runner's off-row guard reproduced the frozen
+stage-1 rows bit-exact on all 9 pairs. **Pre-registered verdict
+(`stats/stats.json`): robust_improvement = TRUE.** ΔDead PQ +.00699 ≥ 1× max per-split
+seed std (.00337) with 9/9 pairs ≥ 0; ΔmPQ +.00068 and ΔbPQ −.0000091 pass their guards
+easily. The bPQ tax of plain P2 (−.00087) is eliminated while 94% of the Dead gain
+survives; split3's bPQ CI now straddles 0 (was excluding 0). Per the frozen
+interpretation boundaries, EF-P2 replaces P2 as the reported candidate arm; the other
+typing-audit candidates stay recorded-only. Full numbers: docs/findings.md 2026-10-05.
