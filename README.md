@@ -18,7 +18,34 @@ Research plan + full progress log: [docs/RESEARCH_PLAN.md](docs/RESEARCH_PLAN.md
 experiment number: [docs/findings.md](docs/findings.md). Course brief:
 `docs/our_project5_nuclei_segmentation.pdf`.
 
-## Status (2026-10-02)
+## Status (2026-10-05)
+
+**The matched-seed and existence-filtered P2 rounds are complete.** The missing
+runs were trained, giving nine distinct `(split, seed)` pairs across seeds
+`{19,1,2}`. Plain P2 improves Dead PQ but fails its pre-registered bPQ guard.
+EF-P2 adds a validation-selected area filter to the frozen P2 additions and passes
+the same decision rule. Current three-split means, averaging three seeds per split:
+
+| configuration | mPQ | bPQ | Dead PQ | strict Dead PQ |
+|---|---:|---:|---:|---:|
+| matched x1+M/S baseline | .49760 | .66530 | .17255 | .13073 |
+| P2 | .49769 | .66443 | .17997 | .13363 |
+| EF-P2 | .49828 | .66529 | .17954 | .13406 |
+
+EF-P2 retains 94.3% of the P2 Dead gain: **ΔDead PQ +.00699**, with eight positive
+pairs and one identity pair. Mean **ΔbPQ is −.000009**, versus −.000869 for P2.
+This is a Dead-centred candidate improvement, **not proof of non-inferiority**:
+mPQ/bPQ image-bootstrap intervals span zero, strict mPQ remains slightly lower,
+test folds were reused across rounds, and dual-scale deployment cost is unmeasured.
+Split1 and split2 share test fold3; the nine pairs are not independent patient cohorts.
+
+**Stage report III:** [Chinese report](docs/report/stage_report_3/stage_report_3_zh.pdf),
+[English report](docs/report/stage_report_3/stage_report_3.pdf),
+[plain-language Chinese digest](docs/report/stage_report_3/summary_plain_zh.pdf).
+[Sources and reproduction](docs/report/stage_report_3/README.md) include raw-summary
+checks of all 108 endpoint deltas and the corrected validation border audit.
+
+### Earlier audited standing (2026-10-02; seed19 only)
 
 > **P0–P3 v2, after the pre-merge review (2026-10-02):** In addition to the class-index and
 > perimeter repairs, review found overwritten shared contacts across directions and lossy
@@ -120,12 +147,17 @@ three-split test means are:
 | x2 + scaled decode + corrected M/S v2 | .4906 | .6601 | .5150 | .1850 | .1249 |
 | validation-gated additions (P2 v2) | .4999 | .6652 | .5200 | .1835 | .1371 |
 
-P2 is a candidate with small costs and fold-dependent gains, **not a proven overall win**.
-The matched-seed experiment remains future work. P3's separate fixed-subset scale crossing
+P2 was a seed19 candidate with small costs and fold-dependent gains, **not a proven
+overall win**. The subsequent matched-seed and EF-P2 rounds are now complete; see the
+October 5 status and stage report III above. P3's separate fixed-subset scale crossing
 shows strong training-scale dependence; its numbers are not mixed into this test table.
 Full methods, uncertainty and provenance: [P0–P3 results](docs/P0_P3_RESULTS_2026-10-02.md).
 
 ### Reports
+
+- `docs/report/stage_report_3/` — current stage III (EN, ZH and plain-language ZH;
+  PDF/TeX, figures, numerical tables and verification snapshot). Covers October 2–5
+  audits, matched-seed validation and EF-P2; see its README for reproduction.
 
 - `docs/P0_P3_RESULTS_2026-10-02.md` — current audited results, inference limits, uncertainty,
   artifact paths and reproduction commands (`scripts/p0p3_numbers.py`).

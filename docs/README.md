@@ -3,10 +3,13 @@
 | path | what |
 |---|---|
 | `RESEARCH_PLAN.md` | research plan (goals, three pillars, protocol) + dated progress log |
-| `P0_P3_RESULTS_2026-10-02.md` | current audited P0–P3 results, protocol, uncertainty and reproduction commands |
+| `P0_P3_RESULTS_2026-10-02.md` | audited seed19 P0–P3 results and historical corrections; subsequent matched-seed/EF results are in stage III |
 | `superpowers/plans/2026-10-02-p0-p3-research.md` | approved execution plan and decisions |
 | `findings.md` | experiment log — every number, per-date entries |
-| `report/` | stage reports I & II (EN + ZH + plain-language ZH digest, PDFs compiled), one folder per report |
+| `report/stage_report_3/` | current stage III report: matched-seed P2, existence-filtered P2, audit corrections and limitations (EN + ZH + plain-language ZH, PDF/TeX, verified numbers) |
+| `report/stage_report_1/`, `report/stage_report_2/` | historical stage reports I & II with October 2 audit addenda; later results are in stage III |
+| `superpowers/plans/2026-10-03-matched-seed-validation.md` | matched-seed pre-registration and outcome |
+| `superpowers/plans/2026-10-05-existence-filter-p2.md` | EF-P2 pre-registration, outcome and post-execution corrections |
 | `survey_2026_09.md` | literature survey backing the plan (2026-09) |
 | `our_project5_nuclei_segmentation.pdf` | course brief |
 
