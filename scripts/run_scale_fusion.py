@@ -68,7 +68,7 @@ def run(a, role):
     f = PanNukeFold(fold)
     base, x2 = getattr(a, "base_" + role), getattr(a, "x2_" + role)
     evidence = provenance({"base": base, "x2": x2}, f, __file__)
-    validate_run_context(evidence, a.split)
+    validate_run_context(evidence, a.split, a.expect_seed)
     choice_path = a.out / "selection.json"
     if role == "test":
         frozen = json.loads(choice_path.read_text())
@@ -108,6 +108,7 @@ def run(a, role):
                          "added": int(sum(r[k][2] for r in results))})
         selected = select_fusion(rows)
         record = {"split": a.split, "fold": fold, "role": "validation selection",
+                  "expected_seed": a.expect_seed,
                   "status": "NO_GO" if selected["name"] == "identity" else "GO",
                   "reference": "P0 validation-selected corrected base M/S; original du2 candidates",
                   "rule": "mPQ,bPQ >= base-.002; strict Dead PQ >= base; interior Dead matched count increases; max mPQ, fewer additions tie-break",
@@ -141,6 +142,8 @@ def main():
         for role in ("val", "test"):
             p.add_argument(f"--{model}-{role}", type=Path, required=True)
     p.add_argument("--out", type=Path, required=True)
+    p.add_argument("--expect-seed", type=int, default=19, dest="expect_seed",
+                   help="declared training seed of the matched pair; both arms must verify to it")
     p.add_argument("--stage", choices=("val", "test", "all"), default="all")
     p.add_argument("--workers", type=int, default=2)
     a = p.parse_args()

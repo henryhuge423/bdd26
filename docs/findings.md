@@ -1,5 +1,9 @@
 # Findings log
 
+> **2026-10-05 follow-up audit:** the typing-audit, matched-seed and EF-P2 entries below
+> include corrected denominators, rounding and interpretation. These are post-execution
+> documentation corrections, not changes to frozen menus or archived experimental results.
+
 > **2026-10-02 audit correction — supersedes conflicting historical interpretations below.**
 > `lever_postproc.py` used an off-by-one class lookup and included background edges in the
 > final instance's perimeter; existing lever scores describe the historical implementation,
@@ -1159,3 +1163,194 @@ Per-split strict: mPQ .4857/.4855/.5057, Dead PQ .1150/.1415/.2062 (splits 1/2/3
   test evals; split1's stay untagged), and the du2-TTA evals under their watcher names
   eval_fold{3,3,1}_x2_du2_tta. Bibliography verified against arXiv metadata
   (KongNet = Lv et al., arXiv:2510.23559; LKCell = Cui et al., arXiv:2407.18054).
+
+## 2026-10-03 — Typing-confidence audit (P0-P3 §7 follow-up): confidence gates typing, not existence
+
+- Descriptive audit of predicted-class confidence vs typing consistency on the cached P0-P3 v2
+  predictions; no thresholds selected, no training. New code: `src/nucseg/postproc/typing_audit.py`,
+  `scripts/analyze_typing_confidence.py`, `scripts/typing_audit_numbers.py`,
+  `tests/test_typing_confidence.py` (9 tests; full CPU suite 137 passed / 3 CUDA-skipped).
+  Artifacts + exact commands: `runs/analysis/typing_audit_20261003/` (per-split JSONs with input
+  hashes, `summary.json/md`, `commands.md`).
+- The three x1 **test** folds were re-predicted on ugradx (L4, batch 2, no TTA, ~8 GPU-min total)
+  to obtain per-instance probability tables (val folds already had tables). Sanity vs the cached
+  maps: 0.05-0.09% of instances per side remain unpaired after greedy matching at IoU>0.
+  Among those greedy pairs, 95.8-96.0% exceed IoU 0.5; type agreement on IoU>0.9 pairs is
+  99.96-99.98%. These checks do not establish distributional equivalence or bit identity; all headline P0-P3 numbers remain
+  bound to the cached artifacts.
+- Replay fidelity: re-applying the frozen P2 rule reproduces the val selections exactly
+  (split2 added 1713, split3 2604 = the recorded `added` counts).
+- **Typing accuracy among matched** (3-split mean): x1 .8640 vs x2 .8617 (test). **Dead:
+  x1 .5539 vs x2 .5788 (test), .5735 vs .6144 (val)** — du2 types matched Dead BETTER than x1.
+  The P1 type-swap advantage of x1 is therefore not located in Dead typing nor in the stable-pair
+  disagreement population: agree rate 93.2%, and on disagreements base is right 1101 vs x2 right
+  1038 (test, three-split means of counts, not pooled counts; both wrong 729) — near-symmetric. x2 confidence is slightly higher when x2 is
+  right (.765) than when base is right (.735): a weak arbitration signal, not deployable alone.
+- **Map-majority vs mean-prob argmax disagreement** (test three-split means: 1.23% x1 / 1.55% x2 of instances): typing
+  joint match-and-correct-type rate is .16-.20 (vs .66-.69 when consistent; denominator includes unmatched predictions) on both scales — a free wrongness
+  marker (abstention/flag candidate for the matched-seed round).
+- **P2 added candidates (test)**: match rate .39-.43, typing acc given matched .86-.88; added
+  Dead acc .821 (split3, p>=.7) but **.667 on split2 (p>=.9) vs .850 on its own val** — the
+  split2 Dead typing quality did not transfer val->test. Rejected near-threshold candidates:
+  match .32-.34, acc .75-.77, Dead .4375-.4444 (test only; .60 was split3 validation). Confidence orders typing risk (sharpest for Dead),
+  but the dominant cost is **existence**: 57-61% of additions match no GT instance (pure FPs).
+- Conventions: the anchor uses raw-du2 candidates vs raw x1 (P2's convention; P1's candidate
+  table counted M/S'd-x2 candidates — different population by design, 3879 vs 3304 on split1 val).
+- **Matched-seed round candidates (recorded, not tested here)**: an existence-side filter for
+  additions (the frontier is detection precision, not type precision); map-vs-row consistency
+  abstention; per-class Dead thresholds. Per the frozen-v2 rule, no new menus were run on test.
+
+## 2026-10-05 — Matched-seed verdict (pre-registered rule): P2 is NOT a robust improvement; the Dead gain is real and seed-robust, the bPQ price is not free
+
+- Round `runs/analysis/matched_seed_20261004/`: 18/18 val selections frozen before any test-fold
+  read; 9 (split, seed) matched pairs trained/evaluated to the frozen protocol (5 new runs from
+  2026-10-03/04, incl. LM2 cross-machine placements). P0 M/S uses the same v2 menu, selected separately per pair; choices vary by seed
+  (e.g. base split2_seed1 selects .5/40, vs .25/40 for split2_seed19); P2 val: 8/9 GO, only split1_seed19 NO_GO (identity) — same as v2's split1.
+- Incident + fix (commit da3b934): `validate_run_context` hardcoded seed19 and aborted every
+  non-seed19 `p2_val` on entry (lanes died 2026-10-04 22:15, watcher timed out 00:01). The check
+  now binds both arms to the declared pair seed (`run_scale_fusion --expect-seed`); the
+  split1_seed19 P2 redo reproduced the archived v1 selection **bit-exactly** (same sweep rows,
+  NO_GO/identity), proving the fix is validation-only.
+- **Pre-registered decision (scripts/matched_seed_stats.py, stats/stats.json):**
+  - ΔDead PQ 3-split seed-mean **+.00742** ≥ 1× largest per-split seed std (.00312) — PASS
+  - Dead sign count **9/9 pairs ≥ 0** (≥ 7/9 required) — PASS
+  - ΔbPQ **−.00087** < −1× its largest per-split seed std (.00064) — **FAIL** → verdict:
+    **robust_improvement = false**; per the frozen rule P2 stays a conditional candidate
+    (no new menus, no test-driven re-selection, no endpoint substitution).
+- Per-split deltas (P2 − x1+M/S baseline, seed-mean±std; tissue-stratified paired-image
+  bootstrap 2000, seed 20261004): split1 Dead **+.0039±.0030**, CI [+0.0005,+0.0078] (excl. 0);
+  split2 Dead +.0020±.0016, CI [−0.0009,+0.0053] (straddles); split3 Dead **+.0163±.0031**,
+  CI [+0.0062,+0.0283] (excl. 0) with bPQ −.0018, CI [−0.0031,−0.0006] (excl. 0). mPQ CIs all
+  straddle 0. The Dead gain concentrates in split3 and its price is split3's bPQ.
+- Interpretation vs the 2026-10-01 3×3 grid: raw du2's Dead endpoint was seed-fragile (4/5
+  pairs, 0.4–0.7× seed std); the gated P2 additions turn it seed-robust (9/9 pairs, Δ ≈ 2.38×
+  max within-split SD of paired deltas) but do not remove the bPQ tax — the nine split/seed-pair evidence prices P2 as a
+  **Dead-for-bPQ trade**, not a free win. M/S secondary (same pairing): ΔmPQ +.00028,
+  ΔbPQ +.00030, ΔDead +.00046 — small positive overall means, with 7/9 nonnegative
+  pairs for each of these endpoints, not universal per-pair or per-split improvements.
+- Bootstrap bug found & fixed during verification: the first implementation
+  resampled *positions within a tissue* instead of absolute image indices, shifting CIs off the
+  point estimates (caught because CIs excluded their own points); regression test uses unequal
+  tissue sizes/levels (constants cannot catch index bugs). Buggy outputs archived in
+  `stats_v1_indexbug/`; decision-rule inputs (summary-level) were unaffected.
+- CPU suite after both fixes: **142 passed / 3 CUDA-skipped**.
+
+## 2026-10-05 (later) — EF-P2 round: the existence filter clears the bPQ guard; P2 becomes a robust improvement under the pre-registered rule
+
+Round `runs/analysis/existence_ef_20261005/` (plan `docs/superpowers/plans/2026-10-05-existence-filter-p2.md`,
+menu frozen BEFORE any EF sweep; CPU only — no new training or inference, all inputs are the
+matched-seed round's frozen artifacts).
+
+- **Val-side existence audit first** (`scripts/audit_existence_candidates.py`,
+  `runs/analysis/existence_audit_20261005/`): 17,359 frozen-P2 val additions over the 9 pairs,
+  41.50% (7204/17359) match a GT instance. Area identifies a low-precision small-object slice (<30 px: 20% matched, n=2294;
+  30–60: 44%; 60–100: 49%); finite distance to the nearest base instance has similar match rates (39–44% per bin),
+  which does not support using proximity alone as a filter or exclude all fragmentation mechanisms.
+  Circularity/extent also show marginal separation, without establishing independent predictive value; additions never re-detect a base-matched GT (0/17359). Audit correctness: reproduced the
+  frozen stage-1 added counts exactly (split2_seed19 1713, split3_seed19 2604) after fixing an
+  empty-base-image skip (110 zero-base val images contribute candidates).
+- **Frozen menu**: {identity, off (=frozen P2 unchanged), a30 (area ≥30 px), a30d (Dead exempt),
+  a60}; P2 gate + selection rule and the matched-seed decision rule verbatim. The runner
+  (`scripts/run_existence_ef.py`) hard-asserts its `off` row reproduces the frozen stage-1 row —
+  held bit-exact on all 9 pairs.
+- **Val selections (9/9 frozen before any test read)**: 7× a30, 1× a30d (split1_seed1), 1×
+  identity (split1_seed19 — its P2 was already identity).
+- **Pre-registered verdict (`stats/stats.json`): robust_improvement = TRUE** — all arms pass:
+  ΔDead PQ +.00699 ≥ 1× max per-split seed std .00337 (2.1×) with 9/9 pairs ≥ 0; ΔmPQ +.00068
+  and ΔbPQ −.0000091 both ≥ −1× their stds (.00073/.00028). The mean bPQ loss is much smaller than P2
+  (−.00087), not proven absent;
+  94% of the Dead gain survives (+.00742 → +.00699). strict mPQ −.00104 → −.00030; mPQ+
+  +.0031 → +.0038.
+- Per-split seed means (EF−baseline): split1 Dead +.00426 (CI [+0.00096,+0.00796] excl. 0),
+  split2 +.00150 (straddles), split3 +.01520 (CI [+0.00572,+0.02625] excl. 0); split3 bPQ now
+  −.00040 (CI straddles 0; was −.0018 excl. 0 under plain P2). mPQ CIs straddle everywhere;
+  sign counts mPQ 9/9, bPQ 5/9, Dead 9/9.
+- **Attribution (EF − plain P2, per pair)**: bPQ improves on all 8 non-identity pairs
+  (+.0005…+.0019), mPQ likewise (+.0003…+.0016); Dead cost is small and mixed (−.0023…+.0010,
+  seed-mean ≈ −.0004) — the audit-predicted trade (sub-30 px additions are 80% FP but hold 43
+  Dead-typed val TPs).
+- Verification: raw-summary deltas match recorded stats to <1e-12 on 3 spot-checked pairs; the
+  decision rule re-derived independently; the identity pair's EF eval is byte-identical to its
+  P0 baseline eval; CPU suite **150 passed / 3 CUDA-skipped**.
+- Interpretation: the validation-selected existence filter passes the frozen decision rule,
+  with a Dead-centred improvement and approximately unchanged mean bPQ. This is not a
+  statistical demonstration of non-inferiority, nor a computationally free improvement.
+  Honest caveats: (i) the margin is thin (mPQ/bPQ CIs straddle 0; the win is Dead-centred);
+  (ii) this is the THIRD pre-registered read of these test folds (v2, matched-seed, EF) — within-
+  round selection is val-only, but cross-round test reuse is a multiplicity caveat on any single
+  round's significance; (iii) EF-P2 is a post-processing arm on top of x1+M/S+P2, not a new
+  model. Both scales require inference; deployment cost has not been measured.
+  Nonnegative counts include the identity pair (eight positive Dead deltas and one zero);
+  the SD uses ddof=0 over three within-split paired deltas, not baseline-run SD.
+  Bootstrap intervals hold the three trained seeds fixed and do not include training uncertainty.
+  Per the frozen plan, EF-P2 replaces P2 as the reported candidate arm.
+
+
+## 2026-10-05 — Follow-up code and documentation corrections
+
+- Fixed EF test application ignoring an EF `identity` choice when stage 1 was nonidentity.
+  A regression first reproduced one unwanted addition instead of zero. None of the nine
+  archived EF pairs exercises that combination: the only EF identity pair already had
+  stage-1 identity, so its archived scores remain valid. The fix changes source fingerprints;
+  do not edit old selection manifests or bypass provenance guards to reuse them with new code.
+- Fixed the existence audit's border table: it previously selected only area [0,1), making
+  both border rows zero for nonempty masks. Future outputs include all areas and retain the
+  per-candidate `border` flag in records.npz. The archived audit's `added_by_border` table is
+  invalid and must not be used; its records lack border flags. Corrected counts have now
+  been regenerated from the frozen validation predictions in `existence_audit_20261005_v2` (below). Other archived bins and the EF menu do not use
+  that table, so no published EF scores change. A serialization regression covers both
+  border groups, including one-pixel and larger candidates.
+- Rechecked all 54 endpoint deltas against raw eval summaries in each of the matched-seed
+  and EF rounds (108 total), and all nine EF off rows against frozen P2 rows (tolerance 1e-12).
+  The identity pair's summary.json is byte-identical to its baseline summary.
+- Corrected the val addition match rate to 7204/17359 = 41.50%; the sub-30px slice contains
+  454/7204 = 6.3% of all matches and 43/699 correctly typed Dead matches. Also corrected the
+  class table (Inflammatory, not Dead, has the highest match rate; Neo+Con supply 49.5% of matches).
+- Typing audit: re-prediction sanity uses greedy IoU>0 pairing, not IoU>0.5; argmax-disagreement
+  success rates include unmatched predictions in the denominator. Test-only rejected Dead
+  typing accuracy is .4375-.4444. Count averages are labelled as averages, not pooled counts.
+- M/S choices vary by seed and its three headline deltas each have 7/9 nonnegative pairs.
+  EF-P2 still passes the original rule, but that is not proof of non-inferiority or zero cost.
+- Verification after these fixes: **153 passed, 3 CUDA-skipped, 62 dependency warnings**
+  (`CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 python -m pytest -q`,
+  pinned nuclei environment). No GPU tests, training or new threshold sweeps were run.
+
+
+### Regenerated border bins (validation only; post-execution descriptive audit)
+
+Source: `runs/analysis/existence_audit_20261005_v2/summary.json`, table
+`added_by_border`; the old directory remains unchanged. Border means the candidate
+mask touches at least one edge of its native 256-pixel prediction map. Counts pool
+the nine split/seed pairs and are not counts of independent patients or images.
+
+| Candidate | Added | IoU>0.5 matched | Match rate | Matched and correctly typed | Correctly typed Dead | GT already matched by base |
+|---|---:|---:|---:|---:|---:|---:|
+| Border-touching | 9975 | 5273 | 52.86% | 4553 | 85 | 0 |
+| Interior | 7384 | 1931 | 26.15% | 1649 | 614 | 0 |
+| Total | 17359 | 7204 | 41.50% | 6202 | 699 | 0 |
+
+The regenerated table does **not** support treating border contact alone as a reason
+to discard additions: the marginal match rate is higher at the border, while most
+correctly typed Dead additions are interior. Class, area and fold composition differ
+between these groups; this is descriptive, not a causal effect or a newly validated
+filter. No EF menu, selection or test evaluation was changed on this evidence.
+
+Verification (`verification.json` in the new directory):
+- All 37,915 candidates retain exactly the same values in every legacy records column
+  (including NaNs); all non-border summary tables are unchanged.
+- All nine per-pair addition counts equal the frozen P2 selections; hashes of both
+  input predictions per pair match the frozen selection records.
+- Independently read each candidate ID against the four edges of the saved prediction
+  map, without using `candidate_geometry`: all 37,915 border flags agree.
+- Recomputed both table rows from records and reconciled every count with area-bin
+  totals: 17,359 additions, 7,204 matches, 6,202 correctly typed matches, 699 correctly
+  typed Dead matches, zero already-base-matched GT.
+- Full CPU suite rerun: **153 passed, 3 CUDA-skipped, 62 dependency warnings**.
+
+Regeneration command (output must not already exist):
+```bash
+CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+  python scripts/audit_existence_candidates.py \
+  --round runs/analysis/matched_seed_20261004 \
+  --out runs/analysis/existence_audit_20261005_v2 --workers 4
+```

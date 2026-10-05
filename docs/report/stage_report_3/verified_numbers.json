@@ -1,0 +1,256 @@
+{
+  "scope": "Raw summaries, frozen selections and validation audit records; no new evaluation",
+  "arms": {
+    "P2": {
+      "mean": {
+        "mPQ": 0.49768527518725203,
+        "bPQ": 0.664428263737016,
+        "mPQ+": 0.5190512378533059,
+        "strict mPQ": 0.45147151302099103,
+        "Dead PQ": 0.17996974650338182,
+        "strict Dead PQ": 0.1336309320238352
+      },
+      "delta": {
+        "mPQ": 8.388323612449715e-05,
+        "bPQ": -0.0008691177793883003,
+        "mPQ+": 0.0031118747402316804,
+        "strict mPQ": -0.0010392818669963542,
+        "Dead PQ": 0.007417004007789012,
+        "strict Dead PQ": 0.002897228653114125
+      },
+      "max_paired_delta_sd": {
+        "mPQ": 0.0005267314607610447,
+        "bPQ": 0.0006435610792616868,
+        "mPQ+": 0.001908005596437949,
+        "strict mPQ": 0.0008303649476915971,
+        "Dead PQ": 0.003117021521720182,
+        "strict Dead PQ": 0.0015680935792008277
+      },
+      "sign_counts": {
+        "mPQ": {
+          "positive": 4,
+          "zero": 1,
+          "negative": 4
+        },
+        "bPQ": {
+          "positive": 0,
+          "zero": 1,
+          "negative": 8
+        },
+        "mPQ+": {
+          "positive": 8,
+          "zero": 1,
+          "negative": 0
+        },
+        "strict mPQ": {
+          "positive": 0,
+          "zero": 1,
+          "negative": 8
+        },
+        "Dead PQ": {
+          "positive": 8,
+          "zero": 1,
+          "negative": 0
+        },
+        "strict Dead PQ": {
+          "positive": 6,
+          "zero": 1,
+          "negative": 2
+        }
+      },
+      "decision": false,
+      "selections": {
+        "split1_seed19": "identity",
+        "split1_seed1": "a200_p0.9_interior0",
+        "split1_seed2": "a200_p0.7_interior0",
+        "split2_seed19": "a200_p0.9_interior0",
+        "split2_seed1": "a200_p0.9_interior0",
+        "split2_seed2": "a200_p0.9_interior0",
+        "split3_seed19": "a200_p0.7_interior0",
+        "split3_seed1": "a200_p0.7_interior0",
+        "split3_seed2": "a200_p0.5_interior0"
+      }
+    },
+    "EF-P2": {
+      "mean": {
+        "mPQ": 0.4982819461000935,
+        "bPQ": 0.6652882414861676,
+        "mPQ+": 0.5197430883483967,
+        "strict mPQ": 0.45220655663000425,
+        "Dead PQ": 0.17954397153515428,
+        "strict Dead PQ": 0.134062094959133
+      },
+      "delta": {
+        "mPQ": 0.0006805541489659506,
+        "bPQ": -9.14003023671444e-06,
+        "mPQ+": 0.0038037252353225006,
+        "strict mPQ": -0.0003042382579831347,
+        "Dead PQ": 0.0069912290395614685,
+        "strict Dead PQ": 0.0033283915884119303
+      },
+      "max_paired_delta_sd": {
+        "mPQ": 0.0007282169957238669,
+        "bPQ": 0.0002788591401165136,
+        "mPQ+": 0.002209956805279178,
+        "strict mPQ": 0.0005547206507268877,
+        "Dead PQ": 0.00336527964158364,
+        "strict Dead PQ": 0.001961432788197269
+      },
+      "sign_counts": {
+        "mPQ": {
+          "positive": 8,
+          "zero": 1,
+          "negative": 0
+        },
+        "bPQ": {
+          "positive": 4,
+          "zero": 1,
+          "negative": 4
+        },
+        "mPQ+": {
+          "positive": 8,
+          "zero": 1,
+          "negative": 0
+        },
+        "strict mPQ": {
+          "positive": 3,
+          "zero": 1,
+          "negative": 5
+        },
+        "Dead PQ": {
+          "positive": 8,
+          "zero": 1,
+          "negative": 0
+        },
+        "strict Dead PQ": {
+          "positive": 7,
+          "zero": 1,
+          "negative": 1
+        }
+      },
+      "decision": true,
+      "selections": {
+        "split1_seed19": "identity",
+        "split1_seed1": "a30d",
+        "split1_seed2": "a30",
+        "split2_seed19": "a30",
+        "split2_seed1": "a30",
+        "split2_seed2": "a30",
+        "split3_seed19": "a30",
+        "split3_seed1": "a30",
+        "split3_seed2": "a30"
+      }
+    }
+  },
+  "source_sha256": {
+    "runs/analysis/matched_seed_20261004/stats/stats.json": "8b607ea58eb67dcef257384e5a7ee1c60e74a109f92742376e23ec20e739470d",
+    "runs/analysis/existence_ef_20261005/stats/stats.json": "eb88ca87b34761580f111ac4e38c4fae6670ae50754e9b7710287853ca9669ee"
+  },
+  "verified_endpoint_deltas": 108,
+  "baseline": {
+    "mPQ": 0.49760139195112757,
+    "bPQ": 0.6652973815164044,
+    "mPQ+": 0.5159393631130742,
+    "strict mPQ": 0.4525107948879874,
+    "Dead PQ": 0.17255274249559285,
+    "strict Dead PQ": 0.13073370337072107
+  },
+  "audit": {
+    "eligible": 37915,
+    "added": 17359,
+    "matched": 7204,
+    "area": [
+      {
+        "bin": [
+          0,
+          30
+        ],
+        "n": 2294,
+        "matched": 454,
+        "typed": 390,
+        "dead_typed": 43,
+        "match_rate": 0.1979075850043592
+      },
+      {
+        "bin": [
+          30,
+          60
+        ],
+        "n": 6473,
+        "matched": 2874,
+        "typed": 2453,
+        "dead_typed": 354,
+        "match_rate": 0.4439981461455276
+      },
+      {
+        "bin": [
+          60,
+          100
+        ],
+        "n": 4976,
+        "matched": 2435,
+        "typed": 2096,
+        "dead_typed": 237,
+        "match_rate": 0.48934887459807075
+      },
+      {
+        "bin": [
+          100,
+          150
+        ],
+        "n": 2372,
+        "matched": 1026,
+        "typed": 888,
+        "dead_typed": 59,
+        "match_rate": 0.4325463743676223
+      },
+      {
+        "bin": [
+          150,
+          200
+        ],
+        "n": 1225,
+        "matched": 408,
+        "typed": 371,
+        "dead_typed": 6,
+        "match_rate": 0.3330612244897959
+      },
+      {
+        "bin": [
+          200,
+          1000000000
+        ],
+        "n": 19,
+        "matched": 7,
+        "typed": 4,
+        "dead_typed": 0,
+        "match_rate": 0.3684210526315789
+      }
+    ],
+    "border": [
+      {
+        "bin": [
+          0,
+          1
+        ],
+        "n": 7384,
+        "matched": 1931,
+        "typed": 1649,
+        "dead_typed": 614,
+        "match_rate": 0.2615113759479957
+      },
+      {
+        "bin": [
+          1,
+          2
+        ],
+        "n": 9975,
+        "matched": 5273,
+        "typed": 4553,
+        "dead_typed": 85,
+        "match_rate": 0.5286215538847118
+      }
+    ]
+  },
+  "dead_gain_retained": 0.9425947501470388
+}

@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-06",
+  "documents": {
+    "stage_report_3": {
+      "pages": 12,
+      "pdf_bytes": 510233,
+      "pdf_sha256": "f796ff445832d425763e7c1bb3bb094481675712aec4a8cc39aebbaf7fc085e9",
+      "tex_sha256": "ce8c58d5d86618e0d753c42bce1aed5f8a2aa08007b6de3676663f4e71378cba",
+      "tex_errors": 0,
+      "overfull_boxes": 0,
+      "underfull_boxes": 0,
+      "missing_characters": 0,
+      "undefined_references": 0,
+      "pdf_parser_warnings": 0
+    },
+    "stage_report_3_zh": {
+      "pages": 11,
+      "pdf_bytes": 448526,
+      "pdf_sha256": "2c68d8fe5075bbf215aa83a9442773879f46a56fd59d10ff3aa43939aeb4d231",
+      "tex_sha256": "1060cdd34d3a07a9dde0b55870b57e967ae3c0c251e22ab97fd32493dfd03760",
+      "tex_errors": 0,
+      "overfull_boxes": 0,
+      "underfull_boxes": 0,
+      "missing_characters": 0,
+      "undefined_references": 0,
+      "pdf_parser_warnings": 0
+    },
+    "summary_plain_zh": {
+      "pages": 3,
+      "pdf_bytes": 204640,
+      "pdf_sha256": "0f2981223753d67d8cdc0d0d091a3d9d6bf0962caa74ad32553dd9ca977406ea",
+      "tex_sha256": "b5370e26c8701ca88e8cfe3e7d1c6b6c540520b69b64d2aa8fda224941c4ae7a",
+      "tex_errors": 0,
+      "overfull_boxes": 0,
+      "underfull_boxes": 0,
+      "missing_characters": 0,
+      "undefined_references": 0,
+      "pdf_parser_warnings": 0
+    }
+  },
+  "numeric_verification": {
+    "raw_summary_deltas_checked": 108,
+    "bootstrap_intervals_checked": 18,
+    "training_config_hashes_checked": 18,
+    "main_table_cells_checked": 60,
+    "snapshot_matches_fresh_extraction": true,
+    "P2_rule_pass": false,
+    "EF_P2_rule_pass": true,
+    "snapshot_sha256": "72b9ae4aae0f0354f378595253598f049d5de70409e87a46381ef64f69057f3b"
+  },
+  "tests": {
+    "passed": 157,
+    "warnings": 63,
+    "final_result": "passed",
+    "command": "python -m pytest -q",
+    "elapsed_seconds": 199.77,
+    "new_regression": "Chinese figure PDF fonts: failed before fix, passed after fix",
+    "python": "3.10.21",
+    "torch": "2.5.1+cu124",
+    "numpy": "1.23.5"
+  }
+}

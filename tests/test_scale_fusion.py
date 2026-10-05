@@ -169,6 +169,17 @@ def test_analysis_rejects_wrong_model_split_or_unknown_seed():
         a.validate_run_context(good, 1)
 
 
+def test_analysis_binds_run_context_to_declared_pair_seed():
+    from scripts import analyze_scale_complementarity as a
+    pair = {"run_context": {"base": {"split": 2, "actual_seed": 1}, "x2": {"split": 2, "actual_seed": 1}}}
+    a.validate_run_context(pair, 2, expected_seed=1)
+    with pytest.raises(ValueError):
+        a.validate_run_context(pair, 2, expected_seed=2)
+    pair["run_context"]["x2"]["actual_seed"] = 2
+    with pytest.raises(ValueError):
+        a.validate_run_context(pair, 2, expected_seed=1)
+
+
 def test_p1_p2_cli_end_to_end_and_frozen_input_guard(tmp_path):
     import json
     import os
@@ -221,3 +232,17 @@ def test_p1_p2_cli_end_to_end_and_frozen_input_guard(tmp_path):
     assert (out / "selection.json").read_bytes() == frozen
     score = json.loads((out / "test/eval/summary.json").read_text())
     assert score["official"]["mPQ"] == pytest.approx(1, abs=1e-6)
+    # matched-seed round: arms trained with seed 1 need the declared pair seed
+    for name in ("base", "x2"):
+        (tmp_path / name / "config.json").write_text(json.dumps({"split": 1, "seed": 1}))
+    ms_cmd = [sys.executable, str(scripts / "run_scale_fusion.py"), "--split", "1", "--workers", "1"]
+    for k, v in inputs.items():
+        ms_cmd += ["--" + k, str(v)]
+    legacy = subprocess.run(ms_cmd + ["--out", str(tmp_path / "p2_default19"), "--stage", "val"],
+                            capture_output=True, text=True, env=env, timeout=60)
+    assert legacy.returncode != 0 and "seed19" in legacy.stderr
+    ok = subprocess.run(ms_cmd + ["--out", str(tmp_path / "p2_ms"), "--expect-seed", "1", "--stage", "val"],
+                        capture_output=True, text=True, env=env, timeout=60)
+    assert ok.returncode == 0, ok.stderr
+    ms = json.loads((tmp_path / "p2_ms" / "selection.json").read_text())
+    assert ms["status"] == "GO" and ms["expected_seed"] == 1

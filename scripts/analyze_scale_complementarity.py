@@ -88,10 +88,10 @@ def provenance(paths, fold, script):
                         ROOT / "src/nucseg/metrics/instance.py", ROOT / "src/nucseg/metrics/errors.py"]))}}
 
 
-def validate_run_context(evidence, split):
+def validate_run_context(evidence, split, expected_seed=19):
     for name, context in evidence["run_context"].items():
-        if context.get("split") != split or context.get("actual_seed") != 19:
-            raise ValueError(f"{name}: P1/P2 require verified seed19 predictions for the declared split")
+        if context.get("split") != split or context.get("actual_seed") != expected_seed:
+            raise ValueError(f"{name}: P1/P2 require verified seed{expected_seed} predictions for the declared split")
 
 
 def main():
