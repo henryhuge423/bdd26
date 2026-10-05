@@ -27,7 +27,7 @@ def write_eval(directory: Path, values: dict, n_images: int = 6, dead_images=(0,
     np.savez_compressed(directory / "per_image.npz", mPQ=m, bPQ=b, class_PQ=np.column_stack([dead] * 5))
 
 
-def make_root(base: Path, dead_delta, mpq_delta=0., bpq_delta=0.):
+def make_root(base: Path, dead_delta, mpq_delta=0., bpq_delta=0., arm="p2"):
     """dead_delta: {(split, seed): value}; other endpoints shift uniformly."""
     root = base / "matched"
     for split, fold in SPLITS.items():
@@ -44,16 +44,18 @@ def make_root(base: Path, dead_delta, mpq_delta=0., bpq_delta=0.):
             write_eval(root / "p0" / pair / "test" / "base" / "ms" / "eval", BASE)
             p2 = dict(BASE, **{"mPQ": BASE["mPQ"] + mpq_delta, "bPQ": BASE["bPQ"] + bpq_delta,
                                "Dead PQ": BASE["Dead PQ"] + dead_delta[(split, seed)]})
-            write_eval(root / "p2" / pair / "test" / "eval", p2)
+            write_eval(root / arm / pair / "test" / "eval", p2)
     return root
 
 
-def run_script(root: Path, base: Path, out: Path = None, boot=40):
+def run_script(root: Path, base: Path, out: Path = None, boot=40, arm=None):
     out = out or (base / "stats")
     env = {**os.environ, "PANNUKE_ROOT": str(base / "data"), "CUDA_VISIBLE_DEVICES": ""}
     script = FILE.parents[1] / "scripts" / "matched_seed_stats.py"
-    r = subprocess.run([sys.executable, str(script), "--root", str(root), "--out", str(out),
-                        "--boot", str(boot)], capture_output=True, text=True, env=env, timeout=120)
+    cmd = [sys.executable, str(script), "--root", str(root), "--out", str(out), "--boot", str(boot)]
+    if arm:
+        cmd += ["--arm", arm]
+    r = subprocess.run(cmd, capture_output=True, text=True, env=env, timeout=120)
     return r, out
 
 
@@ -129,6 +131,22 @@ def test_bootstrap_resamples_absolute_indices_within_tissue():
     assert abs(series_mean - (-.01)) < .01
     ci = out["mPQ"]["ci95"]
     assert ci[0] <= -.01 <= ci[1]
+
+
+def test_stats_accepts_renamed_arm_directory(tmp_path):
+    """The existence-filter round stores its test arm under p2ef/; --arm points the
+    loader at it without touching the default p2 layout."""
+    dead = {(s, e): .01 for s in (1, 2, 3) for e in SEEDS}
+    root = make_root(tmp_path, dead, arm="p2ef")
+    r, out = run_script(root, tmp_path, out=tmp_path / "stats_ef", arm="p2ef")
+    assert r.returncode == 0, r.stderr
+    result = json.loads((out / "stats.json").read_text())
+    assert result["pairs"]["split2_seed1"]["delta"]["Dead PQ"] == pytest.approx(.01)
+    assert result["decision"]["robust_improvement"] is True
+    # default arm name still expected when --arm is omitted
+    root2 = make_root(tmp_path / "b", dead, arm="p2ef")
+    r2, _ = run_script(root2, tmp_path / "b", out=tmp_path / "b" / "stats_x")
+    assert r2.returncode != 0 and "split1_seed19" in r2.stderr and "/p2/" in r2.stderr
 
 
 def test_stats_refuse_missing_pair_or_inconsistent_summary(tmp_path):

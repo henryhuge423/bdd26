@@ -78,6 +78,8 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--root", type=Path, required=True)
     p.add_argument("--out", type=Path, required=True)
+    p.add_argument("--arm", default="p2",
+                   help="round-local directory name of the comparison arm (default p2)")
     p.add_argument("--boot", type=int, default=2000)
     p.add_argument("--seed", type=int, default=20261004)
     a = p.parse_args()
@@ -95,7 +97,7 @@ def main():
             try:
                 base_eps, base_pi = load_eval(a.root / "p0" / pair / "test" / "base" / "ms" / "eval", tissue_idx)
                 ident_eps, _ = load_eval(a.root / "p0" / pair / "test" / "base" / "identity" / "eval", tissue_idx)
-                p2_eps, p2_pi = load_eval(a.root / "p2" / pair / "test" / "eval", tissue_idx)
+                p2_eps, p2_pi = load_eval(a.root / a.arm / pair / "test" / "eval", tissue_idx)
             except (FileNotFoundError, KeyError) as e:
                 sys.exit(f"missing artifacts for pair {pair}: {e}")
             delta = {k: p2_eps[k] - base_eps[k] for k in ENDPOINTS}

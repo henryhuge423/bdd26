@@ -222,6 +222,24 @@
   代码/产物：`src/nucseg/postproc/typing_audit.py`、`scripts/analyze_typing_confidence.py`、
   `scripts/typing_audit_numbers.py`、`runs/analysis/typing_audit_20261003/`（含 commands.md）。
 
+**2026-10-05 — 匹配种子验证判定（预注册）；存在性审计与 EF-P2 预注册轮启动**
+- 9 个 (split, seed) 匹配对全部执行完毕：18/18 val 选择在读任何测试折前冻结；
+  **判定 robust_improvement = false** —— Dead 两臂通过（种子均值 +.00742 ≥ 1× 最大种子
+  std .00312；9/9 对 ≥0）但 ΔbPQ −.00087 < −.00064 护栏失败。门控添加把原种子脆弱的
+  Dead 增益变成稳健（raw du2 仅 4/5 对），但不能去除 bPQ 税（split3 Dead +.0163 与
+  bPQ −.0018 的 bootstrap CI 均不含 0）——**Dead-for-bPQ 交易而非免费胜利**。M/S 次要
+  端点全部 ≥0 且符号稳健。过程修复：seed19 硬校验 bug（da3b934）、bootstrap 索引 bug
+  （447fd88，含非常量装置回归测试）。全程 142 CPU 测试通过。详见 findings.md 同日条目。
+- **存在性审计（仅 val 折，`runs/analysis/existence_audit_20261005`）**：17,359 个冻结 P2
+  val 添加（43.7% TP）。唯一强分离轴 = 面积（<30px 匹配率 20%、n=2294；30–60px 44%）；
+  到 base 距离无分离（39–44% 均匀，"FP=贴邻碎片"假设证伪）；圆度/填充率/pmax 弱；
+  添加从不重复 base 已检测的 GT（0/17359）。val 上所选配置 ΔbPQ≈0（−.0007~+.0020），
+  测试侧 −.00087 的税属边际量。
+- **EF-P2 预注册轮**（[计划](superpowers/plans/2026-10-05-existence-filter-p2.md)，菜单
+  冻结于任何 sweep 之前）：在冻结的 P2 添加上加面积下限菜单 {identity, off, a30, a30d,
+  a60}，选择规则与判定规则逐字沿用 P2/匹配种子轮；CPU-only，第三次预注册读这些测试折
+  （多样性限制如实报告）。
+
 ---
 
 ## 1. 调研结论要点
