@@ -1,6 +1,6 @@
 # HV threshold controls implementation and experiment plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Isolate working resolution from the minimum instance area receiving nonzero HV targets, without changing historical defaults or reading new test results.
 
@@ -48,9 +48,13 @@ Contrasts: within x1, hv8−hv30; within x2, hv30−hv120; scale comparison at m
 
 ## Verification and execution record
 
-Implementation completed on2026-10-06. The35 new tests were first observed failing before their corresponding production changes, then passed. Target+legacy HoVer tests:26 passed. Full CPU suite:189 passed,3 CUDA-dependent skipped (62 existing dependency warnings). Independent review found no blocking defects; its stale single-variable docstring finding was corrected. GPU validation and actual job-start status are recorded below when observed, not inferred from queue creation.
+Implementation completed on2026-10-06; source commit **`c6e7e92`**. The35 new tests were first observed failing before their corresponding production changes, then passed. Target+legacy HoVer tests:26 passed. Full CPU suite:189 passed,3 CUDA-dependent skipped (62 existing dependency warnings). Independent review found no blocking defects; its stale single-variable docstring finding was corrected.
 
-The checklist below retains the original implementation steps; this record is the authoritative completion status. Scientific recipe and contrasts were fixed before launch.
+Worker verification initially stopped during collection because optional MONAI was absent. After providing pinned `monai==1.3.2` in an isolated test-only directory (no shared-environment upgrade), the full CUDA-enabled suite reported **191 passed,1 skipped**. The remaining skip is the report PDF/font prerequisite; that test passed in the CPU environment. Torch2.5.1+cu124 and numpy1.23.5 remained unchanged. This is not a claim that a single suite invocation had192 passing tests.
+
+**Launch verified on2026-10-06:** both queues use an immutable snapshot of `c6e7e92`. The first active runs are `x1_hv30_seed19` and `x2_hv120_seed1`; at the startup check, they had completed3 and1 epochs respectively, with finite losses and saved configs matching the frozen recipe. Six other runs remain queued. All training and subsequent inference/evaluation use fold1/fold2 only; no new fold3 predictions or performance claims. Machine paths, queue PIDs and operational commands are retained only in ignored local records.
+
+The checklist below records implementation/launch completion, **not completion of the eight experiments**. Scientific recipe and contrasts were fixed before launch.
 
 ## Task 1: Parameterized HV generation, default parity (complete)
 
@@ -58,7 +62,7 @@ The checklist below retains the original implementation steps; this record is th
 
 **Interfaces:** `hv_targets(inst: np.ndarray, min_size: int = 30) -> np.ndarray` remains importable from `nucseg.hovernet.data`; `validate_hv_min_size(value) -> int` rejects bool, non-integral and nonpositive values.
 
-- [ ] Write tests before implementation. Literal support fixtures:
+- [x] Write tests before implementation. Literal support fixtures:
   ```python
   inst = np.zeros((64, 64), np.int32)
   inst[20:24, 20:24] = 7
@@ -69,9 +73,9 @@ The checklist below retains the original implementation steps; this record is th
   assert not hv_targets(up, min_size=120).any()
   ```
   Also compare default output with the unmodified official generator on zero-padded random/sparse/border/disconnected masks; check30px inclusion, nonmutation and invalid cutoffs.
-- [ ] Run `python -m pytest -q tests/test_hv_threshold.py`; expected RED for missing cutoff support.
-- [ ] Adapt the official full-image HV generator locally, preserving label remapping, mass-center rounding, ±2 bounding box and signed normalization; replace only area selection with the validated argument. Include MIT notice. Keep the4px zero border and public wrapper.
-- [ ] Rerun target and existing HoVer tests; expected GREEN with exact parity.
+- [x] Run `python -m pytest -q tests/test_hv_threshold.py`; expected RED for missing cutoff support.
+- [x] Adapt the official full-image HV generator locally, preserving label remapping, mass-center rounding, ±2 bounding box and signed normalization; replace only area selection with the validated argument. Include MIT notice. Keep the4px zero border and public wrapper.
+- [x] Rerun target and existing HoVer tests; expected GREEN with exact parity.
 
 ## Task 2: Training/CLI wiring and safe experiment identity (complete)
 
@@ -79,19 +83,19 @@ The checklist below retains the original implementation steps; this record is th
 
 **Interfaces:** `TrainConfig.hv_min_size=30`; `PanNukeCellViT(..., hv_min_size=30)`; CLI `--hv-min-size` inherits an existing run value when omitted, defaults30 for legacy/new runs; `--train-only` stops after training. Extract `build_parser()` and `main(argv=None)` so the real CLI boundary can be tested without GPU training.
 
-- [ ] Write tests using small memory-mapped temporary fold data or narrow dataset stubs: train/validation dataset targets receive the specified working cutoff, NP/TP unchanged, x2 is not automatically scaled. Test CLI train-only with a stubbed expensive trainer and forbidden test dataset/model boundaries.
-- [ ] Add resume tests: existing config cutoff8 is inherited; explicit30 cannot silently resume it; legacy missing field means30; mismatch leaves original config bytes unchanged. Scientific config keys are fixed; only out_dir/workers/val_every may differ.
-- [ ] Run the new tests; expected RED.
-- [ ] Thread the field into `train_ds` and `val_dl`; validate before run-directory/config writes. Compare normalized JSON scientific settings before replacing config. Refactor CLI minimally, guard test inference behind train-only, reject incompatible skip-train/train-only flags.
-- [ ] Run new tests and full suite. CUDA-dependent tests require a usable device; CPU-only run must explicitly report skips, not a full CUDA pass.
+- [x] Write tests using small memory-mapped temporary fold data or narrow dataset stubs: train/validation dataset targets receive the specified working cutoff, NP/TP unchanged, x2 is not automatically scaled. Test CLI train-only with a stubbed expensive trainer and forbidden test dataset/model boundaries.
+- [x] Add resume tests: existing config cutoff8 is inherited; explicit30 cannot silently resume it; legacy missing field means30; mismatch leaves original config bytes unchanged. Scientific config keys are fixed; only out_dir/workers/val_every may differ.
+- [x] Run the new tests; expected RED.
+- [x] Thread the field into `train_ds` and `val_dl`; validate before run-directory/config writes. Compare normalized JSON scientific settings before replacing config. Refactor CLI minimally, guard test inference behind train-only, reject incompatible skip-train/train-only flags.
+- [x] Run new tests and full suite. CUDA-dependent tests require a usable device; CPU-only run must explicitly report skips, not a full CUDA pass.
 
-## Task 3: Review, commit and launch
+## Task 3: Review, commit and launch (complete; experiments running)
 
 **Files:** update `README.md`, `docs/RESEARCH_PLAN.md`, `docs/README.md`, this plan and the research proposal; runtime machine notes/launchers remain `ops/` only.
 
-- [ ] Preserve previous evidence-review changes in the user-requested commit; mark HV controls approved/implemented without claiming training results.
-- [ ] Independently review the complete diff for default parity, provenance, validation-only execution and resume safety; fix substantive findings with reproducing tests.
-- [ ] Run `git diff --check`, full pytest and CLI help/invalid-input smoke tests; expected clean diff and accurately reported test results.
-- [ ] Commit the exact portable file allowlist with `Co-Authored-By: Claude Code <noreply@anthropic.com>`.
-- [ ] Check storage/free GPU capacity using local runbooks; stage code via an existing safe sync or explicit allowlist, excluding all credentials. Launch sequential resumable queues without killing existing jobs, preserving batch16. Do not reduce batch to squeeze into busy devices; wait for suitable capacity.
-- [ ] Verify a running training process, saved config and epoch/log progress. A queue alone is reported as queued, not training. Record commit, arm, seed, hardware/batch and process IDs in ignored operational records. No new test-fold evaluation.
+- [x] Preserve previous evidence-review changes in the user-requested commit; mark HV controls approved/implemented without claiming training results.
+- [x] Independently review the complete diff for default parity, provenance, validation-only execution and resume safety; fix substantive findings with reproducing tests.
+- [x] Run `git diff --check`, full pytest and CLI help/invalid-input smoke tests; expected clean diff and accurately reported test results.
+- [x] Commit the exact portable file allowlist with `Co-Authored-By: Claude Code <noreply@anthropic.com>`.
+- [x] Check storage/free GPU capacity using local runbooks; stage code via an existing safe sync or explicit allowlist, excluding all credentials. Launch sequential resumable queues without killing existing jobs, preserving batch16. Do not reduce batch to squeeze into busy devices; wait for suitable capacity.
+- [x] Verify a running training process, saved config and epoch/log progress. A queue alone is reported as queued, not training. Record commit, arm, seed, hardware/batch and process IDs in ignored operational records. No new test-fold evaluation.
