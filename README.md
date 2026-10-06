@@ -3,7 +3,7 @@
 Nuclei instance segmentation + classification on **PanNuke** (~7,900 H&E patches, 19 tissues,
 5 nucleus classes), evaluated under the **official 3-fold protocol**. On PanNuke, swapping
 backbones moves mPQ by only 1–2 points (CellViT-HIPT .485 → SAM-H .498 → SOTA ~.51); the
-persistent shortfalls are (1) the rare **Dead** (apoptotic) class — PQ .14–.19, worst of all
+persistent shortfalls are (1) the rare **Dead** class (apoptotic and necrotic) — PQ .14–.19, worst of all
 classes — and (2) **merge/split errors on touching nuclei**. This project builds a strict,
 leak-free evaluation pipeline, reproduces the standard baselines on it, and attacks the two
 shortfalls along three "new-paradigm" pillars:
@@ -17,6 +17,17 @@ shortfalls along three "new-paradigm" pillars:
 Research plan + full progress log: [docs/RESEARCH_PLAN.md](docs/RESEARCH_PLAN.md). Every
 experiment number: [docs/findings.md](docs/findings.md). Course brief:
 `docs/our_project5_nuclei_segmentation.pdf`.
+
+## Research review (2026-10-06)
+
+[Evidence audit and next-stage proposals](docs/RESEARCH_NEXT_2026-10-06.md) recheck all
+108 frozen endpoint deltas, review recent primary literature, and propose controlled
+crop/scale experiments and incremental-instance utility learning. The proposal includes
+independent annotation/validation requirements and staged compute requests. The first
+[HV target-threshold control round](docs/superpowers/plans/2026-10-06-hv-threshold-controls.md)
+is approved: four arms × two seeds, split1 training/validation only. `--hv-min-size`
+controls working-pixel target support; `--train-only` prevents automatic test inference.
+Broader architecture proposals remain unapproved, and no new performance result is claimed.
 
 ## Status (2026-10-05)
 

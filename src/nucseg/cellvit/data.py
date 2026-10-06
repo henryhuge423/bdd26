@@ -20,6 +20,7 @@ from ..augment.copy_paste import CopyPasteConfig, NucleusBank, apply_copy_paste
 from ..constants import NUM_CLASSES, TISSUES
 from ..data.pannuke import PanNukeFold
 from ..hovernet.data import hv_targets
+from ..hovernet.targets import validate_hv_min_size
 from .model import UNI_MEAN, UNI_STD
 
 cv2.setNumThreads(0)
@@ -56,8 +57,9 @@ def small_nuclei(inst: np.ndarray, max_area: int) -> np.ndarray:
 
 def upsample_patch(img: np.ndarray, inst: np.ndarray, typ: np.ndarray, k: int) -> tuple[np.ndarray, ...]:
     """Bilinear x2 (image) / nearest (labels) upsampling, applied AFTER augmentation and BEFORE
-    normalisation/target construction so the only change vs the 256 recipe is the working
-    resolution (single-variable ablation, phase-2 line B1)."""
+    normalisation/target construction. A fixed working-pixel HV cutoff consequently selects
+    different native-area supports at different scales; use explicit hv_min_size controls
+    to distinguish that supervision effect from the working resolution itself."""
     img = cv2.resize(img, None, fx=k, fy=k, interpolation=cv2.INTER_LINEAR)
     inst = cv2.resize(inst, None, fx=k, fy=k, interpolation=cv2.INTER_NEAREST)
     typ = cv2.resize(typ, None, fx=k, fy=k, interpolation=cv2.INTER_NEAREST)
@@ -72,7 +74,8 @@ def tissue_ids(names) -> np.ndarray:
 class PanNukeCellViT(Dataset):
     def __init__(self, folds: list[int], train: bool, small_area: int = 100,
                  copy_paste: CopyPasteConfig | None = None, synth: Path | None = None,
-                 synth_frac: float = 0.0, upscale: int = 1):
+                 synth_frac: float = 0.0, upscale: int = 1, hv_min_size: int = 30):
+        self.hv_min_size = validate_hv_min_size(hv_min_size)
         self.folds = [PanNukeFold(k) for k in folds]
         self.index = [("r", fi, j) for fi, f in enumerate(self.folds) for j in range(len(f))]
         self.train = train
@@ -148,7 +151,7 @@ class PanNukeCellViT(Dataset):
         return {
             "img": torch.from_numpy(normalize(img)),                     # (3, 256, 256) float
             "np_map": torch.from_numpy((inst > 0).astype(np.int64)),     # (256, 256)
-            "hv_map": torch.from_numpy(hv_targets(inst)),                # (256, 256, 2)
+            "hv_map": torch.from_numpy(hv_targets(inst, min_size=self.hv_min_size)),  # working-pixel cutoff
             "tp_map": torch.from_numpy(typ.astype(np.int64)),            # (256, 256) 0..5
             "small_map": torch.from_numpy(small_nuclei(inst, self.small_area)),  # (256, 256) bool
             "tissue": tissue,

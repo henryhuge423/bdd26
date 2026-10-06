@@ -20,8 +20,9 @@ from torch.utils.data import Dataset
 from ..data.pannuke import PanNukeFold
 from .official import (
     add_to_brightness, add_to_contrast, add_to_hue, add_to_saturation, gaussian_blur,
-    gen_instance_hv_map, median_blur,
+    median_blur,
 )
+from .targets import instance_hv_map
 
 PAD = 48
 HV_PAD = 4  # zero margin so the official hv generator's +-2 px boxes never wrap at borders
@@ -43,9 +44,10 @@ def official_input_augs(seed: int) -> iaa.Sequential:
     ])
 
 
-def hv_targets(inst: np.ndarray) -> np.ndarray:
+def hv_targets(inst: np.ndarray, min_size: int = 30) -> np.ndarray:
+    """Full-patch HV; min_size is an inclusive cutoff in working pixels, not native pixels."""
     p = np.pad(inst.astype(np.int32), HV_PAD)
-    hv = gen_instance_hv_map(p, p.shape)
+    hv = instance_hv_map(p, min_size=min_size)
     return hv[HV_PAD:-HV_PAD, HV_PAD:-HV_PAD]
 
 

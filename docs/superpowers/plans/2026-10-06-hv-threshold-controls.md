@@ -1,0 +1,97 @@
+# HV threshold controls implementation and experiment plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Isolate working resolution from the minimum instance area receiving nonzero HV targets, without changing historical defaults or reading new test results.
+
+**Architecture:** A local, attributed adaptation of the pinned official HV generator accepts a positive integer working-pixel area cutoff. Thread `hv_min_size` through CellViT configuration and both training/validation datasets; add a train-only CLI boundary and immutable scientific resume configuration. Launch fresh split1 controls under the same original training recipe, then infer/evaluate validation fold2 with frozen scale-aware decoding.
+
+**Tech Stack:** Python 3.10; torch 2.5.1+cu124; numpy 1.23.5; existing pinned scipy/skimage/albumentations; pytest.
+
+**Spec:** `docs/RESEARCH_NEXT_2026-10-06.md`, §2.6 and E2a. User approved implementation, experiment launch and Git commit on 2026-10-06. This file freezes the first experimental round before training.
+
+## Global Constraints
+
+- No changes to official PanNuke split mapping, metric implementation or released-weight policy.
+- Own models use final checkpoints. First-round development uses split1 train fold1 / validation fold2; fold3 is not inferred or evaluated.
+- Preserve default `hv_min_size=30` in working pixels. It is not auto-scaled by `upscale`.
+- NP/TP labels remain unchanged; instances excluded from HV target generation receive zero HV, not an ignored loss.
+- No edits to ignored `third_party` sources; preserve the upstream MIT notice with locally adapted code.
+- Keep dependency pins unchanged. Run `python -m pytest -q` after this HoVer-Net plumbing change.
+- New reusable code is in `src/` or `scripts/`; machine launchers and resource records remain ignored under `ops/`.
+- Work on `research/hv-target-threshold-controls`, not master. Commit portable code/tests/docs only; no push requested.
+
+## Review Focus
+
+- Tiny, border-touching, disconnected and sparse-ID instances: threshold selection must preserve official remapping, center rounding and normalization; default output bit-identical.
+- Cutoff inclusion: area equal to the positive integer threshold is retained; NP/TP are never filtered.
+- Train vs validation: the same working-pixel cutoff reaches both datasets, without accidental multiplication by upscale².
+- Resume: changed scientific settings must be refused before overwriting config or loading a checkpoint; legacy configs missing `hv_min_size` mean30.
+- CLI: `--train-only` must not construct a test dataset, test predictor or inference model; invalid cutoffs fail before writes.
+
+## Frozen experimental design
+
+Four arms, each with seeds **19 and1**, split1 only; fresh directories rather than mixing historical baselines:
+
+| arm | upscale | hv_min_size (working px²) | native integer area support |
+|---|---:|---:|---:|
+| x1_hv30 | 1 | 30 | >=30 |
+| x1_hv8 | 1 | 8 | >=8 |
+| x2_hv30 | 2 | 30 | >=8 after exact nearest x2 |
+| x2_hv120 | 2 | 120 | >=30 after exact nearest x2 |
+
+Shared: 130epochs, final checkpoint, batch16, unfreeze epoch25, lr3e−4, ExponentialLR gamma.85, sampler gamma.85, original augmentations, no added NP-WCE/copy-paste/synthesis/TTA. Fresh runs use namespace `runs/hv_threshold_controls_20261006/<arm>_seed<seed>`.
+
+Validation: use `scripts/predict_cellvit.py --fold 2 --no-eval`, decode-u1 for x1 and decode-u2 for x2, marker-u1, no M/S or EF additions. Evaluate in a separate process with `scripts/eval_pannuke.py`; preserve raw probabilities/maps when feasible. No threshold search. Report mPQ/bPQ/Dead/strict counterparts and internal/border diagnostics separately. No claim of an independent new test benchmark or statistical proof from two seeds.
+
+Contrasts: within x1, hv8−hv30; within x2, hv30−hv120; scale comparison at matched native support (x2_hv120−x1_hv30, x2_hv30−x1_hv8). Two-seed development results decide whether more seeds or a schedule control is informative; do not pick the best seed. All arms are reported, including losses.
+
+## Verification and execution record
+
+Implementation completed on2026-10-06. The35 new tests were first observed failing before their corresponding production changes, then passed. Target+legacy HoVer tests:26 passed. Full CPU suite:189 passed,3 CUDA-dependent skipped (62 existing dependency warnings). Independent review found no blocking defects; its stale single-variable docstring finding was corrected. GPU validation and actual job-start status are recorded below when observed, not inferred from queue creation.
+
+The checklist below retains the original implementation steps; this record is the authoritative completion status. Scientific recipe and contrasts were fixed before launch.
+
+## Task 1: Parameterized HV generation, default parity (complete)
+
+**Files:** create `src/nucseg/hovernet/targets.py`, `tests/test_hv_threshold.py`; modify `src/nucseg/hovernet/data.py`, `src/nucseg/hovernet/official.py`.
+
+**Interfaces:** `hv_targets(inst: np.ndarray, min_size: int = 30) -> np.ndarray` remains importable from `nucseg.hovernet.data`; `validate_hv_min_size(value) -> int` rejects bool, non-integral and nonpositive values.
+
+- [ ] Write tests before implementation. Literal support fixtures:
+  ```python
+  inst = np.zeros((64, 64), np.int32)
+  inst[20:24, 20:24] = 7
+  assert not hv_targets(inst, min_size=30).any()
+  assert hv_targets(inst, min_size=8).any()
+  up = np.repeat(np.repeat(inst, 2, 0), 2, 1)
+  assert hv_targets(up, min_size=30).any()
+  assert not hv_targets(up, min_size=120).any()
+  ```
+  Also compare default output with the unmodified official generator on zero-padded random/sparse/border/disconnected masks; check30px inclusion, nonmutation and invalid cutoffs.
+- [ ] Run `python -m pytest -q tests/test_hv_threshold.py`; expected RED for missing cutoff support.
+- [ ] Adapt the official full-image HV generator locally, preserving label remapping, mass-center rounding, ±2 bounding box and signed normalization; replace only area selection with the validated argument. Include MIT notice. Keep the4px zero border and public wrapper.
+- [ ] Rerun target and existing HoVer tests; expected GREEN with exact parity.
+
+## Task 2: Training/CLI wiring and safe experiment identity (complete)
+
+**Files:** modify `src/nucseg/cellvit/data.py`, `src/nucseg/cellvit/engine.py`, `scripts/train_cellvit.py`; create `tests/test_hv_training.py`.
+
+**Interfaces:** `TrainConfig.hv_min_size=30`; `PanNukeCellViT(..., hv_min_size=30)`; CLI `--hv-min-size` inherits an existing run value when omitted, defaults30 for legacy/new runs; `--train-only` stops after training. Extract `build_parser()` and `main(argv=None)` so the real CLI boundary can be tested without GPU training.
+
+- [ ] Write tests using small memory-mapped temporary fold data or narrow dataset stubs: train/validation dataset targets receive the specified working cutoff, NP/TP unchanged, x2 is not automatically scaled. Test CLI train-only with a stubbed expensive trainer and forbidden test dataset/model boundaries.
+- [ ] Add resume tests: existing config cutoff8 is inherited; explicit30 cannot silently resume it; legacy missing field means30; mismatch leaves original config bytes unchanged. Scientific config keys are fixed; only out_dir/workers/val_every may differ.
+- [ ] Run the new tests; expected RED.
+- [ ] Thread the field into `train_ds` and `val_dl`; validate before run-directory/config writes. Compare normalized JSON scientific settings before replacing config. Refactor CLI minimally, guard test inference behind train-only, reject incompatible skip-train/train-only flags.
+- [ ] Run new tests and full suite. CUDA-dependent tests require a usable device; CPU-only run must explicitly report skips, not a full CUDA pass.
+
+## Task 3: Review, commit and launch
+
+**Files:** update `README.md`, `docs/RESEARCH_PLAN.md`, `docs/README.md`, this plan and the research proposal; runtime machine notes/launchers remain `ops/` only.
+
+- [ ] Preserve previous evidence-review changes in the user-requested commit; mark HV controls approved/implemented without claiming training results.
+- [ ] Independently review the complete diff for default parity, provenance, validation-only execution and resume safety; fix substantive findings with reproducing tests.
+- [ ] Run `git diff --check`, full pytest and CLI help/invalid-input smoke tests; expected clean diff and accurately reported test results.
+- [ ] Commit the exact portable file allowlist with `Co-Authored-By: Claude Code <noreply@anthropic.com>`.
+- [ ] Check storage/free GPU capacity using local runbooks; stage code via an existing safe sync or explicit allowlist, excluding all credentials. Launch sequential resumable queues without killing existing jobs, preserving batch16. Do not reduce batch to squeeze into busy devices; wait for suitable capacity.
+- [ ] Verify a running training process, saved config and epoch/log progress. A queue alone is reported as queued, not training. Record commit, arm, seed, hardware/batch and process IDs in ignored operational records. No new test-fold evaluation.
