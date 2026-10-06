@@ -56,6 +56,8 @@ Worker verification initially stopped during collection because optional MONAI w
 
 The checklist below records implementation/launch completion, **not completion of the eight experiments**. Scientific recipe and contrasts were fixed before launch.
 
+**Scheduling update (user-requested parallelism,2026-10-06):** pending runs were assigned to two additional available A10080GB devices. Already-running training processes continued without restart; only their queued follow-up scheduling was replaced to prevent duplicate runs. Source commit, seeds, batch16,130epochs, target cutoffs and validation protocol did not change. Some within-seed comparisons therefore run on different physical devices of the same model; shared-device wall times are not controlled throughput benchmarks. Machine-specific dispatch records remain outside Git.
+
 ### Completion analysis and publication (authorized, pending experiments)
 
 On2026-10-06 the user requested follow-through to final analysis, documentation, local master integration and GitHub publication. The analysis program is `scripts/hv_control_numbers.py`; its fixed analysis settings are2000 tissue-stratified paired-image bootstrap draws, RNG seed20261006, the same image resampling across both trained seeds and all four predefined contrasts. These are conditional image-sampling intervals, not independent-patient or training-seed significance guarantees. Strict and pooled endpoints have no persisted per-image arrays and remain evaluator-summary point estimates.
