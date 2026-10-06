@@ -19,7 +19,7 @@
 - No edits to ignored `third_party` sources; preserve the upstream MIT notice with locally adapted code.
 - Keep dependency pins unchanged. Run `python -m pytest -q` after this HoVer-Net plumbing change.
 - New reusable code is in `src/` or `scripts/`; machine launchers and resource records remain ignored under `ops/`.
-- Work on `research/hv-target-threshold-controls`, not master. Commit portable code/tests/docs only; no push requested.
+- Work on `research/hv-target-threshold-controls`, not master. Commit portable code/tests/docs only. Initial implementation did not authorize a push; on2026-10-06 the user subsequently authorized merging into master and pushing to GitHub **after experiment completion and analysis**.
 
 ## Review Focus
 
@@ -55,6 +55,19 @@ Worker verification initially stopped during collection because optional MONAI w
 **Launch verified on2026-10-06:** both queues use an immutable snapshot of `c6e7e92`. The first active runs are `x1_hv30_seed19` and `x2_hv120_seed1`; at the startup check, they had completed3 and1 epochs respectively, with finite losses and saved configs matching the frozen recipe. Six other runs remain queued. All training and subsequent inference/evaluation use fold1/fold2 only; no new fold3 predictions or performance claims. Machine paths, queue PIDs and operational commands are retained only in ignored local records.
 
 The checklist below records implementation/launch completion, **not completion of the eight experiments**. Scientific recipe and contrasts were fixed before launch.
+
+### Completion analysis and publication (authorized, pending experiments)
+
+On2026-10-06 the user requested follow-through to final analysis, documentation, local master integration and GitHub publication. The analysis program is `scripts/hv_control_numbers.py`; its fixed analysis settings are2000 tissue-stratified paired-image bootstrap draws, RNG seed20261006, the same image resampling across both trained seeds and all four predefined contrasts. These are conditional image-sampling intervals, not independent-patient or training-seed significance guarantees. Strict and pooled endpoints have no persisted per-image arrays and remain evaluator-summary point estimates.
+
+The collector refuses missing runs/checkpoints/evaluations, changed source/configuration, incomplete epoch logs and any fold3 artifact. It verifies image/class/area/tissue row alignment before attaching native-scale boundary flags, rather than truncating mismatched GT records. It records input hashes, checkpoint file sizes and duplicate epoch records. Report all eight runs and both within-scale and matched-support scale contrasts. GT views cover internal/border Dead and native area<30,30–59,>=60; these are mechanism diagnostics, not a new filter menu.
+
+**Inference-provenance audit, fixed before reading results:** review identified that training provenance and internally consistent summaries alone do not certify checkpoint/TTA/decode settings. After training, `scripts/hv_inference_audit.py` explicitly reruns the unchanged prediction/evaluation CLIs on fold2, final.pth, no TTA, decode-u=upscale, marker-u1, batch8. It hashes the checkpoint before/after, records executed commands and source/prediction/evaluation hashes, and writes `audit_val_fold2` only after success. Original queue predictions/evaluations remain untouched. The collector checks these recorded settings and hashes; all arms use the audited rerun as the primary analysis, and audit−original differences are reported rather than selecting the higher score. This adds validation inference, not another training recipe or test-fold evaluation.
+
+- [ ] All eight final checkpoints and validation evaluations complete and verified.
+- [ ] Produce audited result tables and mechanism interpretation, including negative findings and limitations.
+- [ ] Update research documents, verify tests, commit analysis/results.
+- [ ] Merge the feature branch into local master and push the reviewed project content while preserving existing remote presentation content; no force-push or credential upload.
 
 ## Task 1: Parameterized HV generation, default parity (complete)
 
