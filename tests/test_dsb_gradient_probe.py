@@ -53,9 +53,11 @@ def test_group_pixel_loss_masking():
 
 def test_verdict_rule():
     m = _load()
-    assert m.gate_b_verdict({"decoder": {"conflict_fraction": 0.31}}) == "proceed"
-    assert m.gate_b_verdict({"decoder": {"conflict_fraction": 0.30}}) == "proceed"
-    assert m.gate_b_verdict({"decoder": {"conflict_fraction": 0.29}}) == "fail"
+    assert m.gate_b_verdict({"decoder": {"conflict_fraction": 0.31}, "n_active": 64}) == "proceed"
+    assert m.gate_b_verdict({"decoder": {"conflict_fraction": 0.30}, "n_active": 64}) == "proceed"
+    assert m.gate_b_verdict({"decoder": {"conflict_fraction": 0.29}, "n_active": 64}) == "fail"
+    # v1-schema inputs recorded no activity: validity cannot be certified -> void, never fail
+    assert m.gate_b_verdict({"decoder": {"conflict_fraction": 0.31}}) == "void"
 
 
 def test_list_cosine_matches_concat():
@@ -125,3 +127,39 @@ def test_verdict_rule_both_clauses_and_void():
                              "per_layer": {"any_significant": True}}) == "proceed"
     # too few informative batches -> VOID, not fail (the 00:58 run's failure mode)
     assert m.gate_b_verdict({"decoder": {"conflict_fraction": 0.5}, "n_active": 8}) == "void"
+
+
+def test_verdict_ignores_none_per_layer():
+    m = _load()
+    # per_layer=None (result-template state) must not crash; the fraction clause decides
+    assert m.gate_b_verdict({"decoder": {"conflict_fraction": 0.31}, "n_active": 64,
+                             "per_layer": None}) == "proceed"
+    assert m.gate_b_verdict({"decoder": {"conflict_fraction": 0.29}, "n_active": 64,
+                             "per_layer": None}) == "fail"
+
+
+def test_dead_positive_indices_column():
+    import numpy as np
+
+    class FakeDS:
+        # column 3 (DEAD_TYPE-1) is the Dead column: only images 1 and 3 are Dead-positive
+        def class_presence(self):
+            return np.array([[1, 0, 0, 0, 0], [0, 0, 0, 1, 0],
+                             [0, 1, 0, 0, 0], [1, 1, 1, 1, 1], [0, 0, 0, 0, 1]])
+    m = _load()
+    assert list(m.dead_positive_indices(FakeDS())) == [1, 3]
+
+
+def test_batch_group_activity():
+    import torch
+    m = _load()
+    tp = torch.zeros(1, 4, 4, dtype=torch.long)
+    np_ = torch.zeros(1, 4, 4, dtype=torch.long)
+    assert m.batch_group_activity(tp, np_) == (False, False)      # background only
+    tp[0, 0, 0] = 4
+    assert m.batch_group_activity(tp, np_) == (True, False)       # Dead only, no foreground mask
+    np_[0, 1, 1] = 1
+    tp[0, 1, 1] = 2
+    assert m.batch_group_activity(tp, np_) == (True, True)        # both groups active
+    tp[tp == 4] = 0
+    assert m.batch_group_activity(tp, np_) == (False, True)       # common only

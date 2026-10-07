@@ -18,8 +18,9 @@ rerun): the first run was VOID — sequential first-256 sampling hit only Breast
 Dead-positive batch, capping the fraction at 1/64 before any gradient geometry was measured.
 Batches are now Dead-stratified (seeded shuffled passes over the fold's Dead-positive images
 only), cosines/fractions use L_dead-active batches as the denominator (n_active recorded; the
-run is VOID if n_active < 16), and the per-layer clause is implemented as one-sided one-sample
-t-tests (mean cosine < 0) per module group with Holm correction across the six groups.
+run is VOID if n_active < 16, or if activity was never recorded — v1-schema inputs), and the
+per-layer clause is implemented as one-sided one-sample t-tests (mean cosine < 0) per module
+group with Holm correction across the six groups.
 """
 import argparse
 import json
@@ -122,13 +123,28 @@ def group_pixel_loss(np_logits, tp_logits, hv, np_map, tp_map, hv_map, group: st
 
 def gate_b_verdict(result: dict) -> str:
     n_active = result.get("n_active")
-    if n_active is not None and n_active < MIN_ACTIVE:
+    if n_active is None:
+        return "void"  # v1 schema recorded no activity — validity cannot be certified
+    if n_active < MIN_ACTIVE:
         return "void"  # too few informative batches to measure the pre-registered statistic
     if result["decoder"]["conflict_fraction"] >= THRESHOLD:
         return "proceed"
-    if result.get("per_layer", {}).get("any_significant"):
+    if (result.get("per_layer") or {}).get("any_significant"):
         return "proceed"
     return "fail"
+
+
+def dead_positive_indices(ds):
+    """Indices of images containing at least one Dead GT nucleus (class_presence column
+    DEAD_TYPE-1; unit-pinned so a wrong-column regression fails loudly instead of silently
+    sampling another class's positives)."""
+    return np.where(ds.class_presence()[:, DEAD_TYPE - 1])[0]
+
+
+def batch_group_activity(tp_map, np_map) -> tuple[bool, bool]:
+    """(L_dead active, L_common active) for one collated batch."""
+    return (bool((tp_map == DEAD_TYPE).any()),
+            bool(((np_map > 0) & (tp_map != DEAD_TYPE)).any()))
 
 
 def _params(model, group: str):
@@ -161,7 +177,7 @@ def main(argv=None):
     model.eval()  # deterministic forward (no dropout/stochastic depth); grads still flow
     ds = PanNukeCellViT([a.fold], train=False, small_area=cfg.small_area,
                         upscale=cfg.upscale, hv_min_size=cfg.hv_min_size)
-    dead_idx = np.where(ds.class_presence()[:, DEAD_TYPE - 1])[0]
+    dead_idx = dead_positive_indices(ds)
     sampled = dead_stratified_batches(dead_idx, a.batches, a.batch, a.sample_seed)
     cos: dict[str, list[float]] = {g: [] for g in GROUPS}
     active_flags: list[bool] = []
@@ -170,13 +186,12 @@ def main(argv=None):
     for ids in sampled:
         batch = torch.utils.data.default_collate([ds[i] for i in ids])
         batch = {k: (v.to(a.device) if torch.is_tensor(v) else v) for k, v in batch.items()}
-        sel_dead = batch["tp_map"] == DEAD_TYPE
-        sel_common = (batch["np_map"] > 0) & (batch["tp_map"] != DEAD_TYPE)
-        active_flags.append(bool(sel_dead.any()))
-        if sel_common.any():
-            n_common_active += 1
-        if not sel_dead.any():
+        dead_active, common_active = batch_group_activity(batch["tp_map"], batch["np_map"])
+        active_flags.append(dead_active)
+        if not dead_active:
             continue  # L_dead structurally zero: excluded from every denominator (amendment (b))
+        if common_active:
+            n_common_active += 1  # counted only for batches whose gradients were computed
         pred = to_nhwc(model(batch["img"]))
         losses = {g: group_pixel_loss(pred["np"], pred["tp"], pred["hv"], batch["np_map"],
                                       batch["tp_map"], batch["hv_map"], g)
