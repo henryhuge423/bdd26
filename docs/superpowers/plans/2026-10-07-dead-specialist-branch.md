@@ -304,7 +304,7 @@ def test_undo_dihedral_remaps_all_hv_keys():
 - `predict_fold(..., dead_expert: bool = False)` returns dead maps as a **final extra element** `(N, H, W) int32` when requested (same optional-tail pattern as `inst_probs`); per-patch decode builds `m_dead = concat([zeros(H,W,1), P(np_dead fg), hv_dead], -1)` → existing `_post` → `dead_inst`, with the fake all-zero tp channel giving type-0 instances (kept by `_post`; we force type later at merge). Prediction artifacts use a separate tag: `pred_fold{k}[_x2][_du..]_dead.npz` with keys `dead_inst`.
 - `_forward_probs`/`_tta_forward` pass `"np_dead"` (softmaxed) and `"hv_dead"` (raw) through when present.
 
-- [ ] **Step 1: Failing tests** (stub patterns copied from `tests/test_hv_training.py`)
+- [x] **Step 1: Failing tests** (stub patterns copied from `tests/test_hv_training.py`)
 
 ```python
 def test_cli_config_and_resume_freeze(tmp_path, stub_trainer):
@@ -333,7 +333,7 @@ def test_dead_tag_never_overwrites_base(run_artifact_dir):
     assert (run_artifact_dir / "pred_fold2.npz").read_bytes() == before
     assert (run_artifact_dir / "pred_fold2_dead.npz").exists()
 ```
-- [ ] **Step 2: RED** → **Step 3: Implement** → **Step 4: GREEN + full suite** → **Step 5: Commit** `feat: dead-expert CLI, resume guard and fold-2 dead prediction artifacts`
+- [x] **Step 2: RED** → **Step 3: Implement** → **Step 4: GREEN + full suite** → **Step 5: Commit** `feat: dead-expert CLI, resume guard and fold-2 dead prediction artifacts`
 
 ### Task 6: Gate v0 — candidate merge + frozen dev evaluation
 
@@ -345,7 +345,7 @@ def test_dead_tag_never_overwrites_base(run_artifact_dir):
 - `merge_dead(base, base_type, dead_inst, min_area: int) -> tuple[np.ndarray, np.ndarray, list[int]]` — adds whole, **fully disjoint** candidate objects (zero base overlap, same rule as `scale_fusion.fuse`) with `area >= min_area`, typed `DEAD_TYPE=4`, renumbered above `base.max()`; base pixels byte-identical.
 - `scripts/dsb_dev_eval.py --run <dir> --fold 2`: reads `pred_fold2.npz` + `pred_fold2_dead.npz`, applies menu `[(identity), (a30), (a60)]` → `min_area ∈ {0, 30, 60}` (0 = identity), evaluates each via `pannuke_eval.evaluate`, writes `dsb_dev_eval/menu.json` with all rows + the frozen selection via `select_menu(rows) -> str` (importable from the script for tests): **argmax ΔDead_PQ subject to ΔbPQ ≥ −0.001, tie → smaller min_area; if none qualifies → identity**.
 
-- [ ] **Step 1: Failing tests**
+- [x] **Step 1: Failing tests**
 
 ```python
 def _maps():
@@ -376,7 +376,7 @@ def test_selection_rule_frozen():
     rows[1]["d_dead"] = -0.001
     assert select_menu(rows) == "identity"  # nothing qualifies -> identity fallback
 ```
-- [ ] **Step 2: RED** → **Step 3: Implement** (`merge_dead` reuses `scale_fusion.candidate_info` + `existence.candidate_geometry`; no GT in `dead_merge.py` itself) → **Step 4: GREEN + full suite (decode/metrics-adjacent)** → **Step 5: Commit** `feat: EF-style dead-candidate merge and frozen dev-fold selection`
+- [x] **Step 2: RED** → **Step 3: Implement** (`merge_dead` reuses `scale_fusion.candidate_info` + `existence.candidate_geometry`; no GT in `dead_merge.py` itself) → **Step 4: GREEN + full suite (decode/metrics-adjacent)** → **Step 5: Commit** `feat: EF-style dead-candidate merge and frozen dev-fold selection`
 
 ### Task 7: Sanity montage builder (CPU, used by Task 13's sonnet review)
 
