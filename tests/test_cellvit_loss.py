@@ -1,4 +1,4 @@
-"""Targeted foreground loss (TrainConfig.np_wce) and the small-nucleus map."""
+"""Targeted foreground loss (TrainConfig.np_wce), the small-nucleus map and the masked dead loss."""
 
 import numpy as np
 import pytest
@@ -48,3 +48,58 @@ def test_default_config_is_recipe_and_wce_matches_manual():
     assert abs(t["np_wce"] - float((ce * w).mean())) < 1e-6
     assert torch.isclose(loss, base + (ce * w).mean())
     assert float(w[0, 3, 3]) == 13.0 and float(w[0, 20, 20]) == 1.0 and float(w[0, 0, 31]) == 1.0
+
+
+# ---------------------------------------------------------------- dead-expert loss
+# The official msge_loss builds its Sobel kernels on CUDA, so the masked-dead tests run the
+# loss with a CPU stand-in for it (the dead logic under test never touches msge internals;
+# the real operator is covered by the CUDA test above and by GPU smoke runs).
+
+H = W = 8
+
+
+def _dead_pred():
+    r = lambda *s: torch.randn(1, *s, requires_grad=True)
+    return {"np": r(H, W, 2), "hv": r(H, W, 2), "tp": r(H, W, 6),
+            "tissue": torch.randn(1, 19, requires_grad=True),
+            "np_dead": r(H, W, 2), "hv_dead": r(H, W, 2)}
+
+
+def _dead_batch(positive=True):
+    tp = torch.zeros(1, H, W, dtype=torch.long)
+    if positive:
+        tp[0, 2:5, 2:5] = DEAD  # Dead nucleus
+    return {"np_map": (tp > 0).long(), "tp_map": tp, "hv_map": torch.zeros(1, H, W, 2),
+            "small_map": torch.zeros(1, H, W, dtype=torch.bool), "tissue": torch.zeros(1, dtype=torch.long),
+            "dead_np_map": (tp == DEAD).long(), "dead_hv_map": torch.zeros(1, H, W, 2),
+            "dead_pos": torch.tensor(positive)}
+
+
+@pytest.fixture
+def cpu_msge(monkeypatch):
+    from nucseg.cellvit import engine
+    monkeypatch.setattr(engine, "msge_loss",
+                        lambda true, pred, mask: (true - pred).abs().mean() * mask.sum())
+
+
+def test_dead_terms_zero_but_attached_on_negative_batch(cpu_msge):
+    cfg = TrainConfig(split=1, out_dir="x", dead_expert=True)
+    loss, terms = cellvit_loss(_dead_pred(), _dead_batch(positive=False), cfg)
+    for k in ("dead_np_ft", "dead_np_dice", "dead_hv_mse", "dead_hv_msge"):
+        assert terms[k] == 0.0
+    loss.backward()  # must not raise "does not require grad"
+
+
+def test_dead_terms_positive_and_neg_bce(cpu_msge):
+    cfg = TrainConfig(split=1, out_dir="x", dead_expert=True, dead_neg_w=0.1)
+    _, terms = cellvit_loss(_dead_pred(), _dead_batch(positive=True), cfg)
+    assert terms["dead_np_ft"] > 0 and terms["dead_hv_mse"] >= 0
+    assert "dead_neg_bce" not in terms  # positive image: no negative-BCE term
+    _, terms = cellvit_loss(_dead_pred(), _dead_batch(positive=False), cfg)
+    assert terms["dead_neg_bce"] > 0  # negative images push dead-fg logits down
+    assert terms["dead_np_ft"] == 0.0
+
+
+def test_default_cfg_no_dead_terms(cpu_msge):
+    loss, terms = cellvit_loss(_dead_pred(), _dead_batch(), TrainConfig(split=1, out_dir="x"))
+    assert not any(k.startswith("dead_") for k in terms)

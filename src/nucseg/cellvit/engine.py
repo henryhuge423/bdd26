@@ -71,6 +71,12 @@ class TrainConfig:
     upscale: int = 1
     # Minimum instance area for nonzero HV targets, in WORKING pixels; never auto-scaled.
     hv_min_size: int = 30
+    # dead-specialist branch (spec 2026-10-07): dead_expert adds the branch and its masked loss
+    # (positive images only; dead_neg_w>0 adds a background BCE on Dead-free images, frozen menu
+    # {0.0, 0.1}); widen is the C1 equal-parameter control folded into the NP/HV branches.
+    dead_expert: bool = False
+    dead_neg_w: float = 0.0
+    widen: int = 0
 
     def __post_init__(self):
         self.hv_min_size = validate_hv_min_size(self.hv_min_size)
@@ -141,6 +147,26 @@ def cellvit_loss(pred: dict, batch: dict, cfg: TrainConfig | None = None) -> tup
     if cfg is not None and cfg.np_wce:
         ce = F.cross_entropy(pred["np"].permute(0, 3, 1, 2), batch["np_map"], reduction="none")
         terms["np_wce"] = cfg.np_wce * (ce * np_pixel_weights(batch, cfg)).mean()
+    if cfg is not None and cfg.dead_expert and "np_dead" in pred:
+        # positive-image masking (spec §5): the expert learns only from images that actually
+        # contain Dead pixels after augmentation; 0.0*sum keeps the graph alive otherwise
+        pos = batch["dead_pos"].bool()
+        zero = 0.0 * pred["np_dead"].sum()
+        if pos.any():
+            t_dnp = F.one_hot(batch["dead_np_map"][pos], 2).float()
+            p_dnp = F.softmax(pred["np_dead"][pos], -1)
+            terms["dead_np_ft"] = focal_tversky(p_dnp, t_dnp)
+            terms["dead_np_dice"] = dice_loss(t_dnp, p_dnp)
+            terms["dead_hv_mse"] = 2.5 * mse_loss(batch["dead_hv_map"][pos], pred["hv_dead"][pos])
+            terms["dead_hv_msge"] = 8.0 * msge_loss(batch["dead_hv_map"][pos], pred["hv_dead"][pos],
+                                                    t_dnp[..., 1])
+        else:
+            for k in ("dead_np_ft", "dead_np_dice", "dead_hv_mse", "dead_hv_msge"):
+                terms[k] = zero
+        if cfg.dead_neg_w and (~pos).any():
+            neg_logits = pred["np_dead"][~pos][..., 1]
+            terms["dead_neg_bce"] = cfg.dead_neg_w * F.binary_cross_entropy_with_logits(
+                neg_logits, torch.zeros_like(neg_logits))
     return sum(terms.values()), {k: float(v) for k, v in terms.items()}
 
 
@@ -155,7 +181,9 @@ def _save(path: Path, **state):
 
 
 def build_model(cfg: TrainConfig | None = None, pretrained: bool = True) -> CellViTUNI:
-    return CellViTUNI(uni_ckpt=cfg.uni_ckpt if (cfg and pretrained) else None)
+    return CellViTUNI(uni_ckpt=cfg.uni_ckpt if (cfg and pretrained) else None,
+                      dead_expert=bool(cfg.dead_expert) if cfg else False,
+                      widen=cfg.widen if cfg else 0)
 
 
 def train(cfg: TrainConfig, train_folds: list[int], val_folds: list[int], device="cuda", model=None):
@@ -188,13 +216,15 @@ def train(cfg: TrainConfig, train_folds: list[int], val_folds: list[int], device
                          area=tuple(cfg.cp_area), clearance=cfg.cp_clearance) if cfg.cp_prob else None
     train_ds = PanNukeCellViT(train_folds, train=True, small_area=cfg.small_area, copy_paste=cp,
                               synth=Path(cfg.synth) if cfg.synth else None,
-                              synth_frac=cfg.synth_frac, upscale=cfg.upscale, hv_min_size=cfg.hv_min_size)
+                              synth_frac=cfg.synth_frac, upscale=cfg.upscale, hv_min_size=cfg.hv_min_size,
+                              dead_targets=cfg.dead_expert)
     sampler = WeightedRandomSampler(cell_tissue_weights(train_ds, cfg.sampling_gamma), len(train_ds),
                                     replacement=True, generator=torch.Generator().manual_seed(cfg.seed))
     train_dl = DataLoader(train_ds, batch_size=cfg.batch_size, sampler=sampler, drop_last=True,
                           num_workers=cfg.workers, pin_memory=True, persistent_workers=True)
     val_dl = DataLoader(PanNukeCellViT(val_folds, train=False, small_area=cfg.small_area,
-                                       upscale=cfg.upscale, hv_min_size=cfg.hv_min_size),
+                                       upscale=cfg.upscale, hv_min_size=cfg.hv_min_size,
+                                       dead_targets=cfg.dead_expert),
                         batch_size=32, num_workers=cfg.workers)
 
     for ep in range(ep0, cfg.epochs):
