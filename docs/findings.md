@@ -1354,3 +1354,63 @@ CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
   --round runs/analysis/matched_seed_20261004 \
   --out runs/analysis/existence_audit_20261005_v2 --workers 4
 ```
+
+## 2026-10-07 — E2a HV-threshold controls complete: the support cutoff matters only at x2; scale keeps most of the Dead gain and all of the bPQ tax
+
+Round `runs/hv_threshold_controls_20261006/` (design and contrasts frozen before launch in
+[the plan](superpowers/plans/2026-10-06-hv-threshold-controls.md); full tables, diagnostics and
+limitations: [HV controls results](HV_CONTROLS_RESULTS_2026-10-07.md)). Split1, train fold1 /
+validation fold2 only; no fold3 inference at any point.
+
+- **8/8 runs complete** (x1_hv30 / x1_hv8 / x2_hv30 / x2_hv120 × seeds 19, 1; 130 epochs each,
+  no duplicate epoch records, source frozen at `c6e7e92`). Every run has a hash-bound audit
+  re-inference (final checkpoint, no TTA, `decode-u=upscale`, `marker-u1`, batch8); the
+  audit−original difference is exactly 0 on all 8×6 endpoint cells, so nothing was cherry-picked
+  between the two evaluations. Total training-loop time in the logs: 41.76 h on shared A100s —
+  not a controlled throughput benchmark.
+- **Arm means** (2-seed, validation fold2; PQ units):
+
+  | arm | mPQ | bPQ | Dead PQ | strict Dead PQ |
+  |---|---:|---:|---:|---:|
+  | x1_hv30 | .482109 | .651972 | .162139 | .126295 |
+  | x1_hv8 | .480794 | .650671 | .163580 | .130169 |
+  | x2_hv30 | .481307 | .644702 | .177168 | .123403 |
+  | x2_hv120 | .479802 | .644481 | .167352 | .118987 |
+
+- **Pre-registered contrasts** (mean; brackets = conditional tissue-stratified paired-image
+  bootstrap 95% CI, 2000 draws, seed 20261006 — image sampling only, not seed/patient
+  significance):
+
+  | contrast | ΔDead PQ | ΔbPQ |
+  |---|---:|---:|
+  | x1_hv8 − x1_hv30 | +.001441 [−.010275,+.013596] | −.001301 [−.002950,+.000392] |
+  | x2_hv30 − x2_hv120 | +.009817 [−.001653,+.023967] | +.000221 [−.001108,+.001681] |
+  | x2_hv120 − x1_hv30 | +.005212 [−.012984,+.026086] | −.007492 [−.010332,−.004394] |
+  | x2_hv30 − x1_hv8 | +.013588 [−.010212,+.042515] | −.005969 [−.008959,−.002893] |
+
+- **Verdicts.**
+  1. *Lowering the cutoff at x1 is not a usable substitute for x2*: ΔDead flips sign across
+     seeds (−.001378/+.004260) and bPQ drops in both seeds.
+  2. *The cutoff has a real effect at x2*: hv30 beats hv120 on official Dead PQ in both seeds
+     (+.010830/+.008803), but the CI crosses zero and strict Dead is mixed — a candidate
+     signal, not a robust improvement claim.
+  3. *Matched-native-support scale contrasts keep the bPQ tax*: both x2−x1 contrasts have
+     bPQ CIs entirely below zero and both seeds negative; official Dead stays positive on
+     average while **strict Dead is negative in all four x2−x1 seed pairs**. Official and
+     strict endpoints must be reported together.
+  4. *Object level*: interior-Dead matched rate rises 61.3%→71.0% (border 40.2%→49.0%) with
+     scale at matched support, while lowering the cutoff at x2 moves the interior matched
+     count from 526 to 526.5 — the +.0098 support effect on Dead PQ is **not** explained by
+     recovering many more interior objects (mask/FP structure instead, not decomposed here).
+- **DSB Gate A arithmetic (pre-frozen rule):** ΔDead(x1_hv8−x1_hv30) = +.00144 is **9.59%**
+  of ΔDead(x2_hv30−x1_hv30) = +.01503 — below the 50% switch line and the 90%
+  full-explanation demotion line. **DSB/C0/C1 base stays x1_hv30; the architecture line is
+  not demoted.** This is point-estimates plugged into the pre-registered rule, not a causal
+  mediation estimate, and Gates B/C/D remain open.
+- **Decisions:** default `hv_min_size=30` unchanged; x2_hv30 kept as a frozen mechanism
+  reference; only the HV branch is published in this round — the in-development DSB branch
+  is not merged and no DSB GPU work is started.
+- **Verification:** collector re-run on the frozen analysis source (`39110dd`) reproduced
+  `verified_numbers.json` byte-identically; an independent re-derivation of all 4 arm means
+  and 4 contrast means from the audit `summary.json` files matches bit-exactly; HV-branch CPU
+  suite **210 passed / 3 CUDA-dependent skipped**.

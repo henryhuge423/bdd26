@@ -66,10 +66,14 @@ The collector refuses missing runs/checkpoints/evaluations, changed source/confi
 
 **Inference-provenance audit, fixed before reading results:** review identified that training provenance and internally consistent summaries alone do not certify checkpoint/TTA/decode settings. After training, `scripts/hv_inference_audit.py` explicitly reruns the unchanged prediction/evaluation CLIs on fold2, final.pth, no TTA, decode-u=upscale, marker-u1, batch8. It hashes the checkpoint before/after, records executed commands and source/prediction/evaluation hashes, and writes `audit_val_fold2` only after success. Original queue predictions/evaluations remain untouched. The collector checks these recorded settings and hashes; all arms use the audited rerun as the primary analysis, and audit−original differences are reported rather than selecting the higher score. This adds validation inference, not another training recipe or test-fold evaluation.
 
-- [ ] All eight final checkpoints and validation evaluations complete and verified.
-- [ ] Produce audited result tables and mechanism interpretation, including negative findings and limitations.
-- [ ] Update research documents, verify tests, commit analysis/results.
-- [ ] Merge the feature branch into local master and push the reviewed project content while preserving existing remote presentation content; no force-push or credential upload.
+- [x] All eight final checkpoints and validation evaluations complete and verified.
+- [x] Produce audited result tables and mechanism interpretation, including negative findings and limitations.
+- [x] Update research documents, verify tests, commit analysis/results.
+- [x] Merge the feature branch into local master and push the reviewed project content while preserving existing remote presentation content; no force-push or credential upload.
+
+### Completion record (2026-10-07)
+
+All eight runs finished 130 epochs with unique, non-duplicate epoch records; each has `final.pth`/`last.pth` (verified by size/hash through the collector), the original `eval_val_fold2`, and a successful hash-bound `audit_val_fold2` re-inference. The collector re-run on the frozen analysis source (`39110dd`) reproduced `runs/analysis/hv_threshold_controls_20261006/verified_numbers.json` byte-identically; audit−original endpoint differences are exactly zero on all 48 cells; no fold3 artifact exists in any run directory. Results, mechanism interpretation, negative findings and limitations are recorded in [docs/HV_CONTROLS_RESULTS_2026-10-07.md](../../HV_CONTROLS_RESULTS_2026-10-07.md), with a portable snapshot at `docs/results/hv_threshold_controls_20261007_verified.json`, a findings.md entry dated 2026-10-07, and status updates in `docs/RESEARCH_PLAN.md` and `README.md`. The HV-branch CPU suite passed 210/210 applicable tests (3 CUDA-dependent skips) in a fresh checkout. Key verdicts: the HV support cutoff has a seed-consistent effect only at x2 (official Dead +.0098, CI crossing zero); matched-support x2−x1 contrasts keep the bPQ tax (CI below zero) and show strict Dead negative in all four seed pairs; DSB Gate A arithmetic (9.59% reproduction) keeps the DSB base at x1_hv30 without demoting the architecture line. Items 1–3 are completed by this commit; item 4 (local-master merge and GitHub push) executes immediately after it under the 2026-10-06 authorization — the pushed master history is its record. The in-development dead-specialist branch is intentionally not merged and no DSB GPU stage is started.
 
 ## Task 1: Parameterized HV generation, default parity (complete)
 

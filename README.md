@@ -29,6 +29,22 @@ is approved: four arms × two seeds, split1 training/validation only. `--hv-min-
 controls working-pixel target support; `--train-only` prevents automatic test inference.
 Broader architecture proposals remain unapproved, and no new performance result is claimed.
 
+## HV threshold controls complete (2026-10-07)
+
+**The E2a HV target-threshold controls are complete** — 8/8 runs (x1/x2 × working cutoffs
+30/8/120, seeds 19/1, split1, validation fold2 only), each with a hash-bound audit re-inference
+whose endpoint differences from the original evaluation are exactly zero. Full tables,
+diagnostics and limitations: [results document](docs/HV_CONTROLS_RESULTS_2026-10-07.md);
+headline (2-seed means): lowering the cutoff at x1 does nothing stable; at x2 it raises
+official Dead PQ in both seeds (+.0098, bootstrap CI crossing zero); at matched native support
+x2 keeps the bPQ tax (CI below zero) and most of the Dead gain, while **strict Dead drops in
+all four x2−x1 seed pairs**. Interior-Dead matched rate rises 61.3%→71.0% through scale, not
+through the cutoff. Consequences: default `hv_min_size=30` stays; the pre-frozen DSB Gate A
+arithmetic (x1 cutoff change reproduces 9.59% of the x2 Dead gain — below both the 50% and 90%
+lines) keeps the planned dead-specialist experiments on an `x1_hv30` base without demoting the
+line. The dead-specialist branch remains in development: not merged here, no GPU stages
+started. Test folds were not read this round.
+
 ## Status (2026-10-05)
 
 **The matched-seed and existence-filtered P2 rounds are complete.** The missing
