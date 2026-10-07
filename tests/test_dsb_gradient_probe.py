@@ -64,3 +64,64 @@ def test_list_cosine_matches_concat():
     gb = [torch.tensor([1.0, 0.0]), torch.tensor([-1.0])]
     assert abs(m.list_cosine(ga, gb) - float(m.grad_cosine(torch.cat(ga), torch.cat(gb)))) < 1e-9
     assert abs(m.list_cosine(ga, ga) - 1.0) < 1e-9
+
+
+# --- amendment (2026-10-08): Dead-stratified sampling + active-batch denominator + per-layer clause
+
+def test_dead_stratified_batches():
+    import numpy as np
+    m = _load()
+    dead = list(range(10))
+    b1 = m.dead_stratified_batches(dead, n_batches=6, batch=4, seed=1)
+    b2 = m.dead_stratified_batches(dead, n_batches=6, batch=4, seed=1)
+    assert b1 == b2                                          # deterministic under the fixed seed
+    assert len(b1) == 6 and all(len(b) == 4 for b in b1)     # exact batch size (circular stream)
+    assert all(set(b) <= set(dead) for b in b1)              # only Dead-positive images
+    # the first permutation covers every Dead-positive image within ceil(10/4) batches
+    seen = set()
+    for b in b1[:3]:
+        seen |= set(b)
+    assert seen == set(dead)
+    assert m.dead_stratified_batches([], n_batches=4, batch=4, seed=0) == []
+
+
+def test_active_conflict_fraction():
+    m = _load()
+    cos = [0.2, -0.1, 0.0, -0.3]
+    active = [True, True, True, False]
+    frac, n_active = m.active_conflict_fraction(cos, active)
+    assert n_active == 3                                     # inactive batch leaves the denominator
+    assert abs(frac - 1 / 3) < 1e-12                         # the inactive -0.3 does not count
+    assert m.active_conflict_fraction([0.1, 0.2], [False, False]) == (0.0, 0)
+
+
+def test_per_layer_significance():
+    import numpy as np
+    m = _load()
+    rng = np.random.default_rng(0)
+    pos = {g: list(rng.normal(0.05, 0.01, 64)) for g in m.GROUPS}
+    res = m.per_layer_significance(pos)
+    assert not res["any_significant"]
+    neg = {g: list(rng.normal(0.05, 0.01, 64)) for g in m.GROUPS}
+    neg["decoder"] = list(rng.normal(-0.05, 0.01, 64))
+    res2 = m.per_layer_significance(neg)
+    assert res2["any_significant"]
+    assert res2["modules"]["decoder"]["significant"]
+    assert all(r["p_holm"] >= r["p"] - 1e-12 for r in res2["modules"].values())
+    # degenerate input (constant cosines, n<2) is never significant
+    res3 = m.per_layer_significance({g: [0.0] * 64 if g != "encoder" else [0.1]
+                                     for g in m.GROUPS})
+    assert not res3["any_significant"]
+
+
+def test_verdict_rule_both_clauses_and_void():
+    m = _load()
+    assert m.gate_b_verdict({"decoder": {"conflict_fraction": 0.31}, "n_active": 64}) == "proceed"
+    assert m.gate_b_verdict({"decoder": {"conflict_fraction": 0.30}, "n_active": 64}) == "proceed"
+    assert m.gate_b_verdict({"decoder": {"conflict_fraction": 0.29}, "n_active": 64,
+                             "per_layer": {"any_significant": False}}) == "fail"
+    # per-layer clause alone passes the gate (spec §6 B: fraction >= .30 OR per-layer negative)
+    assert m.gate_b_verdict({"decoder": {"conflict_fraction": 0.0}, "n_active": 64,
+                             "per_layer": {"any_significant": True}}) == "proceed"
+    # too few informative batches -> VOID, not fail (the 00:58 run's failure mode)
+    assert m.gate_b_verdict({"decoder": {"conflict_fraction": 0.5}, "n_active": 8}) == "void"

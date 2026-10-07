@@ -10,20 +10,34 @@ form two losses over disjoint pixel groups — L_dead on GT Dead pixels, L_commo
 foreground pixels (background belongs to neither; recorded in the output) — backprop each, and
 take the cosine of the flattened gradients per module group. Conflict fraction = share of
 batches whose composite decoder cosine is negative. Continue condition (frozen, arbitrary but
-pre-registered): conflict fraction >= 0.30 on the decoder composite (skips + np + hv + tp).
+pre-registered): conflict fraction >= 0.30 on the decoder composite (skips + np + hv + tp), OR
+per-layer significantly negative mean cosines (spec §6 B).
+
+Amendment (2026-10-08, pre-registered in runs/analysis/dsb_gates_20261007/README.md before the
+rerun): the first run was VOID — sequential first-256 sampling hit only Breast images with one
+Dead-positive batch, capping the fraction at 1/64 before any gradient geometry was measured.
+Batches are now Dead-stratified (seeded shuffled passes over the fold's Dead-positive images
+only), cosines/fractions use L_dead-active batches as the denominator (n_active recorded; the
+run is VOID if n_active < 16), and the per-layer clause is implemented as one-sided one-sample
+t-tests (mean cosine < 0) per module group with Holm correction across the six groups.
 """
 import argparse
 import json
 from pathlib import Path
 
+import numpy as np
 import torch
 import torch.nn.functional as F
+from scipy import stats as sps
 
 from nucseg.cellvit.data import PanNukeCellViT
 from nucseg.cellvit.engine import TrainConfig, build_model, run_hv_min_size, run_upscale, to_nhwc
 from nucseg.constants import DEAD_TYPE
 
 THRESHOLD = 0.30
+MIN_ACTIVE = 16
+ALPHA = 0.05
+SAMPLE_SEED = 20261008
 GROUPS = ("encoder", "skips", "np_branch", "hv_branch", "tp_branch", "decoder")
 
 
@@ -49,6 +63,51 @@ def conflict_fraction(cosines) -> float:
     return sum(c < 0 for c in vals) / len(vals) if vals else 0.0
 
 
+def active_conflict_fraction(cosines, active) -> tuple[float, int]:
+    """Conflict fraction over L_dead-active batches only (amendment (b)); inactive batches
+    leave the denominator entirely instead of counting as structural non-conflicts."""
+    vals = [float(c) for c, a in zip(cosines, active) if a]
+    return (sum(c < 0 for c in vals) / len(vals) if vals else 0.0), len(vals)
+
+
+def dead_stratified_batches(dead_idx, n_batches: int, batch: int, seed: int) -> list[list[int]]:
+    """Seeded shuffled passes over the Dead-positive indices, cut into fixed-size batches via a
+    circular stream (every batch has exactly `batch` images; each pass covers every Dead-positive
+    image — amendment (a): the VOID run's sequential sampling measured 63/64 zero-Dead batches)."""
+    idx = [int(i) for i in dead_idx]
+    if not idx or n_batches <= 0 or batch <= 0:
+        return []
+    rng = np.random.default_rng(seed)
+    stream: list[int] = []
+    while len(stream) < n_batches * batch:
+        stream.extend(int(j) for j in rng.permutation(idx))
+    return [stream[s:s + batch] for s in range(0, n_batches * batch, batch)]
+
+
+def per_layer_significance(cos_by_group: dict) -> dict:
+    """Spec §6 B alternative clause: 'per-layer significantly negative'. One-sided one-sample
+    t-tests (H1: mean cosine < 0) over per-batch cosines, Holm-Bonferroni across the module
+    groups; significant for any group => clause passes. Caveat (ledger): batches repeat images
+    across passes, so independence is approximate — the fraction clause stays primary."""
+    modules = {}
+    for g, vals in cos_by_group.items():
+        v = np.asarray([float(x) for x in vals], dtype=float)
+        if len(v) < 2 or not np.isfinite(v).all() or np.std(v) == 0.0:
+            modules[g] = {"t": None, "p": 1.0, "p_holm": 1.0, "significant": False, "n": len(v)}
+        else:
+            t, p = sps.ttest_1samp(v, 0.0, alternative="less")
+            modules[g] = {"t": float(t), "p": float(p), "p_holm": None, "significant": None,
+                          "n": len(v)}
+    running = 0.0
+    m = len(modules)
+    for rank, g in enumerate(sorted(modules, key=lambda k: modules[k]["p"])):
+        running = max(running, (m - rank) * modules[g]["p"])
+        modules[g]["p_holm"] = min(1.0, running)
+        modules[g]["significant"] = bool(modules[g]["p_holm"] < ALPHA)
+    return {"alpha": ALPHA, "modules": modules,
+            "any_significant": any(x["significant"] for x in modules.values())}
+
+
 def group_pixel_loss(np_logits, tp_logits, hv, np_map, tp_map, hv_map, group: str):
     """Per-pixel mean of NP-CE + TP-CE + HV-MSE over the group's pixels; 0.0*sum keeps the graph
     attached when the group is empty (never backwarded on NaN)."""
@@ -62,7 +121,14 @@ def group_pixel_loss(np_logits, tp_logits, hv, np_map, tp_map, hv_map, group: st
 
 
 def gate_b_verdict(result: dict) -> str:
-    return "proceed" if result["decoder"]["conflict_fraction"] >= THRESHOLD else "fail"
+    n_active = result.get("n_active")
+    if n_active is not None and n_active < MIN_ACTIVE:
+        return "void"  # too few informative batches to measure the pre-registered statistic
+    if result["decoder"]["conflict_fraction"] >= THRESHOLD:
+        return "proceed"
+    if result.get("per_layer", {}).get("any_significant"):
+        return "proceed"
+    return "fail"
 
 
 def _params(model, group: str):
@@ -83,6 +149,8 @@ def main(argv=None):
     p.add_argument("--batch", type=int, default=8)
     p.add_argument("--device", default="cuda")
     p.add_argument("--ckpt", default="final.pth")
+    p.add_argument("--sample-seed", type=int, default=SAMPLE_SEED,
+                   help="seed for the Dead-stratified batch sampling (amendment (a))")
     p.add_argument("--out", type=Path, required=True)
     a = p.parse_args(argv)
     cfg = TrainConfig(split=1, out_dir=str(a.run), upscale=run_upscale(a.run),
@@ -93,11 +161,22 @@ def main(argv=None):
     model.eval()  # deterministic forward (no dropout/stochastic depth); grads still flow
     ds = PanNukeCellViT([a.fold], train=False, small_area=cfg.small_area,
                         upscale=cfg.upscale, hv_min_size=cfg.hv_min_size)
+    dead_idx = np.where(ds.class_presence()[:, DEAD_TYPE - 1])[0]
+    sampled = dead_stratified_batches(dead_idx, a.batches, a.batch, a.sample_seed)
     cos: dict[str, list[float]] = {g: [] for g in GROUPS}
+    active_flags: list[bool] = []
+    n_common_active = 0
     torch.manual_seed(0)
-    for s in range(0, min(a.batches * a.batch, len(ds)), a.batch):
-        batch = torch.utils.data.default_collate([ds[i] for i in range(s, s + a.batch)])
+    for ids in sampled:
+        batch = torch.utils.data.default_collate([ds[i] for i in ids])
         batch = {k: (v.to(a.device) if torch.is_tensor(v) else v) for k, v in batch.items()}
+        sel_dead = batch["tp_map"] == DEAD_TYPE
+        sel_common = (batch["np_map"] > 0) & (batch["tp_map"] != DEAD_TYPE)
+        active_flags.append(bool(sel_dead.any()))
+        if sel_common.any():
+            n_common_active += 1
+        if not sel_dead.any():
+            continue  # L_dead structurally zero: excluded from every denominator (amendment (b))
         pred = to_nhwc(model(batch["img"]))
         losses = {g: group_pixel_loss(pred["np"], pred["tp"], pred["hv"], batch["np_map"],
                                       batch["tp_map"], batch["hv_map"], g)
@@ -112,14 +191,28 @@ def main(argv=None):
             gb = [t for t in grads["common"][g] if t is not None]
             cos[g].append(list_cosine(ga, gb))
         del pred, losses, grads
+    n_active = int(sum(active_flags))
+    # cos lists are active-only by construction (inactive batches are skipped before any
+    # gradient work), so every recorded cosine belongs to an L_dead-active batch
+    assert len(cos[GROUPS[0]]) == n_active, "cosine/active bookkeeping mismatch"
+    active = [True] * n_active
     result = {"run": str(a.run), "fold": a.fold, "batches": a.batches, "batch": a.batch,
               "groups_excluded_background": "L_dead on GT Dead pixels, L_common on non-Dead "
                                             "foreground pixels; background belongs to neither",
-              "threshold_conflict_fraction": THRESHOLD,
-              "modules": {g: {"mean_cosine": sum(v) / len(v) if v else 0.0,
-                              "conflict_fraction": conflict_fraction(v)} for g, v in cos.items()},
-              "decoder": None}
+              "threshold_conflict_fraction": THRESHOLD, "min_active": MIN_ACTIVE,
+              "sampling": {"scheme": "dead-stratified seeded shuffled passes (amendment 2026-10-08)",
+                           "seed": a.sample_seed,
+                           "n_dead_positive_images": int(len(dead_idx)),
+                           "batches_sampled": sampled},
+              "n_active": n_active, "n_common_active": n_common_active,
+              "per_batch_cosines": cos, "active_flags": active_flags,
+              "modules": {}, "decoder": None, "per_layer": None, "verdict": None}
+    for g, v in cos.items():
+        frac, _ = active_conflict_fraction(v, active)
+        result["modules"][g] = {"mean_cosine": sum(v) / len(v) if v else 0.0,
+                                "conflict_fraction": frac}
     result["decoder"] = result["modules"]["decoder"]
+    result["per_layer"] = per_layer_significance(cos)
     result["verdict"] = gate_b_verdict(result)
     a.out.parent.mkdir(parents=True, exist_ok=True)
     if a.out.exists():
