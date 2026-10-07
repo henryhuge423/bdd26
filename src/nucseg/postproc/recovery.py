@@ -171,14 +171,18 @@ def decode_pred_map(pred_map: np.ndarray, nr_types: int = NR_TYPES, u: float = 1
         _official.__dict__["__proc_np_hv"] = _ORIGINAL
 
 
-def postprocess(np_fg: np.ndarray, hv: np.ndarray, tp_prob: np.ndarray, cfg: Recovery = Recovery()):
+def postprocess(np_fg: np.ndarray, hv: np.ndarray, tp_prob: np.ndarray, cfg: Recovery = Recovery(),
+                thr_map: np.ndarray | None = None):
     """Saved network outputs of one patch -> (inst (H, W) int32, type (H, W) uint8), as
-    nucseg.hovernet.engine._post but with the recovery variant `cfg`."""
+    nucseg.hovernet.engine._post but with the recovery variant `cfg`. thr_map (H, W) overrides
+    cfg.thr per pixel (broadcast into the blob threshold); a uniform 0.5 map is bit-identical
+    to the default. Used by the per-class decision-decoupling probe (scripts/dsb_gate_c.py)."""
     fg = foreground(np_fg, tp_prob, cfg)
     tp = tp_prob.argmax(-1)[..., None].astype(np.float32)
     pred_map = np.concatenate([tp, fg[..., None], hv.astype(np.float32)], -1)
+    thr = cfg.thr if thr_map is None else np.asarray(thr_map, np.float32)
     # official `process` looks the instance function up as a module global at call time
-    _official.__dict__["__proc_np_hv"] = lambda p: proc_np_hv(p, cfg.thr, cfg.orphans)
+    _official.__dict__["__proc_np_hv"] = lambda p: proc_np_hv(p, thr, cfg.orphans)
     try:
         inst, info = _official.process(pred_map, nr_types=NR_TYPES)
     finally:

@@ -79,3 +79,22 @@ def test_light_metric_matches_full_eval(data):
     assert light["mPQ"] == pytest.approx(full["official"]["mPQ"], abs=1e-12)
     assert light["bPQ"] == pytest.approx(full["official"]["bPQ"], abs=1e-12)
     assert list(light["per_class_PQ"].values()) == pytest.approx(list(full["per_class_PQ"].values()), abs=1e-12, nan_ok=True)
+
+
+def test_thr_map_uniform_matches_default(data):
+    _, outs = data
+    for fg, hv, tp in outs[:10]:
+        inst_a, _ = postprocess(fg, hv, tp)                     # Recovery() default thr=0.5
+        inst_b, _ = postprocess(fg, hv, tp, thr_map=np.full(fg.shape, 0.5, np.float32))
+        np.testing.assert_array_equal(inst_a, inst_b)
+
+
+def test_thr_map_lowering_dead_typed_pixels_only(data):
+    _, outs = data
+    for fg, hv, tp in outs[:10]:
+        base_inst, _ = postprocess(fg, hv, tp)
+        thr = np.where(tp.argmax(-1) == 4, 0.3, 0.5).astype(np.float32)
+        low_inst, _ = postprocess(fg, hv, tp, thr_map=thr)
+        new_ids = set(np.unique(low_inst)) - set(np.unique(base_inst)) - {0}
+        for i in new_ids:  # an instance may only appear where the TP argmax called Dead
+            assert (tp.argmax(-1)[low_inst == i] == 4).any()
