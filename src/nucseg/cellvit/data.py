@@ -17,7 +17,7 @@ import torch
 from torch.utils.data import Dataset
 
 from ..augment.copy_paste import CopyPasteConfig, NucleusBank, apply_copy_paste
-from ..constants import NUM_CLASSES, TISSUES
+from ..constants import DEAD_TYPE, NUM_CLASSES, TISSUES
 from ..data.pannuke import PanNukeFold
 from ..hovernet.data import hv_targets
 from ..hovernet.targets import validate_hv_min_size
@@ -74,12 +74,14 @@ def tissue_ids(names) -> np.ndarray:
 class PanNukeCellViT(Dataset):
     def __init__(self, folds: list[int], train: bool, small_area: int = 100,
                  copy_paste: CopyPasteConfig | None = None, synth: Path | None = None,
-                 synth_frac: float = 0.0, upscale: int = 1, hv_min_size: int = 30):
+                 synth_frac: float = 0.0, upscale: int = 1, hv_min_size: int = 30,
+                 dead_targets: bool = False):
         self.hv_min_size = validate_hv_min_size(hv_min_size)
         self.folds = [PanNukeFold(k) for k in folds]
         self.index = [("r", fi, j) for fi, f in enumerate(self.folds) for j in range(len(f))]
         self.train = train
         self.upscale = upscale
+        self.dead_targets = dead_targets
         # pixel-area thresholds live at the working resolution (areas quadruple at 2x)
         self.small_area = small_area * upscale * upscale
         self.augs = cellvit_train_augs() if train else None
@@ -148,6 +150,16 @@ class PanNukeCellViT(Dataset):
             img, inst, typ = r["image"], r["mask"][..., 0], r["mask"][..., 1]
         if self.upscale > 1:
             img, inst, typ = upsample_patch(img, inst, typ, self.upscale)
+        extra = {}
+        if self.dead_targets:
+            # computed AFTER augmentation/upsample: a crop that drops every Dead pixel must yield
+            # dead_pos=False (the masked loss keys on it); the HV cutoff matches the main branch
+            dead_inst = np.where(typ == DEAD_TYPE, inst, 0).astype(np.int32)
+            extra = {
+                "dead_np_map": torch.from_numpy((dead_inst > 0).astype(np.int64)),
+                "dead_hv_map": torch.from_numpy(hv_targets(dead_inst, min_size=self.hv_min_size)),
+                "dead_pos": torch.tensor(bool((dead_inst > 0).any())),
+            }
         return {
             "img": torch.from_numpy(normalize(img)),                     # (3, 256, 256) float
             "np_map": torch.from_numpy((inst > 0).astype(np.int64)),     # (256, 256)
@@ -156,6 +168,7 @@ class PanNukeCellViT(Dataset):
             "small_map": torch.from_numpy(small_nuclei(inst, self.small_area)),  # (256, 256) bool
             "tissue": tissue,
             "index": i,
+            **extra,
         }
 
 
