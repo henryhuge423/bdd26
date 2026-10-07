@@ -1398,7 +1398,7 @@ validation fold2 only; no fold3 inference at any point.
      bPQ CIs entirely below zero and both seeds negative; official Dead stays positive on
      average while **strict Dead is negative in all four x2−x1 seed pairs**. Official and
      strict endpoints must be reported together.
-  4. *Object level*: interior-Dead matched rate rises 61.3%→71.0% (border 40.2%→49.0%) with
+  4. *Object level*: interior-Dead matched rate rises 61.3%→71.0% (border 40.2%→48.3%) with
      scale at matched support, while lowering the cutoff at x2 moves the interior matched
      count from 526 to 526.5 — the +.0098 support effect on Dead PQ is **not** explained by
      recovering many more interior objects (mask/FP structure instead, not decomposed here).
