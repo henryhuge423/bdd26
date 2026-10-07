@@ -1414,3 +1414,32 @@ validation fold2 only; no fold3 inference at any point.
   `verified_numbers.json` byte-identically; an independent re-derivation of all 4 arm means
   and 4 contrast means from the audit `summary.json` files matches bit-exactly; HV-branch CPU
   suite **210 passed / 3 CUDA-dependent skipped**.
+## 2026-10-08 — DSB pre-training gates: A/C/D land (proceed/proceed/pass); gate B first run VOID on probe sampling, not a real fail
+
+- Context: dead-specialist branch (DSB) CPU implementation complete on `research/dead-specialist-branch`
+  (Tasks 1–11 TDD commits; full local suite 253 passed on 2026-10-08, CUDA cases included). Gates ledger:
+  `runs/analysis/dsb_gates_20261007/` (local, outside Git). No GPU training arm started; test fold not read.
+- **Gate A (rule arithmetic on frozen E2a numbers): proceed, base stays x1_hv30.** r/R = 9.59% < 50%
+  switch line, < 90% downgrade line, bPQ tax −.0013. Independently re-derived bit-exactly from
+  `hv_threshold_controls_20261007_verified.json` (all six eval summaries SHA-matched).
+- **Gate C (decision decoupling, fold 2): proceed.** tau_dead menu {.5,.4,.35,.3} peaks at dDead
+  +.0021 (tau .4), d_bPQ +1.1e-5 — below the +.005 close-line, so architecture decoupling is not
+  obviated. Baseline Dead PQ .16386 bit-exact vs `eval_fold2`.
+- **Gate B (gradient conflict): 00:58 run VOID, not fail.** Sequential first-256 fold-1 images are all
+  Breast with exactly ONE Dead-positive image (index 178); 63/64 batches contribute structural
+  zero-gradients counted as non-conflict, capping conflict_fraction at 1/64 ≈ .016 < .30 before any
+  gradient geometry is measured. The single informative batch shows positive cosines (decoder
+  composite +.27). Probe mechanics verified correct (disjoint masks, one forward, retain_graph;
+  39d4c66 did not change the parameter set — concat-equivalent list cosine); the flaw is the
+  pre-frozen plan's "fixed order" sampling plus zero-batch accounting. Spec §10 stop rule NOT fired.
+  Amendment recorded in the ledger (Dead-stratified sampling with fixed seed; conflict_fraction over
+  L_dead-active batches with n_active recorded; optional per-layer significance clause); rerun
+  ~1 GPU·h — pending user decision.
+- **Gate D (oracle ceiling, fold 2, seed 20261007): pass.** Inserting all 267 unmatched internal Dead
+  GT instances at IoU .7: Dead PQ .1639 → .3199 (**ΔDead +.156**; exact-mask variant +.245), bPQ
+  +.0015, mPQ +.0023 — far above the +.010 bar. The ceiling is high: detection, not type quality, is
+  the binding constraint, consistent with the detection-first diagnosis.
+- State after this round: gates A/C/D favorable; gate B awaits an amended rerun (user checkpoint
+  before any GPU arm per plan Task 13).
+- Verification: all gate numbers re-derived from gate JSONs and eval artifacts bit-exactly; full
+  suite 253 passed; `git diff --check` clean.

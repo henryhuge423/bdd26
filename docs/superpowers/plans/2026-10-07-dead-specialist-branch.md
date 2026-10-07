@@ -47,7 +47,7 @@
 **Interfaces:**
 - Produces: `CellViTUNI(..., dead_expert: bool = False, widen: int = 0)`; forward adds keys `"np_dead"`/`"hv_dead"` iff `dead_expert`; `branch_param_count(model) -> dict[str, int]`; `solve_c1_widen() -> int`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 import torch
@@ -85,12 +85,12 @@ def test_c1_widen_param_parity():
     assert abs(p_dsb - p_c1) / p_dsb < 0.015
 ```
 
-- [ ] **Step 2: Run to verify failure**
+- [x] **Step 2: Run to verify failure**
 
 Run: `python -m pytest tests/test_dead_branch.py -q`
 Expected: FAIL (`dead_expert` unexpected kwarg).
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 In `CellViTUNI.__init__` signature add `dead_expert: bool = False, widen: int = 0`. After the existing branches:
 
@@ -138,8 +138,8 @@ def solve_c1_widen() -> int:
 
 *(construction of full ViT-L twice in `solve_c1_widen` is ~2 s CPU; acceptable, and keeps the solver honest against the real `_branch`.)*
 
-- [ ] **Step 4: Run tests** — `python -m pytest tests/test_dead_branch.py -q` → PASS. Then full CPU suite `python -m pytest -q` (model touched; confirm no regression).
-- [ ] **Step 5: Commit** — `git add src/nucseg/cellvit/model.py tests/test_dead_branch.py && git commit -m "feat: optional dead-expert decoder branch and C1 widening"`
+- [x] **Step 4: Run tests** — `python -m pytest tests/test_dead_branch.py -q` → PASS. Then full CPU suite `python -m pytest -q` (model touched; confirm no regression).
+- [x] **Step 5: Commit** — `git add src/nucseg/cellvit/model.py tests/test_dead_branch.py && git commit -m "feat: optional dead-expert decoder branch and C1 widening"`
 
 ### Task 2: Data — dead targets after augmentation
 
@@ -150,7 +150,7 @@ def solve_c1_widen() -> int:
 **Interfaces:**
 - Produces: `PanNukeCellViT(..., dead_targets: bool = False)`; when True `__getitem__` adds `"dead_np_map"` (int64 (H,W) 0/1), `"dead_hv_map"` (float32 (H,W,2)), `"dead_pos"` (bool scalar). Class id lives in one place: add `DEAD_TYPE = 4` to `src/nucseg/constants.py`; `data.py`, `dead_merge.py` (Task 6) and the engine's existing `DEAD = 4` all import it (engine keeps its local alias for history).
 
-- [ ] **Step 1: Write the failing tests** (fixture pattern from `tests/test_hv_training.py`: memory-mapped tiny fold; reuse its helper if importable, else replicate a 4-image stub with `inst/type` arrays)
+- [x] **Step 1: Write the failing tests** (fixture pattern from `tests/test_hv_training.py`: memory-mapped tiny fold; reuse its helper if importable, else replicate a 4-image stub with `inst/type` arrays)
 
 ```python
 import numpy as np, torch
@@ -173,8 +173,8 @@ def test_dead_pos_reflects_augmented_crop(ds_train_dead):  # train=True, seed fo
 
 Also assert a dataset built with `dead_targets=False` returns **exactly the historical key set** (backward-compat pin).
 
-- [ ] **Step 2: RED** — `python -m pytest tests/test_dead_targets.py -q` → FAIL (unknown kwarg).
-- [ ] **Step 3: Implement** — in `__init__` store `self.dead_targets = dead_targets`; in `__getitem__`, after the `upscale` block and before building the return dict:
+- [x] **Step 2: RED** — `python -m pytest tests/test_dead_targets.py -q` → FAIL (unknown kwarg).
+- [x] **Step 3: Implement** — in `__init__` store `self.dead_targets = dead_targets`; in `__getitem__`, after the `upscale` block and before building the return dict:
 
 ```python
 extra = {}
@@ -190,8 +190,8 @@ return {..., "index": i, **extra}
 
 (computed **after** augmentation/upsample, so a crop that drops all Dead pixels correctly yields `dead_pos=False`; dead HV uses the same working-pixel cutoff as the main branch, spec §5).
 
-- [ ] **Step 4: GREEN** + full suite.
-- [ ] **Step 5: Commit** — `git add src/nucseg/cellvit/data.py tests/test_dead_targets.py && git commit -m "feat: dead-instance NP/HV targets with post-augmentation presence flag"`
+- [x] **Step 4: GREEN** + full suite.
+- [x] **Step 5: Commit** — `git add src/nucseg/cellvit/data.py tests/test_dead_targets.py && git commit -m "feat: dead-instance NP/HV targets with post-augmentation presence flag"`
 
 ### Task 3: Engine — positive-image masked dead loss
 
@@ -203,7 +203,7 @@ return {..., "index": i, **extra}
 - `TrainConfig` gains `dead_expert: bool = False`, `dead_neg_w: float = 0.0` (menu {0.0 = positive-only, 0.1}, spec §5), `widen: int = 0`.
 - `cellvit_loss(pred, batch, cfg)` adds terms `dead_np_ft`, `dead_np_dice`, `dead_hv_mse`, `dead_hv_msge`, `dead_neg_bce` iff `cfg.dead_expert and "np_dead" in pred`.
 
-- [ ] **Step 1: Failing tests**
+- [x] **Step 1: Failing tests**
 
 ```python
 H = W = 8
@@ -246,7 +246,7 @@ def test_default_cfg_no_dead_terms():
     assert not any(k.startswith("dead_") for k in terms)
 ```
 
-- [ ] **Step 2: RED** → **Step 3: Implement**, appended in `cellvit_loss` before the return:
+- [x] **Step 2: RED** → **Step 3: Implement**, appended in `cellvit_loss` before the return:
 
 ```python
 if cfg is not None and cfg.dead_expert and "np_dead" in pred:
@@ -271,7 +271,7 @@ if cfg is not None and cfg.dead_expert and "np_dead" in pred:
 
 Same coefficients as the main branches (spec §4 "同式损失族"). `train()`/`validate()` datasets: pass `dead_targets=cfg.dead_expert` to both `PanNukeCellViT(...)` constructors.
 
-- [ ] **Step 4: GREEN** + full suite → **Step 5: Commit** `feat: positive-image masked dead-expert loss`
+- [x] **Step 4: GREEN** + full suite → **Step 5: Commit** `feat: positive-image masked dead-expert loss`
 
 ### Task 4: TTA — remap `hv_dead` under dihedral
 
@@ -279,7 +279,7 @@ Same coefficients as the main branches (spec §4 "同式损失族"). `train()`/`
 - Modify: `src/nucseg/hovernet/engine.py` (`undo_dihedral`)
 - Test: `tests/test_dead_tta.py`
 
-- [ ] **Step 1: Failing test**
+- [x] **Step 1: Failing test**
 
 ```python
 def test_undo_dihedral_remaps_all_hv_keys():
@@ -291,7 +291,7 @@ def test_undo_dihedral_remaps_all_hv_keys():
             assert torch.allclose(out["hv_dead"], out["hv"])
 ```
 
-- [ ] **Step 2: RED** → **Step 3:** replace the hardcoded `out["hv"]` block with a loop over `[n for n in out if n.startswith("hv")]` applying the identical flip/sign/swap remap; non-HV keys unchanged. → **Step 4:** `python -m pytest tests/test_dead_tta.py tests/test_hovernet.py -q` then **full suite** (HoVer-Net plumbing touched) → **Step 5: Commit** `fix: dihedral HV remap covers the dead-expert HV channel`
+- [x] **Step 2: RED** → **Step 3:** replace the hardcoded `out["hv"]` block with a loop over `[n for n in out if n.startswith("hv")]` applying the identical flip/sign/swap remap; non-HV keys unchanged. → **Step 4:** `python -m pytest tests/test_dead_tta.py tests/test_hovernet.py -q` then **full suite** (HoVer-Net plumbing touched) → **Step 5: Commit** `fix: dihedral HV remap covers the dead-expert HV channel`
 
 ### Task 5: CLI wiring, resume safety, dead-aware prediction
 
@@ -384,8 +384,8 @@ def test_selection_rule_frozen():
 - Create: `scripts/dsb_montage.py`
 - Test: `tests/test_dsb_montage.py`
 
-- [ ] **Step 1: Failing test**: `build_grid(patches: list[np.ndarray], cols) -> np.ndarray` deterministic layout (shapes, no RNG); stratified sampler `stratify(records, tissue, border, area_bins, k)` returns exactly k indices, respecting strata proportions within ±1 (seeded).
-- [ ] **Step 2: RED** → **Step 3: Implement** (follow `scripts/x2_montage.py` drawing conventions; rows = image crop with base instances outlined green, dead candidates outlined orange (TP/FP unknowable without GT — the reviewer sees overlays only)) → **Step 4: GREEN** → **Step 5: Commit** `feat: stratified DSB montage builder`
+- [x] **Step 1: Failing test**: `build_grid(patches: list[np.ndarray], cols) -> np.ndarray` deterministic layout (shapes, no RNG); stratified sampler `stratify(records, tissue, border, area_bins, k)` returns exactly k indices, respecting strata proportions within ±1 (seeded).
+- [x] **Step 2: RED** → **Step 3: Implement** (follow `scripts/x2_montage.py` drawing conventions; rows = image crop with base instances outlined green, dead candidates outlined orange (TP/FP unknowable without GT — the reviewer sees overlays only)) → **Step 4: GREEN** → **Step 5: Commit** `feat: stratified DSB montage builder`
 
 ### Task 8: Gate D — Dead oracle ceiling (CPU, runs immediately)
 
@@ -397,7 +397,7 @@ def test_selection_rule_frozen():
 - CLI: `--run <dir>` (must contain `pred_fold2.npz`; prefer `runs/hv_threshold_controls_20261006/x1_hv30_seed19`, fall back to any historical split1 base run — **refuse** if neither exists), `--fold 2 --drop-frac 0.3 --seed 20261007 --out <json>`.
 - Logic (helpers `unmatched_internal_dead(gt_inst, gt_typ, pred) -> list[int]` and `shrink_mask(mask, drop_frac, rng) -> np.ndarray`, both importable for tests): per image, GT Dead instances unmatched by any prediction (IoU > 0.5, same greedy pairing as the evaluator via `nucseg.metrics.instance.overlap`) **and internal** (GT mask border flag false, `existence.candidate_geometry`) get inserted as new predictions: exact mask (IoU = 1.0 ceiling) and shrunk variant (seeded per-instance dropout of 30% of mask pixels → IoU exactly 0.7). Evaluate before/after with `pannuke_eval.evaluate` → ΔDead PQ, ΔmPQ, n_added. Verdict: `pass` iff ΔDead(internal, IoU 0.7) ≥ +0.010 (spec §6 D).
 
-- [ ] **Step 1: Failing tests**
+- [x] **Step 1: Failing tests**
 
 ```python
 def test_unmatched_internal_dead_finder():
@@ -418,7 +418,7 @@ def test_dropout_shrink_exact_iou_and_determinism():
     inter, union = (s1 & mask).sum(), (s1 | mask).sum()
     assert abs(inter / union - 0.7) < 1e-9                    # dropout of f gives IoU exactly 1-f
 ```
-- [ ] **Step 2: RED** → **Step 3: Implement** → **Step 4: GREEN + full suite** → **Step 5: Commit** `feat: gate D dead-oracle ceiling probe`, then **run it for real (CPU)**: `python scripts/dsb_oracle_ceiling.py --run <chosen> --fold 2 --out runs/analysis/dsb_gates_20261007/gate_d.json`; paste the verdict line into Task 12's ledger (the analysis output itself lives outside Git under `runs/`).
+- [x] **Step 2: RED** → **Step 3: Implement** → **Step 4: GREEN + full suite** → **Step 5: Commit** `feat: gate D dead-oracle ceiling probe`, then **run it for real (CPU)**: `python scripts/dsb_oracle_ceiling.py --run <chosen> --fold 2 --out runs/analysis/dsb_gates_20261007/gate_d.json`; paste the verdict line into Task 12's ledger (the analysis output itself lives outside Git under `runs/`).
 
 ### Task 9: Gate C — per-class decision decoupling (code now; GPU dump later)
 
@@ -431,7 +431,7 @@ def test_dropout_shrink_exact_iou_and_determinism():
 - `Recovery` unchanged; new `thr_map: np.ndarray | None` argument threading: `proc_np_hv(pred, thr=thr_map)` already broadcasts an (H,W) array (`blb_raw >= thr`) — thread it through `postprocess` the same way `cfg.thr` flows, with the parity test **uniform 0.5 map == scalar 0.5 == official**.
 - `dsb_gate_c.py --maps <dump dir> --fold 2`: frozen menu `τ_dead ∈ {0.5(identity), 0.4, 0.35, 0.3}`, all other classes 0.5; threshold map = `τ[predicted tp argmax]`; decode fold2 from dumped maps (`dump_cellvit_maps.py` layout: `maps_fold2.npy` (N,256,256,9) = [P_NP(fg), HVx, HVy, P_TP(0..5)]); evaluate each config; verdict `close_line` iff any τ_dead gives ΔDead ≥ +0.005 with ΔbPQ tax ≤ 0.001 (spec §6 C), else `proceed`.
 
-- [ ] **Step 1: Failing tests**
+- [x] **Step 1: Failing tests**
 
 ```python
 def test_thr_map_parity_with_official(rng_maps):  # existing fixtures in test_recovery.py
@@ -456,7 +456,7 @@ def test_gate_c_verdict_rule():
     rows[1] = {"tau_dead": 0.4, "d_dead": 0.003, "d_bpq": -0.004}
     assert gate_c_verdict(rows) == "proceed"
 ```
-- [ ] **Step 2: RED** → **Step 3: Implement** → **Step 4: GREEN + full suite** → **Step 5: Commit** `feat: per-pixel decode threshold + gate C decision-decoupling probe (CPU stage)`
+- [x] **Step 2: RED** → **Step 3: Implement** → **Step 4: GREEN + full suite** → **Step 5: Commit** `feat: per-pixel decode threshold + gate C decision-decoupling probe (CPU stage)`
 
 ### Task 10: Gate B — gradient-conflict probe (code now; GPU run after E2a)
 
@@ -469,7 +469,7 @@ def test_gate_c_verdict_rule():
 - Per batch (fold1 train split, `PanNukeCellViT([1], train=False)`, fixed order, fp32): `L_dead` = per-pixel mean of NP-CE + TP-CE + HV-MSE on pixels with `tp_map == 4`; `L_common` = same on foreground pixels with `tp_map != 4` (background excluded from both, recorded in output metadata). `torch.autograd.grad(..., retain_graph=True)`; cosine of flattened gradients per group {`skips` (skip0–3), `np_branch`, `hv_branch`, `tp_branch`, `encoder`}; conflict fraction = share of the 64 batches with cosine < 0.
 - Verdict (spec §6 B): `proceed` iff conflict fraction ≥ 0.30 on the decoder composite (skips+np+hv+tp).
 
-- [ ] **Step 1: Failing tests**
+- [x] **Step 1: Failing tests**
 
 ```python
 def test_group_cosine_math():
@@ -493,7 +493,7 @@ def test_loss_group_masking():
     tp2 = tp.clone(); tp2[tp2 == 4] = 2
     assert group_pixel_loss(logits, tp2, "dead") == 0.0       # no Dead pixels -> zero (attached)
 ```
-- [ ] **Step 2: RED** → **Step 3: Implement** → **Step 4: GREEN** → **Step 5: Commit** `feat: gate B class-group gradient-conflict probe`
+- [x] **Step 2: RED** → **Step 3: Implement** → **Step 4: GREEN** → **Step 5: Commit** `feat: gate B class-group gradient-conflict probe`
 
 ### Task 11: Gate A reader (CPU; runs once HV analysis exists)
 
@@ -505,7 +505,7 @@ def test_loss_group_masking():
 - CLI: `--hv-numbers <hv_control_numbers output.json> --out <json>`; extracts val-fold2 Dead PQ (and bPQ) for arms `x1_hv30`, `x1_hv8`, `x2_hv30` from `arms`/`contrasts`; rules (spec §6 A): with `r = Dead(x1_hv8) − Dead(x1_hv30)`, `R = Dead(x2_hv30) − Dead(x1_hv30)`: `R ≤ 0` → base `hv30`, proceed; `r ≥ 0.9·R` **and** bPQ(x1_hv8) − bPQ(x1_hv30) ≥ −0.001 → `downgrade` (architecture premise lost; return to user); `r ≥ 0.5·R` → base `hv8`, proceed; else base `hv30`, proceed.
 - Schema note: adapt parser + fixture in the same commit if the real JSON nests differently (audit item 4).
 
-- [ ] **Step 1: Failing tests** over a synthetic numbers JSON (all four rule branches)
+- [x] **Step 1: Failing tests** over a synthetic numbers JSON (all four rule branches)
 
 ```python
 def _nums(dead30, dead8, deadx2, bpq30=0.6, bpq8=0.6):
@@ -521,24 +521,24 @@ def test_gate_a_rules():
     assert gate_a(_nums(.170, .175, .175))["verdict"] == "proceed"   # R<=0: HV support not the driver
     assert gate_a(_nums(.170, .1795, .180, bpq8=.598))["verdict"] == "proceed"  # tax blocks downgrade
 ```
-- [ ] **Step 2: RED** → **Step 3: Implement** → **Step 4: GREEN** → **Step 5: Commit** `feat: gate A E2a-contrast reader`
+- [x] **Step 2: RED** → **Step 3: Implement** → **Step 4: GREEN** → **Step 5: Commit** `feat: gate A E2a-contrast reader`
 
 ### Task 12: Gates verdict doc + experiment log entry (CPU)
 
 **Files:**
 - Modify: `docs/RESEARCH_PLAN.md` (additive progress note), this file (checkboxes), `docs/findings.md` (when results exist)
 
-- [ ] **Step 1:** Create `runs/analysis/dsb_gates_20261007/README.md` listing each gate's command, output JSON path and verdict line (gates B/C GPU stages marked *pending-E2a* until run).
-- [ ] **Step 2:** Add a dated progress paragraph to `docs/RESEARCH_PLAN.md` pointing at the spec, this plan, and the gate table; no results claimed that don't exist yet.
-- [ ] **Step 3:** `python -m pytest -q` → green; `git diff --check` clean → **Commit** `docs: DSB gates ledger and research-plan progress note`
+- [x] **Step 1:** Create `runs/analysis/dsb_gates_20261007/README.md` listing each gate's command, output JSON path and verdict line (gates B/C GPU stages marked *pending-E2a* until run).
+- [x] **Step 2:** Add a dated progress paragraph to `docs/RESEARCH_PLAN.md` pointing at the spec, this plan, and the gate table; no results claimed that don't exist yet.
+- [x] **Step 3:** `python -m pytest -q` → green; `git diff --check` clean → **Commit** `docs: DSB gates ledger and research-plan progress note`
 
 ### Task 13: GPU stages, after E2a drains and the user confirms (checkpoint!)
 
 **Preconditions (all four, verified in order):** E2a queues empty (runbook check); `hv_control_numbers.py` analysis exists (HV branch's task); gates B, C executed; gates A–D verdicts recorded in Task 12's ledger. **Any gate failed → stop, report, do not train.**
 
-- [ ] **Step 1: Gate B run** (~30–60 min A100): `python scripts/dsb_gradient_probe.py --run <C0 base> --out runs/analysis/dsb_gates_20261007/gate_b.json`; record verdict.
-- [ ] **Step 2: Gate C maps + scan**: `dump_cellvit_maps.py --run <C0 base> --fold 2 --out data/cache/maps/<base>` (GPU ~minutes; keep on LM2, `df` first), then `dsb_gate_c.py` (CPU); record verdict.
-- [ ] **Step 3: Gate A read**: `dsb_gate_a.py` on the HV numbers JSON; record base arm (`hv30`/`hv8`) or the downgrade verdict.
+- [x] **Step 1: Gate B run** (~30–60 min A100): `python scripts/dsb_gradient_probe.py --run <C0 base> --out runs/analysis/dsb_gates_20261007/gate_b.json`; record verdict.
+- [x] **Step 2: Gate C maps + scan**: `dump_cellvit_maps.py --run <C0 base> --fold 2 --out data/cache/maps/<base>` (GPU ~minutes; keep on LM2, `df` first), then `dsb_gate_c.py` (CPU); record verdict.
+- [x] **Step 3: Gate A read**: `dsb_gate_a.py` on the HV numbers JSON; record base arm (`hv30`/`hv8`) or the downgrade verdict.
 - [ ] **Step 4: Smoke run** (2 epochs, `--train-only`, split1, seed 19, DSB arm) → `predict_cellvit.py --fold 2 --no-eval` + dead preds → `dsb_montage.py` → **sonnet subagent blind review** (spec §8: stratified montage, reviewer told layouts but not which arm; look for BN-drift artifacts, global over-firing, Uterus-collapse). Findings → fix → re-smoke; only a clean review proceeds.
 - [ ] **Step 5: Dev round launch** (4 runs, sequential queue per runbook, batch 16 — never reduced to squeeze a busy device): `dsb_seed19`, `dsb_seed1`, `c1_seed<solve_c1_widen()>_seed19`, `c1_..._seed1`, out dirs `runs/dsb_dev_20261007/<arm>_seed<seed>`; each: `train_cellvit.py --split 1 --train-only --dead-expert [--dead-neg-w 0.1 if the smoke review flagged over-firing, else omitted]` / `--widen <solved>` for C1; then fold-2 predict (base + dead tags) + `dsb_dev_eval.py`. The `dead_neg_w` menu item is frozen **before** the first full run: default 0.0; switch to 0.1 only on the smoke-review over-firing finding (global background firing), never re-chosen after seeing dev endpoints.
 - [ ] **Step 6: Record** all four arms' menu tables + selections in the gates ledger; **stop before any fold3 read** and report to the user (single test read is its own user checkpoint).
