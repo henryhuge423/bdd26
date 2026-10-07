@@ -1443,3 +1443,39 @@ validation fold2 only; no fold3 inference at any point.
   before any GPU arm per plan Task 13).
 - Verification: all gate numbers re-derived from gate JSONs and eval artifacts bit-exactly; full
   suite 253 passed; `git diff --check` clean.
+
+## 2026-10-08 (later) — Gate B amended rerun: a real measurement, and it fails — DSB closes under the pre-registered stop rule
+
+- User go-ahead received 2026-10-08 for the amended gate B rerun (~minutes of GPU, not the
+  estimated hour). Amendment pre-registered in the gates ledger BEFORE the run (commit 9009a21;
+  4 new TDD tests watched RED then GREEN; full CPU suite 254 passed / 3 CUDA-skipped):
+  Dead-stratified seeded sampling over the 65 Dead-positive fold-1 images (all covered each
+  pass), conflict fractions over L_dead-active batches with n_active recorded (VOID < 16),
+  and the spec §6 B per-layer clause implemented (one-sided one-sample t-tests, Holm across the
+  six module groups). Per-batch cosines serialized in the output JSON.
+- **Result (gate_b_v2.json, 64/64 Dead-active batches, all 65 images used):** decoder-composite
+  gradient cosine mean **+0.749**, per-batch min +0.594 — **0/64 batches negative** (conflict
+  fraction 0.000 vs the 0.30 bar; P(0/64 | true rate ≥ .30) ≈ 1e-10). Every module group's mean
+  cosine is positive: encoder +0.406, skips +0.608, np_branch +0.917, hv_branch +0.760,
+  tp_branch +0.196 (tp is the only group with any negative batches: 7/64, t = +12.3). Per-layer
+  clause: all t > 0 → p = 1, none significant. **Verdict: fail** — the VOID run's lone
+  informative batch (+0.27 decoder) was not an outlier.
+- **Interpretation:** H1 (capacity-level Dead-vs-common gradient conflict at a trained
+  same-recipe checkpoint) is not supported — Dead-pixel and common-class gradients are strongly
+  aligned, i.e. improving Dead pixels moves shared weights in roughly the same direction as
+  improving common-class pixels. This coheres with the training-side negative results (M1 pixel
+  weighting ✗, C1 balanced sampling ✗ — nothing to re-balance) and with the detection-first
+  diagnosis (gates C/D: decision decoupling buys +.002; the oracle ceiling +.156 is detection
+  headroom, not type headroom). Standing caveats: measured at the trained optimum (early-
+  training conflicts could have resolved during training; the probe cannot exclude this);
+  fallback same-recipe seed-19 sibling checkpoint; equal-weight per-group losses (directions,
+  scale-free).
+- **Decision per spec §10 (pre-registered):** any gate failure ⇒ the line closes without GPU
+  escalation. Gate B failed ⇒ **no smoke run, no dev round, no confirmatory round**; DSB ends
+  here with its mechanism evidence retained: A proceed/base x1_hv30 (support cutoff explains
+  9.59% of the x2 Dead gain), B no gradient conflict (this entry), C decision decoupling
+  insufficient (+.0021 < +.005), D oracle ceiling high (+.156). The four gates together say:
+  the Dead deficit is a detection-recall problem that neither re-weighting, nor threshold
+  decoupling, nor architectural specialist decoupling at the trained optimum addresses.
+- Verification: verdict re-derived from the JSON (fraction 0/64 < .30, no significant group,
+  n_active 64 ≥ 16 → fail); the 00:58 VOID artifact retained unchanged alongside gate_b_v2.json.

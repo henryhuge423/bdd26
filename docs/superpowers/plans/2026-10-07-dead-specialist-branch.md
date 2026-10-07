@@ -534,6 +534,12 @@ def test_gate_a_rules():
 
 ### Task 13: GPU stages, after E2a drains and the user confirms (checkpoint!)
 
+> **2026-10-08 CLOSED:** the amended gate B rerun (Dead-stratified sampling per the ledger's
+> pre-registered amendment; user go-ahead same day) measured 64/64 Dead-active batches with
+> decoder-composite cosine mean +0.749, min +0.594, 0/64 negative — **gate B fail** ⇒ per the
+> precondition above and spec §10, steps 4–6 below are **cancelled** (no smoke, no dev round,
+> no test read). Gate B v2 artifact: `runs/analysis/dsb_gates_20261007/gate_b_v2.json`.
+
 **Preconditions (all four, verified in order):** E2a queues empty (runbook check); `hv_control_numbers.py` analysis exists (HV branch's task); gates B, C executed; gates A–D verdicts recorded in Task 12's ledger. **Any gate failed → stop, report, do not train.**
 
 - [x] **Step 1: Gate B run** (~30–60 min A100): `python scripts/dsb_gradient_probe.py --run <C0 base> --out runs/analysis/dsb_gates_20261007/gate_b.json`; record verdict.
