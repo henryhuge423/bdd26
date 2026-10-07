@@ -56,3 +56,11 @@ def test_verdict_rule():
     assert m.gate_b_verdict({"decoder": {"conflict_fraction": 0.31}}) == "proceed"
     assert m.gate_b_verdict({"decoder": {"conflict_fraction": 0.30}}) == "proceed"
     assert m.gate_b_verdict({"decoder": {"conflict_fraction": 0.29}}) == "fail"
+
+
+def test_list_cosine_matches_concat():
+    m = _load()
+    ga = [torch.tensor([1.0, 0.0]), torch.tensor([2.0])]
+    gb = [torch.tensor([1.0, 0.0]), torch.tensor([-1.0])]
+    assert abs(m.list_cosine(ga, gb) - float(m.grad_cosine(torch.cat(ga), torch.cat(gb)))) < 1e-9
+    assert abs(m.list_cosine(ga, ga) - 1.0) < 1e-9

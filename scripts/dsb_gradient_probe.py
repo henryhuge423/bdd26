@@ -33,6 +33,17 @@ def grad_cosine(a, b) -> float:
     return 0.0 if denom == 0 else float((a @ b) / denom)
 
 
+def list_cosine(ga, gb) -> float:
+    """Cosine over a list of parameter gradients WITHOUT concatenating (a full-model fp64 concat
+    allocates GiB-scale spikes; per-parameter fp64 temporaries stay tens of MB)."""
+    if not ga or not gb:
+        return 0.0
+    dot = sum(float(ta.flatten().double() @ tb.flatten().double()) for ta, tb in zip(ga, gb))
+    na = sum(float(ta.flatten().double().pow(2).sum()) for ta in ga) ** 0.5
+    nb = sum(float(tb.flatten().double().pow(2).sum()) for tb in gb) ** 0.5
+    return 0.0 if na * nb == 0 else dot / (na * nb)
+
+
 def conflict_fraction(cosines) -> float:
     vals = [float(c) for c in cosines]
     return sum(c < 0 for c in vals) / len(vals) if vals else 0.0
@@ -99,11 +110,8 @@ def main(argv=None):
         for g in GROUPS:
             ga = [t for t in grads["dead"][g] if t is not None]
             gb = [t for t in grads["common"][g] if t is not None]
-            if not ga or not gb:
-                cos[g].append(0.0)
-                continue
-            cos[g].append(grad_cosine(torch.cat([t.flatten() for t in ga]),
-                                      torch.cat([t.flatten() for t in gb])))
+            cos[g].append(list_cosine(ga, gb))
+        del pred, losses, grads
     result = {"run": str(a.run), "fold": a.fold, "batches": a.batches, "batch": a.batch,
               "groups_excluded_background": "L_dead on GT Dead pixels, L_common on non-Dead "
                                             "foreground pixels; background belongs to neither",
