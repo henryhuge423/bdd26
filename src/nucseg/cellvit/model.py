@@ -63,7 +63,8 @@ class CellViTUNI(nn.Module):
 
     def __init__(self, uni_ckpt: str | None = None, num_types: int = NUM_CLASSES + 1,
                  num_tissues: int = len(TISSUES), drop_rate: float = 0.0, drop_path_rate: float = 0.1,
-                 attn_drop_rate: float = 0.1, type_head: nn.Module | None = None):
+                 attn_drop_rate: float = 0.1, type_head: nn.Module | None = None,
+                 dead_expert: bool = False, widen: int = 0):
         super().__init__()
         self.encoder = UNIEncoder(drop_path_rate=drop_path_rate, attn_drop_rate=attn_drop_rate)
         if uni_ckpt:
@@ -77,13 +78,20 @@ class CellViTUNI(nn.Module):
                                    deconv_block(256, 128, drop=d))
         self.skip2 = nn.Sequential(deconv_block(e, 512, drop=d), deconv_block(512, 256, drop=d))
         self.skip3 = deconv_block(e, 512, drop=d)
-        self.np_branch, self.hv_branch, self.tp_branch = (self._branch(d) for _ in range(3))
+        # widen>0 is the C1 equal-parameter control (spec 2026-10-07 §7): the dead expert's
+        # parameters folded back into the class-agnostic detection branches, nothing else changes
+        self.np_branch, self.hv_branch = (self._branch(d, 512 + widen) for _ in range(2))
+        self.tp_branch = self._branch(d)
         self.np_head = nn.Conv2d(64, 2, 1)
         self.hv_head = nn.Conv2d(64, 2, 1)
         self.tp_head = type_head if type_head is not None else nn.Conv2d(64, num_types, 1)
+        if dead_expert:
+            self.dead_branch = self._branch(d)
+            self.dead_np_head = nn.Conv2d(64, 2, 1)
+            self.dead_hv_head = nn.Conv2d(64, 2, 1)
 
-    def _branch(self, d: float) -> nn.Sequential:
-        b = 512  # bottleneck dim for embed_dim >= 512
+    def _branch(self, d: float, b: int | None = None) -> nn.Sequential:
+        b = 512 if b is None else b  # bottleneck dim for embed_dim >= 512
         return nn.Sequential(OrderedDict([
             ("up4", nn.ConvTranspose2d(self.embed_dim, b, 2, stride=2)),
             ("up3", nn.Sequential(conv_block(2 * b, b, drop=d), conv_block(b, b, drop=d), conv_block(b, b, drop=d),
@@ -116,6 +124,10 @@ class CellViTUNI(nn.Module):
             "tp": self.tp_head(f_tp),
             "tissue": self.tissue_head(cls),
         }
+        if hasattr(self, "dead_branch"):
+            f_dead = self._decode(skips, self.dead_branch)
+            out["np_dead"] = self.dead_np_head(f_dead)
+            out["hv_dead"] = self.dead_hv_head(f_dead)
         if return_features:
             out["tp_feat"] = f_tp
             out["cls"] = cls
@@ -124,3 +136,26 @@ class CellViTUNI(nn.Module):
     def freeze_encoder(self, freeze: bool = True):
         for p in self.encoder.parameters():
             p.requires_grad = not freeze
+
+
+def branch_param_count(model: CellViTUNI) -> dict[str, int]:
+    """Trainable-capacity map per decoder-side group (encoder excluded)."""
+    groups = {}
+    for name in ("skip0", "skip1", "skip2", "skip3", "np_branch", "hv_branch",
+                 "tp_branch", "dead_branch"):
+        mod = getattr(model, name, None)
+        if mod is not None:
+            groups[name] = sum(p.numel() for p in mod.parameters())
+    return groups
+
+
+def solve_c1_widen() -> int:
+    """Bottleneck widening whose NP+HV growth best matches the dead-branch parameter count."""
+    dsb = sum(branch_param_count(CellViTUNI(uni_ckpt=None, dead_expert=True)).values())
+    best, best_gap = 0, float("inf")
+    for w in range(0, 257, 32):
+        c1 = sum(branch_param_count(CellViTUNI(uni_ckpt=None, widen=w)).values())
+        gap = abs(dsb - c1)
+        if gap < best_gap:
+            best, best_gap = w, gap
+    return best
