@@ -28,6 +28,7 @@ from ..constants import NUM_CLASSES
 from ..hovernet.engine import _post, dihedral, undo_dihedral
 from ..text.conch_prior import instance_mean_probs
 from ..hovernet.official import dice_loss, mse_loss, msge_loss, xentropy_loss
+from ..hovernet.targets import validate_hv_min_size
 from .data import PanNukeCellViT, cell_tissue_weights
 from .model import UNI_MEAN, UNI_STD, CellViTUNI
 
@@ -68,6 +69,32 @@ class TrainConfig:
     # working-resolution multiplier (phase-2 B1): images/targes are built at 256*upscale; predictions
     # are post-processed at that resolution and downsampled to 256 for the standard evaluation
     upscale: int = 1
+    # Minimum instance area for nonzero HV targets, in WORKING pixels; never auto-scaled.
+    hv_min_size: int = 30
+
+    def __post_init__(self):
+        self.hv_min_size = validate_hv_min_size(self.hv_min_size)
+
+
+def prepare_train_config(cfg: TrainConfig) -> None:
+    """Refuse mixed scientific runs before overwriting provenance or loading weights."""
+    validate_hv_min_size(cfg.hv_min_size)
+    out = Path(cfg.out_dir)
+    path = out / "config.json"
+    current = json.loads(json.dumps(asdict(cfg)))
+    if path.exists():
+        defaults = asdict(TrainConfig(split=cfg.split, out_dir=cfg.out_dir))
+        previous = json.loads(json.dumps({**defaults, **json.loads(path.read_text())}))
+        mutable = {"out_dir", "workers", "val_every"}
+        changed = [key for key in current if key not in mutable and current[key] != previous[key]]
+        if changed:
+            raise ValueError(f"Run configuration mismatch: {', '.join(changed)}; use a new output directory")
+    elif any((out / name).exists() for name in ("last.pth", "final.pth")):
+        raise ValueError("Checkpoint without config.json; cannot establish the training configuration")
+    out.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(json.dumps(current, indent=2))
+    tmp.replace(path)
 
 
 def focal_tversky(p: torch.Tensor, t: torch.Tensor, alpha=0.7, beta=0.3, gamma=4 / 3, smooth=1e-6,
@@ -132,9 +159,8 @@ def build_model(cfg: TrainConfig | None = None, pretrained: bool = True) -> Cell
 
 
 def train(cfg: TrainConfig, train_folds: list[int], val_folds: list[int], device="cuda", model=None):
+    prepare_train_config(cfg)
     out = Path(cfg.out_dir)
-    out.mkdir(parents=True, exist_ok=True)
-    (out / "config.json").write_text(json.dumps(asdict(cfg), indent=2, default=str))
     torch.manual_seed(cfg.seed)
     np.random.seed(cfg.seed)
     writer = SummaryWriter(out / "tb")
@@ -162,13 +188,14 @@ def train(cfg: TrainConfig, train_folds: list[int], val_folds: list[int], device
                          area=tuple(cfg.cp_area), clearance=cfg.cp_clearance) if cfg.cp_prob else None
     train_ds = PanNukeCellViT(train_folds, train=True, small_area=cfg.small_area, copy_paste=cp,
                               synth=Path(cfg.synth) if cfg.synth else None,
-                              synth_frac=cfg.synth_frac, upscale=cfg.upscale)
+                              synth_frac=cfg.synth_frac, upscale=cfg.upscale, hv_min_size=cfg.hv_min_size)
     sampler = WeightedRandomSampler(cell_tissue_weights(train_ds, cfg.sampling_gamma), len(train_ds),
                                     replacement=True, generator=torch.Generator().manual_seed(cfg.seed))
     train_dl = DataLoader(train_ds, batch_size=cfg.batch_size, sampler=sampler, drop_last=True,
                           num_workers=cfg.workers, pin_memory=True, persistent_workers=True)
     val_dl = DataLoader(PanNukeCellViT(val_folds, train=False, small_area=cfg.small_area,
-                                       upscale=cfg.upscale), batch_size=32, num_workers=cfg.workers)
+                                       upscale=cfg.upscale, hv_min_size=cfg.hv_min_size),
+                        batch_size=32, num_workers=cfg.workers)
 
     for ep in range(ep0, cfg.epochs):
         model.freeze_encoder(ep < cfg.unfreeze_epoch)
@@ -244,6 +271,15 @@ def run_upscale(run, override: int | None = None) -> int:
         return override
     cfg = Path(run) / "config.json"
     return int(json.loads(cfg.read_text()).get("upscale", 1)) if cfg.exists() else 1
+
+
+def run_hv_min_size(run, override: int | None = None) -> int:
+    """Explicit working-pixel cutoff, existing run value, then the historical default30."""
+    if override is not None:
+        return validate_hv_min_size(override)
+    path = Path(run) / "config.json"
+    value = json.loads(path.read_text()).get("hv_min_size", 30) if path.exists() else 30
+    return validate_hv_min_size(value)
 
 
 def instance_table_rows(inst_final: np.ndarray, inst_model: np.ndarray, prob: np.ndarray, img_idx: int):
