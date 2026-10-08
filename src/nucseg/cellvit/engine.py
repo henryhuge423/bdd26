@@ -71,6 +71,12 @@ class TrainConfig:
     upscale: int = 1
     # Minimum instance area for nonzero HV targets, in WORKING pixels; never auto-scaled.
     hv_min_size: int = 30
+    # dead-specialist branch (spec 2026-10-07): dead_expert adds the branch and its masked loss
+    # (positive images only; dead_neg_w>0 adds a background BCE on Dead-free images, frozen menu
+    # {0.0, 0.1}); widen is the C1 equal-parameter control folded into the NP/HV branches.
+    dead_expert: bool = False
+    dead_neg_w: float = 0.0
+    widen: int = 0
 
     def __post_init__(self):
         self.hv_min_size = validate_hv_min_size(self.hv_min_size)
@@ -141,6 +147,26 @@ def cellvit_loss(pred: dict, batch: dict, cfg: TrainConfig | None = None) -> tup
     if cfg is not None and cfg.np_wce:
         ce = F.cross_entropy(pred["np"].permute(0, 3, 1, 2), batch["np_map"], reduction="none")
         terms["np_wce"] = cfg.np_wce * (ce * np_pixel_weights(batch, cfg)).mean()
+    if cfg is not None and cfg.dead_expert and "np_dead" in pred:
+        # positive-image masking (spec §5): the expert learns only from images that actually
+        # contain Dead pixels after augmentation; 0.0*sum keeps the graph alive otherwise
+        pos = batch["dead_pos"].bool()
+        zero = 0.0 * pred["np_dead"].sum()
+        if pos.any():
+            t_dnp = F.one_hot(batch["dead_np_map"][pos], 2).float()
+            p_dnp = F.softmax(pred["np_dead"][pos], -1)
+            terms["dead_np_ft"] = focal_tversky(p_dnp, t_dnp)
+            terms["dead_np_dice"] = dice_loss(t_dnp, p_dnp)
+            terms["dead_hv_mse"] = 2.5 * mse_loss(batch["dead_hv_map"][pos], pred["hv_dead"][pos])
+            terms["dead_hv_msge"] = 8.0 * msge_loss(batch["dead_hv_map"][pos], pred["hv_dead"][pos],
+                                                    t_dnp[..., 1])
+        else:
+            for k in ("dead_np_ft", "dead_np_dice", "dead_hv_mse", "dead_hv_msge"):
+                terms[k] = zero
+        if cfg.dead_neg_w and (~pos).any():
+            neg_logits = pred["np_dead"][~pos][..., 1]
+            terms["dead_neg_bce"] = cfg.dead_neg_w * F.binary_cross_entropy_with_logits(
+                neg_logits, torch.zeros_like(neg_logits))
     return sum(terms.values()), {k: float(v) for k, v in terms.items()}
 
 
@@ -155,7 +181,9 @@ def _save(path: Path, **state):
 
 
 def build_model(cfg: TrainConfig | None = None, pretrained: bool = True) -> CellViTUNI:
-    return CellViTUNI(uni_ckpt=cfg.uni_ckpt if (cfg and pretrained) else None)
+    return CellViTUNI(uni_ckpt=cfg.uni_ckpt if (cfg and pretrained) else None,
+                      dead_expert=bool(cfg.dead_expert) if cfg else False,
+                      widen=cfg.widen if cfg else 0)
 
 
 def train(cfg: TrainConfig, train_folds: list[int], val_folds: list[int], device="cuda", model=None):
@@ -188,13 +216,15 @@ def train(cfg: TrainConfig, train_folds: list[int], val_folds: list[int], device
                          area=tuple(cfg.cp_area), clearance=cfg.cp_clearance) if cfg.cp_prob else None
     train_ds = PanNukeCellViT(train_folds, train=True, small_area=cfg.small_area, copy_paste=cp,
                               synth=Path(cfg.synth) if cfg.synth else None,
-                              synth_frac=cfg.synth_frac, upscale=cfg.upscale, hv_min_size=cfg.hv_min_size)
+                              synth_frac=cfg.synth_frac, upscale=cfg.upscale, hv_min_size=cfg.hv_min_size,
+                              dead_targets=cfg.dead_expert)
     sampler = WeightedRandomSampler(cell_tissue_weights(train_ds, cfg.sampling_gamma), len(train_ds),
                                     replacement=True, generator=torch.Generator().manual_seed(cfg.seed))
     train_dl = DataLoader(train_ds, batch_size=cfg.batch_size, sampler=sampler, drop_last=True,
                           num_workers=cfg.workers, pin_memory=True, persistent_workers=True)
     val_dl = DataLoader(PanNukeCellViT(val_folds, train=False, small_area=cfg.small_area,
-                                       upscale=cfg.upscale, hv_min_size=cfg.hv_min_size),
+                                       upscale=cfg.upscale, hv_min_size=cfg.hv_min_size,
+                                       dead_targets=cfg.dead_expert),
                         batch_size=32, num_workers=cfg.workers)
 
     for ep in range(ep0, cfg.epochs):
@@ -282,6 +312,22 @@ def run_hv_min_size(run, override: int | None = None) -> int:
     return validate_hv_min_size(value)
 
 
+def run_dead_expert(run, override: bool | None = None) -> bool:
+    """Dead-expert flag of a run dir: explicit override wins, else config.json, else False."""
+    if override is not None:
+        return bool(override)
+    path = Path(run) / "config.json"
+    return bool(json.loads(path.read_text()).get("dead_expert", False)) if path.exists() else False
+
+
+def run_widen(run, override: int | None = None) -> int:
+    """C1 widening of a run dir: explicit override wins, else config.json, else 0."""
+    if override is not None:
+        return int(override)
+    path = Path(run) / "config.json"
+    return int(json.loads(path.read_text()).get("widen", 0)) if path.exists() else 0
+
+
 def instance_table_rows(inst_final: np.ndarray, inst_model: np.ndarray, prob: np.ndarray, img_idx: int):
     """Rows for the per-instance type-prob table: ids are enumerated from the FINAL (saved) instance
     map so every row is present in it (nearest downsampling to native resolution can drop ids),
@@ -299,8 +345,12 @@ def _forward_probs(model, imgs_u8: torch.Tensor, norm=(UNI_MEAN, UNI_STD)) -> di
     x = ((imgs_u8.float() / 255.0 - mean) / std).permute(0, 3, 1, 2).contiguous()
     with torch.autocast("cuda", dtype=torch.bfloat16):
         p = to_nhwc(model(x))
-    return {"np": F.softmax(p["np"], -1), "tp": F.softmax(p["tp"], -1), "hv": p["hv"],
-            "tissue": F.softmax(p["tissue"], -1)}
+    out = {"np": F.softmax(p["np"], -1), "tp": F.softmax(p["tp"], -1), "hv": p["hv"],
+           "tissue": F.softmax(p["tissue"], -1)}
+    if "np_dead" in p:
+        out["np_dead"] = F.softmax(p["np_dead"], -1)
+        out["hv_dead"] = p["hv_dead"]
+    return out
 
 
 def _tta_forward(model, x: torch.Tensor, norm=(UNI_MEAN, UNI_STD)) -> dict:
@@ -319,22 +369,27 @@ def _tta_forward(model, x: torch.Tensor, norm=(UNI_MEAN, UNI_STD)) -> dict:
 @torch.no_grad()
 def predict_fold(model, fold_ds, device="cuda", batch_size=32, workers=16, tta: bool = False,
                  inst_probs: bool = False, upscale: int = 1, decode_u: float = 1.0,
-                 marker_u: float = 1.0, norm=(UNI_MEAN, UNI_STD)):
+                 marker_u: float = 1.0, norm=(UNI_MEAN, UNI_STD), dead_expert: bool = False):
     """Returns (inst, type, tissue_probs) for every patch of a fold, in fold order; with inst_probs=True
     also a per-instance table (img index, inst id, mean type probabilities (M, 6); ids are enumerated
-    from the final map, probabilities averaged at model resolution). With upscale>1 the inputs are
-    bilinearly upsampled (matching training), post-processing runs at the higher resolution, and the
-    instance/type maps are downsampled (nearest) back to the fold's native size. decode_u>1 scales the
-    px-unit decode constants with the working resolution (nucseg.postproc.recovery.decode_pred_map);
-    marker_u additionally scales the 5x5 marker-open kernel (default 1 = official kernel, so du2
-    semantics are unchanged from findings 2026-09-30). Outputs are written into preallocated
-    (N, H, W) maps — constant host memory (the old list+np.stack pattern doubled the peak at the
-    very end and died on 16 GB-address-space hosts after a full fold of inference). batch_size
-    only groups forwards; every patch is decoded independently, so results never depend on it."""
+    from the final map, probabilities averaged at model resolution); with dead_expert=True the
+    expert's decoded candidates follow as the FINAL element (after any table). With upscale>1 the
+    inputs are bilinearly upsampled (matching training), post-processing runs at the higher
+    resolution, and the instance/type maps are downsampled (nearest) back to the fold's native size.
+    decode_u>1 scales the px-unit decode constants with the working resolution
+    (nucseg.postproc.recovery.decode_pred_map); marker_u additionally scales the 5x5 marker-open
+    kernel (default 1 = official kernel, so du2 semantics are unchanged from findings 2026-09-30).
+    Dead candidates decode through the same watershed on the expert's own NP/HV channels (the fake
+    all-zero type channel only fills the decode's type slot; candidates get typed Dead at merge).
+    Outputs are written into preallocated (N, H, W) maps — constant host memory (the old
+    list+np.stack pattern doubled the peak at the very end and died on 16 GB-address-space hosts
+    after a full fold of inference). batch_size only groups forwards; every patch is decoded
+    independently, so results never depend on it."""
     model.eval()
     n, h, w = fold_ds.images.shape[:3]
     inst_out = np.empty((n, h, w), np.int32)
     type_out = np.empty((n, h, w), np.uint8)
+    dead_out = np.empty((n, h, w), np.int32) if dead_expert else None
     tissues, tab = [], ([], [], [])
     hw = (w, h)  # cv2 wants (W, H)
     with Pool(workers) as pool:
@@ -351,6 +406,13 @@ def predict_fold(model, fold_ds, device="cuda", batch_size=32, workers=16, tta: 
             res_native = ([(cv2.resize(r[0], hw, interpolation=cv2.INTER_NEAREST).astype(np.int32),
                             cv2.resize(r[1], hw, interpolation=cv2.INTER_NEAREST)) for r in res]
                           if upscale > 1 else res)
+            if dead_expert:
+                maps_dead = torch.cat([torch.zeros_like(tp), p["np_dead"][..., 1:],
+                                       p["hv_dead"]], -1).cpu().numpy()
+                res_dead = pool.map(_post, ((m, decode_u, marker_u) for m in maps_dead), chunksize=2)
+                for b, r in enumerate(res_dead):
+                    dead_out[s + b] = (cv2.resize(r[0], hw, interpolation=cv2.INTER_NEAREST)
+                                       if upscale > 1 else r[0]).astype(np.int32)
             if inst_probs:
                 # ids from the final (downsampled) map so every row exists in the saved inst map;
                 # type probs still average over the model-resolution nucleus
@@ -367,4 +429,6 @@ def predict_fold(model, fold_ds, device="cuda", batch_size=32, workers=16, tta: 
     out = (inst_out, type_out, np.concatenate(tissues))
     if inst_probs:
         out += (tuple(np.concatenate(t) for t in tab),)
+    if dead_expert:
+        out += (dead_out,)
     return out

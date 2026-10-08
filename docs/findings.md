@@ -1398,7 +1398,7 @@ validation fold2 only; no fold3 inference at any point.
      bPQ CIs entirely below zero and both seeds negative; official Dead stays positive on
      average while **strict Dead is negative in all four x2−x1 seed pairs**. Official and
      strict endpoints must be reported together.
-  4. *Object level*: interior-Dead matched rate rises 61.3%→71.0% (border 40.2%→49.0%) with
+  4. *Object level*: interior-Dead matched rate rises 61.3%→71.0% (border 40.2%→48.3%) with
      scale at matched support, while lowering the cutoff at x2 moves the interior matched
      count from 526 to 526.5 — the +.0098 support effect on Dead PQ is **not** explained by
      recovering many more interior objects (mask/FP structure instead, not decomposed here).
@@ -1414,3 +1414,97 @@ validation fold2 only; no fold3 inference at any point.
   `verified_numbers.json` byte-identically; an independent re-derivation of all 4 arm means
   and 4 contrast means from the audit `summary.json` files matches bit-exactly; HV-branch CPU
   suite **210 passed / 3 CUDA-dependent skipped**.
+## 2026-10-08 — DSB pre-training gates: A/C/D land (proceed/proceed/pass); gate B first run VOID on probe sampling, not a real fail
+
+- Context: dead-specialist branch (DSB) CPU implementation complete on `research/dead-specialist-branch`
+  (Tasks 1–11 TDD commits; full local suite 253 passed on 2026-10-08, CUDA cases included). Gates ledger:
+  `runs/analysis/dsb_gates_20261007/` (local, outside Git). No GPU training arm started; test fold not read.
+- **Gate A (rule arithmetic on frozen E2a numbers): proceed, base stays x1_hv30.** r/R = 9.59% < 50%
+  switch line, < 90% downgrade line, bPQ tax −.0013. Independently re-derived bit-exactly from
+  `hv_threshold_controls_20261007_verified.json` (all six eval summaries SHA-matched).
+- **Gate C (decision decoupling, fold 2): proceed.** tau_dead menu {.5,.4,.35,.3} peaks at dDead
+  +.0021 (tau .4), d_bPQ +1.1e-5 — below the +.005 close-line, so architecture decoupling is not
+  obviated. Baseline Dead PQ .16386 bit-exact vs `eval_fold2`.
+- **Gate B (gradient conflict): 00:58 run VOID, not fail.** Sequential first-256 fold-1 images are all
+  Breast with exactly ONE Dead-positive image (index 178); 63/64 batches contribute structural
+  zero-gradients counted as non-conflict, capping conflict_fraction at 1/64 ≈ .016 < .30 before any
+  gradient geometry is measured. The single informative batch shows positive cosines (decoder
+  composite +.27). Probe mechanics verified correct (disjoint masks, one forward, retain_graph;
+  39d4c66 did not change the parameter set — concat-equivalent list cosine); the flaw is the
+  pre-frozen plan's "fixed order" sampling plus zero-batch accounting. Spec §10 stop rule NOT fired.
+  Amendment recorded in the ledger (Dead-stratified sampling with fixed seed; conflict_fraction over
+  L_dead-active batches with n_active recorded; optional per-layer significance clause); rerun
+  ~1 GPU·h — pending user decision.
+- **Gate D (oracle ceiling, fold 2, seed 20261007): pass.** Inserting all 267 unmatched internal Dead
+  GT instances at IoU .7: Dead PQ .1639 → .3199 (**ΔDead +.156**; exact-mask variant +.245), bPQ
+  +.0015, mPQ +.0023 — far above the +.010 bar. The ceiling is high: detection, not type quality, is
+  the binding constraint, consistent with the detection-first diagnosis.
+- State after this round: gates A/C/D favorable; gate B awaits an amended rerun (user checkpoint
+  before any GPU arm per plan Task 13).
+- Verification: all gate numbers re-derived from gate JSONs and eval artifacts bit-exactly; full
+  suite 253 passed; `git diff --check` clean.
+
+## 2026-10-08 (later) — Gate B amended rerun: a real measurement, and it fails — DSB closes under the pre-registered stop rule
+
+- User go-ahead received 2026-10-08 for the amended gate B rerun (~minutes of GPU, not the
+  estimated hour). Amendment pre-registered in the gates ledger BEFORE the run (commit 9009a21;
+  4 new TDD tests watched RED then GREEN; full CPU suite 254 passed / 3 CUDA-skipped):
+  Dead-stratified seeded sampling over the 65 Dead-positive fold-1 images (all covered each
+  pass), conflict fractions over L_dead-active batches with n_active recorded (VOID < 16),
+  and the spec §6 B per-layer clause implemented (one-sided one-sample t-tests, Holm across the
+  six module groups). Per-batch cosines serialized in the output JSON.
+- **Result (gate_b_v2.json, 64/64 Dead-active batches, all 65 images used):** decoder-composite
+  gradient cosine mean **+0.749**, per-batch min +0.594 — **0/64 batches negative** (conflict
+  fraction 0.000 vs the 0.30 bar; P(0/64 | true rate ≥ .30) ≈ 1e-10). Every module group's mean
+  cosine is positive: encoder +0.406, skips +0.608, np_branch +0.917, hv_branch +0.760,
+  tp_branch +0.196 (tp is the only group with any negative batches: 7/64, t = +12.3). Per-layer
+  clause: all t > 0 → p = 1, none significant. **Verdict: fail** — the VOID run's lone
+  informative batch (+0.27 decoder) was not an outlier.
+- **Interpretation:** H1 (capacity-level Dead-vs-common gradient conflict at a trained
+  same-recipe checkpoint) is not supported — Dead-pixel and common-class gradients are strongly
+  aligned, i.e. improving Dead pixels moves shared weights in roughly the same direction as
+  improving common-class pixels. This coheres with the training-side negative results (M1 pixel
+  weighting ✗, C1 balanced sampling ✗ — nothing to re-balance) and with the detection-first
+  diagnosis (gates C/D: decision decoupling buys +.002; the oracle ceiling +.156 is detection
+  headroom, not type headroom). Standing caveats: measured at the trained optimum (early-
+  training conflicts could have resolved during training; the probe cannot exclude this);
+  fallback same-recipe seed-19 sibling checkpoint; equal-weight per-group losses (directions,
+  scale-free).
+- **Decision per spec §10 (pre-registered):** any gate failure ⇒ the line closes without GPU
+  escalation. Gate B failed ⇒ **no smoke run, no dev round, no confirmatory round**; DSB ends
+  here with its mechanism evidence retained: A proceed/base x1_hv30 (support cutoff explains
+  9.59% of the x2 Dead gain), B no gradient conflict (this entry), C decision decoupling
+  insufficient (+.0021 < +.005), D oracle ceiling high (+.156). The four gates together say:
+  the Dead deficit is a detection-recall problem that neither re-weighting, nor threshold
+  decoupling, nor architectural specialist decoupling at the trained optimum addresses.
+- Verification: verdict re-derived from the JSON (fraction 0/64 < .30, no significant group,
+  n_active 64 ≥ 16 → fail); the 00:58 VOID artifact retained unchanged alongside gate_b_v2.json.
+
+## 2026-10-08 (cost round) — Reduced E0: the EF-P2 two-model system costs ~6.1x single-model x1 inference; not a deployment win
+
+Round `runs/analysis/inference_cost_20261008/` (script `scripts/inference_cost.py`, TDD; full
+commands, attempt log and caveats in the round's commands.md). Fixed protocol: one shared
+A100-SXM4-80GB, fp32, batch 32, decode workers 16; wall-clock of the UNMODIFIED `predict_fold`
+in 256-image chunks over fold 2 (2523 imgs — the timed split2_seed1 pair's training fold; cost
+is checkpoint-independent, no test fold read, no endpoint evaluated). GPU arms: x1 15.50 ms/img
+(64.5 img/s, peak 4.8 GiB), x2-du2 52.88 (18.9, 12.9 GiB), x1-TTA 72.33 (13.8, 4.9 GiB). CPU
+fusion: the frozen split2_seed19 EF-P2 deployment call replayed per image over its cached
+validation fold — 25.97 ms/img mean (p95 36.9), wall≈process-CPU; **the replay reproduced the
+frozen selection's 1542 additions exactly** (deployment-path check).
+
+- **Headline ratios: two-model system (x1 + x2-du2 + fusion) = 6.09x single-model x1; x1-TTA
+  alone = 4.67x.** Across the four launch windows (co-tenant load 19–46) absolute ms varied
+  (x1 mean 10.7–15.5) but the ratios held: x2/x1 = 3.1–3.4, two-model/x1 = 6.1–6.3. TTA/x1 was
+  the most load-sensitive (3.3–4.7; most CPU-side work).
+- **E0 decision rule (RESEARCH_NEXT, pre-registered): no performance–cost advantage ⇒ EF-P2 is
+  mechanism evidence / a teacher candidate, NOT a deployment gain.** The reported EF-P2 result
+  (Dead-centred robust improvement, findings 2026-10-05) stands as a mechanism finding; any
+  deployment framing must carry the ~6x inference cost (≈1.3x the cost of plain x1-TTA, which
+  buys ~+0.5 pt mPQ but cannot add Dead detections).
+- Incident + fix during the round: the fusion timer originally accessed `xz["inst"][j]` per
+  image — NpzFile member access re-decompresses the whole array every time, silently timing npz
+  decompression (~1–27 s/img) instead of fusion (~26 ms/img). Fixed by materializing the stacks
+  once; the canonical run is post-fix and its added-count check binds it to the frozen path.
+- Caveats: single shared GPU (wall-clock contamination quantified above); M/S lever not
+  separately timed (CPU relabel, same order as fuse); fusion measured single-threaded
+  (trivially parallel across images); model loading excluded; one machine, one batch size.

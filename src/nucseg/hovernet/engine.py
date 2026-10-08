@@ -252,19 +252,20 @@ def dihedral(x: torch.Tensor, k: int, flip: bool) -> torch.Tensor:
 
 
 def undo_dihedral(p: dict, k: int, flip: bool) -> dict:
-    """Invert `dihedral` on a prediction dict. The HV vector field (x = horizontal, y = vertical)
-    needs its components remapped as well as its pixels moved."""
+    """Invert `dihedral` on a prediction dict. Every HV vector field (x = horizontal, y = vertical;
+    the dead expert's `hv_dead` included) needs its components remapped as well as its pixels moved."""
     out = {}
     for name, v in p.items():
         if flip:
             v = v.flip(2)
         out[name] = torch.rot90(v, -k, (1, 2))
-    h, v = out["hv"][..., 0], out["hv"][..., 1]
-    if flip:
-        h = -h
-    for _ in range(k % 4):
-        h, v = -v, h
-    out["hv"] = torch.stack([h, v], -1)
+    for name in [n for n in out if n.startswith("hv")]:
+        h, v = out[name][..., 0], out[name][..., 1]
+        if flip:
+            h = -h
+        for _ in range(k % 4):
+            h, v = -v, h
+        out[name] = torch.stack([h, v], -1)
     return out
 
 

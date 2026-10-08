@@ -56,6 +56,14 @@ def build_parser():
     p.add_argument("--hv-min-size", type=_hv_cutoff, default=None,
                    help="minimum instance area for nonzero HV targets in WORKING pixels (not auto-scaled); "
                         "default: run config.json, else30. NP/TP labels are unchanged.")
+    p.add_argument("--dead-expert", action="store_true",
+                   help="add the Dead-detection expert branch and its positive-image masked loss "
+                        "(DSB spec 2026-10-07); resuming such a run requires the flag again")
+    p.add_argument("--dead-neg-w", type=float, default=0.0,
+                   help="BCE weight on Dead-free images' dead-fg channel (frozen menu {0.0, 0.1})")
+    p.add_argument("--widen", type=int, default=0,
+                   help="C1 equal-parameter widening of the NP/HV decoder bottlenecks; resuming "
+                        "a widened run requires the same value again")
     mode = p.add_mutually_exclusive_group()
     mode.add_argument("--skip-train", action="store_true")
     mode.add_argument("--train-only", action="store_true", help="train on train/val folds and exit WITHOUT test inference")
@@ -75,7 +83,8 @@ def main(argv=None):
                       dead_w=a.dead_w, small_w=a.small_w, small_area=a.small_area,
                       cp_prob=a.cp_prob, cp_lam=a.cp_lam, cp_dead_w=a.cp_dead_w,
                       cp_area=tuple(a.cp_area), cp_clearance=a.cp_clearance,
-                      synth=a.synth, synth_frac=a.synth_frac, upscale=upscale, hv_min_size=hv_min_size)
+                      synth=a.synth, synth_frac=a.synth_frac, upscale=upscale, hv_min_size=hv_min_size,
+                      dead_expert=a.dead_expert, dead_neg_w=a.dead_neg_w, widen=a.widen)
     if not a.skip_train:
         train(cfg, [tr], [va])
     if a.train_only:
