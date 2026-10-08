@@ -9,6 +9,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 PY = sys.executable
 
@@ -23,6 +25,35 @@ def _fake_run(tmp_path, split=1):
     run.mkdir()
     (run / "config.json").write_text(json.dumps({"split": split}))
     return run
+
+
+@pytest.mark.parametrize("split,fold", [(1, 3), (3, 1)])
+def test_gradient_probe_refuses_test_fold_before_model_load(tmp_path, monkeypatch, split, fold):
+    # Avoid allocating a real model while demonstrating the guard precedes GPU/weight I/O.
+    monkeypatch.syspath_prepend(str(SCRIPTS))
+    import dsb_gradient_probe as probe
+    run = _fake_run(tmp_path, split=split)
+
+    def forbidden_model(*args, **kwargs):
+        pytest.fail("model construction reached before fold rejection")
+
+    monkeypatch.setattr(probe, "build_model", forbidden_model)
+    with pytest.raises(SystemExit, match="TEST fold"):
+        probe.main(["--run", str(run), "--fold", str(fold),
+                    "--out", str(tmp_path / "probe.json")])
+
+
+def test_inference_cost_refuses_x2_test_fold(tmp_path):
+    run = _fake_run(tmp_path, split=1)  # fold 1 is train here, but test for x2 split 3
+    x2 = tmp_path / "x2"
+    x2.mkdir()
+    (x2 / "config.json").write_text(json.dumps({"split": 3}))
+    r = _run("inference_cost", "--x1-run", str(run), "--x2-run", str(x2), "--fold", "1",
+             "--ef-selection", "missing.json", "--p2-selection", "missing.json",
+             "--base-pred", "missing.npz", "--x2-pred", "missing.npz",
+             "--out", str(tmp_path / "cost.json"))
+    assert r.returncode != 0
+    assert "TEST fold" in r.stderr
 
 
 def test_dsb_dev_eval_refuses_test_fold(tmp_path):

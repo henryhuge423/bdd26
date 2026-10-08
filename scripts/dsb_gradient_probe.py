@@ -169,7 +169,10 @@ def main(argv=None):
                    help="seed for the Dead-stratified batch sampling (amendment (a))")
     p.add_argument("--out", type=Path, required=True)
     a = p.parse_args(argv)
-    cfg = TrainConfig(split=1, out_dir=str(a.run), upscale=run_upscale(a.run),
+    from fold_guard import ensure_dev_fold, run_split
+    split = run_split(a.run)
+    ensure_dev_fold(a.fold, split)
+    cfg = TrainConfig(split=split, out_dir=str(a.run), upscale=run_upscale(a.run),
                       hv_min_size=run_hv_min_size(a.run))
     model = build_model(cfg, pretrained=False).to(a.device)
     model.load_state_dict(torch.load(a.run / a.ckpt, map_location=a.device,

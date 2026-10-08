@@ -36,7 +36,7 @@ from nucseg.data.pannuke import PanNukeFold
 from nucseg.pixcell import batched_generate, load_pipeline, load_uni2h, reinhard_lab, uni_embed
 
 p = argparse.ArgumentParser()
-p.add_argument("--fold", type=int, default=3, help="test fold (3 for all official splits)")
+p.add_argument("--fold", type=int, default=3, help="test fold (3 for splits 1/2; 1 for split 3)")
 p.add_argument("--n", type=int, default=500)
 p.add_argument("--out", type=Path, required=True)
 p.add_argument("--arms", nargs="+", default=["control", "stain", "ctx", "tissue"])

@@ -27,6 +27,8 @@ p.add_argument("--bs", type=int, default=32)
 p.add_argument("--upscale", type=int, default=None,
                help="cellvit: override the run's working resolution (default: config.json upscale)")
 a = p.parse_args()
+if a.model == "hovernext" and a.tta:
+    p.error("HoVer-NeXt external inference does not support --tta")
 
 data_path = Path(a.data)
 if data_path.parent != Path("."):

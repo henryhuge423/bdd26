@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-09",
+  "scope": "Arithmetic correction from frozen throughput; no new inference or evaluation",
+  "source": "runs/analysis/inference_cost_20261008/cost.json",
+  "source_sha256": "712919925019cc912f71c18d646888d288d20b1da13c172775f964b7ddc8d0be",
+  "formula": "per-image mean_ms = 1000 / img_per_s; choose maximum-throughput rep per arm",
+  "selected_rep_index_zero_based": {
+    "x1": 0,
+    "x2_du2": 0,
+    "x1_tta": 0
+  },
+  "image_weighted_best_mean_ms": {
+    "x1": 15.506464410669217,
+    "x2_du2": 52.87037751837838,
+    "x1_tta": 72.30916304836435
+  },
+  "fusion_wall_mean_ms": 25.97174235950617,
+  "corrected_ratios": {
+    "two_model_over_x1_wall": 6.084467857394833,
+    "x1_tta_over_x1": 4.6631624807143055
+  },
+  "historical_chunk_mean_ratios": {
+    "two_model_over_x1_wall": 6.086869342094786,
+    "x1_tta_over_x1": 4.666531369390549
+  },
+  "limitations": [
+    "Shared-device chunk timing, not isolated request latency",
+    "M/S CPU time excluded from original protocol",
+    "Original precision label fp32 is incorrect; forward used bf16 autocast"
+  ]
+}

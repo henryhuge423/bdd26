@@ -7,7 +7,9 @@
 | `P0_P3_RESULTS_2026-10-02.md` | audited seed19 P0–P3 results and historical corrections; subsequent matched-seed/EF results are in stage III |
 | `superpowers/plans/2026-10-02-p0-p3-research.md` | approved execution plan and decisions |
 | `findings.md` | experiment log — every number, per-date entries |
-| `report/stage_report_3/` | current stage III report: matched-seed P2, existence-filtered P2, audit corrections and limitations (EN + ZH + plain-language ZH, PDF/TeX, verified numbers) |
+| `RESEARCH_AUDIT_2026-10-09.md` | latest audit: verified endpoints, cost aggregation correction, regression fixes and explicit verification gaps |
+| `report/stage_report_4/` | latest stage IV: E2a, DSB gate closure, E0 cost; README includes October 9 corrections |
+| `report/stage_report_3/` | stage III report: matched-seed P2, existence-filtered P2, audit corrections and limitations (EN + ZH + plain-language ZH, PDF/TeX, verified numbers) |
 | `report/stage_report_1/`, `report/stage_report_2/` | historical stage reports I & II with October 2 audit addenda; later results are in stage III |
 | `superpowers/plans/2026-10-03-matched-seed-validation.md` | matched-seed pre-registration and outcome |
 | `superpowers/plans/2026-10-06-hv-threshold-controls.md` | approved HV working-area control implementation and frozen four-arm, two-seed validation-only experiment |

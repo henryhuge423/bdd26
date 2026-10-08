@@ -39,6 +39,21 @@ def test_per_image_summary():
     assert abs(s["img_per_s"] - 200 / 4.0) < 1e-9
 
 
+def test_per_image_summary_weights_partial_chunk_by_images():
+    m = _load()
+    # 100 images in 1s, then 10 images in 1s: 2s / 110 images, not 55ms.
+    s = m.per_image_summary([(1.0, 100), (1.0, 10)])
+    assert abs(s["mean_ms"] - 2000.0 / 110) < 1e-9
+    assert abs(s["mean_ms"] * s["img_per_s"] - 1000.0) < 1e-9
+
+
+def test_frozen_ef_identity_does_not_apply_nonidentity_p2():
+    m = _load()
+    p2 = {"selected": {"name": "a200", "max_area": 200,
+                       "min_prob": 0.9, "interior_only": False}}
+    assert m.frozen_ef_config(p2, {"selected": {"name": "identity"}})["p2"] is None
+
+
 def test_frozen_ef_config():
     m = _load()
     p2_sel = {"selected": {"name": "a200_p0.9_interior0", "max_area": 200,

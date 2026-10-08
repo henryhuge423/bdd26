@@ -18,6 +18,19 @@ Research plan + full progress log: [docs/RESEARCH_PLAN.md](docs/RESEARCH_PLAN.md
 experiment number: [docs/findings.md](docs/findings.md). Course brief:
 `docs/our_project5_nuclei_segmentation.pdf`.
 
+## Current status (2026-10-09)
+
+The [October 9 audit](docs/RESEARCH_AUDIT_2026-10-09.md) rechecked frozen results,
+corrected stale status text and hardened the remaining dev-fold/cost paths.
+**E2a is complete; DSB is closed by its pre-registered Gate B stop rule**, and its
+code was merged into `master` as tested tooling, not as a trained method.
+**Reduced E0 is complete:** the two-model pipeline costs approximately **6.1× x1**
+(image-weighted correction: 6.08447×; historical chunk-mean estimate: 6.08687×).
+EF-P2 remains mechanism evidence / a teacher candidate, not a deployment win.
+See [stage report IV](docs/report/stage_report_4/README.md) and its audit addendum.
+Next priority is E1 independent candidate annotation; utility learning remains
+conditional on that evidence, not an approved new training round.
+
 ## Research review (2026-10-06)
 
 [Evidence audit and next-stage proposals](docs/RESEARCH_NEXT_2026-10-06.md) recheck all
@@ -42,8 +55,9 @@ all four x2−x1 seed pairs**. Interior-Dead matched rate rises 61.3%→71.0% th
 through the cutoff. Consequences: default `hv_min_size=30` stays; the pre-frozen DSB Gate A
 arithmetic (x1 cutoff change reproduces 9.59% of the x2 Dead gain — below both the 50% and 90%
 lines) keeps the planned dead-specialist experiments on an `x1_hv30` base without demoting the
-line. The dead-specialist branch remains in development: not merged here, no GPU stages
-started. Test folds were not read this round.
+line at that time. Subsequent Gates B/C/D are complete: Gate B closed the DSB line
+before any expert-branch training; the code has since been merged into `master`.
+The E2a and DSB experiments used train/validation folds only.
 
 ## Status (2026-10-05)
 
@@ -63,7 +77,8 @@ EF-P2 retains 94.3% of the P2 Dead gain: **ΔDead PQ +.00699**, with eight posit
 pairs and one identity pair. Mean **ΔbPQ is −.000009**, versus −.000869 for P2.
 This is a Dead-centred candidate improvement, **not proof of non-inferiority**:
 mPQ/bPQ image-bootstrap intervals span zero, strict mPQ remains slightly lower,
-test folds were reused across rounds, and dual-scale deployment cost is unmeasured.
+test folds were reused across rounds, and dual-scale cost was unmeasured at this
+October 5 milestone (E0 has since measured approximately 6.1× x1; see above).
 Split1 and split2 share test fold3; the nine pairs are not independent patient cohorts.
 
 **Stage report III:** [Chinese report](docs/report/stage_report_3/stage_report_3_zh.pdf),
@@ -182,7 +197,9 @@ Full methods, uncertainty and provenance: [P0–P3 results](docs/P0_P3_RESULTS_2
 
 ### Reports
 
-- `docs/report/stage_report_3/` — current stage III (EN, ZH and plain-language ZH;
+- `docs/report/stage_report_4/` — latest stage IV (EN, ZH and plain-language ZH),
+  E2a controls, DSB gate closure and E0 cost; the README links October 9 corrections.
+- `docs/report/stage_report_3/` — stage III (EN, ZH and plain-language ZH;
   PDF/TeX, figures, numerical tables and verification snapshot). Covers October 2–5
   audits, matched-seed validation and EF-P2; see its README for reproduction.
 

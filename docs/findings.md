@@ -1,5 +1,16 @@
 # Findings log
 
+> **2026-10-09 audit:** [review and corrections](RESEARCH_AUDIT_2026-10-09.md).
+> Rechecked 108 stage-III endpoint deltas and reproduced the frozen stage-IV verification snapshot.
+> Corrected E0's unequal-chunk mean: from saved throughput, image-weighted two-model/x1 =
+> **6.084468×**, TTA/x1 = **4.663162×** (historical chunk means 6.086869× / 4.666531×).
+> No new GPU measurement; approximately 6.1× and the no-deployment-win conclusion remain.
+> Actual forward precision was bf16 autocast, not the archived fp32 label.
+> Added missing gradient-probe/x2-cost fold guards, respected EF identity in cost replay,
+> and rejected unsupported HoVer-NeXt external TTA; **277 tests passed**.
+> Historical P0–P3 full provenance revalidation is blocked by the old split2_seed2 seed1
+> inventory versus the later seed2 directory; the guard was not bypassed. Frozen results remain intact.
+
 > **2026-10-05 follow-up audit:** the typing-audit, matched-seed and EF-P2 entries below
 > include corrected denominators, rounding and interpretation. These are post-execution
 > documentation corrections, not changes to frozen menus or archived experimental results.

@@ -49,12 +49,12 @@ def chunk_bounds(n: int, size: int) -> list[tuple[int, int]]:
 
 
 def per_image_summary(chunk_seconds) -> dict:
-    """Per-image latency stats over chunk wall times (per-image value = chunk_time/n_chunk)."""
+    """Image-weighted mean cost; percentiles describe chunk-average costs, not request latency."""
     per_img_ms = [1000.0 * t / n for t, n in chunk_seconds]
     total_t, total_n = sum(t for t, _ in chunk_seconds), sum(n for _, n in chunk_seconds)
     if not per_img_ms:
         return {"mean_ms": None, "p50_ms": None, "p95_ms": None, "img_per_s": None, "n": 0}
-    return {"mean_ms": float(np.mean(per_img_ms)),
+    return {"mean_ms": float(1000.0 * total_t / total_n),
             "p50_ms": float(np.percentile(per_img_ms, 50)),
             "p95_ms": float(np.percentile(per_img_ms, 95)),
             "img_per_s": float(total_n / total_t), "n": int(total_n)}
@@ -66,6 +66,8 @@ def frozen_ef_config(p2_selection: dict, ef_selection: dict) -> dict:
     p2cfg = None if p2["name"] == "identity" else {
         "max_area": p2["max_area"], "min_prob": p2["min_prob"], "interior_only": p2["interior_only"]}
     ef = ef_selection["selected"]
+    if ef["name"] == "identity":
+        p2cfg = None
     return {"p2": p2cfg,
             "ef": {"min_area": ef.get("min_area", 0), "dead_exempt": ef.get("dead_exempt", False)}}
 
@@ -161,12 +163,13 @@ def main(argv=None):
     a = p.parse_args(argv)
     split = run_split(a.x1_run)
     ensure_dev_fold(a.fold, split)
+    ensure_dev_fold(a.fold, run_split(a.x2_run))
 
     ef_sel = json.loads(a.ef_selection.read_text())
     p2_sel = json.loads(a.p2_selection.read_text())
     cfg = frozen_ef_config(p2_sel, ef_sel)
     if cfg["p2"] is None:
-        raise SystemExit("the timed pair's frozen P2 selection is identity — nothing to time")
+        raise SystemExit("the timed pair's frozen P2/EF selection is identity — nothing to time")
 
     images = PanNukeFold(a.fold).images
     import os
