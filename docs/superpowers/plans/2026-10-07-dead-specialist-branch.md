@@ -551,6 +551,9 @@ def test_gate_a_rules():
 
 ### Task 14: Dev-round analysis and freeze (CPU; after Task 13)
 
+> **2026-10-08 MOOT:** the dev round was cancelled with Task 13 steps 4–6 (gate B amended rerun
+> failed; §10 stop rule) — there are no dev arms to analyse or freeze.
+
 - [ ] **Step 1:** `scripts/dsb_dev_eval.py` outputs consolidated; check both seeds same sign on ΔDead (spec §3 dev entry rule); assemble montage of dev final predictions → second sonnet blind review.
 - [ ] **Step 2:** Write `docs/findings.md` dated entry (numbers only from artifacts; negative results included), including the C3 cost reference: DSB single-model inference p50/p95 vs base x1 and vs the x1+x2+EF two-model system, measured with the E0-style timing protocol on the same device/batch (spec §3 secondary endpoints); update plan checkboxes; `pytest -q`; commit `analysis: DSB dev round results`.
 - [ ] **Step 3:** Report to user: gates + dev verdict → decide confirmatory round (3 folds × 3 seeds, spec §7) as a **new plan**; the single frozen fold3 read for the dev arms happens only on explicit user approval.

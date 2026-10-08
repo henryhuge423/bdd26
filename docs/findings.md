@@ -1479,3 +1479,32 @@ validation fold2 only; no fold3 inference at any point.
   decoupling, nor architectural specialist decoupling at the trained optimum addresses.
 - Verification: verdict re-derived from the JSON (fraction 0/64 < .30, no significant group,
   n_active 64 ≥ 16 → fail); the 00:58 VOID artifact retained unchanged alongside gate_b_v2.json.
+
+## 2026-10-08 (cost round) — Reduced E0: the EF-P2 two-model system costs ~6.1x single-model x1 inference; not a deployment win
+
+Round `runs/analysis/inference_cost_20261008/` (script `scripts/inference_cost.py`, TDD; full
+commands, attempt log and caveats in the round's commands.md). Fixed protocol: one shared
+A100-SXM4-80GB, fp32, batch 32, decode workers 16; wall-clock of the UNMODIFIED `predict_fold`
+in 256-image chunks over fold 2 (2523 imgs — the timed split2_seed1 pair's training fold; cost
+is checkpoint-independent, no test fold read, no endpoint evaluated). GPU arms: x1 15.50 ms/img
+(64.5 img/s, peak 4.8 GiB), x2-du2 52.88 (18.9, 12.9 GiB), x1-TTA 72.33 (13.8, 4.9 GiB). CPU
+fusion: the frozen split2_seed19 EF-P2 deployment call replayed per image over its cached
+validation fold — 25.97 ms/img mean (p95 36.9), wall≈process-CPU; **the replay reproduced the
+frozen selection's 1542 additions exactly** (deployment-path check).
+
+- **Headline ratios: two-model system (x1 + x2-du2 + fusion) = 6.09x single-model x1; x1-TTA
+  alone = 4.67x.** Across the four launch windows (co-tenant load 19–46) absolute ms varied
+  (x1 mean 10.7–15.5) but the ratios held: x2/x1 = 3.1–3.4, two-model/x1 = 6.1–6.3. TTA/x1 was
+  the most load-sensitive (3.3–4.7; most CPU-side work).
+- **E0 decision rule (RESEARCH_NEXT, pre-registered): no performance–cost advantage ⇒ EF-P2 is
+  mechanism evidence / a teacher candidate, NOT a deployment gain.** The reported EF-P2 result
+  (Dead-centred robust improvement, findings 2026-10-05) stands as a mechanism finding; any
+  deployment framing must carry the ~6x inference cost (≈1.3x the cost of plain x1-TTA, which
+  buys ~+0.5 pt mPQ but cannot add Dead detections).
+- Incident + fix during the round: the fusion timer originally accessed `xz["inst"][j]` per
+  image — NpzFile member access re-decompresses the whole array every time, silently timing npz
+  decompression (~1–27 s/img) instead of fusion (~26 ms/img). Fixed by materializing the stacks
+  once; the canonical run is post-fix and its added-count check binds it to the frozen path.
+- Caveats: single shared GPU (wall-clock contamination quantified above); M/S lever not
+  separately timed (CPU relabel, same order as fuse); fusion measured single-threaded
+  (trivially parallel across images); model loading excluded; one machine, one batch size.
