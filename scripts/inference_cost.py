@@ -101,26 +101,37 @@ def time_arm(model, images, reps, batch, workers, upscale, decode_u, tta, device
             "peak_mem_gib": float(torch.cuda.max_memory_allocated() / 2 ** 30)}
 
 
+def _dist_ms(values) -> dict:
+    v = np.asarray(values, dtype=float)
+    return {"mean_ms": float(np.mean(v)), "p50_ms": float(np.percentile(v, 50)),
+            "p95_ms": float(np.percentile(v, 95))}
+
+
 def time_fusion(base_npz: Path, x2_npz: Path, p2cfg, ef, reps, expected_added: int) -> dict:
     bz, xz = np.load(base_npz), np.load(x2_npz, allow_pickle=True)
     rows_all = probability_rows(xz)
-    n = len(bz["inst"])
+    # NpzFile member access re-reads + re-decompresses the WHOLE array every time —
+    # materialize each stack once or the loop measures npz decompression, not fusion
+    bi_all, bt_all = bz["inst"], bz["type"]
+    xi_all, xt_all = xz["inst"], xz["type"]
+    n = len(bi_all)
     reps_ms = []
     for _ in range(reps):
-        per_img, total_added = [], 0
+        per_wall, per_cpu, total_added = [], [], 0
         for j in range(n):
-            t0 = time.perf_counter()
-            _, _, added = ef_apply(bz["inst"][j], bz["type"][j], xz["inst"][j], xz["type"][j],
+            w0, c0 = time.perf_counter(), time.process_time()
+            _, _, added = ef_apply(bi_all[j], bt_all[j], xi_all[j], xt_all[j],
                                    rows_all.get(j, {}), p2cfg, ef)
-            per_img.append(1000.0 * (time.perf_counter() - t0))
+            per_wall.append(1000.0 * (time.perf_counter() - w0))
+            per_cpu.append(1000.0 * (time.process_time() - c0))
             total_added += len(added)
+            if j % 500 == 499:
+                print(f"fusion {j + 1}/{n}", flush=True)
         if total_added != expected_added:
             raise SystemExit(f"deployment-path check FAILED: replay added {total_added} != "
                              f"frozen {expected_added} additions")
-        reps_ms.append(per_img)
-    return {"n_images": n, "expected_added": expected_added,
-            "reps": [{"mean_ms": float(np.mean(v)), "p50_ms": float(np.percentile(v, 50)),
-                      "p95_ms": float(np.percentile(v, 95))} for v in reps_ms]}
+        reps_ms.append({"wall": _dist_ms(per_wall), "cpu": _dist_ms(per_cpu)})
+    return {"n_images": n, "expected_added": expected_added, "reps": reps_ms}
 
 
 def main(argv=None):
@@ -134,7 +145,7 @@ def main(argv=None):
     p.add_argument("--reps-x1", type=int, default=2)
     p.add_argument("--reps-x2", type=int, default=1)
     p.add_argument("--reps-tta", type=int, default=1)
-    p.add_argument("--reps-fuse", type=int, default=3)
+    p.add_argument("--reps-fuse", type=int, default=1)
     p.add_argument("--device", default="cuda")
     p.add_argument("--ef-selection", type=Path, required=True)
     p.add_argument("--p2-selection", type=Path, required=True)
@@ -152,10 +163,12 @@ def main(argv=None):
         raise SystemExit("the timed pair's frozen P2 selection is identity — nothing to time")
 
     images = PanNukeFold(a.fold).images
+    import os
     result = {"protocol": {"device": a.device, "gpu": torch.cuda.get_device_name(0),
                            "torch": torch.__version__, "batch": a.batch, "workers": a.workers,
                            "chunk": a.chunk, "precision": "fp32",
                            "fold": a.fold, "n_images": int(len(images)),
+                           "loadavg_at_start": [round(x, 2) for x in os.getloadavg()],
                            "ms_lever": "not separately timed (CPU relabel, same order as fuse)"},
               "arms": {}, "fusion": None, "verdict_inputs": {}}
 
@@ -176,15 +189,16 @@ def main(argv=None):
     result["fusion"] = time_fusion(a.base_pred, a.x2_pred, cfg["p2"], cfg["ef"], a.reps_fuse,
                                    int(ef_sel["selected"]["added"]))
     # decision inputs: cost ratios at the best (max-throughput) rep of each arm
-    def best_ms(arm, key="img_per_s"):
-        reps = result["arms"][arm]["reps"]
-        return min(r["mean_ms"] for r in reps)
+    def best_ms(arm):
+        return min(r["mean_ms"] for r in result["arms"][arm]["reps"])
     x1_ms, x2_ms, tta_ms = best_ms("x1"), best_ms("x2_du2"), best_ms("x1_tta")
-    fuse_ms = min(r["mean_ms"] for r in result["fusion"]["reps"])
+    fuse_wall = min(r["wall"]["mean_ms"] for r in result["fusion"]["reps"])
+    fuse_cpu = min(r["cpu"]["mean_ms"] for r in result["fusion"]["reps"])
     result["verdict_inputs"] = {
-        "two_model_over_x1": (x1_ms + x2_ms + fuse_ms) / x1_ms,
+        "two_model_over_x1_wall": (x1_ms + x2_ms + fuse_wall) / x1_ms,
+        "two_model_over_x1_fuse_cpu": (x1_ms + x2_ms + fuse_cpu) / x1_ms,
         "x1_tta_over_x1": tta_ms / x1_ms,
-        "fuse_ms_per_image": fuse_ms}
+        "fuse_wall_ms_per_image": fuse_wall, "fuse_cpu_ms_per_image": fuse_cpu}
     a.out.parent.mkdir(parents=True, exist_ok=True)
     if a.out.exists():
         raise SystemExit(f"{a.out} exists; refusing to overwrite")

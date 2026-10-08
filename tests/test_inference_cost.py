@@ -14,6 +14,14 @@ def _load():
     return module
 
 
+def test_dist_ms():
+    m = _load()
+    d = m._dist_ms([10.0, 30.0])
+    assert abs(d["mean_ms"] - 20.0) < 1e-9
+    assert abs(d["p50_ms"] - 20.0) < 1e-9
+    assert abs(d["p95_ms"] - (10 + 0.95 * 20)) < 1e-9
+
+
 def test_chunk_bounds():
     m = _load()
     assert m.chunk_bounds(10, 4) == [(0, 4), (4, 8), (8, 10)]
