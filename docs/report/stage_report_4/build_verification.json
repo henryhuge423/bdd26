@@ -1,0 +1,69 @@
+{
+  "date": "2026-10-09",
+  "documents": {
+    "stage_report_4": {
+      "pages": 12,
+      "pdf_bytes": 255696,
+      "pdf_sha256": "60a946db26535b12847c8ba7ffc197885dd1e775be74b06d69abfdf6b1a7b238",
+      "tex_sha256": "904cfc980d62a5614e71ce14bf79882297f9a3ee1ffad7248983956ca6180282",
+      "tex_errors": 0,
+      "overfull_boxes": 0,
+      "underfull_boxes": 0,
+      "missing_characters": 0,
+      "undefined_references": 0,
+      "pdf_parser_warnings": [],
+      "figures_embedded": true,
+      "build": "LM2 texlive 2026; EN pdflatex x2; fresh-log verified"
+    },
+    "stage_report_4_zh": {
+      "pages": 10,
+      "pdf_bytes": 472127,
+      "pdf_sha256": "e9a8b6066a117aff086fe7fdf993a957748c18a3561b7444a00e7a3daccddcfb",
+      "tex_sha256": "5bb219aec8b23fd9ba33bf039d084b1967bf3290c6e79c0f26feb959012fda21",
+      "tex_errors": 0,
+      "overfull_boxes": 0,
+      "underfull_boxes": 0,
+      "missing_characters": 0,
+      "undefined_references": 0,
+      "pdf_parser_warnings": [],
+      "figures_embedded": true,
+      "build": "LM2 texlive 2026; ZH xelatex x2; fresh-log verified"
+    },
+    "summary_plain_zh": {
+      "pages": 3,
+      "pdf_bytes": 264771,
+      "pdf_sha256": "aae9c6ca480f6d757788fe6f6418d4553065126797da559113800008b51c1d34",
+      "tex_sha256": "a8e4af9242bce25c80c8311955e51e944c5cba37c43567efa2e68558cabb119f",
+      "tex_errors": 0,
+      "overfull_boxes": 0,
+      "underfull_boxes": 0,
+      "missing_characters": 0,
+      "undefined_references": 0,
+      "pdf_parser_warnings": [],
+      "figures_embedded": true,
+      "build": "LM2 texlive 2026; ZH xelatex x2; fresh-log verified"
+    }
+  },
+  "numeric_verification": {
+    "raw_summary_cells_checked": 96,
+    "gate_a_ratio_rederived": true,
+    "gate_b_v2_stats_recomputed_from_serialized_cosines": true,
+    "gate_c_gate_d_rows_recomputed": true,
+    "e0_ratios_rederived_from_cost_json": true,
+    "audit_corrections_rederived": true,
+    "snapshot_matches_fresh_extraction": true,
+    "snapshot_sha256": "3cc7d733a6196a5def1b17a3e59956dc590ac92e082af901868fbe097455c0d2",
+    "notes": "bootstrap intervals carried from the frozen E2a snapshot with recorded source SHA-256, not resampled"
+  },
+  "tests": {
+    "passed": 271,
+    "warnings": 64,
+    "final_result": "passed",
+    "command": "python -m pytest -q",
+    "python": "3.10",
+    "torch": "2.5.1+cu124",
+    "numpy": "1.23.5",
+    "note": "full suite re-run on the final tree (2026-10-08) including the three new report scripts; no training/inference/eval code touched this round"
+  },
+  "note": "2026-10-09 language revision (zh formal, zh guide, EN) + appendix command-spacing fix (nolinkurl -> texttt); all table and prose numbers byte-identical to the 2026-10-08 verified snapshot (verified_numbers.json re-run matched bit-exactly); page counts unchanged"
+}

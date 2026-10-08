@@ -1,0 +1,7 @@
+module,mean_cosine,negative_batches,n_batches,conflict_fraction
+skips,0.60770695,0,64,0.000000
+np_branch,0.91731614,0,64,0.000000
+hv_branch,0.76041800,0,64,0.000000
+tp_branch,0.19583294,7,64,0.109375
+encoder,0.40576580,0,64,0.000000
+decoder,0.74920474,0,64,0.000000

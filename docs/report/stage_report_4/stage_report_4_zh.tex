@@ -1,0 +1,298 @@
+% 阶段报告四：中文正式版。编译：xelatex stage_report_4_zh.tex（两遍）。
+% 数字来源及独立核验见本目录 verified_numbers.json 和 README.md。
+\documentclass[11pt,a4paper,UTF8,fontset=fandol]{ctexart}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,tabularx,array,graphicx,xcolor,float}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\setlist{itemsep=3pt,topsep=5pt}
+\renewcommand{\refname}{参考文献}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\code}[1]{\nolinkurl{#1}}
+\emergencystretch=3em
+\linespread{1.15}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0pt}
+% 页眉沿用 ctexart 默认 headings 样式，但保留节标题原大小写（E2a 不被大写为 E2A）。
+\makeatletter
+\renewcommand\sectionmark[1]{\markboth{\ifnum\c@secnumdepth>\z@\thesection\quad\fi #1}{}}
+\makeatother
+\title{\bfseries 跨尺度 Dead 增益的机制检验与 Dead 专家分支的预注册关闭\\[7pt]
+\large PanNuke 细胞核实例分割：阶段报告四}
+\author{课程项目 bdd26}
+\date{2026 年 10 月 8 日\\\small 实验范围：2026 年 10 月 6 日至 8 日}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+上一阶段的 EF-P2 在保留原尺度预测的前提下补入两倍尺度候选，以极小的整体指标代价稳定提升了 Dead 类的分割质量，但没有回答三个更根本的问题：两倍尺度的 Dead 增益从何而来，Dead 短板能否靠训练侧的专家分支解决，以及两套模型的完整推理代价是多少。本阶段围绕这三个问题开展机制实验。首先，四臂对照实验（E2a）把 HV 目标的固定面积门槛从尺度效应中分离出来：x1 降低门槛只能复现两倍尺度 Dead 增益的 9.59\%，不足以替代尺度本身；在把门槛折算到原生像素面积口径配平后，x2 相对 x1 仍承担全部 bPQ 代价，并保留大部分 Dead 增益。其次，为检验“Dead 与常见类在共享解码器上存在容量级梯度冲突”这一前提，Dead 专家分支（DSB）在训练前设置了四道预注册闸门：A、C、D 三项放行，而 B 项梯度冲突探针在修正取样方式后的重跑显示，64 个 Dead 阳性批次上解码器复合梯度余弦均值为 $+0.749$、最小值 $+0.594$、无一批为负，梯度强同向而非冲突；据此该研究线按预注册的止损规则关闭，未启动任何 GPU 训练。最后，推理成本实测表明两模型系统耗时为单模型 x1 的 6.09 倍；按预注册规则，EF-P2 的定位由候选部署方案调整为机制证据与教师候选模型。本阶段另完成一次全仓库一致性审计，更正了若干历史转录误差，并重建了两个丢失的实验产物。全部实验未读取测试折，亦未产生新的三划分测试成绩。
+\end{abstract}
+\noindent\textbf{关键词：}细胞核实例分割；PanNuke；机制归因；预注册闸门；梯度冲突；推理成本
+
+\section{研究背景与本阶段问题}
+
+阶段报告三给出了一个边界清晰的正面结果：EF-P2 在九组划分--种子配对上将 Dead PQ 平均提高 0.00699，同时将 bPQ 的平均损失控制在约 $-0.000009$\cite{reports}。但它同时留下了三个悬而未决的问题。第一，Dead 增益的来源不清楚——两倍工作尺度同时改变了采样密度、特征尺度、解码常数和训练监督的构成，收益无法归因。第二，Dead 短板的训练侧解法尚未被排除——此前的负结果集中在像素加权、平衡采样与免训练找回，模型内部为稀有类设置专家分支的方案尚未检验。第三，两套模型的部署代价从未测量，EF-P2 的实用定位悬而未决。
+
+10 月 6 日的复盘将这三个问题确立为正式议题，并给出最小实验集 E0--E5 与三条候选路线\cite{next}。复盘中的代码排查带来一项直接决定本阶段首组实验的发现：HV 目标构造沿用了官方实现的 30 工作像素面积门槛，实例小于该门槛时其整个 HV 目标被置零；而在两倍尺度下，同样的门槛只相当于约 7.5 个原生像素。也就是说，x1 与 x2 的小实例几何监督在训练开始前就不相同，任何把 x2 收益直接归因于“分辨率”的解释，都必须首先排除这一混杂因素。
+
+本阶段完成的工作依次为：
+\begin{enumerate}
+\item 开展 E2a 四臂对照实验，将工作尺度与 HV 门槛两因素交叉，隔离监督门槛对 Dead 增益的贡献；
+\item 执行 DSB 四道预注册闸门，在投入 GPU 训练前检验 Dead 专家分支的全部前提假设，并在闸门失败时按预注册规则关闭该研究线；
+\item 完成 E0 推理成本实测，按预注册规则确定 EF-P2 的部署定位；
+\item 进行全仓库一致性审计，核对文档、代码与实验产物，更正历史误差并重建丢失产物。
+\end{enumerate}
+
+本阶段所有训练与探针只使用训练折和验证折，没有读取任何测试折，也不产生新的三划分测试成绩。E2a 为单划分、双种子的验证集机制实验；DSB 全部闸门在同一组冻结检查点上执行；E0 只计时、不评测。三者结论的适用范围分别在相应各节说明。
+
+\section{实验设置与通用口径}
+
+模型与训练配方沿用阶段报告三：CellViT\cite{cellvit} 以 UNI\cite{uni} 为编码器，训练 130 轮，批大小 16，前 25 轮冻结编码器，初始学习率 $3\times10^{-4}$、逐轮乘 0.85 衰减，推理不使用测试时增强。E2a 与 DSB 闸门在 split 1（训练 fold 1、验证 fold 2）上执行；验证折 fold 2 含 2,523 张图、19 种组织、59,872 个真实细胞核实例（ground-truth instances），其中 Dead 884 个，分布在 70 张图，图像内部 741 个、接触图像边界 143 个。两个随机种子训练出的模型共享同一批对象，不构成两批独立样本。
+
+指标口径与阶段报告三一致：mPQ 为官方图像--组织聚合的多类全景质量，bPQ 忽略类别，Dead PQ 只在含 Dead 真值的图像上计算；strict 口径把“无该类真值却预测出该类”的图像也计入惩罚，与官方口径并报。梯度余弦、毫秒每图等本阶段新增的量在各节单独定义。表中 $\Delta$ 均为前者减后者的带符号差值，如 $+0.00982$ 即百分制下 0.982 分。
+
+\section{HV 目标支持门槛：一个先于训练的混杂}
+
+复盘阶段在 CPU 上直接调用仓库的 \code{hv\_targets} 构造函数，对同一 $64\times64$ 标签中的完整矩形核做精确两倍最近邻放大，统计非零 HV 像素数（表~\ref{tab:hvprobe}）。16 与 25 像素的核在 x1 下 HV 目标整体为零，在 x2 下则具有完整的方向距离场；30 像素的核恰在 x1 门槛边缘。被门槛排除的实例仍保留核像素与类型（NP/TP）监督，并非被完全忽略，但分水岭解码所依赖的 HV 几何目标被置为全零，并\textbf{在损失中被显式监督至零}，而非作为忽略区域排除在损失之外。
+
+\begin{table}[H]
+\centering\small
+\caption{CPU 探针：同一标签在不同工作尺度下的非零 HV 像素数。目标构造对 x1/x2 使用同一 30 工作像素门槛。}
+\label{tab:hvprobe}
+\begin{tabular}{crr}\toprule
+原始实例面积（像素） & x1 非零 HV 像素 & x2 非零 HV 像素\\\midrule
+16 & 0 & 63\\
+25 & 0 & 99\\
+30 & 29 & 119\\
+36 & 35 & 143\\\bottomrule
+\end{tabular}
+\end{table}
+
+这一发现有两层含义。其一，跨尺度互补的机制解释必须先控制该门槛：如果 x1 单纯降低门槛就能复现大部分 Dead 增益，两套模型的必要性将大幅下降。其二，它是官方实现的既有行为而非程序缺陷（bug），修改它属于实验干预，必须以对照实验的方式实施。E2a 由此确定四臂设计：保留 (x1, 30) 与 (x2, 30)，新增 (x1, 8) 与 (x2, 120)，后两臂把门槛折算到原生像素面积口径后分别约为 8 像素与 30 像素，使两对尺度比较在配平的支持水平上进行。设计、预算与对比在启动前冻结于预注册计划\cite{hvplan}。
+
+\section{E2a：HV 门槛与工作尺度的四臂对照}
+
+\subsection{完成状态}
+
+四臂 $\times$ 种子 \{19, 1\} 共 8 次训练全部完成：每个日志均含 130 个 epoch 且无重复记录，最终检查点齐备，训练源码冻结于提交 \code{c6e7e92}。每臂另做一次哈希绑定的审计重推（最终检查点、无 TTA、同一解码常数），8$\times$6 个端点上审计与原始评估的差值全部精确为零，排除了在两次评估之间择优汇报的可能。八个训练日志记录的训练循环时间合计 41.76 小时，在共享 A100 上运行，仅作为完成性记录，并非受控的吞吐基准。HV 分支完整 CPU 测试 210 项通过、3 项 CUDA 依赖跳过。
+
+\subsection{臂均值与预注册对比}
+
+\begin{table}[H]
+\centering\small
+\caption{E2a 验证折（fold 2）双种子均值。四臂配置仅工作尺度与 HV 门槛不同。}
+\label{tab:e2aarms}
+\begin{tabular}{lrrrr}\toprule
+臂 & mPQ & bPQ & Dead PQ & strict Dead PQ\\\midrule
+x1\_hv30 & 0.48211 & 0.65197 & 0.16214 & 0.12630\\
+x1\_hv8 & 0.48079 & 0.65067 & 0.16358 & 0.13017\\
+x2\_hv30 & 0.48131 & 0.64470 & 0.17717 & 0.12340\\
+x2\_hv120 & 0.47980 & 0.64448 & 0.16735 & 0.11899\\\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering\small
+\caption{四项预注册对比（前者减后者）。方括号为 2,000 次按组织分层的配对图像 bootstrap 95\% 区间（种子 20261006），只反映给定两个训练模型的图像抽样不确定性。}
+\label{tab:e2acontrasts}
+\begin{tabular}{lrr}\toprule
+对比 & $\Delta$Dead PQ & $\Delta$bPQ\\\midrule
+x1\_hv8 $-$ x1\_hv30 & $+0.00144$ [$-0.01027$, $+0.01360$] & $-0.00130$ [$-0.00295$, $+0.00039$]\\
+x2\_hv30 $-$ x2\_hv120 & $+0.00982$ [$-0.00165$, $+0.02397$] & $+0.00022$ [$-0.00111$, $+0.00168$]\\
+x2\_hv120 $-$ x1\_hv30 & $+0.00521$ [$-0.01298$, $+0.02609$] & $-0.00749$ [$-0.01033$, $-0.00439$]\\
+x2\_hv30 $-$ x1\_hv8 & $+0.01359$ [$-0.01021$, $+0.04251$] & $-0.00597$ [$-0.00896$, $-0.00289$]\\\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figs/e2a_contrasts_zh.pdf}
+\caption{四项预注册对比的 Dead PQ 与 bPQ 差值及图像 bootstrap 区间。Dead 的四个区间全部跨零；bPQ 的两个尺度对比区间整体低于零。图中数值为双种子均值。}
+\label{fig:e2a}
+\end{figure}
+
+四项对比给出四个可分开陈述的判断\cite{hvres}：
+
+\begin{enumerate}
+\item \textbf{x1 降门槛不能替代 x2。}Dead 差值在两个种子间方向相反（$-0.00138$ / $+0.00426$），bPQ 在两个种子上均下降。x1\_hv8 的 strict Dead 均值虽较高，仍无法弥补官方口径下的不稳定性与整体代价。
+\item \textbf{x2 内门槛效应是候选信号，不是稳健改进。}hv30 相对 hv120 的官方 Dead 在两个种子上均提高（$+0.01083$ / $+0.00880$），均值 $+0.00982$，但 bootstrap 区间跨零，strict Dead 在 seed 1 下降。
+\item \textbf{配平支持水平后，尺度效应仍伴随 bPQ 代价。}两组 x2$-$x1 对比的 bPQ 区间均完全位于零以下，且两个种子方向一致；官方 Dead 均值为正的同时，strict Dead 在全部四个 x2$-$x1 种子对上为负。官方与 strict 两种口径必须一并报告。
+\item \textbf{因果机制尚未定位。}固定面积门槛只排除了一个特定混杂；尺度同时改变采样、特征与目标离散化，训练进度安排（编码器解冻时学习率已衰减至 $5.16\times10^{-6}$）等混杂仍未隔离。
+\end{enumerate}
+
+对象级统计进一步刻画了门槛效应的性质。以验证折固定的 741 个内部 Dead 为分母，x1\_hv30 的匹配率为 61.27\%，x2\_hv120 为 70.99\%——在原生像素面积口径配平后，内部 Dead 匹配率仍由尺度提高近 10 个百分点。而在 x2 内部，把门槛从 120 降到 30 仅使平均内部匹配数从 526.0 增至 526.5（两个种子合计仅多 1 个）：$+0.00982$ 的官方 Dead 增益并非来自内部完整核的额外找回，更可能源于掩码形状与误报结构的变化，本轮未做进一步分解。接触图像边界的 Dead 匹配率同样由尺度解释（40.21\%$\to$48.25\%），门槛在 x2 内对其几乎没有影响。
+
+\subsection{研究决策与闸门 A 的规则计算}
+
+E2a 的直接决策是：默认 \code{hv\_min\_size=30} 不变；x2\_hv30 保留为冻结的机制参照；不把本轮任何数字当作三划分收益发布。对后续 DSB 研究线，预注册的闸门 A 以点估计代入规则：x1 降门槛复现的 Dead 增益占比 $r/R=0.00144/0.01503=9.59\%$，未达到 50\% 的换基线条件，也未达到 90\% 的全解释降级条件，且 x1\_hv8 伴随 $-0.00130$ 的 bPQ 代价。因此 DSB 基线维持 x1\_hv30，架构线不降级。该比值只是冻结规则的代入值，不构成对门槛贡献的因果估计。
+
+\section{DSB：Dead 专家分支的四道预注册闸门}
+
+\subsection{设计与闸门逻辑}
+
+DSB 的假设链是：如果 Dead 与常见类在共享解码器上存在\textbf{容量级}梯度冲突（H1），那么把 Dead 检测解耦为模型内专家分支（同构 NP+HV 双头、仅 Dead 阳性图计算专家损失、EF 式去重并入）有望在不损害聚合指标的前提下恢复内部 Dead 召回（H2）。设计要点为：编码器与既有 NP/HV/TP 三分支保持不变，仅新增专家分支；不使用过采样（平衡采样在 C1 已有负结果），不使用 pos\_weight（97\% 的批次为纯负样本，会污染 BatchNorm 统计），改用损失掩蔽。文献核查未发现“类解耦专家 + 细胞核实例分割 + PanNuke 官方三折 + 等参对照”的正面工作，最近的类比是图像分类领域的 GS-MoE 与半监督腺体分割的 Semi-MoE\cite{gsmoe,semimoe}。完整设计、预算与止损规则冻结于预注册规格\cite{dsbspec}。
+
+按规格 \S6，任何 GPU 训练开始前须依次通过四道闸门，全部通过方可进入开发轮；任一失败则关闭整条研究线、只保留机制证据。CPU 侧实现（模型、目标、损失、TTA、命令行、合并选择、蒙太奇与四个闸门脚本）按测试驱动开发逐任务完成并提交；该分支在闸门流程结束后合入 master，保留为已通过测试的工具代码，从未用于任何训练。
+
+\begin{table}[H]
+\centering\small
+\caption{四道闸门的内容与预冻结继续条件（规格 \S6 摘要）。}
+\label{tab:gates}
+\begin{tabularx}{\linewidth}{lYY}\toprule
+闸门 & 检验内容 & 预冻结继续条件\\\midrule
+A & E2a 门槛规则 & x1 降门槛复现 $\geq$50\% 尺度 Dead 增益则更换基线；$\geq$90\% 且无性能代价则架构线降级\\
+B & 梯度冲突探针 & Dead 组与常见类组梯度余弦为负的批次比例 $\geq$30\%，或逐层显著为负\\
+C & L0 决策解耦上界 & 免训练的按类阈值/解码菜单若得 $\Delta$Dead $\geq$ $+0.005$ 且 bPQ 代价 $\leq$0.001，则架构级解耦无必要，本线关闭\\
+D & Dead oracle 上界 & 内部漏检 Dead 以 IoU 0.7 oracle 加入后 $\Delta$Dead $\geq$ $+0.01$\\\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{闸门 A、C、D 的结果}
+
+\textbf{闸门 A（proceed，基线 x1\_hv30）。}规则计算见上节：9.59\% $<$ 50\%，未触发更换基线；$<$ 90\%，未触发降级。输入数字经独立复核，与 E2a 冻结快照逐位一致。
+
+\textbf{闸门 C（proceed）。}在验证折 fold 2 上扫描 Dead 专属解码阈值 $\tau_{\mathrm{dead}}\in\{0.5,0.4,0.35,0.3\}$（0.5 即基线）：Dead PQ 由 0.16386 最高升至 0.16601（$\tau=0.4$），$\Delta$Dead 峰值 $+0.00214$，$\Delta$bPQ $+1.1\times10^{-5}$。峰值远低于 $+0.005$ 的关闭线，说明免训练的决策级解耦无法带来足够的 Dead 召回提升，架构级解耦的前提仍然成立。基线 Dead PQ 与官方评估逐位一致；该菜单的重解码路径使 mPQ/bPQ 基线与官方评估存在 $10^{-7}$ 量级差异，本报告只引用其 Dead 数字。
+
+\textbf{闸门 D（pass）。}把 fold 2 全部 267 个未匹配的内部 Dead 真值以 IoU 0.7 的收缩掩码 oracle 加入基线预测：Dead PQ 由 0.16386 升至 0.31992，$\Delta$Dead $+0.15606$，bPQ $+0.00145$，mPQ $+0.00231$；精确掩码变体 $\Delta$Dead $+0.24533$。该上界远高于 $+0.01$ 的通过阈值：只要能找回漏检的内部 Dead，收益量级即可达到现有水平的十倍以上。这与“Dead 短板首先是检测召回问题”的诊断一致。
+
+\subsection{闸门 B：首跑判 VOID 与修正重跑后的失败}
+
+闸门 B 在冻结的 split1 检查点上测量 Dead 像素组与常见类像素组损失的梯度余弦：两组掩码不相交，同一批数据一次前向、分别反传，对共享解码器参数取复合余弦；冲突定义为余弦为负的批次比例 $\geq$30\% 或逐层显著为负。
+
+首次运行（10 月 8 日 00:58）被判 VOID 而非失败：预冻结计划指定“顺序取前 256 张 fold 1 图像”，而这 256 张全部为 Breast 组织、恰含 1 张 Dead 阳性图；64 批中有 63 批的 Dead 损失结构性地为零，却被当作非冲突批次计入分母，致使冲突比例在尚未测量任何梯度几何之前就被限制在 1/64。唯一有效批的解码器复合余弦为 $+0.269$。探针机制本身经核查无误（掩码不相交、一次前向、\code{retain\_graph}；参数集与解码器等价），缺陷出在预冻结的取样设计与零损失批次的分母计入方式。规格 \S10 的止损规则未被触发；修正案（Dead 分层种子取样覆盖全部 65 张 Dead 阳性图、分母只计 Dead 活跃批、$n_{\mathrm{active}}<16$ 判 VOID、补齐逐层单侧 $t$ 检验与 Holm 校正）先行登记于台账并新增四个测试用例，经确认后重跑，全程约数分钟 GPU 时间。
+
+\begin{table}[H]
+\centering\small
+\caption{闸门 B 修正重跑：65 张 Dead 阳性图全覆盖，64/64 批 Dead 活跃，每批 4 图。解码器复合为跳接、NP、HV、TP 四组共享参数的合成余弦。}
+\label{tab:gateb}
+\begin{tabular}{lrrr}\toprule
+参数组 & 逐批余弦均值 & 负批次 & 冲突比例\\\midrule
+编码器 & $+0.406$ & 0/64 & 0.000\\
+跳接适配层 & $+0.608$ & 0/64 & 0.000\\
+NP 分支 & $+0.917$ & 0/64 & 0.000\\
+HV 分支 & $+0.760$ & 0/64 & 0.000\\
+TP 分支 & $+0.196$ & 7/64 & 0.109\\
+解码器复合 & $+0.749$ & 0/64 & 0.000\\\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figs/gate_b_cosines_zh.pdf}
+\caption{闸门 B 修正重跑的逐批梯度余弦分布。圆点为 64 个 Dead 阳性批次的取值，菱形为均值。全部点位于零线右侧；仅 TP 分支出现 7 个负批次。}
+\label{fig:gateb}
+\end{figure}
+
+重跑结果明确：解码器复合余弦均值 $+0.749$，逐批最小 $+0.594$、中位数 $+0.760$、最大 $+0.861$，\textbf{64 批中 0 批为负}（冲突比例 0 $\ll$ 0.30；若真实冲突率 $\geq$30\%，64 批全非负的概率约 $10^{-10}$）。六个参数组的均值全部为正，逐层单侧 $t$ 检验统计量均为正（解码器复合 $t=+89.6$），无任何 Holm 显著负组。首次运行中唯一有效批的 $+0.269$ 也并非偶然。闸门 B 判定失败。
+
+该测量在训练收敛后的同一配置检查点上进行（回退检查点取自另一种子），早期训练动态不在覆盖范围内；两组损失等权，余弦只约束方向、不含幅度。方向性结论是明确的：在训练完成的模型上，改善 Dead 像素与改善常见类像素把共享参数往大体相同的方向推。H1 不成立，专家解耦的收益前提不复存在。
+
+\subsection{按预注册止损关闭}
+
+规格 \S10 预注册：任一闸门失败即关闭整条研究线，不升级算力。闸门 B 失败后，DSB 的冒烟轮、开发轮与确认轮全部取消，蒙太奇盲审不再需要，已准备的开发轮队列脚本未启用。四道闸门合起来留下的是一组机制证据：Dead 短板是检测召回问题——像素重加权与平衡采样此前已证伪，决策阈值解耦仅能带来 $+0.002$，专家架构解耦的梯度冲突前提不成立，而检测级 oracle 上界高达 $+0.156$。解法不在这四个方向上；后续要么引入新的检测监督或数据（路线 C 的跨模态条件），要么接受 EF-P2 式的两阶段候选补入并如实报告其成本（路线 B）。
+
+\section{E0：两模型系统的推理成本}
+
+E2a 与 DSB 检验的是训练价值，E0 度量的是部署成本。计时协议固定：共享 A100-SXM4-80GB，批大小 32，解码 16 进程；在保持 \code{predict\_fold} 流程未作修改的前提下，以 256 张图分块统计实际运行耗时（wall-clock），数据为 fold 2 的 2,523 张图（计时对象 split2\_seed1 的训练折；成本与检查点质量无关，未读测试折，未评任何端点）。CPU 融合按冻结的 split2\_seed19 EF-P2 部署调用逐图重放，重放的添加数与冻结选择精确一致（1,542 个），证明计时路径就是部署路径。
+
+\begin{table}[H]
+\centering\small
+\caption{E0 分臂计时。各臂取各次重复中吞吐最高者；比值以 x1 为分母。融合为 CPU 单线程。}
+\label{tab:e0}
+\begin{tabular}{lrrrr}\toprule
+环节 & ms/图 & 图/秒 & 峰值显存 (GiB) & 相对 x1\\\midrule
+x1 & 15.50 & 64.4 & 4.76 & 1.00\\
+x2-du2（GPU） & 52.88 & 18.9 & 12.91 & 3.41\\
+x1-TTA（GPU） & 72.33 & 13.8 & 4.93 & 4.67\\
+融合（CPU） & 25.97 & --- & --- & 1.68\\
+两模型系统合计 & 94.35 & --- & --- & \textbf{6.09}\\\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figs/e0_cost_zh.pdf}
+\caption{E0 各环节的每图耗时与相对 x1 的倍数。两模型系统为 x1、x2-du2 与 CPU 融合之和。}
+\label{fig:e0}
+\end{figure}
+
+两模型系统合计 94.35 ms/图，为单模型 x1 的 \textbf{6.09 倍}；作为参照，x1 自身的 TTA 亦达 4.67 倍。绝对耗时随同机负载波动：四次启动窗口的负载从 19 到 46 不等，x1 均值在 10.7--15.5 ms 间变化，但\textbf{臂间比值}在各窗口稳定（x2/x1 3.1--3.4，两模型/x1 6.1--6.3；TTA 因 CPU 占比最高而最敏感，3.3--4.7）。两点口径说明：其一，冻结产物中的精度标签为 fp32，实际前向走的是 \code{predict\_fold} 的 bf16 autocast 路径，四臂一致，比值不受影响（脚本标签已在事后修正）；其二，融合计时的最终数字基于一次性物化的数组测得，已排除 npz 逐实例重复解压带来的偶发开销（首测每图 1--27 秒），并与命令日志绑定存档。
+
+按 E0 预注册规则——无性能--成本优势则 EF-P2 只作机制证据或教师候选——EF-P2 的正式定位就此调整：Dead 收益成立，但任何部署表述都必须如实说明约 6 倍的推理成本；该成本约为 x1-TTA 的 1.3 倍，而 TTA 不能带来新的 Dead 检出。M/S 杠杆未单独计时（CPU 重标注，与融合同量级）；模型加载、评测与多进程融合并行化未计入。
+
+\section{全仓库一致性审计}
+
+10 月 8 日晚，由三个独立运行的只读审计代理（LLM 自动核查）加人工复算完成了一次全仓库一致性核查：文档对代码、文档数字对实验产物、代码对记录运行三个方向，加全量测试。核心结论是\textbf{主要结果全部复现}：四道闸门的判定值与台账逐位一致，E0 的 6.09 倍由 cost.json 重推，阶段报告一至三与 HV 对照、P0--P3 的全部表格数字精确复现，评测协议规则（官方评测器、最终检查点、三划分均值、不引用全数据发布权重作测试成绩）均得到遵守。审计后全量测试 \textbf{271 项通过}。
+
+更正与补建包括：CellViT-UNI 三划分 bPQ 均值由舍入值平均改为精确平均，0.6654 更正为 \textbf{0.6653}（本文与阶段报告三的衔接以此为准）；恢复类负结果的表述修正为“逐折最大回落 $-0.0012$”；KongNet 训练折 F1 间距更正为 $\geq$0.12（最小 0.124）；跨域降幅 CellViT 0.152$\to$0.154 等十余处转录级修正；两个在两台机器上均已丢失的产物（fold 3 失败实例清单、split2\_seed2 的 du2/du2lev 测试评测）分别从留存的确定性预测重建，重建值与历史记录逐位吻合（du2 0.48682/0.65836/0.15259，杠杆增量 $+0.00157$/$+0.00238$/$+0.00071$，九格网格判定全部不变），并以记录 SHA-256 的校验文件（sidecar）绑定来源。工程上新增 \code{fold\_guard} 机制：四类开发/探针脚本此后拒绝读取所属划分的测试折、拒绝不可验证的划分号，开发评估菜单冻结时绑定输入哈希并拒绝覆盖。CONCH 支柱 A 的探针输出此前未在任何机器留存缓存，是目前唯一无法复核的条目，已在文档中如实标注。
+
+本轮审计的各项更正均先依据产物重新计算、再行修改；涉及历史文档的就地更正不改变任何实验判定。
+
+\section{讨论与后续工作}
+
+\subsection{本阶段的局限}
+
+\begin{enumerate}
+\item \textbf{E2a 为单划分、双种子实验。}全部对比在 split 1 的验证折上进行，bootstrap 区间只覆盖图像抽样；Dead 的四个对比区间均跨零，x2 内的门槛效应属于候选信号，有待三划分与更多种子确认。
+\item \textbf{闸门 B 只覆盖训练收敛后的检查点。}早期训练动态与损失幅度不在测量范围内；止损所依据的规格先于测量冻结。
+\item \textbf{DSB 的 H2 未经检验。}整条研究线在进入训练前的闸门阶段即告终止，结论限于“解耦前提不成立”，不涉及专家分支本身的有效性。
+\item \textbf{E0 为单机共享 GPU 的实际耗时（wall-clock）测量。}绝对毫秒不可直接迁移，比值在观测窗口内稳定；模型加载、评测与并行融合未计入。
+\item \textbf{本阶段没有新的三划分测试成绩。}各结论或为验证折机制发现，或为既有结果的更正与定位调整；测试折多轮复用的限制与阶段报告三相同。
+\end{enumerate}
+
+\subsection{后续方向}
+
+复盘给出的三条路线中，本阶段已完成其中机制与成本两部分的检验（E2a 与 E0 均以闸门化方式进行）。下一步优先级不变\cite{next}：先做 E1 验证候选盲审（x1 接受、x2 独有接受/拒绝、随机背景四组，专家裁决“当前视野无法判定”），把 EF-P2 新增候选的“未匹配”成分拆成 debris、形状偏差与疑似漏标；若盲审支持，再做路线 B 的训练内交叉拟合效用学习（以 $P(\mathrm{match})\cdot E[\mathrm{IoU}\mid\mathrm{match}]>q/2$ 为代理判据），并与冻结 EF-P2、低维回归以及相同算力预算下的 TTA/集成相对照。路线 A 的裁剪一致性机制实验与路线 C 的跨模态监督维持条件启动。DSB 保留的闸门工具（分层蒙太奇、梯度探针、oracle 上界）可在这些路线中复用。
+
+\section{结论}
+
+本阶段未追求新的测试分数，而是把阶段报告三留下的三个问题分别推进到明确的答案。第一，HV 目标支持门槛是真实存在的混杂因素，但贡献只占小部分：x1 降低门槛仅复现两倍尺度 Dead 增益的 9.59\%，配平支持水平后 x2 仍承担全部 bPQ 代价并保留大部分 Dead 增益，strict Dead 在全部四个种子对上为负——尺度效应的主体在别处。第二，Dead 专家分支的前提假设被证伪：在训练完成的检查点上，Dead 与常见类的梯度高度同向（64 批复合余弦均值 $+0.749$、零负批），连同此前已证伪的重加权、增益仅 $+0.002$ 的阈值解耦与高达 $+0.156$ 的检测级 oracle 上界，Dead 短板的解法指向新的检测监督或数据，而非在现有监督上重新分配容量；该研究线按预注册止损关闭，未花费确认轮算力。第三，两模型系统的实测耗时为单模型（x1）推理的 6.09 倍，EF-P2 定位调整为机制证据与教师候选模型。全仓库审计确认主要结果均可复现，历史数字的转录误差已就地更正。机制结论、成本边界与更正后的历史记录，构成本项目当前的进度基线。
+
+\appendix
+\section{文件、数字与复现入口}
+
+\subsection{数值核验}
+
+本报告所有表格数字由 \code{scripts/report4\_numbers.py} 从冻结产物直接输出；\code{scripts/verify\_report4.py} 从最原始一层（8 份审计评测 \code{summary.json}、五个闸门 JSON、\code{cost.json}、审计涉及的测试汇总）独立重算全部主表数字并逐位核对，输出可移植快照 \code{verified\_numbers.json}（本目录已含，共核 96 个端点单元）。bootstrap 区间取自 E2a 冻结快照并记录来源 SHA-256，不重新抽样。闸门 B 的逐批余弦与每层 $t$ 值由序列化列表独立重算，结果一致；闸门 A 比值与 E0 比率由原始数字重推，结果一致。研究日志\cite{findings}仅用于追溯过程，不作为数值依据。
+
+2026 年 10 月 8 日在固定依赖环境下全量回归测试 271 项通过、64 条警告（Python 3.10、torch 2.5.1+cu124、numpy 1.23.5；未安装或升级依赖）。本次制图脚本沿用阶段报告三的中文字体与 Type 42 嵌入约定，图表数值与 \code{figs/} 内 CSV 一致。
+
+\subsection{产物与复现命令}
+
+\begin{table}[H]
+\centering\footnotesize
+\caption{主要实验产物，均相对仓库根目录；\code{runs/} 下为本地产物，不随 Git 分发。}
+\begin{tabularx}{\linewidth}{lY}\toprule
+路径 & 本报告用途\\\midrule
+\code{runs/hv\_threshold\_controls\_20261006/} & E2a 八个训练臂：配置、日志、原始与审计重推评估。\\
+\code{runs/analysis/hv\_threshold\_controls\_20261006/} & E2a 冻结数字快照与 bootstrap。\\
+\code{runs/analysis/dsb\_gates\_20261007/} & 四闸门 JSON 与台账；\code{gate\_b\_v2.json} 为闸门 B 权威版本，VOID 首跑工件保留。\\
+\code{runs/analysis/inference\_cost\_20261008/} & E0 计时、命令与尝试日志。\\
+\code{runs/analysis/report4\_numbers.txt} & 本报告逐表数字快照。\\\bottomrule
+\end{tabularx}
+\end{table}
+
+在固定依赖环境、仓库根目录执行：
+\begin{quote}\small
+\texttt{python scripts/report4\_numbers.py}\\
+\texttt{python scripts/verify\_report4.py}\\
+\texttt{python scripts/make\_report\_figures4.py}\\
+\texttt{python -m pytest -q}
+\end{quote}
+核验脚本在产物缺失或数值不一致时以错误状态退出，不修改实验产物。重跑历史评测须使用相应的源码快照，或在明确登记为新的复核后执行，不得绕过来源检查。
+
+\begin{thebibliography}{9}
+\raggedright
+\bibitem{reports} bdd26 项目. 阶段报告三：跨尺度候选筛选与面积过滤[R]. 2026-10-06. \code{docs/report/stage_report_3/}.
+\bibitem{next} bdd26 项目. 研究复盘与下一阶段路线（2026-10-06）[R]. \code{docs/RESEARCH_NEXT_2026-10-06.md}.
+\bibitem{hvplan} bdd26 项目. HV 门槛四臂对照预注册计划[R]. 2026-10-06. \code{docs/superpowers/plans/2026-10-06-hv-threshold-controls.md}.
+\bibitem{hvres} bdd26 项目. HV 目标门槛对照：结果与机制分析[R]. 2026-10-07. \code{docs/HV_CONTROLS_RESULTS_2026-10-07.md}.
+\bibitem{dsbspec} bdd26 项目. Dead 检测专家分支（DSB）设计规格与实现计划[R]. 2026-10-07. \code{docs/superpowers/specs/2026-10-07-dead-specialist-branch-design.md}; \code{docs/superpowers/plans/2026-10-07-dead-specialist-branch.md}.
+\bibitem{findings} bdd26 项目. 实验日志：2026-10-06 至 10-08 条目[R]. \code{docs/findings.md}.
+\bibitem{pannuke} GAMPER J, ALEMI KOOHBANANI N, BENES K, et al. PanNuke Dataset Extension, Insights and Baselines[EB/OL]. 2020[2026-10-06]. \url{https://arxiv.org/abs/2003.10778}.
+\bibitem{uni} CHEN R J, DING T, LU M Y, et al. Towards a general-purpose foundation model for computational pathology[J]. Nature Medicine, 2024, 30(3): 850--862. DOI: \href{https://doi.org/10.1038/s41591-024-02857-3}{10.1038/s41591-024-02857-3}.
+\bibitem{cellvit} H\"ORST F, REMPE M, HEINE L, et al. CellViT: Vision Transformers for precise cell segmentation and classification[J]. Medical Image Analysis, 2024, 94: 103143. DOI: \href{https://doi.org/10.1016/j.media.2024.103143}{10.1016/j.media.2024.103143}.
+\bibitem{gsmoe} GS-MoE：generalist--specialist 分支恢复低患病率类（项目规格核查所用简记）[EB/OL]. arXiv:2609.18688, 2026[2026-10-07]. \url{https://arxiv.org/abs/2609.18688}.
+\bibitem{semimoe} Semi-MoE：任务级专家的半监督分割（项目规格核查所用简记）[EB/OL]. arXiv:2509.13834, 2025[2026-10-07]. \url{https://arxiv.org/abs/2509.13834}.
+\end{thebibliography}
+\end{document}
