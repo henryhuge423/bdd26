@@ -208,7 +208,8 @@ src/nucseg/            our package (pip install -e .)
   kongnet/             KongNet decode for strict-protocol re-evaluation of released checkpoints
   augment/copy_paste.py   failure-driven copy-paste (pillar-B control)
   pixcell.py           PixCell + Cell-ControlNet sampling, Reinhard stain post-process (B/C)
-  postproc/recovery.py training-free missed-nucleus recovery; M/S lever (merge + fragment drop)
+  postproc/recovery.py training-free missed-nucleus recovery (du2 decode rescale + orphan blobs);
+                       the M/S lever (merge + border-fragment drop) lives in scripts/lever_postproc.py
   text/                CONCH prompt prototypes, radius-restricted nucleus embeddings, re-typing
   metrics/instance.py  fast PQ / AJI / AJI+ / centroid pairing (tested == official)
   metrics/errors.py    merge / split / missed / FP taxonomy, touching-neighbour counts

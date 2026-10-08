@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 """Reduced E0 (2026-10-08): inference cost of the EF-P2 two-model system vs single-model x1.
 
-Fixed protocol (RESEARCH_NEXT E0 row, reduced): one device, fp32, batch 32, decode workers 16,
+Fixed protocol (RESEARCH_NEXT E0 row, reduced): one device, bf16 autocast forward (predict_fold's
+own autocast path), batch 32, decode workers 16,
 chunked wall-clock timing of the UNMODIFIED predict_fold over split 1's validation fold
 (fold 2 — no test fold is read). Arms: x1 (256), x2 du2 (512 pipeline: upscale + decode_u 2),
 x1+TTA (8 dihedral forwards) as the same-budget single-model reference. The CPU side times the
@@ -14,6 +15,8 @@ NOT included (CPU relabel of x1 predictions, same order as fuse; noted in the ou
         --x1-run runs/cellvit_uni/split1 --x2-run runs/cellvit_uni_x2/split1 --fold 2 \
         --ef-selection runs/analysis/existence_ef_20261005/p2ef/split2_seed19/selection.json \
         --p2-selection runs/analysis/matched_seed_20261004/p2/split2_seed19/selection.json \
+        --base-pred runs/analysis/matched_seed_20261004/p0/split2_seed19/val/base/ms/pred.npz \
+        --x2-pred runs/analysis/p0p3_20261002/inputs/x2_split2/pred_fold1_x2_du2.npz \
         --out runs/analysis/inference_cost_20261008/cost.json
 """
 from __future__ import annotations
@@ -35,6 +38,7 @@ from nucseg.cellvit.engine import TrainConfig, build_model, predict_fold, run_up
 from nucseg.data.pannuke import PanNukeFold  # noqa: E402
 from nucseg.postproc.existence import existence_pass  # noqa: E402
 from nucseg.postproc.scale_fusion import candidate_info, fuse, probability_rows  # noqa: E402
+from fold_guard import ensure_dev_fold, run_split  # noqa: E402
 from run_scale_fusion import image_confidence  # noqa: E402
 
 CHUNK = 256
@@ -155,6 +159,8 @@ def main(argv=None):
                    help="frozen x2 du2 val predictions npz (with inst table) of the timed pair")
     p.add_argument("--out", type=Path, required=True)
     a = p.parse_args(argv)
+    split = run_split(a.x1_run)
+    ensure_dev_fold(a.fold, split)
 
     ef_sel = json.loads(a.ef_selection.read_text())
     p2_sel = json.loads(a.p2_selection.read_text())
@@ -166,7 +172,7 @@ def main(argv=None):
     import os
     result = {"protocol": {"device": a.device, "gpu": torch.cuda.get_device_name(0),
                            "torch": torch.__version__, "batch": a.batch, "workers": a.workers,
-                           "chunk": a.chunk, "precision": "fp32",
+                           "chunk": a.chunk, "precision": "bf16-autocast",
                            "fold": a.fold, "n_images": int(len(images)),
                            "loadavg_at_start": [round(x, 2) for x in os.getloadavg()],
                            "ms_lever": "not separately timed (CPU relabel, same order as fuse)"},
@@ -176,7 +182,7 @@ def main(argv=None):
             ("x1", a.x1_run, a.reps_x1, run_upscale(a.x1_run), 1.0, False),
             ("x2_du2", a.x2_run, a.reps_x2, run_upscale(a.x2_run), 2.0, False),
             ("x1_tta", a.x1_run, a.reps_tta, run_upscale(a.x1_run), 1.0, True)):
-        tc = TrainConfig(split=1, out_dir=str(run), upscale=upscale)
+        tc = TrainConfig(split=split, out_dir=str(run), upscale=upscale)
         model = build_model(tc, pretrained=False).to(a.device)
         model.load_state_dict(torch.load(run / "final.pth", map_location=a.device,
                                          weights_only=False)["model"])

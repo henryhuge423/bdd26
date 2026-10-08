@@ -12,11 +12,16 @@ architecture unnecessary (spec §6 C).
 """
 import argparse
 import json
+import sys
 from multiprocessing import Pool
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+
 import numpy as np
 
+from fold_guard import ensure_dev_fold
 from nucseg.constants import DEAD_TYPE
 from nucseg.data.pannuke import PanNukeFold
 from nucseg.metrics.pannuke_eval import evaluate
@@ -48,9 +53,12 @@ def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--maps", type=Path, required=True, help="dir with maps_fold{k}.npy (dump_cellvit_maps)")
     p.add_argument("--fold", type=int, default=2)
+    p.add_argument("--split", type=int, default=1,
+                   help="split of the run that dumped --maps (test-fold guard; x1_hv30_seed19 = 1)")
     p.add_argument("--workers", type=int, default=8)
     p.add_argument("--out", type=Path, required=True)
     a = p.parse_args(argv)
+    ensure_dev_fold(a.fold, a.split)
     maps = np.load(a.maps / f"maps_fold{a.fold}.npy", mmap_mode="r")
     f = PanNukeFold(a.fold)
     if len(maps) != len(f):

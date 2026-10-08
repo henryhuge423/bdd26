@@ -214,7 +214,7 @@ Test fold per split: 1 -> 3, 2 -> 3, 3 -> 1. Values: mPQ / bPQ / Dead PQ (no TTA
 | model | split 1 | split 2 | split 3 | mean |
 |---|---|---|---|---|
 | HoVer-Net (ours, full-patch) | .4558 / .6601 / .103 [.4664 / .6707 / .087] | .4529 / .6610 / .108 [.4633 / .6696 / .105] | .4606 / .6627 / .170 [.4700 / .6739 / .191] | .4564 / .6613 / .127 [.4666 / .6714 / .128] |
-| CellViT-UNI (ours) | .4951 / .6676 / .142 [.5013 / .6728 / .146] | .4930 / .6638 / .162 [.4973 / .6683 / .163] | .5104 / .6647 / .224 [.5154 / .6707 / .221] | .4995 / .6654 / .176 [.5047 / .6706 / .177] |
+| CellViT-UNI (ours) | .4951 / .6676 / .142 [.5013 / .6728 / .146] | .4930 / .6638 / .162 [.4973 / .6683 / .163] | .5104 / .6647 / .224 [.5154 / .6707 / .221] | .4995 / .6653 / .176 [.5047 / .6706 / .177] |
 
 Both baselines reproduce (HoVer-Net paper .463/.660, ours .456/.661; CellViT++ UNI .492, ours .500).
 Course requirement (a) — reproducible HoVer-Net baseline with full official evaluation — DONE.
@@ -234,19 +234,19 @@ Test mPQ (val-selected config per family):
 | family | split 1 (test f3) | split 2 (test f3) | split 3 (test f1) | mean | mean Dead PQ |
 |---|---|---|---|---|---|
 | official | .4950 | .4927 | .5104 | .4994 | .176 |
-| thr (tuning control) | .4953 (t.3) | .4929 (t.3) | .5108 (t.3) | .4997 | .176 |
+| thr (tuning control) | .4953 (t.3) | .4929 (t.3) | .5108 (t.3) | .4996 | .176 |
 | orphans | .4951 | .4927 | .5094 | .4991 | .177 |
-| beta | .4953 (b.5) | .4929 (b0,t.3) | .5108 (b0,t.3) | .4997 | .177 |
-| dead | .4953 (k0,t.3) | .4929 (k0,t.3) | .5108 (k0,t.3) | .4997 | .176 |
+| beta | .4953 (b.5) | .4929 (b0,t.3) | .5108 (b0,t.3) | .4996 | .177 |
+| dead | .4953 (k0,t.3) | .4929 (k0,t.3) | .5108 (k0,t.3) | .4996 | .176 |
 | all | .4953 (b.5) | .4929 (t.3,orph) | .5092 (t.3,orph) | .4991 | .178 |
 
 Validation grid, mean over splits (beta 0, no orphans): mPQ is flat (.4902-.4906) across k and thr;
-Dead PQ moves only .181-.186 even at k = 4. Orphans: val Dead +.004, Inflammatory +.003, bPQ -.0015;
+Dead PQ moves only .181-.184 even at k = 4. Orphans: val Dead +.004, Inflammatory +.003, bPQ -.0015;
 no test gain.
 
 => **Negative**: missed Dead nuclei cannot be recovered post hoc from this model's outputs; every
-change is within +-0.0004 test mPQ (the threshold-only control does as well as any recovery
-variant). The detection deficit has to be addressed in training (foreground supervision / data).
+change is within -0.0012/+0.0004 test mPQ (the threshold-only control does as well as any recovery
+variant; the -0.0012 is the split-3 "all" family, visible in the table above). The detection deficit has to be addressed in training (foreground supervision / data).
 
 ## 2026-09-25 — Why Dead nuclei are missed (CellViT-UNI, 3 test folds pooled)
 `scripts/show_nuclei.py` montage: `runs/analysis/dead_split1.png` (split 1, test fold 3; green = GT
@@ -519,7 +519,7 @@ baseline, paired tissue-stratified image bootstrap (`runs/analysis/compare_split
     at the BOTTOM of the 3-seed range (seed1 .4910, seed2 .4924, seed19 .4951) — null-to-slightly-
     negative overall.
   - Dead PQ .1521 vs .1424 (TTA .1570 vs .1461): above all 3 seed draws (max .1446) but Dead seed
-    noise alone spans .131-.142, so ~+1 pt is at the edge of noise. Decomposition: PQ+ FLAT
+    noise alone spans .131-.142, so ~+1 pt is at the edge of noise. Decomposition: Dead PQ+ flat
     (.2761 vs .2759), DQ+/SQ+ flat => the gain is correct-TYPE pairing (Dead-typed matches 367 vs
     352 of ~500 Dead GT), not better segmentation; Inflammatory PQ -1.0/-1.6 pts (possible
     small-nucleus synth side-effect).
@@ -567,7 +567,7 @@ baseline, paired tissue-stratified image bootstrap (`runs/analysis/compare_split
 `scripts/predict_external.py` -> `scripts/collect_external.py` (mPQ/bPQ/F_d 3-split mean +- std;
 reports `runs/analysis/ext_{cellvit,hovernet}.json`). HoVer-Net has no TTA row
 (hardware budget; CellViT TTA answers the does-TTA-help question). In-domain reference from the
-baselines table above: CellViT .4995 mPQ / .6654 bPQ, HoVer-Net .4564 / .6613.
+baselines table above: CellViT .4995 mPQ / .6653 bPQ, HoVer-Net .4564 / .6613.
 
 | model | CoNIC mPQ / bPQ / F_d | MoNuSAC mPQ / bPQ / F_d |
 |---|---|---|
@@ -601,7 +601,7 @@ fixed fold-3 GT; log `logs/analyze_cf.log`; matched PanNuke-test references).
 - **Paired deltas vs control mean** (image-bootstrap 95% CI, all CIs exclude 0):
   - `stain` (Reinhard to donor stain): CellViT -.023/-.024, HoVer-Net -.061/-.071 — mild stress.
   - `ctx` (paired->swapped-tissue context): CellViT -.187/-.192, HoVer-Net -.135/-.144 — strong.
-  - `tissue` (ctx + donor stain): CellViT -.189/-.193, HoVer-Net -.145/-.147 — strongest for CellViT.
+  - `tissue` (ctx + donor stain): CellViT -.193/-.189, HoVer-Net -.147/-.145 — strongest for CellViT.
   - Class structure: Epithelial collapses under ctx/tissue (CellViT -.41/-.42 PQ) while Dead loses
     -.04..-.10 — context swap mostly destroys type information, not detection (F_d only -.10).
 - **Rank agreement (the pillar-C validation) FAILS at architecture level**: real domain drop
@@ -631,7 +631,7 @@ fixed fold-3 GT; log `logs/analyze_cf.log`; matched PanNuke-test references).
   = the VAL folds; test folds 3/3/1 were never swept.)
 - **Sanity, full test folds (3-split mean): mPQ .4579 / bPQ .6367 / Dead .1361**
   (paper .477/.656/.154; old port decode .3582/.5030/.080). Sits between HoVer-Net
-  (.4564/.6613) and CellViT-UNI (.4995/.6654) on mPQ — a usable 3rd evaluator.
+  (.4564/.6613) and CellViT-UNI (.4995/.6653) on mPQ — a usable 3rd evaluator.
   Per-split: s1 .4423/.6247, s2 .4644/.6454, s3(test fold1) .4670/.6400.
 - Notable behaviour (ERROR PROFILE, corrected 2026-09-28 audit — an earlier version of this line
   had the comparison inverted): HoVer-NeXt-T's flat decode merges ~2x MORE touching nuclei than
@@ -655,10 +655,10 @@ fixed fold-3 GT; log `logs/analyze_cf.log`; matched PanNuke-test references).
   tiles carry no label -> absolute recall/mPQ on PUMA has a ceiling; model comparisons share
   the same GT so remain fair.
 - Zero-shot (3-split mean, no TTA): **CellViT-UNI mPQ .4518 +- .0031 / bPQ .7177 / F_d .8831;
-  HoVer-Net .3203 +- .0139 / .7136 / .8714**. Domain drop (in-domain mPQ - PUMA): CellViT
+  HoVer-Net .3203 +- .0136 / .7134 / .8714**. Domain drop (in-domain mPQ - PUMA): CellViT
   -.048, HoVer-Net -.136 — ordering matches CoNIC/MoNuSAC (CellViT more robust), and unlike
   MoNuSAC there is NO detection collapse (F_d ~.87-.88): the transfer loss is in TYPING
-  (CellViT strict .37 vs mPQ .45; Dead PQ per-arch mean CellViT .0024 / HoVer-Net .0326
+  (CellViT strict .37 vs mPQ .45; Dead PQ per-arch mean CellViT .0024 / HoVer-Net .0327
   [.0211/.0209/.0559] / HoVer-NeXt-T .0046, Epithelial .09-.20). Apoptotic bodies
   remain undetectable-as-Dead cross-domain for both models — the Dead failure mode follows us
   out of domain (and PUMA's apoptotic GT is the only large external Dead supply we found).
@@ -813,7 +813,7 @@ pannuke_eval), ckpt x fold:
 | 2 | .7845 | **.9435** | .7795 | 2 (2/1/3) |
 | 3 | .7690 | .7730 | **.9121** | 3 (3/2/1) |
 - **`KongNet_PanNuke_k.pth` = official split k** (train fold k; diagonal train-fold F1 margin
-  >= .13 over both held-out folds, clean permutation). Decision rule = argmax train-fold F1
+  >= .12 over both held-out folds, min .124, clean permutation). Decision rule = argmax train-fold F1
   (memorisation), so the identified test folds' numbers never entered any decision; nothing tuned.
 - **Channel map confirmed on the train folds only**: matched-pair confusion (pred x gt) is
   diagonally dominant, class agreement .970/.986/.976; Dead diagonal 71/26/36 with ~0 off-diagonal.
@@ -931,7 +931,7 @@ linearly resampled (identity at 21, tested; u=1 path bit-exact, tests/test_decod
 `eval_test_fold3{,_tta}`.
 3-split test means (last ckpt), base / x2 / x2+du2:
 - TTA:   mPQ .5047/.4848/.4926  bPQ .6706/.6488/.6620  mPQ+ .5227/.5070/.5189  Dead .1768/.1786/.1810
-- noTTA: mPQ .4995/.4791/.4894  bPQ .6654/.6413/.6583  mPQ+ .5178/.5012/.5158  Dead .1760/.1816/.1831
+- noTTA: mPQ .4995/.4791/.4894  bPQ .6653/.6413/.6583  mPQ+ .5178/.5012/.5158  Dead .1760/.1816/.1831
 Verdict vs the prediction ("recovers most of bPQ -.026 -> ~0, keeps Dead"): bPQ tax recovered 61% (TTA
 -.0218 -> -.0086) and 70% (noTTA -.0240 -> -.0071) — most, but not to ~0; mPQ+ nearly closes (-.0158 ->
 -.0038 TTA, 76%; -.0166 -> -.0020 noTTA, 88%); mPQ recovers only ~40-50%. Dead gain is kept and slightly
@@ -945,7 +945,7 @@ next decode-menu levers: post-hoc merge of same-class adjacent instances, drop e
 ## 2026-09-30 (morning) — Line A verdict (KongNet under the strict protocol): NEGATIVE — detection-first does not fix Dead; paper Dead F_c .59 does not replicate
 Phase-2 line A executed end-to-end in ~35 min (sweeps + 3 full-fold test
 predictions on L4 ~5 min; separate CPU strict evals ~12 min). Released per-split checkpoints (`KongNet_PanNuke_k.pth`
-= official split k, train-fold F1 margin >= .13 — legal for test, unlike the all-data releases);
+= official split k, train-fold F1 margin >= .12 — legal for test, unlike the all-data releases);
 6-head decode = per-class seg-minus-contour masks + argmax conflict resolve + per-class CC
 (`src/nucseg/kongnet/decode.py`, tests/test_kongnet_decode.py). Protocol: decode thresholds tuned on
 VAL folds ONLY (800-img linspace subsets, `light` scoring), grid extended twice until the optimum was
@@ -987,7 +987,7 @@ Batch-invariance record: `runs/_ab_verdict.md`.
   pair wins the first extended sweep (split1 du2mk2 VAL: .4845/.6486 vs baseline .4836/.6455).
 - du2lev TEST (eval_test_fold{3,3,1}_du2lev): mPQ mean .4910, bPQ mean .6608,
   Dead PQ .162/.169/.219, Uterus-excluded Dead PQ mean .2266, interior-Dead miss pooled
-  .3041. vs x1 CellViT-UNI (mPQ .4995, bPQ .6654, Utex DeadPQ .2175, interior-Dead miss
+  .3041. vs x1 CellViT-UNI (mPQ .4995, bPQ .6653, Utex DeadPQ .2175, interior-Dead miss
   .3738): the levered x2+du2 trades ~.008 mPQ/bPQ for +.009 Uterus-excluded Dead PQ and
   −.070 interior-Dead miss. Pre-registered PASS/FAIL vs un-levered du2 lands when the du2
   test evals finish (not yet computed at this entry).
@@ -1085,8 +1085,8 @@ Per-split strict: mPQ .4857/.4855/.5057, Dead PQ .1150/.1415/.2062 (splits 1/2/3
 - Reproduction note: vendored `CellViT()` constructs blocks on GPU (`.to(device)` in
   `__init__`), so allow device memory for model construction as well as inference.
   This evaluation used `--batch-size 3` (~2 min for 2722 patches on L4).
-- Grid 7/9 (04:55): split2_seed1 du2+lever collected (lever dmPQ +.0011, dbPQ +.0023,
-  Dead +.0006 — the PASS verdict is now 7/7 runs); `x2_grid_sum.py` ARMS globbed so remaining
+- Grid 7/9 (04:55): split2_seed1 du2+lever collected (lever dmPQ +.0012, dbPQ +.0022,
+  Dead +.0007 — the PASS verdict is now 7/7 runs); `x2_grid_sum.py` ARMS globbed so remaining
   seed evals are picked up automatically. split2_seed2 and split3_seed2
   still pending for the pre-registered 3x3 seed-noise verdict.
 
@@ -1484,7 +1484,10 @@ validation fold2 only; no fold3 inference at any point.
 
 Round `runs/analysis/inference_cost_20261008/` (script `scripts/inference_cost.py`, TDD; full
 commands, attempt log and caveats in the round's commands.md). Fixed protocol: one shared
-A100-SXM4-80GB, fp32, batch 32, decode workers 16; wall-clock of the UNMODIFIED `predict_fold`
+A100-SXM4-80GB, bf16 autocast forward (2026-10-08 audit: cost.json's protocol label says "fp32" —
+the forward actually runs under predict_fold's cuda autocast bfloat16; all arms share the path so
+the ratios are unaffected; the script label is fixed after the round), batch 32, decode workers 16;
+wall-clock of the UNMODIFIED `predict_fold`
 in 256-image chunks over fold 2 (2523 imgs — the timed split2_seed1 pair's training fold; cost
 is checkpoint-independent, no test fold read, no endpoint evaluated). GPU arms: x1 15.50 ms/img
 (64.5 img/s, peak 4.8 GiB), x2-du2 52.88 (18.9, 12.9 GiB), x1-TTA 72.33 (13.8, 4.9 GiB). CPU
@@ -1508,3 +1511,58 @@ frozen selection's 1542 additions exactly** (deployment-path check).
 - Caveats: single shared GPU (wall-clock contamination quantified above); M/S lever not
   separately timed (CPU relabel, same order as fuse); fusion measured single-threaded
   (trivially parallel across images); model loading excluded; one machine, one batch size.
+
+## 2026-10-08 (audit) — full code/docs/experiments consistency audit; in-place corrections + two artifact regenerations
+
+Three-sonnet-agent read-only audit (docs↔code, docs-numbers↔artifacts, code↔recorded-runs + full
+pytest), every flagged item re-derived by hand before editing. Headline results all reproduce:
+gate A/B/C/D verdict values bit-consistent with `runs/analysis/dsb_gates_20261007/`, E0 6.09×
+re-derived from cost.json, all stage-report/HV-controls/P0-P3 tables exact, protocol rules
+(pannuke_eval, last-checkpoint, 3-split mean, no released-checkpoint test results) hold everywhere.
+pytest after the audit's code hardening: 271 passed.
+
+Corrections applied in place (all re-derived from artifacts this session):
+- CellViT-UNI 3-split bPQ .6654 -> **.6653** (mean-of-rounded artifact; exact .66535), here,
+  RESEARCH_PLAN, and two later mentions; recovery table means thr/beta/dead .4997 -> .4996.
+- Recovery negative-result wording: "every change within ±.0004 test mPQ" -> within -.0012/+.0004
+  (the -.0012 is split-3 "all", visible in the table); RESEARCH_PLAN phrasing aligned.
+- Dead PQ val-grid range at k=4 ".181-.186" -> **.181-.184** (the .186 endpoint was the orphans
+  variant); SYN1 "PQ+ FLAT" clarified to "Dead PQ+ flat".
+- CF tissue paired deltas: CellViT -.189/-.193 -> -.193/-.189, HoVer-Net -.145/-.147 -> -.147/-.145
+  (s1/s2 order; the other arms were already correct).
+- PUMA HoVer-Net ±.0139 -> ±.0136, bPQ .7136 -> .7134, Dead mean .0326 -> .0327.
+- KongNet train-fold F1 margin ">= .13" -> ">= .12 (min .124)" (ckpt1 .1244/.1274).
+- split2_seed1 lever trio corrected to +.0012/+.0022/+.0007 (exact .001165/.002229/.000677).
+- RESEARCH_PLAN real-domain drop CellViT .152 -> .154 (2-split mean .1551/.1519).
+- Stale refs fixed: README M/S lever attributed to scripts/lever_postproc.py (not recovery.py);
+  P0-P3 commands.json path; RESEARCH_NEXT line pointers. Two LM2-resident logs restored to
+  `logs/` (analyze_cf.log, hn_pp_ablation.log) so their findings references resolve again.
+- inference_cost.py: protocol label fp32 -> bf16-autocast (all arms share the autocast path, so
+  the 6.09× is unaffected; frozen cost.json keeps its original "fp32" label — see the E0 entry
+  note above), docstring command completed with the required --base-pred/--x2-pred.
+- Hardening: new `scripts/fold_guard.py` — dsb_dev_eval / dsb_gate_c / dsb_oracle_ceiling /
+  inference_cost now refuse their run split's TEST fold (and refuse unverifiable splits);
+  dsb_dev_eval freezes its menu with input sha256 binding and refuses overwrite.
+  Tests: tests/test_fold_guards.py + test_dead_merge updates.
+
+Artifact regenerations (both reproduce the documented numbers exactly):
+- `runs/analysis/failures_fold3.csv.gz` was lost on both machines; regenerated from
+  `runs/cellvit_uni/split1/pred_fold3.npz` (deterministic) — fold-3 mining numbers verify
+  exactly (isolated Dead missed_bg .421 n=882; merged Dead 94, touching Dead 77).
+- split2_seed2's du2/du2lev test evals (grid 9/9, 2026-10-01) were lost on both machines
+  (pred npz on disk is the 2026-10-04 watcher regeneration). Rebuilt from that npz with the
+  pre-e1aaeee lever code (verified bit-exact against split2_seed1's recorded du2lev) + frozen
+  (0.25, 40): du2 .4868/.6584/.1526, lever +.0016/+.0024/+.0007 — lever PASS and every
+  grid verdict unchanged; 9-run means shift by <=.0004 (du2 .4889->.4893, du2lev
+  .4905->.4909). The 2026-10-01 quoted values (+.0011/+.0021/+.0004) belonged to the lost
+  original prediction and stand as recorded. Sidecar `pred_fold3_x2_du2_lev.npz.json` binds
+  the regenerated lever npz's provenance.
+
+Previously-unsourced numbers verified on LM2 this session (all match docs): HoVer-Net split2
+TTA .4633/.6696/.105; SYN1 (mPQ/bPQ/Dead/TTA/Dead-PQ+/Dead-typed 367 vs 352/Infla -1.0/-1.6);
+HoVer-NeXt-T per-split + means + error rates + Uterus-excluded Dead (.143/.171/.197);
+PUMA per-arch components; LoRA-r8 sweep (od .60-1.10 vs .116, uni .13-.25, step-250 .80);
+du2 VAL lever sweeps (+.0014/+.0012/+.0018, baseline .4836/.6455 -> best .4850/.6478);
+external-table F_d and per-class columns. CONCH pillar-A probe outputs were never cached
+anywhere — the only remaining unverifiable entries (gt embeddings exist, probes would need
+CONCH re-runs).

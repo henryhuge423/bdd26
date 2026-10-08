@@ -11,10 +11,15 @@ Continue condition (frozen): ΔDead PQ (internal additions, shrunk variant) ≥ 
 """
 import argparse
 import json
+import sys
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
 
 import numpy as np
 
+from fold_guard import ensure_dev_fold, run_split
 from nucseg.constants import DEAD_TYPE
 from nucseg.data.pannuke import PanNukeFold
 from nucseg.metrics.instance import overlap
@@ -76,6 +81,7 @@ def main(argv=None):
     p.add_argument("--seed", type=int, default=20261007)
     p.add_argument("--out", type=Path, required=True)
     a = p.parse_args(argv)
+    ensure_dev_fold(a.fold, run_split(a.run))
     pred_path = a.run / f"pred_fold{a.fold}.npz"
     if not pred_path.exists():
         raise SystemExit(f"{pred_path} missing; refusing")

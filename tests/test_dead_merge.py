@@ -3,6 +3,7 @@
 import importlib.util
 import json
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -81,6 +82,7 @@ def _dev_fixture(tmp_path):
     dead[1, 4:10, 4:10] = 1                          # area 36: true recovery
     run = tmp_path / "run"
     run.mkdir()
+    (run / "config.json").write_text(json.dumps({"split": 1}))
     np.savez_compressed(run / "pred_fold2.npz", inst=bi, type=bt)
     np.savez_compressed(run / "pred_fold2_dead.npz", dead_inst=dead)
     return root, run
@@ -99,6 +101,12 @@ def test_dev_eval_cli_end_to_end(tmp_path):
     assert rows["a60"]["n_added"] == 0      # both recoveries are below 60
     assert rows["a30"]["d_dead"] > 0 and rows["a30"]["d_bpq"] >= -0.001
     assert out["selection"] == "a30"
+    assert set(out["inputs"]) == {"base", "dead"}                     # sha256 provenance bound
+    assert all(len(v["sha256"]) == 64 for v in out["inputs"].values())
     first = (run / "dsb_dev_eval" / "menu.json").read_bytes()
+    r2 = subprocess.run(cmd, capture_output=True, text=True, env=env, timeout=120)
+    assert r2.returncode != 0 and "frozen" in r2.stderr               # refuse-overwrite guard
+    assert (run / "dsb_dev_eval" / "menu.json").read_bytes() == first
+    shutil.rmtree(run / "dsb_dev_eval")
     subprocess.run(cmd, capture_output=True, text=True, env=env, timeout=120, check=True)
-    assert (run / "dsb_dev_eval" / "menu.json").read_bytes() == first  # bit-exact replay
+    assert (run / "dsb_dev_eval" / "menu.json").read_bytes() == first  # bit-exact regeneration
