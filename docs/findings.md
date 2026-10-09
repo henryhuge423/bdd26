@@ -34,6 +34,31 @@
 > Execution: `docs/superpowers/plans/2026-10-02-p0-p3-research.md`. Corrected results and
 > limitations: [P0–P3 report](P0_P3_RESULTS_2026-10-02.md).
 
+## 2026-10-09 — typing-oracle ceiling diagnostic (read-only, unregistered)
+
+Conversation-driven analysis ([digest](STRUCTURE_AND_STRATEGY_2026-10-09.md) §5): how far official
+mPQ could rise if every IoU>0.5 matched instance were typed correctly, instance geometry untouched.
+Scored with `RetypeEvaluator` on the frozen baseline (CellViT-UNI, no TTA, last checkpoint) test
+predictions — audit-type access to already-evaluated test folds, no tuning, no new inference;
+current values reproduce the official summaries (.4951/.4930/.5104).
+
+- **Typing oracle**: 3-split mean mPQ .4995 → **.6632 (+.164)** ≈ bPQ .6653 — the bPQ−mPQ gap is
+  essentially all typing, not segmentation. Per split: +.1692/+.1671/+.1548.
+- **Inf/Conn-restricted oracle** (only matches whose GT is Inflammatory or Connective corrected):
+  → **.6141 (+.115)**, i.e. ~70% of the typing mass is the Infl↔Conn confusion (matched-instance
+  mis-rate 11.8%/10.9% each direction; overall matched typing accuracy .864).
+- Per-class (split1, current→oracle): Neo .570→.666, Inf .440→.720, Conn .418→.595,
+  Dead .142→.411, Epi .575→.659.
+- Interpretation limits: oracle ≠ achievable (Inf/Conn includes genuine label ambiguity — no
+  published method exceeds ~.48 on either under the official protocol); CONCH re-typing already
+  measured null, so external priors do not capture it. This entry ranks future levers
+  (tissue-conditional class prior, per-class decode thresholds for non-Dead classes,
+  crop-level second-stage classifier) but authorizes nothing; any lever must be tuned on
+  validation folds only.
+- Reproduce: `python scripts/typing_oracle.py --out-json runs/analysis/typing_oracle_20261009/summary.json`
+  (artifact: `runs/analysis/typing_oracle_20261009/summary.json`, local). Relevant pytest subset
+  (`-k "retype or typing"`): 10 passed.
+
 ## 2026-10-02 — P0–P3 v2: pre-merge defects fixed and dependent CPU experiments regenerated
 
 Current source: `runs/analysis/p0p3_20261002_v2/results_verified.json` and `tables_verified.md`.

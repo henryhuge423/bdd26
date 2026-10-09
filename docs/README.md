@@ -8,6 +8,7 @@
 | `superpowers/plans/2026-10-02-p0-p3-research.md` | approved execution plan and decisions |
 | `findings.md` | experiment log — every number, per-date entries |
 | `RESEARCH_AUDIT_2026-10-09.md` | latest audit: verified endpoints, cost aggregation correction, regression fixes and explicit verification gaps |
+| `STRUCTURE_AND_STRATEGY_2026-10-09.md` | plain-language HoVer-Net/CellViT structure primer, structural post-mortem of closed lines, and the typing-oracle mPQ mass analysis with ranked levers (conversation digest; oracle is a read-only diagnostic, see its §5) |
 | `report/stage_report_4/` | latest stage IV: E2a, DSB gate closure, E0 cost; README includes October 9 corrections |
 | `report/stage_report_3/` | stage III report: matched-seed P2, existence-filtered P2, audit corrections and limitations (EN + ZH + plain-language ZH, PDF/TeX, verified numbers) |
 | `report/stage_report_1/`, `report/stage_report_2/` | historical stage reports I & II with October 2 audit addenda; later results are in stage III |
