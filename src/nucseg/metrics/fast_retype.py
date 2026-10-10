@@ -116,7 +116,9 @@ class RetypeEvaluator:
         deltas = np.empty(n_boot)
         for b in range(n_boot):
             idx = np.concatenate([rng.choice(s, len(s), replace=True) for s in strata])
-            deltas[b] = m(pa[idx]) - m(pb[idx])
+            with np.errstate(all="ignore"), np.testing.suppress_warnings() as sup:
+                sup.filter(RuntimeWarning)
+                deltas[b] = m(pa[idx]) - m(pb[idx])
         with np.errstate(all="ignore"):
             lo, hi = np.nanpercentile(deltas, [2.5, 97.5])
         return {"delta": float(m(pa) - m(pb)), "lo": float(lo), "hi": float(hi)}

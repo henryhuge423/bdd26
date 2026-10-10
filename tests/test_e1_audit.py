@@ -86,3 +86,37 @@ def test_ht_and_kappa():
     assert kappa([1, 0, 1, 0], [0, 1, 0, 1]) == -1.0
     # uncertain 行（-1）从 kappa 分母剔除
     assert kappa([1, -1, 0, 0], [1, 1, 0, 0]) == 1.0
+
+
+def test_read_form_parses_generated_headers(tmp_path):
+    """分析器必须能解析构建器实际生成的表头（带括号说明的列名）——曾全部解析成 uncertain。"""
+    from scripts.e1_analyze import _binarize, _read_form
+    p = tmp_path / "stage1_form.csv"
+    p.write_text("id,reviewer,is_nucleus(real/non_nucleus/uncertain),"
+                 "completeness(full/truncated/fragments),notes\n"
+                 "IMG_0001,r1,real,full,\nIMG_0002,r1,non_nucleus,,\nIMG_0003,r1,uncertain,,\n")
+    form = _read_form(p)
+    assert [_binarize(form[i]) for i in ("IMG_0001", "IMG_0002", "IMG_0003")] == [1, 0, -1]
+
+
+def test_stage2_relation_tally_and_s4_question(tmp_path):
+    from scripts.e1_analyze import _relation_tally, _s4_unlabelled_tally
+    rel = {"IMG_0001": "boundary_offset", "IMG_0002": "consistent",
+           "IMG_0003": "uncertain", "IMG_0004": "boundary_offset"}
+    t = _relation_tally(rel)
+    assert t == {"boundary_offset": 2, "consistent": 1, "uncertain": 1}
+    q = {"IMG_0001": "yes", "IMG_0002": "no", "IMG_0003": "uncertain"}
+    assert _s4_unlabelled_tally(q) == {"yes": 1, "no": 1, "uncertain": 1}
+
+
+def test_stage2_image_draws_candidate_last():
+    """候选轮廓必须画在 GT 轮廓之上（曾有 GT 厚线完全盖住 10px 候选的窗口）。"""
+    import numpy as np
+    from scripts.e1_build_packet import CAND_COLOR, _stage2_image
+    img = np.zeros((40, 40, 3), np.uint8)
+    cand = np.zeros((40, 40), bool); cand[18:21, 18:21] = True      # 9px 小候选
+    gt = np.zeros((40, 40), bool); gt[10:30, 10:30] = True          # 大 GT 覆盖同区
+    out = _stage2_image(img, cand, [gt], [(40, 200, 220)])
+    b, g, r = out[..., 0].astype(int), out[..., 1].astype(int), out[..., 2].astype(int)
+    magenta = (r == CAND_COLOR[0]) & (g == CAND_COLOR[1]) & (b == CAND_COLOR[2])
+    assert magenta.sum() >= 8          # 小候选的粗轮廓存活

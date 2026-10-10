@@ -61,6 +61,11 @@ def test_bootstrap_delta_identical_and_stratified():
     cls_b = rng.integers(1, 6, len(iid))
     rb = ev.mpq_bootstrap_delta(cls, cls_b, n_boot=256, seed=2)
     assert rb["hi"] - rb["lo"] > 0
+    # NaN 语义：某组织整列缺类（GT 缺类→NaN 行）时重采样不产生错误值，只传播 NaN
+    gt_ch2 = gt_ch.copy(); gt_ch2[2:, ..., 0] = 0            # 组织1 的图全部去掉类1
+    ev2 = RetypeEvaluator(gt_ch2, pred_inst, *_tables(pred_inst), tissue, workers=1)
+    r3 = ev2.mpq_bootstrap_delta(cls, cls, n_boot=32, seed=3)
+    assert r3["delta"] == 0.0 and np.isfinite(r3["lo"]) and np.isfinite(r3["hi"])
 
 
 def test_pool_and_ring():

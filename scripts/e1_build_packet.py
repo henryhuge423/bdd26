@@ -6,8 +6,9 @@
         --records runs/analysis/e1_input_check_20261010_split1_seed1/records.npz \
         --out runs/analysis/e1_packet_20261010 --seed 20261010
 
-产物：stage1/（图像+十字，中性编号）、stage2/（同窗+候选轮廓洋红+GT 分色轮廓）、
-forms/（两阶段表头）、KEY/mapping.json（中性 ID↔真实身份，只给组织者）、sample.json、
+产物：stage1/（图像+十字，中性编号）、stage2/（同窗+粗洋红候选轮廓+细彩色 GT 轮廓）、
+forms/（两阶段表头，S4 阶段二含 unlabelled_suspect 列）、KEY/mapping.json +
+KEY/sample.json（去盲信息只在 KEY/，评审一级目录无泄漏）、
 manifest.json（SHA/种子/配额）、README_reviewers.md。阶段一材料不含任何模型来源、置信度、
 GT 或面积信息。fold 固定 split1 验证折 2；fold3 拒绝。tissue 统一用组织名字符串分层。
 """
@@ -56,6 +57,15 @@ def _centroid(mask: np.ndarray) -> tuple[int, int]:
 
 def _touches_edge(mask: np.ndarray) -> bool:
     return bool(mask[0, :].any() or mask[-1, :].any() or mask[:, 0].any() or mask[:, -1].any())
+
+
+def _stage2_image(marked: np.ndarray, cand_mask, gt_masks, gt_colors) -> np.ndarray:
+    """GT contours first (thin), candidate LAST and thick — a tiny candidate must stay visible
+    even when a GT contour crosses it (review finding #6)."""
+    layer = overlay_outlines(marked, gt_masks, gt_colors, thickness=1)
+    if cand_mask is not None:
+        layer = overlay_outlines(layer, [cand_mask], [CAND_COLOR], thickness=2)
+    return layer
 
 
 def main(argv=None):
@@ -146,10 +156,10 @@ def main(argv=None):
         marked = draw_cross(win, cy_w, cx_w)
         cv2.imwrite(str(a.out / "stage1" / f"{nid}.png"), marked)
         masks, colors = [], []
+        cand_mask = None
         if it["id"] is not None:
             src = base_inst if it["source"] == "S1" else x2_inst
-            masks.append((src[it["image"]] == it["id"])[sy, sx])
-            colors.append(CAND_COLOR)
+            cand_mask = (src[it["image"]] == it["id"])[sy, sx]
         gt = np.asarray(f2.inst[it["image"]])[sy, sx]
         gt_type = np.asarray(f2.type[it["image"]])[sy, sx]
         for gid in np.unique(gt)[1:]:
@@ -157,15 +167,21 @@ def main(argv=None):
             masks.append(gt == gid)
             colors.append(GT_COLORS[cls - 1] if 1 <= cls <= 5 else (128, 128, 128))
         cv2.imwrite(str(a.out / "stage2" / f"{nid}.png"),
-                    overlay_outlines(marked, masks, colors))
+                    _stage2_image(marked, cand_mask, masks, colors))
 
+    # 盲化护栏（review #2）：身份/置信度字段只进 KEY/，评审拿到的一级目录无任何去盲信息
     (a.out / "KEY" / "mapping.json").write_text(json.dumps(mapping, indent=2, default=str))
-    (a.out / "sample.json").write_text(json.dumps(
+    (a.out / "KEY" / "sample.json").write_text(json.dumps(
         {"spec": "docs/superpowers/specs/2026-10-10-e1-blind-audit-design.md",
          "seed": a.seed, "pair": a.pair, "fold": a.fold, "items": mapping}, indent=2, default=str))
+    sample_sha = _sha256(a.out / "KEY" / "sample.json")
+    quotas = {"S1": len(s1_rows), "S2": sum(r["added"] for r in rows),
+              "S3": sum(not r["added"] for r in rows), "S4": len(f2)}
     (a.out / "manifest.json").write_text(json.dumps({
         "spec": "docs/superpowers/specs/2026-10-10-e1-blind-audit-design.md",
         "seed": a.seed, "counts": {"S1": 50, "S2": 50, "S3": 50, "S4": 50},
+        "frame_sizes": quotas,
+        "key_sample_sha256": sample_sha,
         "sha256": {str(p): _sha256(p) for p in
                    [a.records, base_val, x2_val, f2.dir / "images.npy", f2.dir / "inst.npy",
                     f2.dir / "type.npy"] if p is not None and Path(p).exists()},
@@ -174,11 +190,12 @@ def main(argv=None):
         "id,reviewer,is_nucleus(real/non_nucleus/uncertain),completeness(full/truncated/fragments),notes\n")
     (a.out / "forms" / "stage2_form.csv").write_text(
         "id,reviewer,relation(consistent/boundary_offset/merged/oversegmented/possible_unlabelled/"
-        "not_nucleus/uncertain),notes\n")
+        "not_nucleus/uncertain),unlabelled_suspect(yes/no/uncertain;仅S4窗口必填),notes\n")
     (a.out / "README_reviewers.md").write_text(
         "# E1 盲评说明\n\n阶段一：只看 stage1/ 图（红十字=目标位置），填 forms/stage1_form.csv。\n"
-        "阶段二（阶段一答案封存后才开始）：看 stage2/（洋红=候选轮廓，彩色=GT 轮廓），填 "
-        "forms/stage2_form.csv。请勿在提交阶段一之前查看 stage2 或交换意见。\n")
+        "阶段二（阶段一答案封存后才开始）：看 stage2/（粗洋红=候选轮廓，细彩色=GT 轮廓），填 "
+        "forms/stage2_form.csv（S4 窗口另填 unlabelled_suspect 列）。\n"
+        "**请勿打开 KEY/ 目录**（含去盲信息）；请勿在提交阶段一之前查看 stage2 或交换意见。\n")
     print(f"wrote packet: {a.out} ({len(items)} windows)")
 
 

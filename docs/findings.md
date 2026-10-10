@@ -87,7 +87,8 @@ Feature export verified against the cached instance-probability table (max |Δ| 
   majority vote; only c3 strict +.0020, c5 beats-T1, c6 seed-consistency pass). sklearn
   deterministic cross-check agrees in direction (val mPQ .4817, worse).
 - **Failure position (per spec stop-loss):** not the aggregation (T1 null); not unreadable
-  features (GT-region diagnostic accuracy **85.3%** ≈ current matched typing accuracy **85.8%**);
+  features (GT-region diagnostic accuracy **85.3%** ≈ the T2 head's own matched typing accuracy
+  **85.8%**, current decoder type accuracy 85.6%);
   the linear readout extracts the SAME information the TP head already uses, with no increment
   on predicted contours — and it under-serves the rare class. Per the pre-registered rule: no
   bigger classifier, no added configs; a new testable explanation is required first (candidates:
@@ -100,8 +101,9 @@ Feature export verified against the cached instance-probability table (max |Δ| 
   and all inputs SHA-bound in results.json.
 - Cost (reported, not gated): export pooling 790 ms/img unoptimized single-thread (51× the
   ≤3 ms/img design target; a deployment path would need vectorized pooling if ever revived);
-  head forward 6.4 ms for the whole fold. GT-contour-trained heads applied to predicted
+  head forward 8.2 ms for the whole fold. GT-contour-trained heads applied to predicted
   contours (spec'd domain gap) — recorded, and the GT-region diagnostic column separates it.
+  sklearn cross-check hit lbfgs max_iter=1000 (ConvergenceWarning; direction unchanged).
 - Incidents fixed en route (all RED→GREEN pinned): `_gt_classes` +1 label shift (100% of cached
   label rows repaired deterministically, features byte-identical), retyped type map built with
   a global id LUT that cross-wired images (ids restart per image; fixed per-image, canonical

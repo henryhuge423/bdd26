@@ -198,6 +198,8 @@ def main(argv=None):
     cls_best = cls_store[(best, HEAD_SEEDS[0])]
     retyped_type = write_retyped_types(pred["inst"], inst_img, inst_id, cls_best)
     retyped_path = a.out / f"pred_fold2_retyped_{best.lower()}_seed0.npz"
+    if retyped_path.exists():
+        raise SystemExit(f"{retyped_path} exists; refusing to overwrite")
     np.savez_compressed(retyped_path, inst=pred["inst"], type=retyped_type)
 
     payload = {

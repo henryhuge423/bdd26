@@ -89,11 +89,11 @@ def draw_cross(img: np.ndarray, cy: int, cx: int, half: int = 4, color=(0, 0, 25
     return out
 
 
-def overlay_outlines(img: np.ndarray, masks, colors) -> np.ndarray:
+def overlay_outlines(img: np.ndarray, masks, colors, thickness: int = 1) -> np.ndarray:
     """Draw each boolean mask's contour in its color (BGR) on a copy."""
     out = img.copy()
     for mask, color in zip(masks, colors):
         cnts, _ = cv2.findContours(mask.astype(np.uint8), cv2.RETR_EXTERNAL,
                                    cv2.CHAIN_APPROX_SIMPLE)
-        cv2.drawContours(out, cnts, -1, color, 1)
+        cv2.drawContours(out, cnts, -1, color, thickness)
     return out
