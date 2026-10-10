@@ -66,7 +66,7 @@ def background_windows(tissue_arr, n_total, rng, shape=(256, 256), size=WINDOW):
         for img in rng.choice(imgs, n, replace=False):
             cy = int(rng.integers(size // 2, shape[0] - size // 2 + 1))
             cx = int(rng.integers(size // 2, shape[1] - size // 2 + 1))
-            out.append({"image": int(img), "cy": cy, "cx": cx, "tissue": int(t),
+            out.append({"image": int(img), "cy": cy, "cx": cx, "tissue": str(t),
                         "prob": (n / len(imgs)) / C})
     return out
 

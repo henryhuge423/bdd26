@@ -46,6 +46,13 @@ def test_background_windows_probs_and_clamp():
     assert len({x["image"] for x in w}) == 10                              # 无放回（图级）
 
 
+def test_background_windows_tissue_names():
+    """tissue 用组织名字符串（构建器的统一口径）不得 int() 崩溃。"""
+    tissue = np.array(["Breast"] * 5 + ["Cervix"] * 5)
+    w = background_windows(tissue, 4, np.random.default_rng(0))
+    assert len(w) == 4 and all(x["tissue"] in ("Breast", "Cervix") for x in w)
+
+
 def test_window_slice_constant_size():
     for cy, cx in [(0, 0), (255, 255), (80, 176), (0, 255)]:
         sy, sx, off = window_slice((256, 256), cy, cx, size=160)
