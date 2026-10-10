@@ -66,3 +66,16 @@ def test_packet_cli_guards_and_neutral_ids(tmp_path):
         main(["--out", str(out), "--fold", "3", "--round", str(tmp_path), "--pair", "split1_seed1"])
     with pytest.raises(SystemExit, match="exists"):
         main(["--out", str(out), "--fold", "2", "--round", str(tmp_path), "--pair", "split1_seed1"])
+
+
+def test_ht_and_kappa():
+    from scripts.e1_analyze import ht_estimate, kappa
+    labels = [1, 1, 0, 1]
+    probs = [.5, .25, .25, 1.0]
+    # HT：Σ w·y / Σ w，w = 1/π
+    assert ht_estimate(labels, probs) == pytest.approx(
+        (2 * 1 + 4 * 1 + 4 * 0 + 1 * 1) / (2 + 4 + 4 + 1))
+    assert kappa([1, 1, 0, 0], [1, 1, 0, 0]) == 1.0
+    assert kappa([1, 0, 1, 0], [0, 1, 0, 1]) == -1.0
+    # uncertain 行（-1）从 kappa 分母剔除
+    assert kappa([1, -1, 0, 0], [1, 1, 0, 0]) == 1.0
