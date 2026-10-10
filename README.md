@@ -28,8 +28,11 @@ code was merged into `master` as tested tooling, not as a trained method.
 (image-weighted correction: 6.08447×; historical chunk-mean estimate: 6.08687×).
 EF-P2 remains mechanism evidence / a teacher candidate, not a deployment win.
 See [stage report IV](docs/report/stage_report_4/README.md) and its audit addendum.
-Next priority is E1 independent candidate annotation; utility learning remains
-conditional on that evidence, not an approved new training round.
+The [October 9 research update](docs/RESEARCH_NEXT_2026-10-09.md) proposes a small
+fixed-geometry instance-typing probe alongside E1 independent candidate annotation.
+The typing oracle is GT-assisted and does not establish an achievable gain; its Inf/Conn
+subset corrects all matched objects with those GT classes, not just pairwise swaps.
+Utility learning remains conditional on candidate evidence. No new training is authorized.
 
 ## Research review (2026-10-06)
 

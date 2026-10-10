@@ -1,0 +1,59 @@
+{
+  "revision_date": "2026-10-10",
+  "experiment_period": "2026-10-06 to 2026-10-08",
+  "documents": {
+    "stage_report_4_zh": {
+      "pages": 11,
+      "pdf_bytes": 489173,
+      "pdf_sha256": "1df99d2ea67f6f5f2c72819c6488c2d5d0f03bd29e5cba0600de06b3b1f4f541",
+      "tex_sha256": "9c359fec18521cf9f79a20a269a1f67fba63feaca6e20d9f767c7da49e7ac130",
+      "fresh_log_sha256": "6f8c2fc3665751c0c5f4a04dc736272a7e8841a3e6c3afa879f8b293dbb368d5",
+      "checks": {
+        "tex_errors": 0,
+        "overfull_boxes": 0,
+        "underfull_boxes": 0,
+        "missing_characters": 0,
+        "undefined_references": 0
+      },
+      "build": "XeLaTeX, TeX Live 2026, two passes",
+      "key_numbers_extractable": true
+    },
+    "summary_plain_zh": {
+      "pages": 3,
+      "pdf_bytes": 256078,
+      "pdf_sha256": "4b5b04964a966798fb9526d0e5218dd9752fb58b4375bdfc0f228741b430a038",
+      "tex_sha256": "2763762558a7fe7937640cd412b1b6931834488ae8ca8a3a84d48f4a5bf9464b",
+      "fresh_log_sha256": "0fbd8cc0ec4ecac8cef30ac48d783a503e2855f4f3e2662b720af30a0a4a9802",
+      "checks": {
+        "tex_errors": 0,
+        "overfull_boxes": 0,
+        "underfull_boxes": 0,
+        "missing_characters": 0,
+        "undefined_references": 0
+      },
+      "build": "XeLaTeX, TeX Live 2026, two passes",
+      "key_numbers_extractable": true
+    }
+  },
+  "numeric_verification": {
+    "stage3_endpoint_deltas": 108,
+    "stage4_snapshot_exact_equal": true,
+    "formal_numeric_tables_unchanged": 7,
+    "labels_figures_bibliography_keys_unchanged": true,
+    "corrected_two_model_over_x1": 6.084467857394833,
+    "corrected_tta_over_x1": 4.6631624807143055,
+    "frozen_snapshot_sha256": "3cc7d733a6196a5def1b17a3e59956dc590ac92e082af901868fbe097455c0d2"
+  },
+  "tests": {
+    "command": "python -m pytest -q",
+    "passed": 277,
+    "warnings": 64,
+    "elapsed_seconds": 286.06,
+    "note": "Executed during this documentation revision; no production or test code changed."
+  },
+  "notes": [
+    "Chinese text revised; October 9 corrections integrated without changing frozen tables or figures.",
+    "English PDF and historical build_verification.json remain unchanged.",
+    "PDF layout spot-checks covered titles, guide pagination, and formal appendix; no claim of all-page independent review."
+  ]
+}

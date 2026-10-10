@@ -34,6 +34,35 @@
 > Execution: `docs/superpowers/plans/2026-10-02-p0-p3-research.md`. Corrected results and
 > limitations: [P0–P3 report](P0_P3_RESULTS_2026-10-02.md).
 
+## 2026-10-10 — verification and validation-candidate readiness
+
+- Fresh full suite: **277 passed, 64 warnings**; Python 3.10.21, torch 2.5.1+cu124,
+  numpy 1.23.5 unchanged. Stage-III's 108 endpoint deltas and stage-IV's frozen snapshot
+  (96 E2a endpoint cells) reproduced; the image-weighted cost correction also reproduced.
+  Both revised Chinese PDF/TeX hashes match the revision ledger; all seven formal-report
+  table numeric sequences, figure references, labels and bibliography keys are unchanged.
+  This checks the existing PDFs, not a new compilation or independent all-page visual review.
+- Continued with a **CPU-only replay of frozen P2 validation candidates**, not a new
+  selection or performance experiment: split1, seed1, fold2, frozen
+  `a200_p0.9_interior0`. Checked input/GT SHA-256, byte sizes, and stored run-context
+  hashes before executing `audit_existence_candidates.py --pairs split1_seed1 --workers 2`.
+  Its old CLI does not itself enforce all those provenance checks. Checkpoint binding
+  remains legacy run provenance, not a new hash-bound inference.
+- Recomputed **4,084 eligible / 1,515 accepted** candidates; among accepted candidates,
+  **669 match GT at IoU > .5, 589 are also correctly typed, and 62 are correctly typed
+  Dead**. Every saved candidate column exactly matches the same pair's subset in the
+  frozen `existence_audit_20261005_v2/records.npz`. This is P2 acceptance, not EF-P2.
+  Output and verification: `runs/analysis/e1_input_check_20261010_split1_seed1/` (local).
+- **E1 remains incomplete:** replayed GT-match labels are not independent biological
+  judgments. The blinded two-stage packet, two qualified reviewers and sampling protocol
+  are still needed. The seed19 identity selection cannot supply an accepted-candidate group.
+- Next proposed bounded control is T0/T1 on cached split1 validation instances, comparing
+  majority vote with mean TP probabilities while preserving geometry and all predictions.
+  It needs a guarded runner and a fixed background rule; the existing CONCH retyping CLI
+  also trains and reads test data, so was not used. The experiment spec remains pending;
+  no typing probe, new training or inference was launched. This readiness replay read
+  validation only; the separate report verification also read historical test summaries.
+
 ## 2026-10-09 — typing-oracle ceiling diagnostic (read-only, unregistered)
 
 Conversation-driven analysis ([digest](STRUCTURE_AND_STRATEGY_2026-10-09.md) §5): how far official
@@ -42,19 +71,26 @@ Scored with `RetypeEvaluator` on the frozen baseline (CellViT-UNI, no TTA, last 
 predictions — audit-type access to already-evaluated test folds, no tuning, no new inference;
 current values reproduce the official summaries (.4951/.4930/.5104).
 
-- **Typing oracle**: 3-split mean mPQ .4995 → **.6632 (+.164)** ≈ bPQ .6653 — the bPQ−mPQ gap is
-  essentially all typing, not segmentation. Per split: +.1692/+.1671/+.1548.
-- **Inf/Conn-restricted oracle** (only matches whose GT is Inflammatory or Connective corrected):
-  → **.6141 (+.115)**, i.e. ~70% of the typing mass is the Infl↔Conn confusion (matched-instance
-  mis-rate 11.8%/10.9% each direction; overall matched typing accuracy .864).
+- **Typing oracle**: 3-split mean mPQ .4995 → **.6632 (+.164)**; per-split gains are
+  +.1692/+.1671/+.1548. This is the gain from one GT-assisted retyping intervention with
+  geometry fixed. Its numerical proximity to bPQ .6653 is not an additive decomposition
+  of bPQ−mPQ: the metrics use different matching/aggregation, and segmentation errors remain.
+- **Inf/Conn-GT-restricted oracle** (all matches whose GT is Inflammatory or Connective
+  corrected, regardless of their predicted class): → **.6141 (+.115)**, approximately 70%
+  of the all-class intervention's gain. **Correction on 2026-10-09:** this does not isolate
+  Infl↔Conn swaps; `typing_oracle.py` selects on GT class only. The gain can also change
+  other classes' FP counts. Separate descriptive confusion rates were 11.8%/10.9% in the
+  two directions, with overall matched typing accuracy .864; those rates do not establish
+  a 70% pairwise contribution.
 - Per-class (split1, current→oracle): Neo .570→.666, Inf .440→.720, Conn .418→.595,
   Dead .142→.411, Epi .575→.659.
-- Interpretation limits: oracle ≠ achievable (Inf/Conn includes genuine label ambiguity — no
-  published method exceeds ~.48 on either under the official protocol); CONCH re-typing already
-  measured null, so external priors do not capture it. This entry ranks future levers
-  (tissue-conditional class prior, per-class decode thresholds for non-Dead classes,
-  crop-level second-stage classifier) but authorizes nothing; any lever must be tuned on
-  validation folds only.
+- Interpretation limits: oracle ≠ achievable performance. Label ambiguity and residual
+  feature separability need independent tests; no universal literature ceiling is established
+  here. The tested CONCH retyping methods were null, which argues against simply repeating
+  those recipes but does not establish feature saturation. The revised proposal in
+  [RESEARCH_NEXT_2026-10-09.md](RESEARCH_NEXT_2026-10-09.md) separates candidate-existence
+  review from an instance-typing feasibility probe. All proposals remain unapproved;
+  selection must stay on training/development data, and a reused benchmark is not a fresh test.
 - Reproduce: `python scripts/typing_oracle.py --out-json runs/analysis/typing_oracle_20261009/summary.json`
   (artifact: `runs/analysis/typing_oracle_20261009/summary.json`, local). Relevant pytest subset
   (`-k "retype or typing"`): 10 passed.

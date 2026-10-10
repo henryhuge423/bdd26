@@ -3,12 +3,13 @@
 | path | what |
 |---|---|
 | `RESEARCH_PLAN.md` | current direction + dated historical research log and protocol |
-| `RESEARCH_NEXT_2026-10-06.md` | evidence re-audit, verified recent literature, observation-aware research proposals, falsification experiments and staged compute requests (not yet an approved implementation plan) |
+| `RESEARCH_NEXT_2026-10-09.md` | latest proposal: fixed-geometry instance-typing probe, parallel candidate annotation, explicit stop criteria and independent-validation requirements; no new experiment started |
+| `RESEARCH_NEXT_2026-10-06.md` | earlier evidence review, primary-literature checks and E0–E5 proposals; current execution order is in the October 9 update |
 | `P0_P3_RESULTS_2026-10-02.md` | audited seed19 P0–P3 results and historical corrections; subsequent matched-seed/EF results are in stage III |
 | `superpowers/plans/2026-10-02-p0-p3-research.md` | approved execution plan and decisions |
 | `findings.md` | experiment log — every number, per-date entries |
 | `RESEARCH_AUDIT_2026-10-09.md` | latest audit: verified endpoints, cost aggregation correction, regression fixes and explicit verification gaps |
-| `STRUCTURE_AND_STRATEGY_2026-10-09.md` | plain-language HoVer-Net/CellViT structure primer, structural post-mortem of closed lines, and the typing-oracle mPQ mass analysis with ranked levers (conversation digest; oracle is a read-only diagnostic, see its §5) |
+| `STRUCTURE_AND_STRATEGY_2026-10-09.md` | revised model primer and experiment review; distinguishes observations from mechanisms and corrects the Inf/Conn-GT oracle interpretation |
 | `report/stage_report_4/` | latest stage IV: E2a, DSB gate closure, E0 cost; README includes October 9 corrections |
 | `report/stage_report_3/` | stage III report: matched-seed P2, existence-filtered P2, audit corrections and limitations (EN + ZH + plain-language ZH, PDF/TeX, verified numbers) |
 | `report/stage_report_1/`, `report/stage_report_2/` | historical stage reports I & II with October 2 audit addenda; later results are in stage III |
