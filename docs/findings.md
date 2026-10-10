@@ -68,6 +68,49 @@
   (typing-probe + e1-audit files; full `pytest -q` re-run closing the round).
 - No test fold read in this round; T results are dev-fold (split1/fold2) only and pending below.
 
+## 2026-10-10 (T verdict) — typing probe T0–T3: pre-registered gate FAILED; simple readouts carry no incremental typing signal
+
+Ran per [spec](superpowers/specs/2026-10-10-typing-probe-t-design.md) / [plan](superpowers/plans/2026-10-10-typing-probe-t.md)
+(artifacts `runs/analysis/typing_probe_20261010/`, local). Split1 dev-only: fold1 trains the
+heads (63,218 GT instances), fold2 validation (59,593 predicted instances), fold3 untouched.
+Feature export verified against the cached instance-probability table (max |Δ| = 6e-8).
+
+| config | mPQ | Δ vs T0 | notes |
+|---|---:|---:|---|
+| T0 majority vote (identity) | .483486 | — | reproduces official eval_fold2 exactly |
+| T1 instance-mean probability | .483182 | −.0003 | boot CI [−.0010, +.0003]; aggregation rule saturated |
+| T2 pooled tp_feat + linear head | .483707 | **+.0002** | 2 seeds same direction; CI [−.0027, +.0019] |
+| T3 T2 + 24px context ring (sum) | .481796 | −.0017 | both seeds negative |
+
+- **Gate verdict: pass_gate = false** (c1 Δ≥.003 ✗ at .0002; c2 CI-lo>0 ✗ at −.0027;
+  c4 Dead ≥−.002 ✗ at **−.0053** — the unweighted linear head types Dead worse than the
+  majority vote; only c3 strict +.0020, c5 beats-T1, c6 seed-consistency pass). sklearn
+  deterministic cross-check agrees in direction (val mPQ .4817, worse).
+- **Failure position (per spec stop-loss):** not the aggregation (T1 null); not unreadable
+  features (GT-region diagnostic accuracy **85.3%** ≈ current matched typing accuracy **85.8%**);
+  the linear readout extracts the SAME information the TP head already uses, with no increment
+  on predicted contours — and it under-serves the rare class. Per the pre-registered rule: no
+  bigger classifier, no added configs; a new testable explanation is required first (candidates:
+  Inf/Conn label ambiguity, IoU-marginal matches, joint training rather than post-hoc readout).
+- Combined with the CONCH re-typing null: two independent feature sources (external VLM,
+  internal frozen TP features) both fail post-hoc re-typing — the bPQ−mPQ typing gap is not
+  recoverable by post-hoc instance-level readouts of frozen features.
+- Verification: fast `RetypeEvaluator` == canonical `pannuke_eval` on the retyped T2 map
+  (|Δ| = 1e-16); **bPQ bit-identical** to eval_fold2 (geometry untouched). Decision rule values
+  and all inputs SHA-bound in results.json.
+- Cost (reported, not gated): export pooling 790 ms/img unoptimized single-thread (51× the
+  ≤3 ms/img design target; a deployment path would need vectorized pooling if ever revived);
+  head forward 6.4 ms for the whole fold. GT-contour-trained heads applied to predicted
+  contours (spec'd domain gap) — recorded, and the GT-region diagnostic column separates it.
+- Incidents fixed en route (all RED→GREEN pinned): `_gt_classes` +1 label shift (100% of cached
+  label rows repaired deterministically, features byte-identical), retyped type map built with
+  a global id LUT that cross-wired images (ids restart per image; fixed per-image, canonical
+  check re-run), NpzFile re-decompression hang, zero-instance column widths, tp softmax
+  NCHW→NHWC, stale `__pycache__` after a `git stash` round-trip.
+- Dev-fold conclusion only: single split, single segmenter seed (19), head seeds cover the
+  linear head alone; no test fold was read; this entry makes no performance claim beyond the
+  validation fold.
+
 ## 2026-10-10 — verification and validation-candidate readiness
 
 - Fresh full suite: **277 passed, 64 warnings**; Python 3.10.21, torch 2.5.1+cu124,
