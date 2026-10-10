@@ -162,3 +162,14 @@ def test_forward_layout_contract():
     tp, feat = _forward(Stub(), torch.zeros(1, 8, 8, 3, dtype=torch.uint8))
     assert tp.shape == (1, 8, 8, 6) and feat.shape == (1, 8, 8, 64)
     assert np.allclose(tp.sum(-1), 1.0, atol=1e-5)     # 类轴归一化（permute 正确）
+
+
+def test_export_finalize_and_gt_classes_empty():
+    """fold2 不产 cls 列（空列表不能 np.concatenate 崩）；空实例图的 _gt_classes 须返回空。"""
+    from scripts.export_tp_features import _finalize_rows, _gt_classes
+    rows = {"inst_img": [np.array([0, 0])], "cls": []}      # fold2: cls 永不追加
+    payload = _finalize_rows(rows)
+    assert payload["cls"].shape == (0,)
+    assert payload["inst_img"].tolist() == [0, 0]
+    assert _gt_classes(np.zeros((4, 4), np.int32),
+                       np.zeros((4, 4), np.uint8), np.zeros(0, np.int64)).shape == (0,)

@@ -59,12 +59,19 @@ def _forward(model, imgs_u8: torch.Tensor):
 
 def _gt_classes(inst: np.ndarray, typ: np.ndarray, ids: np.ndarray) -> np.ndarray:
     """Majority GT class per raw instance id (background votes zeroed; ties -> lowest class)."""
+    if not len(ids):
+        return np.zeros(0, np.int64)
     votes = np.zeros((int(ids.max()) + 1, 6), np.int64)
     np.add.at(votes, (inst.ravel(), typ.ravel().astype(np.int64)), 1)
     votes[:, 0] = 0
     cls = votes[ids].argmax(1) + 1
     cls[votes[ids].sum(1) == 0] = 0
     return cls
+
+
+def _finalize_rows(rows: dict) -> dict:
+    """Concatenate per-image row lists; keys never appended (e.g. fold2 'cls') -> empty arrays."""
+    return {k: (np.concatenate(v) if len(v) else np.zeros(0)) for k, v in rows.items()}
 
 
 def _border(inst: np.ndarray, ids: np.ndarray) -> np.ndarray:
@@ -158,7 +165,7 @@ def main(argv=None):
             print(f"\r{s + len(tp)}/{len(f)}", end="", flush=True)
     print()
 
-    payload = {k: np.concatenate(v) for k, v in rows.items()}
+    payload = _finalize_rows(rows)
     payload["tissue"] = f.tissue[payload["inst_img"]]
     binding = None
     if a.fold == 2:
