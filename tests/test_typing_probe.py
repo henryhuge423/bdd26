@@ -193,3 +193,17 @@ def test_gt_classes_values():
     # 背景污染票不影响多数票
     typ2 = typ.copy(); typ2[0, 0] = 4                      # 背景像素的杂散票
     assert list(_gt_classes(inst, typ2, np.array([7]))) == [3]
+
+
+def test_write_retyped_types_per_image():
+    """重分型 type 图必须逐图建立 id→class 映射（id 每图从 1 重编号；全局 LUT 会串图）。"""
+    from scripts.run_typing_probe import write_retyped_types
+    inst = np.zeros((2, 6, 6), np.int32)
+    inst[0, 0:2, 0:2] = 1; inst[0, 4:6, 4:6] = 2      # 图0：id1→类1，id2→类5
+    inst[1, 0:2, 0:2] = 1; inst[1, 4:6, 4:6] = 3      # 图1：id1→类3，id3→类2
+    inst_img = np.array([0, 0, 1, 1]); inst_id = np.array([1, 2, 1, 3])
+    cls = np.array([1, 5, 3, 2])
+    typ = write_retyped_types(inst, inst_img, inst_id, cls)
+    from nucseg.metrics.pannuke_eval import instance_classes
+    _, c0 = instance_classes(inst[0], typ[0]); _, c1 = instance_classes(inst[1], typ[1])
+    assert list(c0) == [1, 5] and list(c1) == [3, 2]   # 按 id 升序：图1 的 id1→3、id3→2

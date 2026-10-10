@@ -79,6 +79,22 @@ def _score(ev, cls):
             "per_tissue": _per_tissue(ev, cls)}
 
 
+def write_retyped_types(inst: np.ndarray, inst_img: np.ndarray, inst_id: np.ndarray,
+                        cls: np.ndarray) -> np.ndarray:
+    """Per-image id→class type map. Instance ids restart at 1 in every image — a single global
+    LUT keyed by id alone would overwrite every image's class with the last one (2026-10-10 bug)."""
+    typ = np.zeros_like(inst, dtype=np.uint8)
+    for j in range(len(inst)):
+        rows = inst_id[inst_img == j]
+        if not len(rows):
+            continue
+        lut = np.zeros(int(rows.max()) + 1, np.uint8)
+        lut[rows] = cls[inst_img == j]
+        m = inst[j] > 0
+        typ[j][m] = lut[inst[j][m]]
+    return typ
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--pred", type=Path, required=True)
@@ -180,14 +196,9 @@ def main(argv=None):
 
     # ---- 重分型 npz（最优学习配置 seed0；canonical 复核用；inst 不动，type=每实例新类）
     cls_best = cls_store[(best, HEAD_SEEDS[0])]
-    lut = np.zeros(int(inst_id.max()) + 1, np.uint8)
-    lut[inst_id] = cls_best
-    retyped_type = pred["type"].copy()
-    for j in range(len(pred["inst"])):
-        m = pred["inst"][j] > 0
-        retyped_type[j][m] = lut[pred["inst"][j][m]]
+    retyped_type = write_retyped_types(pred["inst"], inst_img, inst_id, cls_best)
     retyped_path = a.out / f"pred_fold2_retyped_{best.lower()}_seed0.npz"
-    np.savez_compressed(retyped_path, inst=pred["inst"], type=retyped_type.astype(np.uint8))
+    np.savez_compressed(retyped_path, inst=pred["inst"], type=retyped_type)
 
     payload = {
         "spec": "docs/superpowers/specs/2026-10-10-typing-probe-t-design.md",
