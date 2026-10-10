@@ -96,3 +96,27 @@ class RetypeEvaluator:
             img = np.nanmean(strict, 1)
             per_t = [np.nanmean(img[self.tissue == t]) for t in TISSUES if (self.tissue == t).any()]
             return float(np.nanmean(per_t)), np.nanmean(strict, 0)
+
+    def mpq_bootstrap_delta(self, cls_a: np.ndarray, cls_b: np.ndarray,
+                            n_boot: int = 1000, seed: int = 0) -> dict:
+        """Paired image bootstrap of mPQ(a) - mPQ(b); images resampled WITHIN each tissue stratum
+        (spec 2026-10-10 §2: 组织内分层, 1000 次, percentile CI)."""
+        def img_mpq(pq):
+            with np.errstate(all="ignore"):
+                return np.nanmean(pq, 1)
+
+        pa = img_mpq(self.per_image_class_pq(cls_a))
+        pb = img_mpq(self.per_image_class_pq(cls_b))
+        strata = [np.nonzero(self.tissue == t)[0] for t in np.unique(self.tissue)]
+        rng = np.random.default_rng(seed)
+
+        def m(v):
+            return np.nanmean([np.nanmean(v[s]) for s in strata])
+
+        deltas = np.empty(n_boot)
+        for b in range(n_boot):
+            idx = np.concatenate([rng.choice(s, len(s), replace=True) for s in strata])
+            deltas[b] = m(pa[idx]) - m(pb[idx])
+        with np.errstate(all="ignore"):
+            lo, hi = np.nanpercentile(deltas, [2.5, 97.5])
+        return {"delta": float(m(pa) - m(pb)), "lo": float(lo), "hi": float(hi)}
