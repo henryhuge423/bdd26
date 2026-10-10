@@ -77,8 +77,9 @@ def main(argv=None):
 
     # ---- 候选重建（与今日 replay 同一代码路径）+ 可选冻结绑定
     rows = audit_pair(a.round, a.pair, 1, 1, a.out, a.workers)
+    tissue_arr = PanNukeFold(2).tissue
     for r in rows:
-        r["tissue"] = str(PanNukeFold(2).tissue[r["image"]])
+        r["tissue"] = str(tissue_arr[r["image"]])
     if a.records is not None:
         z = np.load(a.records)
         sel = z["pair"] == a.pair
@@ -92,15 +93,18 @@ def main(argv=None):
     selection = json.loads((a.round / "p2" / a.pair / "selection.json").read_text())
     base_val = a.round / "p0" / a.pair / "val" / "base" / "ms" / "pred.npz"
     x2_val = Path(selection["provenance"]["inputs"]["x2"]["path"])
-    base, x2 = np.load(base_val), np.load(x2_val)
+    # NpzFile 逐图索引会整组重新解压（findings 2026-10-08 E0 同款坑）：先物化一次
+    base = dict(np.load(base_val))
+    x2 = dict(np.load(x2_val))
+    base_inst, x2_inst = base["inst"], x2["inst"]
 
     # ---- 四源抽样（rng 使用顺序固定：S1 → S2 → S3 → S4）
     rng = np.random.default_rng(a.seed)
     s1_rows = []
     for j in range(len(f2)):
-        ids = np.unique(base["inst"][j]); ids = ids[ids > 0]
+        ids = np.unique(base_inst[j]); ids = ids[ids > 0]
         for i in ids:
-            s1_rows.append({"tissue": str(f2.tissue[j]), "border": _touches_edge(base["inst"][j] == i),
+            s1_rows.append({"tissue": str(f2.tissue[j]), "border": _touches_edge(base_inst[j] == i),
                             "image": int(j), "id": int(i)})
     s1 = stratified_sample(s1_rows, 50, rng)
     s2 = stratified_sample([r for r in rows if r["added"]], 50, rng)
@@ -110,13 +114,13 @@ def main(argv=None):
 
     items = []
     for r in s1:
-        mask = base["inst"][r["image"]] == r["id"]
+        mask = base_inst[r["image"]] == r["id"]
         cy, cx = _centroid(mask)
         items.append({"source": "S1", "image": r["image"], "id": r["id"], "cy": cy, "cx": cx,
                       "tissue": r["tissue"], "border": r["border"], "prob": r["prob"]})
     for src, chosen in (("S2", s2), ("S3", s3)):
         for r in chosen:
-            mask = x2["inst"][r["image"]] == r["id"]
+            mask = x2_inst[r["image"]] == r["id"]
             area = int(mask.sum())
             assert area > 0 and abs(area - r["area"]) <= 1, \
                 f"{src} mask/image mismatch img {r['image']} id {r['id']}"
@@ -143,8 +147,8 @@ def main(argv=None):
         cv2.imwrite(str(a.out / "stage1" / f"{nid}.png"), marked)
         masks, colors = [], []
         if it["id"] is not None:
-            src = base if it["source"] == "S1" else x2
-            masks.append((src["inst"][it["image"]] == it["id"])[sy, sx])
+            src = base_inst if it["source"] == "S1" else x2_inst
+            masks.append((src[it["image"]] == it["id"])[sy, sx])
             colors.append(CAND_COLOR)
         gt = np.asarray(f2.inst[it["image"]])[sy, sx]
         gt_type = np.asarray(f2.type[it["image"]])[sy, sx]

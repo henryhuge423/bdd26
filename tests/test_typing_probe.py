@@ -173,3 +173,11 @@ def test_export_finalize_and_gt_classes_empty():
     assert payload["inst_img"].tolist() == [0, 0]
     assert _gt_classes(np.zeros((4, 4), np.int32),
                        np.zeros((4, 4), np.uint8), np.zeros(0, np.int64)).shape == (0,)
+
+
+def test_export_empty_rows_widths():
+    """零实例图的空行必须按列宽生成（prob=6 维，feat/ring=64 维）——曾把 64 维 feat 拷给 prob。"""
+    from scripts.export_tp_features import _empty_rows
+    fe, ri, pr = _empty_rows(n_feat=64, n_tp=6)
+    assert fe.shape == (0, 64) and ri.shape == (0, 64) and pr.shape == (0, 6)
+    assert fe.dtype == np.float32 and pr.dtype == np.float32

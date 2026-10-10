@@ -74,6 +74,14 @@ def _finalize_rows(rows: dict) -> dict:
     return {k: (np.concatenate(v) if len(v) else np.zeros(0)) for k, v in rows.items()}
 
 
+def _empty_rows(n_feat: int, n_tp: int):
+    """Zero-instance images: empty rows with the RIGHT per-key widths (prob=6, feat/ring=64)."""
+    fe = np.zeros((0, n_feat), np.float32)
+    ri = np.zeros((0, n_feat), np.float32)
+    pr = np.zeros((0, n_tp), np.float32)
+    return fe, ri, pr
+
+
 def _border(inst: np.ndarray, ids: np.ndarray) -> np.ndarray:
     edge = np.zeros(inst.shape, bool)
     edge[0, :] = edge[-1, :] = edge[:, 0] = edge[:, -1] = True
@@ -144,8 +152,7 @@ def main(argv=None):
                     bo = _border(inst_map, ids)
                     n_empty_ring += int((ri == 0).all(1).sum())
                 else:
-                    fe = np.zeros((0, feat.shape[-1]), np.float32)
-                    ri = pr = fe.copy()
+                    fe, ri, pr = _empty_rows(feat.shape[-1], tp.shape[-1])
                     ar = np.zeros(0, np.int64); bo = np.zeros(0, bool)
                 rows["inst_img"].append(np.full(len(ids), j)); rows["inst_id"].append(ids)
                 rows["feat"].append(fe); rows["ring"].append(ri); rows["prob"].append(pr)
