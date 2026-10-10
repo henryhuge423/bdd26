@@ -80,3 +80,19 @@ class RetypeEvaluator:
             img = np.nanmean(pq, 1)
             per_t = [np.nanmean(img[self.tissue == t]) for t in TISSUES if (self.tissue == t).any()]
             return float(np.nanmean(per_t)), np.nanmean(pq, 0)
+
+    def _pred_counts(self, cls: np.ndarray) -> np.ndarray:
+        """(n, C) predicted-instance counts per image and class (class 0 excluded)."""
+        v = cls > 0
+        return np.bincount(self.inst_img[v] * NUM_CLASSES + cls[v] - 1,
+                           minlength=self.n * NUM_CLASSES).reshape(self.n, NUM_CLASSES)
+
+    def mpq_strict(self, cls: np.ndarray) -> tuple[float, np.ndarray]:
+        """Tissue-averaged strict mPQ: classes absent in GT but predicted score 0 (pannuke_eval)."""
+        pq = self.per_image_class_pq(cls)
+        strict = np.where((self.n_gt <= 0) & (self._pred_counts(cls) > 0), 0.0, pq)
+        with np.errstate(all="ignore"), np.testing.suppress_warnings() as sup:
+            sup.filter(RuntimeWarning)
+            img = np.nanmean(strict, 1)
+            per_t = [np.nanmean(img[self.tissue == t]) for t in TISSUES if (self.tissue == t).any()]
+            return float(np.nanmean(per_t)), np.nanmean(strict, 0)
