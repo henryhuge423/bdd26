@@ -53,3 +53,16 @@ def test_window_slice_constant_size():
         assert off == (sy.start, sx.start)                                 # 偏移=窗口左上角
     assert window_slice((256, 256), 0, 0)[2] == (0, 0)
     assert window_slice((256, 256), 255, 255)[2] == (96, 96)
+
+
+def test_packet_cli_guards_and_neutral_ids(tmp_path):
+    import sys
+    from scripts.e1_build_packet import main, neutral_ids
+    ids = neutral_ids(200, np.random.default_rng(20261010))
+    assert len(set(ids)) == 200 and all(i.startswith("IMG_") for i in ids)
+    out = tmp_path / "pkt"; out.mkdir()
+    # 非法折 / 输出已存在都要拒绝（不起 GPU、不读数据）
+    with pytest.raises(SystemExit, match="TEST fold"):
+        main(["--out", str(out), "--fold", "3", "--round", str(tmp_path), "--pair", "split1_seed1"])
+    with pytest.raises(SystemExit, match="exists"):
+        main(["--out", str(out), "--fold", "2", "--round", str(tmp_path), "--pair", "split1_seed1"])
