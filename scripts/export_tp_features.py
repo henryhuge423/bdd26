@@ -61,10 +61,11 @@ def _gt_classes(inst: np.ndarray, typ: np.ndarray, ids: np.ndarray) -> np.ndarra
     """Majority GT class per raw instance id (background votes zeroed; ties -> lowest class)."""
     if not len(ids):
         return np.zeros(0, np.int64)
-    votes = np.zeros((int(ids.max()) + 1, 6), np.int64)
+    # size by the whole map: other instances' pixels also cast votes (subset-id calls stay safe)
+    votes = np.zeros((max(int(inst.max()), int(ids.max())) + 1, 6), np.int64)
     np.add.at(votes, (inst.ravel(), typ.ravel().astype(np.int64)), 1)
     votes[:, 0] = 0
-    cls = votes[ids].argmax(1) + 1
+    cls = votes[ids].argmax(1)          # 6-col argmax index IS the class (bg column zeroed)
     cls[votes[ids].sum(1) == 0] = 0
     return cls
 

@@ -181,3 +181,15 @@ def test_export_empty_rows_widths():
     fe, ri, pr = _empty_rows(n_feat=64, n_tp=6)
     assert fe.shape == (0, 64) and ri.shape == (0, 64) and pr.shape == (0, 6)
     assert fe.dtype == np.float32 and pr.dtype == np.float32
+
+
+def test_gt_classes_values():
+    """GT 类别必须是 1..5 本身（6 列投票 argmax 索引即类别；曾错加 +1 整体偏移）。"""
+    from scripts.export_tp_features import _gt_classes
+    inst = np.zeros((8, 8), np.int32); inst[1:3, 1:3] = 7; inst[5:7, 5:7] = 9
+    typ = np.zeros((8, 8), np.uint8); typ[1:3, 1:3] = 3; typ[5:7, 5:7] = 5
+    cls = _gt_classes(inst, typ, np.array([7, 9]))
+    assert list(cls) == [3, 5]
+    # 背景污染票不影响多数票
+    typ2 = typ.copy(); typ2[0, 0] = 4                      # 背景像素的杂散票
+    assert list(_gt_classes(inst, typ2, np.array([7]))) == [3]
