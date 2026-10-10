@@ -34,6 +34,85 @@
 > Execution: `docs/superpowers/plans/2026-10-02-p0-p3-research.md`. Corrected results and
 > limitations: [P0–P3 report](P0_P3_RESULTS_2026-10-02.md).
 
+## 2026-10-10 (later) — T/E1 pre-registered specs approved; E1 packet built; typing-probe T0–T3 implemented
+
+- User approved both specs (2026-10-10): T ([spec](superpowers/specs/2026-10-10-typing-probe-t-design.md),
+  [plan](superpowers/plans/2026-10-10-typing-probe-t.md)) and E1
+  ([spec](superpowers/specs/2026-10-10-e1-blind-audit-design.md),
+  [plan](superpowers/plans/2026-10-10-e1-packet.md)). All values frozen before any run.
+- **E1 packet complete** (`runs/analysis/e1_packet_20261010/`, local): 200 windows
+  (S1 x1 objects / S2 EF-accepted / S3 EF-rejected / S4 random background, 50 each),
+  tissue×border stratified with recorded inclusion probabilities, seed 20261010, built from the
+  split1_seed1 frozen selection via the same replay code path as the morning's readiness check
+  (column binding passed against `e1_input_check_20261010_split1_seed1/records.npz`).
+  Stage-1 material is image + cross only (VLM-render check + programmatic cross-position check
+  passed on sampled windows; one sampled S2 window is a 63 px border sliver, pmax .95, unmatched —
+  exactly the population E1 is meant to characterize). Analysis script `scripts/e1_analyze.py`
+  is committed BEFORE any reviewer answers exist. **E1 awaits two qualified reviewers (user to
+  appoint); until then E1 is incomplete by definition.**
+- **Typing-probe T0–T3 implementation complete on branch `research/typing-probe-e1`**
+  (committed, tests in `tests/test_typing_probe.py`): `RetypeEvaluator.mpq_strict` +
+  tissue-stratified paired-image bootstrap (both mirrored bit-exactly against canonical
+  `pannuke_eval` on synthetic fixtures), `nucseg.typing_probe` (instance/24px-ring pooling,
+  T1 rule, torch linear head seeds {0,1} + sklearn cross-check), fold-guarded feature export
+  (`scripts/export_tp_features.py`, inst_prob binding check) and the pre-registered runner
+  (`scripts/run_typing_probe.py`, decision gate = spec §2 six conditions).
+  Preflight on the real val predictions: T0 table alignment holds (59,593 rows, 132 untyped);
+  T1 changes only 0.38% of instances vs T0 — the aggregation rule itself is near-saturated,
+  so any material gain must come from T2/T3 features.
+- Incidents during the round (all fixed RED→GREEN where behavioral): NpzFile per-image indexing
+  re-decompressed the full member array (repeat of the 2026-10-08 E0 pitfall; 9 h lost on the
+  first packet build), zero-instance images wrote 64-wide rows into the 6-wide prob column,
+  tp softmax missed the NCHW→NHWC permute, and a stale `__pycache__` from a `git stash` round-trip
+  briefly executed old bytecode at identical file size. Full local suite after the fixes: passed
+  (typing-probe + e1-audit files; full `pytest -q` re-run closing the round).
+- No test fold read in this round; T results are dev-fold (split1/fold2) only and pending below.
+
+## 2026-10-10 (T verdict) — typing probe T0–T3: pre-registered gate FAILED; simple readouts carry no incremental typing signal
+
+Ran per [spec](superpowers/specs/2026-10-10-typing-probe-t-design.md) / [plan](superpowers/plans/2026-10-10-typing-probe-t.md)
+(artifacts `runs/analysis/typing_probe_20261010/`, local). Split1 dev-only: fold1 trains the
+heads (63,218 GT instances), fold2 validation (59,593 predicted instances), fold3 untouched.
+Feature export verified against the cached instance-probability table (max |Δ| = 6e-8).
+
+| config | mPQ | Δ vs T0 | notes |
+|---|---:|---:|---|
+| T0 majority vote (identity) | .483486 | — | reproduces official eval_fold2 exactly |
+| T1 instance-mean probability | .483182 | −.0003 | boot CI [−.0010, +.0003]; aggregation rule saturated |
+| T2 pooled tp_feat + linear head | .483707 | **+.0002** | 2 seeds same direction; CI [−.0027, +.0019] |
+| T3 T2 + 24px context ring (sum) | .481796 | −.0017 | both seeds negative |
+
+- **Gate verdict: pass_gate = false** (c1 Δ≥.003 ✗ at .0002; c2 CI-lo>0 ✗ at −.0027;
+  c4 Dead ≥−.002 ✗ at **−.0053** — the unweighted linear head types Dead worse than the
+  majority vote; only c3 strict +.0020, c5 beats-T1, c6 seed-consistency pass). sklearn
+  deterministic cross-check agrees in direction (val mPQ .4817, worse).
+- **Failure position (per spec stop-loss):** not the aggregation (T1 null); not unreadable
+  features (GT-region diagnostic accuracy **85.3%** ≈ the T2 head's own matched typing accuracy
+  **85.8%**, current decoder type accuracy 85.6%);
+  the linear readout extracts the SAME information the TP head already uses, with no increment
+  on predicted contours — and it under-serves the rare class. Per the pre-registered rule: no
+  bigger classifier, no added configs; a new testable explanation is required first (candidates:
+  Inf/Conn label ambiguity, IoU-marginal matches, joint training rather than post-hoc readout).
+- Combined with the CONCH re-typing null: two independent feature sources (external VLM,
+  internal frozen TP features) both fail post-hoc re-typing — the bPQ−mPQ typing gap is not
+  recoverable by post-hoc instance-level readouts of frozen features.
+- Verification: fast `RetypeEvaluator` == canonical `pannuke_eval` on the retyped T2 map
+  (|Δ| = 1e-16); **bPQ bit-identical** to eval_fold2 (geometry untouched). Decision rule values
+  and all inputs SHA-bound in results.json.
+- Cost (reported, not gated): export pooling 790 ms/img unoptimized single-thread (51× the
+  ≤3 ms/img design target; a deployment path would need vectorized pooling if ever revived);
+  head forward 8.2 ms for the whole fold. GT-contour-trained heads applied to predicted
+  contours (spec'd domain gap) — recorded, and the GT-region diagnostic column separates it.
+  sklearn cross-check hit lbfgs max_iter=1000 (ConvergenceWarning; direction unchanged).
+- Incidents fixed en route (all RED→GREEN pinned): `_gt_classes` +1 label shift (100% of cached
+  label rows repaired deterministically, features byte-identical), retyped type map built with
+  a global id LUT that cross-wired images (ids restart per image; fixed per-image, canonical
+  check re-run), NpzFile re-decompression hang, zero-instance column widths, tp softmax
+  NCHW→NHWC, stale `__pycache__` after a `git stash` round-trip.
+- Dev-fold conclusion only: single split, single segmenter seed (19), head seeds cover the
+  linear head alone; no test fold was read; this entry makes no performance claim beyond the
+  validation fold.
+
 ## 2026-10-10 — verification and validation-candidate readiness
 
 - Fresh full suite: **277 passed, 64 warnings**; Python 3.10.21, torch 2.5.1+cu124,
