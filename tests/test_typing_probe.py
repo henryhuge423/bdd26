@@ -102,3 +102,21 @@ def test_linear_head_separable_and_seeded():
     W2, _ = train_linear_head(X, y, seed=1, epochs=300)
     assert not np.allclose(W1, W2)                                    # 种子确实改变初始化/洗牌
     assert (sklearn_logreg(X, y) == np.where(y == 0, 1, 2)).all()
+
+
+def test_export_cli_guards(tmp_path, monkeypatch):
+    import sys
+    run = tmp_path / "run"; run.mkdir()
+    (run / "config.json").write_text('{"split": 1}')
+    pred = tmp_path / "p.npz"
+    np.savez(pred, inst=np.zeros((1, 8, 8), np.int32))
+    from scripts import export_tp_features as ex
+    # split1 的测试折 fold3 拒绝
+    with pytest.raises(SystemExit, match="TEST fold"):
+        ex.main(["--run", str(run), "--fold", "3", "--pred", str(pred),
+                 "--out", str(tmp_path / "o.npz")])
+    # 输出已存在拒绝覆盖
+    out = tmp_path / "o.npz"
+    out.write_bytes(b"x")
+    with pytest.raises(SystemExit, match="exists"):
+        ex.main(["--run", str(run), "--fold", "1", "--pred", str(pred), "--out", str(out)])
