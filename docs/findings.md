@@ -34,6 +34,40 @@
 > Execution: `docs/superpowers/plans/2026-10-02-p0-p3-research.md`. Corrected results and
 > limitations: [P0–P3 report](P0_P3_RESULTS_2026-10-02.md).
 
+## 2026-10-10 (later) — T/E1 pre-registered specs approved; E1 packet built; typing-probe T0–T3 implemented
+
+- User approved both specs (2026-10-10): T ([spec](superpowers/specs/2026-10-10-typing-probe-t-design.md),
+  [plan](superpowers/plans/2026-10-10-typing-probe-t.md)) and E1
+  ([spec](superpowers/specs/2026-10-10-e1-blind-audit-design.md),
+  [plan](superpowers/plans/2026-10-10-e1-packet.md)). All values frozen before any run.
+- **E1 packet complete** (`runs/analysis/e1_packet_20261010/`, local): 200 windows
+  (S1 x1 objects / S2 EF-accepted / S3 EF-rejected / S4 random background, 50 each),
+  tissue×border stratified with recorded inclusion probabilities, seed 20261010, built from the
+  split1_seed1 frozen selection via the same replay code path as the morning's readiness check
+  (column binding passed against `e1_input_check_20261010_split1_seed1/records.npz`).
+  Stage-1 material is image + cross only (VLM-render check + programmatic cross-position check
+  passed on sampled windows; one sampled S2 window is a 63 px border sliver, pmax .95, unmatched —
+  exactly the population E1 is meant to characterize). Analysis script `scripts/e1_analyze.py`
+  is committed BEFORE any reviewer answers exist. **E1 awaits two qualified reviewers (user to
+  appoint); until then E1 is incomplete by definition.**
+- **Typing-probe T0–T3 implementation complete on branch `research/typing-probe-e1`**
+  (committed, tests in `tests/test_typing_probe.py`): `RetypeEvaluator.mpq_strict` +
+  tissue-stratified paired-image bootstrap (both mirrored bit-exactly against canonical
+  `pannuke_eval` on synthetic fixtures), `nucseg.typing_probe` (instance/24px-ring pooling,
+  T1 rule, torch linear head seeds {0,1} + sklearn cross-check), fold-guarded feature export
+  (`scripts/export_tp_features.py`, inst_prob binding check) and the pre-registered runner
+  (`scripts/run_typing_probe.py`, decision gate = spec §2 six conditions).
+  Preflight on the real val predictions: T0 table alignment holds (59,593 rows, 132 untyped);
+  T1 changes only 0.38% of instances vs T0 — the aggregation rule itself is near-saturated,
+  so any material gain must come from T2/T3 features.
+- Incidents during the round (all fixed RED→GREEN where behavioral): NpzFile per-image indexing
+  re-decompressed the full member array (repeat of the 2026-10-08 E0 pitfall; 9 h lost on the
+  first packet build), zero-instance images wrote 64-wide rows into the 6-wide prob column,
+  tp softmax missed the NCHW→NHWC permute, and a stale `__pycache__` from a `git stash` round-trip
+  briefly executed old bytecode at identical file size. Full local suite after the fixes: passed
+  (typing-probe + e1-audit files; full `pytest -q` re-run closing the round).
+- No test fold read in this round; T results are dev-fold (split1/fold2) only and pending below.
+
 ## 2026-10-10 — verification and validation-candidate readiness
 
 - Fresh full suite: **277 passed, 64 warnings**; Python 3.10.21, torch 2.5.1+cu124,
