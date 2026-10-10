@@ -42,13 +42,17 @@ def _sha256(p: Path) -> str:
 
 
 def _forward(model, imgs_u8: torch.Tensor):
-    """imgs_u8 (B,H,W,3) uint8 cuda -> tp softmax (B,H,W,6), tp_feat (B,H,W,64), both float32 NHWC."""
+    """imgs_u8 (B,H,W,3) uint8 (cuda or cpu) -> tp softmax (B,H,W,6), tp_feat (B,H,W,64) NHWC float32."""
     mean = torch.tensor(UNI_MEAN, device=imgs_u8.device)
     std = torch.tensor(UNI_STD, device=imgs_u8.device)
     x = ((imgs_u8.float() / 255.0 - mean) / std).permute(0, 3, 1, 2).contiguous()
-    with torch.autocast("cuda", dtype=torch.bfloat16):
+    if x.is_cuda:
+        with torch.autocast("cuda", dtype=torch.bfloat16):
+            p = model(x, return_features=True)
+    else:
         p = model(x, return_features=True)
-    tp = torch.softmax(p["tp"].float(), -1).cpu().numpy()
+    # model emits NCHW; softmax over the CLASS axis (dim 1), then permute to NHWC
+    tp = torch.softmax(p["tp"].float(), 1).permute(0, 2, 3, 1).cpu().numpy()
     feat = p["tp_feat"].permute(0, 2, 3, 1).float().cpu().numpy()
     return tp, feat
 

@@ -120,3 +120,45 @@ def test_export_cli_guards(tmp_path, monkeypatch):
     out.write_bytes(b"x")
     with pytest.raises(SystemExit, match="exists"):
         ex.main(["--run", str(run), "--fold", "1", "--pred", str(pred), "--out", str(out)])
+
+
+def test_t0_classes_alignment_guard():
+    from scripts.run_typing_probe import t0_classes
+    # relabel 枚举与 inst_id 表不同序时必须报错（Review Focus #1）
+    inst = np.zeros((1, 8, 8), np.int32); inst[0, 1:3, 1:3] = 7      # 非常规 id
+    typ = np.where(inst > 0, 3, 0).astype(np.uint8)
+    with pytest.raises(AssertionError):
+        t0_classes(inst, typ, np.array([0]), np.array([3]))           # 表里写 id=3，图里是 7
+    # 一致的表返回多数票类
+    cls = t0_classes(inst, typ, np.array([0]), np.array([7]))
+    assert list(cls) == [3]
+
+
+def test_evaluate_decision_rules():
+    from scripts.run_typing_probe import evaluate_decision
+    ok = {"delta": .004, "lo": .001, "hi": .008, "strict_delta": .0005, "dead_delta": .0,
+          "beats_t1": True, "seeds_same_direction": True}
+    assert evaluate_decision(ok)["pass_gate"] is True
+    assert evaluate_decision({**ok, "delta": .002})["pass_gate"] is False       # ΔmPQ<.003
+    assert evaluate_decision({**ok, "lo": -.001})["pass_gate"] is False         # CI 跨零
+    assert evaluate_decision({**ok, "strict_delta": -.001})["pass_gate"] is False
+    assert evaluate_decision({**ok, "dead_delta": -.003})["pass_gate"] is False  # Dead 掉>.002
+    assert evaluate_decision({**ok, "beats_t1": False})["pass_gate"] is False
+    assert evaluate_decision({**ok, "seeds_same_direction": False})["pass_gate"] is False
+
+
+def test_forward_layout_contract():
+    """_forward 必须返回 NHWC 且 tp 在类轴上归一化（曾漏 permute：softmax 作用在 W 轴）。"""
+    import torch
+    from scripts.export_tp_features import _forward
+
+    class Stub(torch.nn.Module):
+        def forward(self, x, return_features=False):
+            b, _, h, w = x.shape
+            out = {"tp": torch.arange(6 * h * w, dtype=torch.float32).reshape(1, 6, h, w) % 7 + .1,
+                   "tp_feat": torch.ones(1, 64, h, w)}
+            return out
+
+    tp, feat = _forward(Stub(), torch.zeros(1, 8, 8, 3, dtype=torch.uint8))
+    assert tp.shape == (1, 8, 8, 6) and feat.shape == (1, 8, 8, 64)
+    assert np.allclose(tp.sum(-1), 1.0, atol=1e-5)     # 类轴归一化（permute 正确）
