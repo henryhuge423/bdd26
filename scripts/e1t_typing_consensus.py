@@ -121,28 +121,30 @@ def _tabulate(records: list[dict], folds: dict[int, int], min_votes: int) -> dic
 
 
 def _bootstrap_rates(records: list[dict], n_boot: int, seed: int) -> dict:
-    def rate_ci(pred):
-        ind = np.array([float(pred(r)) for r in records])
+    def rate_ci(group, event):
+        # 条件率：组内事件 1 / 组内非事件 0 / 组外 NaN（不入分母）
+        ind = np.array([1.0 if event(r) else (0.0 if group(r) else np.nan) for r in records])
         img = np.array([r["img"] for r in records])
-        if not ind.any():
+        if np.isnan(ind).all():
             return (float("nan"), float("nan"))
         return clustered_rate_bootstrap(ind, img, n_boot=n_boot, seed=seed)
 
     g1 = lambda r: r["status"] == "matched" and r["gt_class"] != r["base_class"]
+    g0 = lambda r: r["status"] == "matched" and r["gt_class"] == r["base_class"]
     out = {
-        "G1_maj_eq_base": rate_ci(lambda r: g1(r) and r["_maj"] == r["base_class"]),
-        "G1_maj_eq_gt": rate_ci(lambda r: g1(r) and r["_maj"] == r["gt_class"]),
-        "G0_maj_neq_gt": rate_ci(lambda r: r["status"] == "matched"
-                                 and r["gt_class"] == r["base_class"]
-                                 and r["_maj"] not in (None, r["gt_class"])),
+        "G1_maj_eq_base": rate_ci(g1, lambda r: r["_maj"] == r["base_class"]),
+        "G1_maj_eq_gt": rate_ci(g1, lambda r: r["_maj"] == r["gt_class"]),
+        "G0_maj_neq_gt": rate_ci(g0, lambda r: r["_maj"] not in (None, r["gt_class"])),
+        "G1_no_majority": rate_ci(g1, lambda r: r["_maj"] is None),
     }
     for key in ("2,3", "3,2"):
+        k = key
         out[f"pair_{key}_maj_eq_base"] = rate_ci(
-            lambda r, k=key: g1(r) and f"{r['gt_class']},{r['base_class']}" == k
-            and r["_maj"] == r["base_class"])
+            lambda r: g1(r) and f"{r['gt_class']},{r['base_class']}" == k,
+            lambda r: r["_maj"] == r["base_class"])
     dead = lambda r: g1(r) and (r["gt_class"] == 4 or r["base_class"] == 4)
-    out["pair_dead_maj_eq_base"] = rate_ci(lambda r: dead(r) and r["_maj"] == r["base_class"])
-    out["pair_dead_maj_eq_gt"] = rate_ci(lambda r: dead(r) and r["_maj"] == r["gt_class"])
+    out["pair_dead_maj_eq_base"] = rate_ci(dead, lambda r: r["_maj"] == r["base_class"])
+    out["pair_dead_maj_eq_gt"] = rate_ci(dead, lambda r: r["_maj"] == r["gt_class"])
     return out
 
 
