@@ -145,3 +145,56 @@ def test_torch_head_directions_agree():
     assert len(outs) == 2 and all(o.shape == (40,) for o in outs)
     from scipy.stats import spearmanr
     assert spearmanr(outs[0], outs[1]).statistic > 0.8
+
+
+# ---------------- menu (Task 4) ----------------
+from nucseg.candidate_quality.menu import a1_allowed, build_menu, selection_rows
+
+
+def _apply_rec():
+    return {"pair": np.array(["split1_seed1"] * 5), "image": np.array([0, 0, 1, 1, 2]),
+            "id": np.array([1, 2, 3, 4, 5]), "area": np.array([20, 50, 150, 250, 150], float),
+            "pmax": np.array([.95, .85, .95, .95, .95]), "border": np.array([False, False, False, False, True]),
+            "matched": np.array([True, False, True, False, True])}
+
+
+def test_a1_allowed_semantics():
+    rec = _apply_rec()
+    cfg = {"max_area": 200, "min_prob": 0.9, "interior_only": True}
+    allowed, n = a1_allowed(rec, cfg, ef_floor=30)
+    assert allowed == {(1, 3)} and n == 1          # 唯一同时过 cap/prob/floor/interior 的行
+    allowed2, n2 = a1_allowed(rec, {"max_area": 200, "min_prob": 0.9, "interior_only": False})
+    assert allowed2 == {(1, 3), (2, 5)} and n2 == 2  # interior0 时第 5 行也过
+
+
+def test_build_menu_rows_and_closed_threshold():
+    rec = _apply_rec()
+    p_low = np.full(5, 0.3)   # 恰在阈值上：闭区间应保留全部
+    p_sup = np.array([.1, .2, .3, .4, .5])
+    rows = build_menu(rec, p_low, p_sup)
+    assert [r["name"] for r in rows[:2]] == ["identity", "a1_incumbent"]
+    by_name = {r["name"]: r for r in rows}
+    assert len(rows) == 18
+    assert set(by_name) == {"identity", "a1_incumbent"} \
+        | {f"a2_f{f}_c{c}" for f in (0, 30) for c in (100, 200, 400)} \
+        | {f"a3_p{t}" for t in (.3, .4, .5, .6, .7)} \
+        | {f"a4_p{t}" for t in (.3, .4, .5, .6, .7)}
+    assert by_name["a3_p0.3"]["allowed"] == {(0, 1), (0, 2), (1, 3), (1, 4), (2, 5)}
+    assert by_name["a4_p0.4"]["allowed"] == {(1, 4), (2, 5)}
+    assert by_name["a2_f30_c100"]["allowed"] == {(0, 2)}  # 仅 area 50 同时落在 [30,100]
+    assert by_name["a2_f0_c400"]["allowed"] == {(0, 1), (0, 2), (1, 3), (1, 4), (2, 5)}
+
+
+def test_selection_rows_reuses_select_fusion_semantics():
+    def row(name, arm, mpq, bpq, sd, im, ad):
+        return {"name": name, "arm": arm, "mPQ": mpq, "bPQ": bpq, "strict_dead": sd,
+                "interior_matched": im, "added": ad, "Dead_PQ": 0.0, "unmatched": 0}
+    rows = [row("identity", "A0", .4835, .6516, .1345, 499, 0),
+            row("a2_f0_c100", "A2", .4840, .6510, .1346, 500, 900),
+            row("a2_f30_c200", "A2", .4830, .6490, .1330, 498, 700),   # bPQ/strict gate 失败
+            row("a3_p0.5", "A3", .4850, .6520, .1350, 505, 600),
+            row("a4_p0.5", "A4", .4820, .6500, .1330, 497, 400)]       # strict gate 失败
+    sel = selection_rows(rows)
+    assert sel["A2"]["name"] == "a2_f0_c100"
+    assert sel["A3"]["name"] == "a3_p0.5"
+    assert sel["A4"]["name"] == "identity"   # A4 全部被 gate 拒 → 回落 identity
