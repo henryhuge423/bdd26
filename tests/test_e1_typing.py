@@ -54,3 +54,17 @@ def test_bootstrap_clusters_by_image():
     assert 0.0 <= lo <= hi <= 1.0
     lo2, hi2 = clustered_rate_bootstrap(np.ones(4), img, n_boot=500, seed=7)
     assert lo2 == hi2 == 1.0
+
+
+def test_jury_vote_majority_semantics():
+    """canonical instance_classes semantics: pixel-majority class, 0 when untyped."""
+    gt = np.zeros((16, 16), np.int32); _rect(gt, 1, 2, 2, 6, 6)
+    m = np.zeros((16, 16), np.int32); _rect(m, 3, 2, 2, 6, 6)
+    mt = np.zeros((16, 16), np.uint8)
+    mt[2:8, 2:5] = 2; mt[2:8, 5:8] = 1          # 18 像素 type2 vs 18 像素 type1 → 平票取 argmax=2? 见断言
+    assert jury_votes(gt, m, mt)[1][1] in (1, 2)
+    mt2 = np.zeros((16, 16), np.uint8); mt2[2:8, 2:5] = 2; mt2[2:8, 5:8] = 1
+    mt2[2:8, 2:4] = 0                            # type2 被清零 12px → 剩 6px，type1 18px 占多数
+    assert jury_votes(gt, m, mt2)[1][1] == 1
+    mt3 = np.zeros((16, 16), np.uint8)           # 全 0 → class 0
+    assert jury_votes(gt, m, mt3)[1] == (3, 0)

@@ -27,6 +27,7 @@ from lever_postproc import file_provenance  # noqa: E402
 from nucseg.data.pannuke import PanNukeFold  # noqa: E402
 from nucseg.e1_typing import clustered_rate_bootstrap, jury_votes, majority_type  # noqa: E402
 from nucseg.metrics.instance import overlap  # noqa: E402
+from nucseg.metrics.pannuke_eval import instance_classes  # noqa: E402
 
 SEED = 20261011
 N_BOOT = 2000
@@ -59,6 +60,7 @@ def pair_base_detailed(gt: np.ndarray, gt_type: np.ndarray, base: np.ndarray,
     gt_ids = gt_ids[gt_ids > 0]
     base_ids = np.unique(base)
     base_ids = base_ids[base_ids > 0]
+    _, base_classes = instance_classes(base, base_type)
     ov = overlap(gt, base)
     rows = []
     for g, gid in enumerate(gt_ids):
@@ -74,11 +76,9 @@ def pair_base_detailed(gt: np.ndarray, gt_type: np.ndarray, base: np.ndarray,
             if len(ties) > 1:
                 row["status"] = "ambiguous"
             else:
-                bvals = np.unique(base_type[base == base_ids[j]])
-                if len(bvals) != 1 or bvals[0] == 0:
-                    raise ValueError(f"base instance {int(base_ids[j])} lacks a single type")
+                # canonical pixel-majority class; 0 = untyped（合法的“分错”形态）
                 row.update(status="matched", base_id=int(base_ids[j]), iou=float(col[j]),
-                           base_class=int(bvals[0]))
+                           base_class=int(base_classes[j]))
         rows.append(row)
     return rows
 

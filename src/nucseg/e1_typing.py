@@ -9,6 +9,7 @@ from __future__ import annotations
 import numpy as np
 
 from nucseg.metrics.instance import overlap
+from nucseg.metrics.pannuke_eval import instance_classes
 
 
 def _sorted_ids(x: np.ndarray) -> np.ndarray:
@@ -43,14 +44,16 @@ def jury_votes(gt: np.ndarray, member_inst: np.ndarray, member_type: np.ndarray,
                thr: float = 0.3) -> dict[int, tuple[int, int] | None]:
     """GT id -> (that member's best-overlap instance id, its type) if max IoU >= thr, else None.
 
-    One member casts at most one vote per GT instance. The instance's type must be a
-    single value across its pixels (PanNuke label-map invariant); otherwise ValueError.
+    One member casts at most one vote per GT instance. The voted type is the instance's
+    pixel-majority class under the canonical `instance_classes` semantics (background
+    votes zeroed; class 0 = untyped), so mixed or all-background type maps are legal.
     """
     gt_ids = _sorted_ids(gt)
     out: dict[int, tuple[int, int] | None] = {}
     if len(gt_ids) == 0:
         return out
     mem_ids = _sorted_ids(member_inst)
+    _, classes = instance_classes(member_inst, member_type)
     ov = overlap(gt, member_inst)
     for g, gt_id in enumerate(gt_ids):
         col = ov.iou[g]
@@ -58,11 +61,7 @@ def jury_votes(gt: np.ndarray, member_inst: np.ndarray, member_type: np.ndarray,
             out[int(gt_id)] = None
             continue
         j = int(np.argmax(col))
-        mid = int(mem_ids[j])
-        vals = np.unique(member_type[member_inst == mid])
-        if len(vals) != 1:
-            raise ValueError(f"instance {mid} has non-unique type values {vals.tolist()}")
-        out[int(gt_id)] = (mid, int(vals[0]))
+        out[int(gt_id)] = (int(mem_ids[j]), int(classes[j]))
     return out
 
 
