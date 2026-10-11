@@ -107,3 +107,15 @@ def test_main_refuses_existing_out_and_bad_fold(tmp_path, monkeypatch):
                         lambda *a: (_ for _ in ()).throw(SystemExit(2)))
     with pytest.raises(SystemExit):
         main(["--round", str(tmp_path), "--out", str(out2)])
+
+
+def test_bootstrap_rates_condition_on_group():
+    """bootstrap 率必须以组为分母：组外行 NaN（不计入），不是 0。"""
+    gt, gtt, base, bast, jury = _mini_world()
+    out = analyze(gt, gtt, base, bast, jury, n_boot=100)
+    # G1 n=2、maj_eq_base=1 -> 点估计 .5；CI 应围绕 .5 而非 1/3（若分母含 G0 则错）
+    lo, hi = out["bootstrap"]["G1_maj_eq_base"]
+    assert 0.0 <= lo <= 0.5 <= hi <= 1.0
+    # G0_maj_neq_gt 在迷你世界为 0/1 -> CI 收敛 [0,0]
+    lo0, hi0 = out["bootstrap"]["G0_maj_neq_gt"]
+    assert lo0 == 0.0 and hi0 == 0.0
