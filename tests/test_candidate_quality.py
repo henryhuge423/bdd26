@@ -107,3 +107,41 @@ def test_jury_paths_fold1_enumeration(tmp_path):
     assert all(j["path"].startswith(str(tmp_path)) for j in jury)
     with_hn = jury_paths_fold1(tmp_path, tmp_path / "hn.npz")
     assert len(with_hn) == 7 and with_hn[-1]["name"] == "hovernet_s2"
+
+
+# ---------------- model (Task 3) ----------------
+from nucseg.candidate_quality.model import fit_logistic, predict, reliability, torch_head_directions
+
+
+def test_fit_predict_separable():
+    rng = np.random.default_rng(0)
+    n = 200
+    X = np.column_stack([np.r_[rng.normal(0, .5, n // 2), rng.normal(2, .5, n // 2)],
+                         rng.normal(0, .5, n)])
+    y = np.r_[np.zeros(n // 2, bool), np.ones(n // 2, bool)]
+    groups = np.arange(n)  # 每实例一图（分组 CV 退化为普通 K 折）
+    fit = fit_logistic(X, y, groups)
+    assert fit["C"] in (0.1, 1.0, 10.0) and np.isfinite(fit["cv_auc"]) and fit["cv_auc"] > 0.9
+    p = predict(fit, X)
+    assert p.shape == (n,) and (p >= 0).all() and (p <= 1).all()
+    assert ((p > .5) == y).mean() > 0.9
+
+
+def test_reliability_bins_sum():
+    rng = np.random.default_rng(1)
+    p = rng.uniform(0, 1, 500)
+    bins = reliability(rng.uniform(0, 1, 500) < p, p, bins=10)
+    assert sum(b["n"] for b in bins) == 500
+    assert all(b["mean_p"] == b["mean_p"] for b in bins)  # finite
+
+
+def test_torch_head_directions_agree():
+    rng = np.random.default_rng(2)
+    n = 150
+    X = np.column_stack([np.r_[rng.normal(0, .5, n // 2), rng.normal(2, .5, n // 2)]])
+    y = np.r_[np.zeros(n // 2, bool), np.ones(n // 2, bool)]
+    Xa = np.linspace(-1, 3, 40)[:, None]
+    outs = torch_head_directions(X, y, Xa, seeds=(0, 1))
+    assert len(outs) == 2 and all(o.shape == (40,) for o in outs)
+    from scipy.stats import spearmanr
+    assert spearmanr(outs[0], outs[1]).statistic > 0.8
