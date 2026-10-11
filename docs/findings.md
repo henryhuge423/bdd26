@@ -1,5 +1,10 @@
 # Findings log
 
+> **2026-10-11 E1 修订执行（E1-C + E1-M，spec §7）：** 无专家可用，经用户批准改为
+> 检测器共识 + 非专家模型预审。详见下方同日条目；人类评审义务保留，材料包不变。
+
+
+
 > **2026-10-09 audit:** [review and corrections](RESEARCH_AUDIT_2026-10-09.md).
 > Rechecked 108 stage-III endpoint deltas and reproduced the frozen stage-IV verification snapshot.
 > Corrected E0's unequal-chunk mean: from saved throughput, image-weighted two-model/x1 =
@@ -33,6 +38,38 @@
 > x2 maximum .001308); this and duplicate-seed coverage must be relabelled/recomputed.
 > Execution: `docs/superpowers/plans/2026-10-02-p0-p3-research.md`. Corrected results and
 > limitations: [P0–P3 report](P0_P3_RESULTS_2026-10-02.md).
+
+## 2026-10-11 — E1-C/E1-M（无专家修订执行）：候选的跨检测器共识远超随机基线；模型预审不可用
+
+执行 [spec §7 修订](superpowers/specs/2026-10-10-e1-blind-audit-design.md)（用户 2026-10-10
+批准）。工件 `runs/analysis/e1_consensus_20261010/`（本地）。Jury 13 席：split1/split3 ×
+seed{19,1,2} × {x1,x2} 的 fold2 identity 预测（11 席，来源 run split1_seed1-x2 剔除）+
+HoVer-Net split1/split3 fold2（2 席新推理，val-fold sanity mPQ .4509）。全部成员训练折
+∈{1,3}，fold2 从未参与训练。支持度 = IoU≥0.3 的成员数；候选 = split1_seed1 冻结 4,084。
+
+- **合成空对照（后补对照，写入任何结论前加入）**：GT 实例膨胀 8px 之外随机放同尺寸
+  blob（面积重采样自"零重叠候选"分布，n=2000）→ 支持度均值 **0.07**，≥3 率 **0.7%**，
+  ≤1 率 99.1%。对照控制的只是"随机位置基线"，不控制检测器家族共享的核状 FP 模式。
+- **观测**（S2 已接受 n=1515 / S3 被拒 n=2569）：mean support 5.47 / 5.04；GT 匹配率随
+  支持度单调上升（支持 0–2：5–12%；≥5：40–60%）。按 GT 关系分层：
+  - 与 GT 零重叠（S2 518 / S3 1146）：mean 4.8/4.4，**≥3 且跨折/跨架构 380/751**（零假设
+    下期望 ~0.7%）——GT 未覆盖位置存在多检测器一致检出的核状对象，为**标签可疑的检测器
+    共鸣证据**；非生物学断言（可能解释含标注单位差异、退化/凋亡对象被跳过、家族共享 FP）。
+  - 有重叠但 IoU<0.5（S2 328 / S3 582）：支持度同样高（mean ~4.6）——轮廓/实例单位不一致
+    子群，与 §4 第二行（几何不格）相容。
+  - 碎屑相容（支持≤1）：S2 151（10.0%）/ S3 398（15.5%）——EF 过滤与该子群同向但区分有限。
+- **工程含义（§4 修订版映射）**：支持度本身是候选质量的强预测子（单调、双源一致）→
+  "低维特征 + jury 支持度标签"的**候选质量学习**现在有对照支持的证据基础，值得原型化；
+  训练内 cross-fit、与冻结 EF-P2/纯面积过滤对照、测试折零读取等前置条件沿用。
+- **E1-M（两轮独立模型盲评，标注非专家）**：passA（analyze_image 通道）对 S1——已知几乎
+  全为真实核的 x1 检出对象——只判 40.9% 为真（系统性"非核"偏置，理由高度模板化）；
+  passB（sonnet 原生视觉）uncertain 率 34–70% 但排序较合理（S1 .915 > S2 .506/S3 .573 >
+  S4 .408）。两轮 kappa −.09～.35、原始一致率 .18–.38。**结论：模型评审连互相一致都
+  达不到，实质信号不可用**——E1-M 仅完成其流程验证目的，并事后印证 spec 将模型评审
+  排除出正式结论的决定。
+- **E1 状态**：人类评审义务保留（材料包不变，可随时执行原协议）；工程分支由 E1-C
+  单独支撑。限制：单对 (split1_seed1)、CellViT 家族占 11/13 席、支持度阈值 0.3 预注册、
+  空对照为合成圆盘（非核状形状）。本轮未读测试折；HoVer-Net fold2 为 val 折推理。
 
 ## 2026-10-10 (later) — T/E1 pre-registered specs approved; E1 packet built; typing-probe T0–T3 implemented
 

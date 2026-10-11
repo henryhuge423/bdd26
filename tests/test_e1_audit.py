@@ -157,3 +157,18 @@ def test_stage1_sheet_layout():
     sheet, ids = make_sheet(cells, [f"IMG_{i:04d}" for i in range(9)])
     assert sheet.shape[0] == sheet.shape[1] and sheet.shape[0] > 3 * 160
     assert ids == [f"IMG_{i:04d}" for i in range(9)]
+
+
+def test_null_blob_sampler():
+    """合成空对照 blob：圆盘、指定面积、中心只在 GT 空白区采样。"""
+    import numpy as np
+    from scripts.e1_null_control import sample_blob
+    rng = np.random.default_rng(0)
+    gt = np.zeros((64, 64), np.int32); gt[0:20, 0:20] = 1        # GT 占左上角
+    mask = sample_blob(gt, area=50, rng=rng)
+    assert mask.sum() == 50                                        # 面积精确
+    ys, xs = np.nonzero(mask)
+    assert ys.max() < 64 and xs.max() < 64
+    assert not (gt[mask].astype(bool)).any()                       # 不与 GT 重叠
+    mask2 = sample_blob(gt, area=50, rng=np.random.default_rng(0))
+    assert np.array_equal(mask, mask2)                             # 种子确定

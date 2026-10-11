@@ -190,6 +190,11 @@ def main(argv=None):
                     "all jury training folds are 1 or 3; fold2 was never trained on"],
     }
     (a.out / "consensus.json").write_text(json.dumps(payload, indent=2))
+    np.savez_compressed(a.out / "per_candidate.npz",
+                        iou=iou_mat,
+                        jury_names=np.array([m["name"] for m in jury]),
+                        jury_fold=np.array([m["train_fold"] for m in jury]),
+                        jury_arch=np.array([m["arch"] for m in jury]))
     print(f"wrote {a.out}/consensus.json")
     for s in ("S2_added", "S3_rejected"):
         d = per_source[s]
