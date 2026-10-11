@@ -9,6 +9,7 @@ from __future__ import annotations
 import numpy as np
 
 TRAIN_PAIRS = ("split2_seed19", "split2_seed1", "split2_seed2")
+DIST_CAP = 362.0  # 256^2 对角线：图内距离的几何上界；dist=inf（图内无 base 实例）截断到此
 _BASE = ["log_area", "extent", "circularity", "dist", "pmax", "margin", "border"]
 FEATURE_NAMES = _BASE + [f"class{c}" for c in range(5)]
 
@@ -27,7 +28,7 @@ def design_matrix(rec: dict) -> tuple[np.ndarray, np.ndarray]:
     cols = {"log_area": np.log1p(np.asarray(rec["area"], float)),
             "extent": np.asarray(rec["extent"], float),
             "circularity": np.asarray(rec["circularity"], float),
-            "dist": np.asarray(rec["dist"], float),
+            "dist": np.minimum(np.asarray(rec["dist"], float), DIST_CAP),
             "pmax": np.asarray(rec["pmax"], float),
             "margin": np.asarray(rec["margin"], float),
             "border": np.asarray(rec["border"], float)}

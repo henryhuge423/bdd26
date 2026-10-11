@@ -201,3 +201,12 @@ def test_selection_rows_reuses_select_fusion_semantics():
     assert sel["A2"]["name"] == "a2_f0_c100"
     assert sel["A3"]["name"] == "a3_p0.5"
     assert sel["A4"]["name"] == "identity"   # A4 全部被 gate 拒 → 回落 identity
+
+
+def test_design_matrix_clips_inf_dist_to_diagonal():
+    """dist=inf（图中无 base 实例的哨兵）按 256^2 对角线常数截断，非中止。"""
+    rec = select_training_rows(_rec(list(TRAIN_PAIRS)))
+    rec["dist"] = rec["dist"].copy(); rec["dist"][0] = np.inf
+    X, _ = design_matrix(rec)
+    assert np.isfinite(X).all()
+    assert X[0, FEATURE_NAMES.index("dist")] == 362.0
