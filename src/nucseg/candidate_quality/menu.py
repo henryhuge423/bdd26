@@ -18,11 +18,18 @@ def _keys(rec: dict) -> np.ndarray:
     return np.stack([np.asarray(rec["image"]), np.asarray(rec["id"])], 1)
 
 
-def a1_allowed(rec: dict, p2cfg: dict, ef_floor: int = 30) -> tuple[set, int]:
-    """Incumbent acceptance set: max_area cap, min_prob, optional interior-only, plus floor."""
-    keep = ((np.asarray(rec["area"], float) <= p2cfg["max_area"])
+def a1_allowed(rec: dict, p2cfg: dict, ef_floor: int = 30,
+               dead_exempt: bool = False) -> tuple[set, int]:
+    """Incumbent acceptance set: max_area cap, min_prob, optional interior-only, plus floor.
+
+    dead_exempt mirrors the frozen a30d variant: the area floor spares Dead candidates."""
+    area = np.asarray(rec["area"], float)
+    floor_ok = area >= ef_floor
+    if dead_exempt:
+        floor_ok |= np.asarray(rec["class"]) == 4
+    keep = ((area <= p2cfg["max_area"])
             & (np.asarray(rec["pmax"], float) >= p2cfg["min_prob"])
-            & (np.asarray(rec["area"], float) >= ef_floor))
+            & floor_ok)
     if p2cfg.get("interior_only"):
         keep &= ~np.asarray(rec["border"], bool)
     keys = _keys(rec)[keep]

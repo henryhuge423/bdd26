@@ -96,14 +96,20 @@ def test_run_end_to_end_with_injected_loader(world, tmp_path, monkeypatch):
     rows = {r["name"]: r for r in R.sweep(menu, w["bi"], w["bt"], w["xi"], w["xt"], w["prob"],
                                           w["gc"], w["gi"], w["gt"], w["tissue"], w["p2cfg"])}
     a1 = rows["a1_incumbent"]
-    sel_row = {**w["p2cfg"], **{k: v for k, v in a1.items() if k != "_stats"}}
+    sel_row = {**w["p2cfg"], **{k: v for k, v in a1.items() if k != "_stats"},
+               "name": "a200_p0.9_interior0"}
     p2_json.write_text(json.dumps({"selected": sel_row}))
+    ef_json = tmp_path / "efsel.json"
+    ef_json.write_text(json.dumps({"selected": {"name": "a30",
+                                                   **{k: v for k, v in a1.items()
+                                                      if k not in ("_stats", "name")}}}))
     monkeypatch.setattr(R, "fit_logistic", lambda *a, **k: {"mock": True})
     monkeypatch.setattr(R, "predict", lambda fit, X: np.array([.9, .4, .2][:len(X)]))
     out = tmp_path / "e3out"
     argv = ["--round", str(tmp_path), "--records", str(tmp_path / "r.npz"),
             "--apply-records", str(tmp_path / "a.npz"), "--base-val", str(tmp_path / "b.npz"),
             "--x2-val", str(tmp_path / "x.npz"), "--p2-selection", str(p2_json),
+            "--ef-selection", str(ef_json),
             "--fold2-support", str(tmp_path / "s.npz"), "--out", str(out),
             "--n-boot", "50"]
     R.main(argv, loader=_loader(w, np.array([.9, .4, .2]), np.array([.9, .4, .2])))
@@ -124,11 +130,11 @@ def test_main_guards(tmp_path, monkeypatch):
     with pytest.raises(SystemExit):
         R.main(["--round", str(tmp_path), "--records", "x", "--apply-records", "x",
                 "--base-val", "x", "--x2-val", "x", "--p2-selection", "x",
-                "--fold2-support", "x", "--out", str(out)])
+                "--ef-selection", "x", "--fold2-support", "x", "--out", str(out)])
     def boom(*a):
         raise SystemExit(2)
     monkeypatch.setattr(R, "ensure_dev_fold", boom)
     with pytest.raises(SystemExit):
         R.main(["--round", str(tmp_path), "--records", "x", "--apply-records", "x",
                 "--base-val", "x", "--x2-val", "x", "--p2-selection", "x",
-                "--fold2-support", "x", "--out", str(tmp_path / "o2")])
+                "--ef-selection", "x", "--fold2-support", "x", "--out", str(tmp_path / "o2")])

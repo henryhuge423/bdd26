@@ -40,6 +40,7 @@ PAIR = "split1_seed1"
 SEED = 20261011
 N_BOOT = 2000
 EF_FLOOR = 30
+EF_VARIANTS = {"off": (0, False), "a30": (30, False), "a30d": (30, True), "a60": (60, False)}
 PRIMARY = {"d_dead": 2e-3, "d_bpq": -5e-4, "d_strict": -2e-3}
 SECONDARY = {"d_dead_abs": 1e-3, "d_bpq": 5e-4, "unmatched_frac": 0.75}
 GATED_ARMS = ("A2", "A3", "A4")
@@ -47,10 +48,11 @@ _G: dict = {}
 
 
 def build_menu_loaded(rec_apply: dict, p_low: np.ndarray, p_sup: np.ndarray,
-                      p2cfg: dict) -> list[dict]:
-    """menu.build_menu + 注入 A1 的现任接受集。"""
+                      p2cfg: dict, ef_floor: int = EF_FLOOR,
+                      dead_exempt: bool = False) -> list[dict]:
+    """menu.build_menu + 注入 A1 的现任接受集（EF 变体语义）。"""
     rows = build_menu(rec_apply, p_low, p_sup)
-    allowed, _ = a1_allowed(rec_apply, p2cfg, ef_floor=EF_FLOOR)
+    allowed, _ = a1_allowed(rec_apply, p2cfg, ef_floor=ef_floor, dead_exempt=dead_exempt)
     for r in rows:
         if r["name"] == "a1_incumbent":
             r["allowed"] = allowed
@@ -58,7 +60,7 @@ def build_menu_loaded(rec_apply: dict, p_low: np.ndarray, p_sup: np.ndarray,
 
 
 def sweep(menu: list[dict], bi, bt, xi, xt, prob, gc, gi, gt, tissue, p2cfg: dict,
-          workers: int = 1) -> list[dict]:
+          workers: int = 1, ef_floor: int = EF_FLOOR, dead_exempt: bool = False) -> list[dict]:
     """逐图重放 18 行菜单，返回每行端点（含 per-image stats 供 bootstrap）。"""
     per_img = []
     for row in menu:
@@ -67,7 +69,7 @@ def sweep(menu: list[dict], bi, bt, xi, xt, prob, gc, gi, gt, tissue, p2cfg: dic
             d.setdefault(im, set()).add(i)
         per_img.append(d)
     _G.update(menu=menu, per_img=per_img, bi=bi, bt=bt, xi=xi, xt=xt, prob=prob,
-              gc=gc, gi=gi, gt=gt, p2cfg=p2cfg)
+              gc=gc, gi=gi, gt=gt, p2cfg=p2cfg, ef_floor=ef_floor, dead_exempt=dead_exempt)
     try:
         if workers > 1:
             with Pool(workers) as pool:
@@ -101,7 +103,8 @@ def _sweep_image(j: int):
             pi, pt, added = bi, bt, []
         elif name == "a1_incumbent":
             cfg = _G["p2cfg"]
-            allowed = {c["id"] for c in cands if existence_pass(c, EF_FLOOR, False)}
+            allowed = {c["id"] for c in cands
+                       if existence_pass(c, _G["ef_floor"], _G["dead_exempt"])}
             pi, pt, added = fuse(bi, bt, xi, xt, conf, cfg["max_area"], cfg["min_prob"],
                                  cfg["interior_only"], allowed_ids=allowed)
         else:
@@ -220,6 +223,7 @@ def main(argv=None, loader=None) -> None:
     ap.add_argument("--base-val", type=Path, required=True, dest="base_val")
     ap.add_argument("--x2-val", type=Path, required=True, dest="x2_val")
     ap.add_argument("--p2-selection", type=Path, required=True, dest="p2_selection")
+    ap.add_argument("--ef-selection", type=Path, required=True, dest="ef_selection")
     ap.add_argument("--fold2-support", type=Path, required=True, dest="fold2_support")
     ap.add_argument("--hn-fold1", type=Path, default=None, dest="hn_fold1")
     ap.add_argument("--out", type=Path, required=True)
@@ -235,6 +239,11 @@ def main(argv=None, loader=None) -> None:
     p2cfg = p2["selected"]
     if p2cfg.get("name") == "identity" or "max_area" not in p2cfg:
         raise SystemExit("frozen P2 selection is identity — E3 dev round undefined")
+    ef = json.loads(a.ef_selection.read_text())
+    ef_sel = ef["selected"]
+    if ef_sel["name"] not in EF_VARIANTS:
+        raise SystemExit(f"unsupported frozen EF variant {ef_sel['name']}")
+    ef_floor, dead_exempt = EF_VARIANTS[ef_sel["name"]]
 
     data = (loader or _real_loader)(a)
     rec_apply = data["rec_apply"]
@@ -257,16 +266,16 @@ def main(argv=None, loader=None) -> None:
         p_low, p_sup = data["p_low"], data["p_sup"]
         model_meta = {"mocked": True}
 
-    menu = build_menu_loaded(rec_apply, p_low, p_sup, p2cfg)
+    menu = build_menu_loaded(rec_apply, p_low, p_sup, p2cfg, ef_floor, dead_exempt)
     rows = sweep(menu, data["bi"], data["bt"], data["xi"], data["xt"], data["prob"],
                  data["gc"], data["gi"], data["gt"], data["tissue"], p2cfg,
-                 workers=a.workers)
+                 workers=a.workers, ef_floor=ef_floor, dead_exempt=dead_exempt)
     for r in rows:
         r["unmatched"] = _unmatched_of(rec_apply, next(m["allowed"] for m in menu if m["name"] == r["name"]))
     a1 = next(r for r in rows if r["name"] == "a1_incumbent")
     for k in ("mPQ", "bPQ", "strict_dead", "interior_matched", "added"):
-        if abs(a1[k] - p2cfg[k]) > 1e-12:
-            raise SystemExit(f"A1 replay drifted on '{k}': {a1[k]} vs frozen {p2cfg[k]}")
+        if abs(a1[k] - ef_sel[k]) > 1e-12:
+            raise SystemExit(f"A1 replay drifted on '{k}': {a1[k]} vs frozen {ef_sel[k]}")
 
     sel = selection_rows(rows)
     gates = evaluate_gates({k: sel[k] for k in GATED_ARMS if k in sel}, a1)
@@ -310,7 +319,8 @@ def main(argv=None, loader=None) -> None:
     res = {"rows": [{k: v for k, v in r.items() if k != "_stats"} for r in rows],
            "selected": {k: {kk: vv for kk, vv in v.items() if kk != "_stats"} for k, v in sel.items()},
            "gates": gates, "bootstrap": boot, "model": model_meta, "diagnostics": diag,
-           "params": {"seed": SEED, "n_boot": a.n_boot, "ef_floor": EF_FLOOR,
+           "params": {"seed": SEED, "n_boot": a.n_boot, "ef_variant": ef_sel["name"],
+                      "ef_floor": ef_floor, "dead_exempt": dead_exempt,
                       "primary": PRIMARY, "secondary": SECONDARY, "pair": PAIR,
                       "identity_class_pq": a0["per_class_PQ"]},
            "provenance": ({"inputs": {kk: file_provenance(getattr(a, kk))["sha256"] for kk in
