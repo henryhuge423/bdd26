@@ -120,3 +120,40 @@ def test_stage2_image_draws_candidate_last():
     b, g, r = out[..., 0].astype(int), out[..., 1].astype(int), out[..., 2].astype(int)
     magenta = (r == CAND_COLOR[0]) & (g == CAND_COLOR[1]) & (b == CAND_COLOR[2])
     assert magenta.sum() >= 8          # 小候选的粗轮廓存活
+
+
+def test_support_counting():
+    """支持度 = jury 中与候选 IoU>=thr 的成员数。"""
+    import numpy as np
+    from scripts.e1_consensus import support_for_candidate
+    cand = np.zeros((32, 32), np.int32); cand[10:14, 10:14] = 1            # 16 px
+    A = np.zeros((32, 32), np.int32); A[10:14, 10:14] = 1                  # IoU 1.0
+    B = np.zeros((32, 32), np.int32); B[10:14, 10:18] = 1                  # 16/32 = .5
+    C = np.zeros((32, 32), np.int32); C[10:14, 10:26] = 1                  # 16/64 = .25
+    D = np.zeros((32, 32), np.int32); D[20:24, 20:24] = 1                  # 0
+    empty = np.zeros((32, 32), np.int32)
+    assert support_for_candidate(cand, [A, D, empty], thr=.3) == 1
+    assert support_for_candidate(cand, [A, B, C, D], thr=.3) == 2
+    assert support_for_candidate(cand, [A, B, C], thr=.5) == 2
+    assert support_for_candidate(cand, [A, C, D], thr=.3) == 1
+
+
+def test_window_instance_hits():
+    """S4 窗口命中 = jury 实例质心落在窗口矩形内。"""
+    import numpy as np
+    from scripts.e1_consensus import window_instance_hits
+    j = np.zeros((64, 64), np.int32)
+    j[10:14, 10:14] = 1; j[40:44, 40:44] = 2                              # 质心 (12,12) 与 (42,42)
+    assert window_instance_hits(j, cy=20, cx=20, size=32) == 1             # (12,12) 在 [4,36)^2 内
+    assert window_instance_hits(j, cy=42, cx=42, size=16) == 1
+    assert window_instance_hits(j, cy=6, cx=50, size=16) == 0
+
+
+def test_stage1_sheet_layout():
+    """3×3 拼图：尺寸 = 3×(cell+gap)+pad，每个格下有 ID 标签。"""
+    import numpy as np
+    from scripts.e1_montage_stage1 import make_sheet
+    cells = [np.full((160, 160, 3), v, np.uint8) for v in range(9)]
+    sheet, ids = make_sheet(cells, [f"IMG_{i:04d}" for i in range(9)])
+    assert sheet.shape[0] == sheet.shape[1] and sheet.shape[0] > 3 * 160
+    assert ids == [f"IMG_{i:04d}" for i in range(9)]
