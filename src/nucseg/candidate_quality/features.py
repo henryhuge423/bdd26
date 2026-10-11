@@ -32,9 +32,10 @@ def design_matrix(rec: dict) -> tuple[np.ndarray, np.ndarray]:
             "margin": np.asarray(rec["margin"], float),
             "border": np.asarray(rec["border"], float)}
     cls = np.asarray(rec["class"])
-    if cls.size and (cls.min() < 0 or cls.max() > 4):
-        raise ValueError(f"class out of range 0..4: {sorted(set(cls.tolist()))}")
-    X = np.column_stack([cols[n] for n in _BASE] + [np.eye(5, dtype=float)[cls].reshape(len(cls), 5)])
+    if cls.size and (cls.min() < 1 or cls.max() > 5):
+        raise ValueError(f"class out of range 1..5: {sorted(set(cls.tolist()))}")
+    X = np.column_stack([cols[n] for n in _BASE]
+                         + [np.eye(5, dtype=float)[cls - 1].reshape(len(cls), 5)])
     for j, name in enumerate(FEATURE_NAMES):
         if not np.isfinite(X[:, j]).all():
             bad = int(np.flatnonzero(~np.isfinite(X[:, j]))[0])

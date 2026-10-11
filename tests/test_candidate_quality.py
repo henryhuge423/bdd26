@@ -14,7 +14,7 @@ def _rec(pairs):
     return {"pair": np.array(pairs), "area": np.full(n, 120.0),
             "extent": np.full(n, .7), "circularity": np.full(n, .8), "dist": np.full(n, 5.0),
             "pmax": np.full(n, .95), "margin": np.full(n, .2), "border": np.zeros(n, bool),
-            "class": np.zeros(n, np.int64), "image": np.arange(n), "id": np.ones(n, np.int64),
+            "class": np.ones(n, np.int64), "image": np.arange(n), "id": np.ones(n, np.int64),
             "matched": np.array([True, False] * ((n + 1) // 2))[:n], "typed": np.ones(n, bool),
             "gt_class": np.zeros(n, np.int64), "gt_already_by_base": np.zeros(n, bool),
             "added": np.zeros(n, bool), "iou_best": np.zeros(n)}
@@ -32,7 +32,7 @@ def test_design_matrix_shape_and_columns():
     X, y = design_matrix(rec)
     assert X.shape == (3, 12) and y.dtype == bool and list(y) == [True, False, True]
     assert FEATURE_NAMES[0] == "log_area" and np.allclose(X[:, 0], np.log1p(120.0))
-    assert (X[:, 6] == 0).all() and (X[:, 7] == 1).all()  # border, class0 one-hot
+    assert (X[:, 6] == 0).all() and (X[:, 7] == 1).all()  # border, class1 one-hot
 
 
 def test_design_matrix_rejects_nonfinite():
@@ -44,7 +44,10 @@ def test_design_matrix_rejects_nonfinite():
 
 def test_design_matrix_rejects_class_out_of_range():
     rec = select_training_rows(_rec(list(TRAIN_PAIRS)))
-    rec["class"] = rec["class"].copy(); rec["class"][0] = 5
+    rec["class"] = rec["class"].copy(); rec["class"][0] = 0   # 0（未类型化）不在合格池域内
+    with pytest.raises(ValueError, match="class"):
+        design_matrix(rec)
+    rec["class"][0] = 6
     with pytest.raises(ValueError, match="class"):
         design_matrix(rec)
 
