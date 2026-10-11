@@ -47,3 +47,63 @@ def test_design_matrix_rejects_class_out_of_range():
     rec["class"] = rec["class"].copy(); rec["class"][0] = 5
     with pytest.raises(ValueError, match="class"):
         design_matrix(rec)
+
+
+# ---------------- support (Task 2) ----------------
+from pathlib import Path
+
+from nucseg.candidate_quality.support import (
+    effective_denominator,
+    jury_paths_fold1,
+    support_matrix,
+)
+
+
+def _save_npz(path, inst):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("wb") as fh:
+        np.savez_compressed(fh, inst=inst[None], type=(inst > 0).astype(np.uint8)[None])
+
+
+@pytest.fixture()
+def support_world(tmp_path):
+    root = tmp_path / "round"
+    # 源 x2 预测：split2_seed19 的 inst 里有候选 1（4x4 @ (2,2)），
+    # split2_seed1 的 inst 里有候选 2（4x4 @ (9,9)）
+    s19 = np.zeros((16, 16), np.int32); s19[2:6, 2:6] = 1
+    s1 = np.zeros((16, 16), np.int32); s1[9:13, 9:13] = 2
+    _save_npz(root / "p0/split2_seed19/val/x2/identity/pred.npz", s19)
+    _save_npz(root / "p0/split2_seed1/val/x2/identity/pred.npz", s1)
+    _save_npz(root / "p0/split2_seed2/val/x2/identity/pred.npz", np.zeros((16, 16), np.int32))
+    # jury 三席：s19-x2（与候选 1 完全重合）、s1-x2（与候选 2 完全重合）、
+    # s19-base（与候选 1 的 IoU = 8/16 = 0.5）
+    a = np.zeros((16, 16), np.int32); a[2:6, 2:6] = 9
+    b = np.zeros((16, 16), np.int32); b[9:13, 9:13] = 9
+    c = np.zeros((16, 16), np.int32); c[2:6, 2:4] = 9
+    _save_npz(tmp_path / "seatA.npz", a); _save_npz(tmp_path / "seatB.npz", b)
+    _save_npz(tmp_path / "seatC.npz", c)
+    jury = [{"name": "s19_x2", "path": str(tmp_path / "seatA.npz"), "source_pair": "split2_seed19"},
+            {"name": "s1_x2", "path": str(tmp_path / "seatB.npz"), "source_pair": "split2_seed1"},
+            {"name": "s19_base", "path": str(tmp_path / "seatC.npz"), "source_pair": None}]
+    rec = {"pair": np.array(["split2_seed19", "split2_seed1"]),
+           "image": np.array([0, 0]), "id": np.array([1, 2])}
+    return root, rec, jury
+
+
+def test_support_matrix_source_exclusion_and_thr(support_world):
+    root, rec, jury = support_world
+    mat, excl = support_matrix(rec, root, jury, thr=0.3)
+    assert mat.tolist() == [[0, 0, 1], [0, 0, 0]]
+    assert excl.tolist() == [[True, False, False], [False, True, False]]
+    assert effective_denominator(excl).tolist() == [2, 2]
+
+
+def test_jury_paths_fold1_enumeration(tmp_path):
+    jury = jury_paths_fold1(tmp_path, None)
+    assert [j["name"] for j in jury] == ["cellvit_s2_e19_x1", "cellvit_s2_e19_x2",
+                                         "cellvit_s2_e1_x1", "cellvit_s2_e1_x2",
+                                         "cellvit_s2_e2_x1", "cellvit_s2_e2_x2"]
+    assert jury[1]["source_pair"] == "split2_seed19" and jury[0]["source_pair"] is None
+    assert all(j["path"].startswith(str(tmp_path)) for j in jury)
+    with_hn = jury_paths_fold1(tmp_path, tmp_path / "hn.npz")
+    assert len(with_hn) == 7 and with_hn[-1]["name"] == "hovernet_s2"
