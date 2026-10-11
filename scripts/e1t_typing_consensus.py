@@ -123,7 +123,7 @@ def _tabulate(records: list[dict], folds: dict[int, int], min_votes: int) -> dic
 def _bootstrap_rates(records: list[dict], n_boot: int, seed: int) -> dict:
     def rate_ci(group, event):
         # 条件率：组内事件 1 / 组内非事件 0 / 组外 NaN（不入分母）
-        ind = np.array([1.0 if event(r) else (0.0 if group(r) else np.nan) for r in records])
+        ind = np.array([float(bool(event(r))) if group(r) else np.nan for r in records])
         img = np.array([r["img"] for r in records])
         if np.isnan(ind).all():
             return (float("nan"), float("nan"))
