@@ -39,7 +39,43 @@
 > Execution: `docs/superpowers/plans/2026-10-02-p0-p3-research.md`. Corrected results and
 > limitations: [P0–P3 report](P0_P3_RESULTS_2026-10-02.md).
 
-## 2026-10-11 — E1-C/E1-M（无专家修订执行）：候选的跨检测器共识远超随机基线；模型预审不可用
+## 2026-10-12 — E1-T 跨检测器分型共识：基分错实例上 jury 系统性支持基类；Inf/Conn 标签模糊的共鸣证据成立
+
+执行 [spec](superpowers/specs/2026-10-11-e1t-typing-consensus-design.md)（用户 2026-10-11 批准方向，
+"请继续推进"视为 spec 批准）。工件 `runs/analysis/e1t_typing_20261011/`（本地；`*_v1_bad_ci/` 为首轮，
+其 bootstrap 分母口径有 bug 作废，四格点估计两轮一致）。纯缓存重放、CPU-only、只读 fold2
+（split1 val）。基 = split1_seed1 val base identity（x1）；jury = E1-C 13 席 − 基 run = **12 席**
+（CellViT 10 + HoVer-Net 2，跨训练折 {1,3}）。配对 IoU > 0.5（并列歧义单列，本轮 0 个）；
+票 = 成员与该 GT 最大 IoU 实例（IoU ≥ 0.3）的**像素多数票类**（canonical `instance_classes`
+语义，type-0=未类型化合法，真实数据 base 有 164 个 type-0 实例——首版"唯一值"要求即因此中止）；
+多数类须总票 ≥3、严格胜出、最高类收到两个训练折的票（与基/GT 无关地定义，修掉初版在 G0
+退化的"共识反 GT"）。分组核验：G1 6,858 + G0 40,558 + ambiguous 0 + unmatched 12,456 =
+**59,872 = fold2 GT 实例总数** ✓；三图抽查（image 0/1200/2500）分组与逐票输出人工核验一致
+（`scripts/e1t_verify_spot.py`，输出在 tasks 缓存；image 0 GT9 为典型 G1-maj=base 例）。
+
+- **主结果**：G1（基分错的已匹配实例，n=6,858）中 jury 多数类 = 基类 **4,970（72.5%，图像
+  聚类 bootstrap 95% CI [.706, .742]）**，= GT 类仅 1,246（18.2% [.167, .197]，CI 分离）；
+  G0（基分对，n=40,558）的 jury 本征翻票率仅 **1.9% [.017, .021]**。按预注册解读键：
+  **Inf/Conn 标签边界模糊的检测器共鸣证据成立**——跨折训练 + 跨架构的检测器一致偏向基的
+  "错"标，指向标签边界系统模糊而非个别模型噪声（**非生物学断言**；jury 与基同族的相关性
+  如实披露，G0 对照部分约束了"纯回声"解释：若 jury 只回声基，G0 翻票率应≈0 且 G1 应≈100%）。
+- Inf↔Conn 双向为最大格：(2,3)（GT=Inf, 基=Conn）74.8% [.718, .779]；(3,2) 78.5% [.756, .811]；
+  Neo 的 (1,2)/(1,3) 同向（69.8%/66.4%）。**唯一大格例外 (5,1)（GT=Epi, 基=Neo）：GT 占优
+  （51.6% vs 30.1%）**，单列不并入结论。
+- **Dead 单列**（样本小、格内异质，仅描述）：dead 相关格聚合 maj=base [.573, .703] vs
+  maj=GT [.173, .282]，方向同 Inf/Conn 但幅度低；(3,4) 81.4% vs (4,2) 48.9% 不均。
+- **敏感性三套全部同向**：票门槛 IoU 0.5（base 72.0%）；min_votes 5（72.3%）；仅 HoVer-Net
+  2 席子 jury（base 36.0% vs GT 20.2%，no-majority 36.2%，G0 翻票 6.7%）。
+- **结论映射（spec §2 预注册键）**：分型方向以"**Inf/Conn 标签边界模糊（检测器共鸣证据）**"
+  收档——bPQ−mPQ 分型缺口（typing oracle .4995→.6632）中存在**不可由当前标签监督消除的
+  成分**；这与 T0–T3（内部特征事后读出无增量）及 CONCH 负结果相容：读出上限受标签噪声
+  约束。联合训练假设保持后置、不因本结果启动训练。与 E1-C（候选存在性共鸣）合并，分型轴
+  的标签质量证据链闭合；最终报告如实写"非生物学断言"。
+- 过程记录（全部 RED→GREEN 修复后重跑）：type 唯一值要求→多数票语义；条件 bootstrap 两处
+  bug（组外行计 0 而非 NaN；三元先判事件后判组员）——第二处由迷你夹具单测暴露（G0 CI 出
+  现 0.5）。本轮未读测试折；无新推理/训练。
+
+
 
 执行 [spec §7 修订](superpowers/specs/2026-10-10-e1-blind-audit-design.md)（用户 2026-10-10
 批准）。工件 `runs/analysis/e1_consensus_20261010/`（本地）。Jury 13 席：split1/split3 ×
