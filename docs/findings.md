@@ -39,6 +39,48 @@
 > Execution: `docs/superpowers/plans/2026-10-02-p0-p3-research.md`. Corrected results and
 > limitations: [P0–P3 report](P0_P3_RESULTS_2026-10-02.md).
 
+## 2026-10-12 — E3 候选质量学习 dev 轮：三门皆未过，按预注册规则停线；效用可预测、strict-FP 风险不可预测
+
+执行 [spec](superpowers/specs/2026-10-11-e3-candidate-quality-design.md)（用户 2026-10-11 批准；A2 语义
+按 spec §8 修订为 (floor,cap) 网格）。工件 `runs/analysis/e3_quality_20261011/`（本地；CPU，
+workers 8）。训练 = fold1 13,332 条 OOF 候选（split2 三种子，标签 IoU>0.5 matched）；应用 =
+split1_seed1 冻结 4,084 fold2 候选；A1 = 冻结 EF-P2（a30d：非 Dead 地板 30、Dead 豁免；
+**A1 重放经 18 行 sweep 与 p2ef 冻结行 ≤1e-12 硬断言**，其中 a30 变体曾 bit-exact 复现 EF 行
+mPQ .48345570337477284，管线正确性由此锚定）。fold3 零读取。
+
+- **判定：主门/次门均 false（A2/A3/A4 全部）** ⇒ 按 spec §5 停线：不进确认轮，不加菜单挽救；
+  效用学习线在 dev 层收档为负结果。EF-P2 定位（机制证据/teacher 候选）不变。
+- **失败层级定位**（spec 要求的收档内容）：
+  1. **效用本身可廉价预测**：fold1 GroupKFold CV AUC **.721**（低维 12 特征）/**.737**
+     （+support/sup_frac）；低维臂在 fold2 上可靠性曲线良好（mean .45→rate .49、.65→.62）。
+     E1-C 的"支持度单调"假设在学得模型上成立。
+  2. **选择规则与端点冲突**：逐字沿用的 EF 轮 `select_fusion`（strict Dead ≥ identity .12957
+     且 interior Dead matched > 441 且 mPQ/bPQ ≥ identity−.002）在 A2/A3/A4 的**全部 16 个
+     非恒等行**上被 strict Dead 门槛拒绝（学得行最高 .1245 < .12957）→ 三臂全部回落
+     identity，门值即 identity−A1（ΔDead −.0061、ΔbPQ −.0012、ΔmPQ −.0012，bootstrap CI
+     全部低于或贴零）。**A1 自己是通过该门槛的少数行**（strictD .1345）——冻结规则的
+     strict 轴天然偏向少加候选。
+  3. **描述性对照（不进门）**：a4_p0.5 相对 A1 = ΔmPQ +.0014、ΔbPQ +.0017、ΔDead +.0030、
+     添加 2134（A1 1374）且 unmatched 占比 46.8%（A1 53.3%）；a3_p0.4 = ΔmPQ +.0010、
+     ΔbPQ +.0012、ΔDead +.0014、unmatched 45.8%。即：**在 official 口径上存在便宜的
+     bPQ/Dead 改善，但全部以 strict Dead −.012~−.014 为代价**——缺类图像上的 Dead FP
+     惩罚是候选级特征（面积/形状/置信度/支持度）的盲区；P(match)·E[IoU|match] > q/2 的
+     候选级推导（10-06 §路线B）恰在"忽略 epsilon/缺类惩罚"处失效，与推导自身的警告一致。
+  4. **support 臂的偏移被实测**：+support 校准劣化（fold2 上 .84 置信箱实际率 .55——
+     fold1 6 席 CellViT vs fold2 13 席跨折/跨架构的构成偏移），CV AUC 增益（+.017）未转化
+     为端点。HoVer-Net split2 检查点已在两机磁盘清理中丢失，fold1 jury 无 HN 席（spec 偏差，
+     已披露；重训一席不成比例，用 split1/3 HN 会破坏 fold1 OOF）。
+- **对 10-09 方案 §5 的映射**：E1 支持的"候选质量学习"分支就此收档——简单质量模型
+  （含 jury 支持度）不能在 official+strict 联合口径上替代 EF 规则；后续若重开，需要的是
+  **图像级缺类风险特征**（如该图 Dead 先验/组织条件），而非更复杂的候选级头——这构成
+  新的可检验解释，但不自动立项。
+- 过程记录（三次真实运行失败皆由护栏/断言捕获后修复重跑）：① class 域实为 1..5（合格池
+  已类型化），one-hot 移位；② dist 含 inf 哨兵（图内无 base 实例，17+19 行），按 256² 对角线
+  常数 362 截断（数据无关、两折同变换）；③ 首版 A1 误用 a30+stage-1 行——a30 行 bit-exact
+  复现暴露现任实为 a30d，改从 p2ef selection.json 派生地板/豁免并对其断言。另：mix 计数
+  （records 列 1376）与 fuse 运行时（1374）差 2 行（概率表/重叠运行时差异），A1 端点以
+  fuse 断言为准，mix 仅描述。全量 pytest 332 passed（含本轮 17 个新测试）。
+
 ## 2026-10-12 — E1-T 跨检测器分型共识：基分错实例上 jury 系统性支持基类；Inf/Conn 标签模糊的共鸣证据成立
 
 执行 [spec](superpowers/specs/2026-10-11-e1t-typing-consensus-design.md)（用户 2026-10-11 批准方向，
@@ -76,6 +118,8 @@
   现 0.5）。本轮未读测试折；无新推理/训练。
 
 
+
+## 2026-10-11 — E1-C/E1-M（无专家修订执行）：候选的跨检测器共识远超随机基线；模型预审不可用
 
 执行 [spec §7 修订](superpowers/specs/2026-10-10-e1-blind-audit-design.md)（用户 2026-10-10
 批准）。工件 `runs/analysis/e1_consensus_20261010/`（本地）。Jury 13 席：split1/split3 ×
