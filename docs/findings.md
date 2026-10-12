@@ -66,8 +66,8 @@ mPQ .48345570337477284，管线正确性由此锚定）。fold3 零读取。
      bPQ/Dead 改善，但全部以 strict Dead −.012~−.014 为代价**——缺类图像上的 Dead FP
      惩罚是候选级特征（面积/形状/置信度/支持度）的盲区；P(match)·E[IoU|match] > q/2 的
      候选级推导（10-06 §路线B）恰在"忽略 epsilon/缺类惩罚"处失效，与推导自身的警告一致。
-  4. **support 臂的偏移被实测**：+support 校准劣化（fold2 上 .84 置信箱实际率 .55——
-     fold1 6 席 CellViT vs fold2 13 席跨折/跨架构的构成偏移），CV AUC 增益（+.017）未转化
+  4. **support 臂的偏移被实测**：+support 校准劣化（fold2 上 .84 置信箱实际率 .58——
+     fold1 6 席 CellViT vs fold2 13 席跨折/跨架构的构成偏移），CV AUC 增益（+.016）未转化
      为端点。HoVer-Net split2 检查点已在两机磁盘清理中丢失，fold1 jury 无 HN 席（spec 偏差，
      已披露；重训一席不成比例，用 split1/3 HN 会破坏 fold1 OOF）。
 - **对 10-09 方案 §5 的映射**：E1 支持的"候选质量学习"分支就此收档——简单质量模型
