@@ -264,6 +264,10 @@ def main(argv=None) -> None:
                   "path": s["path"], "sha256": file_provenance(Path(s["path"]))["sha256"]}
                  for s in jury],
         "script": file_provenance(Path(__file__))["sha256"],
+        "code": {str(Path(__file__).resolve().parents[1] / "src/nucseg/e1_typing.py"):
+                 file_provenance(Path(__file__).resolve().parents[1] / "src/nucseg/e1_typing.py")["sha256"]},
+        "gt_fold2": {p.name: file_provenance(p)["sha256"]
+                     for p in sorted(fold.dir.glob("*.npy"))},
         "round": str(a.round.resolve()),
         "spec": "docs/superpowers/specs/2026-10-11-e1t-typing-consensus-design.md",
     }

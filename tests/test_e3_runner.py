@@ -138,3 +138,48 @@ def test_main_guards(tmp_path, monkeypatch):
         R.main(["--round", str(tmp_path), "--records", "x", "--apply-records", "x",
                 "--base-val", "x", "--x2-val", "x", "--p2-selection", "x",
                 "--ef-selection", "x", "--fold2-support", "x", "--out", str(tmp_path / "o2")])
+
+
+def test_a1_drift_assert_is_the_failure_path(world, tmp_path, monkeypatch):
+    """失败路径必须打在 A1 漂移断言上（消息含 'A1 replay drifted'），不是更早的输入守卫。"""
+    import pytest
+    w = world
+    menu = R.build_menu_loaded(w["rec_apply"], np.array([.9, .4, .2]), np.array([.9, .4, .2]),
+                               w["p2cfg"])
+    rows = {r["name"]: r for r in R.sweep(menu, w["bi"], w["bt"], w["xi"], w["xt"], w["prob"],
+                                          w["gc"], w["gi"], w["gt"], w["tissue"], w["p2cfg"])}
+    a1 = rows["a1_incumbent"]
+    p2_json = tmp_path / "p2.json"
+    p2_json.write_text(json.dumps({"selected": {**w["p2cfg"],
+                                                **{k: v for k, v in a1.items() if k != "_stats"},
+                                                "name": "a200_p0.9_interior0"}}))
+    ef_json = tmp_path / "ef.json"
+    ef_json.write_text(json.dumps({"selected": {"name": "a30",
+                                                **{k: v for k, v in a1.items()
+                                                   if k not in ("_stats", "name")},
+                                                "mPQ": a1["mPQ"] + 1e-9}}))  # 仅扰动 EF 行
+    monkeypatch.setattr(R, "fit_logistic", lambda *a, **k: {"mock": True})
+    monkeypatch.setattr(R, "predict", lambda fit, X: np.array([.9, .4, .2][:len(X)]))
+    out = tmp_path / "e3drift"
+    argv = ["--round", str(tmp_path), "--records", "x", "--apply-records", "x",
+            "--base-val", "x", "--x2-val", "x", "--p2-selection", str(p2_json),
+            "--ef-selection", str(ef_json), "--fold2-support", "x",
+            "--out", str(out), "--n-boot", "50"]
+    with pytest.raises(SystemExit) as ei:
+        R.main(argv, loader=_loader(w, np.array([.9, .4, .2]), np.array([.9, .4, .2])))
+    assert "A1 replay drifted" in str(ei.value)
+
+
+def test_per_image_triples_official_nan_convention():
+    """mPQ 列 = GT 在场类的平均；GT 缺席即使有预测也不计入（官方 NaN 排除，非 0）。"""
+    stats = np.zeros((1, 6, 5))
+    stats[0, 1] = (10, 0, 2, 8.0, 12)      # 类1：GT 在场
+    stats[0, 4] = (0, 3, 0, 0.0, 0)        # 类4：GT 缺席但有 3 个预测
+    stats[0, 0] = (10, 3, 2, 8.0, 14)      # 二值行
+    t = R._per_image_triples(stats)
+    assert t[0, 0] == t[0, 0] and abs(t[0, 0] - _pq_ref(10, 0, 2, 8.0)) < 1e-12
+
+
+def _pq_ref(tp, fp, fn, sum_iou):
+    d = tp + 0.5 * fp + 0.5 * fn
+    return (tp / d) * (sum_iou / (tp + 1e-6)) if tp else 0.0  # 官方 SQ 分母 +1e-6

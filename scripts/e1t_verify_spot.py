@@ -14,6 +14,7 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent))
+from fold_guard import ensure_dev_fold  # noqa: E402
 from e1t_typing_consensus import builtin_jury, pair_base_detailed  # noqa: E402
 
 from nucseg.data.pannuke import PanNukeFold  # noqa: E402
@@ -26,6 +27,7 @@ def main(argv=None):
     ap.add_argument("--img", type=int, nargs="+", required=True)
     ap.add_argument("--extra-jury", nargs="*", default=[])
     a = ap.parse_args(argv)
+    ensure_dev_fold(2, 1)
     jury = builtin_jury(a.round)
     for spec in a.extra_jury:
         path, name, arch, tf = spec.split(":")

@@ -67,7 +67,7 @@ def jury_votes(gt: np.ndarray, member_inst: np.ndarray, member_type: np.ndarray,
 
 def majority_type(votes: dict[int, int], folds: dict[int, int],
                   min_votes: int = 3) -> tuple[int | None, dict]:
-    """Base/GT-independent jury majority (spec 2026-11 §2).
+    """Base/GT-independent jury majority (spec 2026-10-11 §2).
 
     Majority requires: total votes >= min_votes, the top type strictly beats the runner-up,
     and the top type received votes from members of at least two distinct training folds.

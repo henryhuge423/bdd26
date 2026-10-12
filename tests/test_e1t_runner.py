@@ -119,3 +119,15 @@ def test_bootstrap_rates_condition_on_group():
     # G0_maj_neq_gt 在迷你世界为 0/1 -> CI 收敛 [0,0]
     lo0, hi0 = out["bootstrap"]["G0_maj_neq_gt"]
     assert lo0 == 0.0 and hi0 == 0.0
+
+
+def test_bootstrap_discriminates_conditional_denominator():
+    """全事件 G1 组的 CI 必须收敛 [1,1]；若组外行计 0（旧 bug），CI 必然低于 1。"""
+    from e1t_typing_consensus import _bootstrap_rates
+    recs = [{"img": i, "status": "matched", "gt_class": 1, "base_class": 2, "_maj": 2}
+            for i in range(3)] \
+        + [{"img": 3 + i, "status": "matched", "gt_class": 3, "base_class": 3, "_maj": 3}
+           for i in range(2)]
+    out = _bootstrap_rates(recs, n_boot=200, seed=7)
+    lo, hi = out["G1_maj_eq_base"]
+    assert lo == 1.0 and hi == 1.0

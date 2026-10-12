@@ -35,6 +35,7 @@ from nucseg.metrics.pannuke_eval import _pq  # noqa: E402
 from nucseg.postproc.existence import existence_pass  # noqa: E402
 from nucseg.postproc.scale_fusion import (_gt_facts, candidate_info, fuse,  # noqa: E402
                                           probability_rows, select_fusion, strict_dead_pq)
+from nucseg.postproc import scale_fusion as scale_fusion_mod  # noqa: E402
 
 PAIR = "split1_seed1"
 SEED = 20261011
@@ -118,16 +119,15 @@ def _sweep_image(j: int):
 
 
 def _per_image_triples(stats: np.ndarray) -> np.ndarray:
-    """(n_img, 3)：[类均值 PQ, 二值 PQ, Dead PQ]，类别缺失按官方口径 NaN/0 处理。"""
+    """(n_img, 3)：[mPQ 口径类均值, 二值 PQ, strict 口径 Dead PQ]。
+
+    mPQ 列按官方聚合：仅平均 GT 在场类（s[4]>0）的 PQ；GT 缺席即使有预测也不计入
+    （官方对缺类置 NaN 后排除，非计 0）。Dead 列沿用 strict_dead_pq 口径：GT 缺席但
+    有预测计 0（这正是 strict 惩罚所在）。"""
     n = stats.shape[0]
     trip = np.full((n, 3), np.nan)
     for j in range(n):
-        per_cls = []
-        for s in stats[j][1:]:          # 行 0 是二值统计，逐类只看行 1..5
-            if s[4] > 0:
-                per_cls.append(_pq(*s[:4]))
-            elif s[0] + s[1] > 0:
-                per_cls.append(0.0)
+        per_cls = [float(_pq(*s[:4])) for s in stats[j][1:] if s[4] > 0]
         if per_cls:
             trip[j, 0] = float(np.mean(per_cls))
         b = stats[j][0]
@@ -198,6 +198,24 @@ def _real_loader(a) -> dict:
             "sup_train": sup_train, "sup_excl_den": den, "rec_apply": rec_apply,
             "sup_apply": sup_apply, "jury_names_fold2": jury_names,
             "jury_fold1": [j["name"] for j in jury]}
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def code_fingerprints() -> dict:
+    """SHA256 of every project module the round's numbers depend on (beyond this script)."""
+    import nucseg.candidate_quality.features as cq_features
+    import nucseg.candidate_quality.support as cq_support
+    import nucseg.candidate_quality.model as cq_model
+    import nucseg.candidate_quality.menu as cq_menu
+    import nucseg.postproc.existence as pp_existence
+    mods = (cq_features, cq_support, cq_model, cq_menu, scale_fusion_mod, pp_existence)
+    out = {}
+    for m in mods:
+        p = Path(m.__file__)
+        out[str(p.relative_to(ROOT))] = file_provenance(p)["sha256"]
+    return out
 
 
 def _jsonable(o):
@@ -325,8 +343,9 @@ def main(argv=None, loader=None) -> None:
                       "identity_class_pq": a0["per_class_PQ"]},
            "provenance": ({"inputs": {kk: file_provenance(getattr(a, kk))["sha256"] for kk in
                             ("records", "apply_records", "base_val", "x2_val", "p2_selection",
-                             "fold2_support", "hn_fold1") if getattr(a, kk) is not None},
+                             "ef_selection", "fold2_support", "hn_fold1") if getattr(a, kk) is not None},
                           "script": file_provenance(Path(__file__))["sha256"],
+                          "code": code_fingerprints(),
                           "spec": "docs/superpowers/specs/2026-10-11-e3-candidate-quality-design.md"}
                          if loader is None else {"mocked": True})}
     a.out.mkdir(parents=True, exist_ok=True)
