@@ -18,7 +18,33 @@ Research plan + full progress log: [docs/RESEARCH_PLAN.md](docs/RESEARCH_PLAN.md
 experiment number: [docs/findings.md](docs/findings.md). Course brief:
 `docs/our_project5_nuclei_segmentation.pdf`.
 
-## Current status (2026-10-09)
+## Current status (2026-10-12)
+
+**Human expert review is confirmed unavailable for the foreseeable future (no resources,
+user 2026-10-11).** E1's blinded two-stage human path therefore closes *unexecuted* —
+the packet and protocol remain on disk and the obligation is recorded — and E1's record
+of evidence stands on the executed no-expert amendment: E1-C cross-detector consensus
+(null-controlled detector-resonance evidence, no biological claims) plus the E1-M model
+pilot (process validation only; model review unusable). Two pre-registered follow-ups
+were approved 2026-10-11 and run under frozen specs
+(`docs/superpowers/specs/2026-10-11-*.md`): the **E3 candidate-quality dev round**
+(five-arm menu replay over the frozen split1_seed1 fold2 candidates, gates frozen
+before the run) and the **E1-T typing-consensus audit** (jury typing votes on base
+mistypes, testing the Inf/Conn label-ambiguity explanation). Execution note: the
+HoVer-Net split2 checkpoint was lost to disk cleanup on both machines, so E3's fold1
+jury runs with six CellViT seats (disclosed in the round's provenance). No test fold
+was read by either round. **Verdicts (2026-10-12, pre-registered keys):** E1-T finds
+the 12-seat jury sides with the base model's label on 72.5% of base mistypes
+(CI-separated) vs an intrinsic flip rate of 1.9% — detector-resonance evidence for
+Inf/Conn label-boundary ambiguity (not a biological claim); the typing direction
+closes with that explanation. E3 finds candidate utility is cheaply predictable
+(CV AUC .721 low-dim / .737 with jury support) but every learned/area row fails the
+frozen selection rule's strict-Dead gate, so all arms fall back to identity and both
+pre-registered gates fail — the candidate-quality line closes at the dev stage;
+official-metric gains exist descriptively only at a strict-Dead cost. See
+`docs/findings.md` 2026-10-12 entries.
+
+## Prior status (2026-10-09)
 
 The [October 9 audit](docs/RESEARCH_AUDIT_2026-10-09.md) rechecked frozen results,
 corrected stale status text and hardened the remaining dev-fold/cost paths.
