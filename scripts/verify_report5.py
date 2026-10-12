@@ -11,6 +11,7 @@ Sources (relative to the repository root):
   runs/analysis/typing_oracle_20261009/summary.json
   runs/cellvit_uni/split{1,2,3}/eval_test_fold{3,3,1}/summary.json   (baseline anchor)
   runs/analysis/typing_probe_20261010/results.json
+  runs/cellvit_uni/split1/pred_fold2.npz                             (T0 matched-typing recompute)
   runs/analysis/e1_consensus_20261010/{consensus,null_control,e1m_analysis}.json,
       per_candidate.npz, e1m_pass{A,B}.csv
   runs/analysis/e1_packet_20261010/KEY/sample.json                   (E1-M source map)
@@ -28,6 +29,10 @@ import json
 from pathlib import Path
 
 import numpy as np
+
+from nucseg.data.pannuke import PanNukeFold
+from nucseg.metrics.fast_retype import RetypeEvaluator
+from nucseg.metrics.pannuke_eval import instance_classes
 
 EPS = 1e-12
 R = Path("runs/analysis")
@@ -94,6 +99,20 @@ require(abs(t["results"]["T2"]["mean_mpq"] - t["baseline_mpq"] - vals["delta"]) 
         "T2 delta inconsistent with mean_mpq")
 require(abs(t["results"]["T1"]["score"]["mpq"] - t["baseline_mpq"]
             - t["results"]["T1"]["bootstrap_vs_t0"]["delta"]) <= EPS, "T1 delta inconsistent")
+# The report quotes the incumbent (T0 pixel-majority) matched typing accuracy next to T1/T2;
+# results.json stores only T1/T2, so T0 is recomputed here from the frozen prediction with
+# the same evaluator pairing (post-review correction 2026-10-13: report text had cited the
+# T1 value 0.8571 as the majority-vote figure; the T0 value is 0.8564).
+pred_path = Path("runs/cellvit_uni/split1/pred_fold2.npz")
+require(sha256(pred_path) == t["inputs"][str(pred_path)], "typing-probe pred npz hash drift")
+pred = dict(np.load(pred_path))
+f2 = PanNukeFold(2)
+ev = RetypeEvaluator(f2.gt_channels, pred["inst"], pred["inst_img"].astype(np.int64),
+                     pred["inst_id"].astype(np.int64), f2.tissue)
+cls0 = np.concatenate([instance_classes(pred["inst"][j], pred["type"][j])[1]
+                       for j in range(len(pred["inst"]))])
+t0_matched = float((cls0[ev.m_row] == ev.m_cls).mean())
+require(abs(t0_matched - 0.856382) < 5e-5, f"T0 matched typing drifted: {t0_matched}")
 out["checks"]["typing_probe"] = {
     "baseline": t["baseline_mpq"], "T1": t["results"]["T1"]["score"]["mpq"],
     "T2_mean": t["results"]["T2"]["mean_mpq"], "T3_mean": t["results"]["T3"]["mean_mpq"],
@@ -101,6 +120,7 @@ out["checks"]["typing_probe"] = {
     "gt_region_diag_acc": t["results"]["T2"]["gt_region_diag"]["acc"],
     "t2_matched_typing": t["results"]["T2"]["matched_typed_correct"],
     "t1_matched_typing": t["results"]["T1"]["matched_typed_correct"],
+    "t0_matched_typing": t0_matched,
 }
 
 # ----------------------------------------------------------------- [C] E1-C

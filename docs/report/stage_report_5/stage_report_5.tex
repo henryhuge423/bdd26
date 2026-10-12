@@ -31,7 +31,7 @@ Stage report IV settled the mechanism and the cost of the cross-scale candidate 
 
 \textbf{The typing gap.} The CellViT-UNI baseline scores 0.4995 official mPQ against 0.6653 bPQ. A substantial share of already-detected nuclei is mistyped. The earlier CONCH re-typing null\cite{structure} ruled out external vision--language features, but the model's own frozen features had never been probed for extractable typing signal.
 
-\textbf{Candidates and labels.} Between 53 and 61\% of the candidates added by EF-P2 match no ground-truth instance (55.9\% on the validation fold; 57--61\% under the historical test-fold convention). Debris, contour disagreement and genuinely unlabelled nuclei all produce the same observable. The October 9 proposal\cite{next} therefore planned two parallel tracks: a fixed-geometry typing probe (T) and an independent candidate audit (E1).
+\textbf{Candidates and labels.} Between 53 and 61\% of the candidates added by EF-P2 match no ground-truth instance (55.8\% on the validation fold; 57--61\% under the historical test-fold convention). Debris, contour disagreement and genuinely unlabelled nuclei all produce the same observable. The October 9 proposal\cite{next} therefore planned two parallel tracks: a fixed-geometry typing probe (T) and an independent candidate audit (E1).
 
 The stage took one more turn than planned. After T failed its gate, E1 lost its human reviewers (resource unavailability confirmed on October 11), and the approved no-expert revision spawned two further pre-registered experiments\cite{specs}: the E1-T typing-consensus audit and the E3 candidate-quality dev round. The sections follow chronology: Section~\ref{sec:oracle} the ceiling diagnostic, Section~\ref{sec:t} the probe, Section~\ref{sec:e1} the packet and the no-expert revision (E1-C/E1-M), Section~\ref{sec:e1t} E1-T, Section~\ref{sec:e3} E3, and Section~\ref{sec:verify} the verification record.
 
@@ -86,7 +86,7 @@ T0 reproduces the official fold-2 evaluation exactly. T2 reports the mean of two
 
 Three of six conditions pass. The $+0.0002$ point estimate is far below the $0.003$ threshold and the interval lower bound is $-0.0027$; the decisive failure is the guard-rail --- the unweighted linear head loses $0.0053$ Dead PQ, beyond the $0.002$ allowance. A cheap read-out does not merely fail to help; it further starves the rarest class. The sklearn deterministic cross-check agrees in direction (0.4817, worse). Under the pre-registered rule no bigger classifier and no added configuration may rescue the result.
 
-The failure position is visible in three accuracies. The linear head's diagnostic accuracy on \emph{ground-truth regions} is 85.3\%; its typing accuracy on \emph{matched predicted instances} is 85.8\%; the incumbent majority vote on the same population is about 85.7\%. The three coincide: the head extracts the same information the TP branch already uses. GT-feature export costs 790\,ms/image unoptimized, so there is no deployment case either. T1's $-0.0003$ shows the aggregation rule itself is saturated.
+The failure position is visible in three accuracies. The linear head's diagnostic accuracy on \emph{ground-truth regions} is 85.3\%; its typing accuracy on \emph{matched predicted instances} is 85.8\%; the incumbent majority vote on the same population is about 85.6\%. The three coincide: the head extracts the same information the TP branch already uses. GT-feature export costs 790\,ms/image unoptimized, so there is no deployment case either. T1's $-0.0003$ shows the aggregation rule itself is saturated.
 
 Combined with the CONCH null, two independent feature sources (an external pathology VLM; the model's internal frozen features) both fail post-hoc instance-level retyping. The bPQ--mPQ gap cannot be cashed in by changing the read-out. This leaves label ambiguity and joint training as the surviving explanations --- the first is tested by E1-T in Section~\ref{sec:e1t}; the second stays deferred.
 
@@ -100,7 +100,7 @@ With user approval, E1 proceeded in its no-expert revision (spec~\S7): cross-det
 
 \subsection{E1-C: cross-detector consensus with a null control}
 
-The jury has 13 seats: split-1/split-3 $\times$ three seeds $\times$ \{x1, x2\} of CellViT (11 seats) plus two HoVer-Net seats (split 1/split 3, fold-2 inference, validation-fold sanity mPQ 0.4509). No member ever trained on fold 2. Candidates are the frozen split1\_seed1 eligible pool of 4,084 (1,515 accepted, 2,569 rejected); support counts members overlapping a candidate at IoU$\geq0.3$.
+The jury has 13 seats: split-1/split-3 $\times$ three seeds $\times$ \{x1, x2\} of CellViT (11 seats) plus two HoVer-Net seats (split 1 and split 3, one seat each, fold-2 inference; validation-fold sanity mPQ 0.4509/0.4437). No member ever trained on fold 2. Candidates are the frozen split1\_seed1 eligible pool of 4,084 (1,515 accepted, 2,569 rejected); support counts members overlapping a candidate at IoU$\geq0.3$.
 
 Consensus needs a calibration point. The synthetic null control\cite{specs} places same-area discs at random positions outside an 8-px dilation of all GT instances (areas resampled from the zero-overlap candidate distribution; $n=2{,}000$): mean support 0.07, $\geq3$-seat rate 0.75\%, $\leq1$-seat rate 99.1\%. Random placement almost never manufactures agreement. This controls the random baseline only --- not detector-family-shared false-positive modes.
 
@@ -144,7 +144,7 @@ The packet's 200 windows also tested whether vision models can serve as reviewer
 
 The first surviving explanation from T's failure was Inflammatory/Connective label ambiguity. E1-T\cite{specs} tests it with E1-C's epistemics: on instances the base model (split1\_seed1, x1, identity decode) \emph{mistyped}, do detectors that never saw this prediction systematically side with the base class over the ground-truth class?
 
-The jury is E1-C's 13 seats minus the base run itself: 12 seats (CellViT 10 + HoVer-Net 2, training folds \{1, 3\}). Everything is a CPU replay of cached predictions, reading fold 2 only. Instance pairing follows the official evaluator (greedy IoU$\geq0.5$); a member's type vote for a GT instance is the pixel-majority class of its maximum-IoU instance when that IoU is $\geq0.3$. The majority class is defined with no reference to base or GT: at least 3 total votes, a strict plurality, and top-class votes from both training folds; otherwise ``no majority''. Groups: G1 = base mistyped (6,858), G0 = base correct (40,558); unmatched GT 12,456 and zero ambiguous complete the 59,872 GT instances of fold 2, verified against the fold total.
+The jury is E1-C's 13 seats minus the base run itself: 12 seats (CellViT 10 + HoVer-Net 2, training folds \{1, 3\}). Everything is a CPU replay of cached predictions, reading fold 2 only. Instance pairing follows the official evaluator (IoU$>0.5$, ties set aside); a member's type vote for a GT instance is the pixel-majority class of its maximum-IoU instance when that IoU is $\geq0.3$. The majority class is defined with no reference to base or GT: at least 3 total votes, a strict plurality, and top-class votes from both training folds; otherwise ``no majority''. Groups: G1 = base mistyped (6,858), G0 = base correct (40,558); unmatched GT 12,456 and zero ambiguous complete the 59,872 GT instances of fold 2, verified against the fold total.
 
 The pre-registered interpretation key: if, on G1's Infl/Conn cells, P(majority $=$ base) exceeds P(majority $=$ GT) with cluster-bootstrap separation and exceeds the G0 intrinsic flip rate, then ``Inflammatory/Connective label-boundary ambiguity (detector-resonance evidence)'' holds and the typing gap contains a component not removable under the current labels; otherwise the gap is recorded as model limitation and joint training stays deferred. Dead cells are reported separately whatever their direction.
 
@@ -194,7 +194,7 @@ Per-arm selection reuses the EF-round rule verbatim: among rows with mPQ and bPQ
 
 The primary gate demands vs.\ A1: $\Delta$Dead $\geq+0.002$ with $\Delta$bPQ $\geq-0.0005$ and $\Delta$strict-Dead $\geq-0.002$; the secondary gate demands comparable Dead at $\geq$25\% fewer unmatched additions. Either gate passing opens a confirmation round; both failing closes the line with no menu extension and no model swap.
 
-\subsection{Verdict: all three gates fail}
+\subsection{Verdict: both gates fail on all three arms}
 
 \begin{table}[H]
 \centering\small

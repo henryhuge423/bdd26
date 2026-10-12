@@ -30,7 +30,8 @@
    "pass_gate": false,
    "gt_region_diag_acc": 0.853036477819348,
    "t2_matched_typing": 0.8582970397020766,
-   "t1_matched_typing": 0.8570977718866376
+   "t1_matched_typing": 0.8570977718866376,
+   "t0_matched_typing": 0.8563824191546214
   },
   "e1c": {
    "null_mean_support": 0.0725,

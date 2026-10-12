@@ -1,24 +1,25 @@
 {
  "report": "stage_report_5",
  "built": "2026-10-13",
- "builder": "LM2 texlive 2026 (/data6/jinxinhao/texlive/2026/bin/x86_64-linux), /tmp/report5_build",
+ "builder": "LM2 texlive 2026 (/data6/jinxinhao/texlive/2026/bin/x86_64-linux), /tmp/report5_build_r2",
  "machine_notes_local_only": "ops/report5_build/README.md",
+ "revision": "post-release fact-and-wording fixes (2026-10-13, same day): majority-vote typing accuracy corrected to 85.6% (T0 recomputed from frozen artifacts; the released text had cited T1's 85.7% as the incumbent figure); validation-fold unmatched rate 55.9% -> 55.8%; HoVer-Net sanity now cites both seats (0.4509/0.4437); E1-T pairing operator >= -> > (matches code and official evaluator); 'three gates' wording clarified to 'both gates on all three arms' (E3 defines two gates); three ZH wording fixes (digest typo and two calques; one stray space after a CJK semicolon). verify_report5.py now recomputes and asserts t0_matched_typing = 0.8564; verified_numbers.json regenerated (all other values bit-identical).",
  "documents": {
   "stage_report_5.pdf": {
    "pages": 14, "engine": "pdflatex x2",
-   "sha256": "a931be95ac64f2fed45dba202cc0d78d1acad51d6c22839715701f5235c1cac3",
-   "tex_sha256": "81096f01f97dcbfae33e80e744005fed0c80c7969449880a09660e7669f7fcd9"
+   "sha256": "91898efad09e6c3c86cd377be5bd74a193cc95e25257883c116db72bc6c19e9d",
+   "tex_sha256": "4c2d90e329877603439c6b301865b39fb7fe20ec25dd74fc32ccc7a898f2cd98"
   },
   "stage_report_5_zh.pdf": {
    "pages": 12, "engine": "xelatex x2",
-   "sha256": "07e7eafeebcc4819a5a4bdbad6296fb13378f7dcb9ac8a79368bceebcb80f556",
-   "tex_sha256": "cae6bbe39369cb6a7f1b5420af12ed4133078e1f3047dcf1e4c912e97da02ebe",
-   "note": "rebuilt once after two caption/wording fixes (T3 equal-dim sum wording; E3 table caption ambiguity); first-pass hashes superseded"
+   "sha256": "9444767633f9341fb7eb20de8b2ed583497f0599f01cd95ef52547932b94032e",
+   "tex_sha256": "61224f8af59ebfaff8d5887619522fd378e5237f7e99cf0108cf45e6feff402b",
+   "note": "rebuilt a second time in this revision to drop a stray space after a CJK semicolon (section 5.3)"
   },
   "summary_plain_zh.pdf": {
    "pages": 3, "engine": "xelatex x2",
-   "sha256": "2086079966b76c226ac3581da24ebc6c380f814e63ca947b5821842a77ff10f6",
-   "tex_sha256": "05162381acc492bbd49144166ef3c2fa46682416f2bce301314fb11a07edd855"
+   "sha256": "7165dfa9bf5f8c19a9279ec8524fabae6e3ae1a0e07b4994a74c5f9ca406901b",
+   "tex_sha256": "e9687985ede61dd46b71a638e151b68cbd7306f9e1750a541bfe8d21e62f08bc"
   }
  },
  "log_checks": {
@@ -27,16 +28,16 @@
  },
  "post_build_checks": {
   "pdftotext_chinese_extractable": true,
-  "key_numbers_found_in_text": "32/32 sampled values present in the intended editions (formal zh/en; digest carries rounded variants)",
+  "corrected_values_present": "85.6 / 55.8 / 0.4509+0.4437 / both-gates-three-arms wording verified in pdftotext of all affected editions; no residual 85.7 / 55.9 / three-gates / greedy wording",
   "figure_pages": {"stage_report_5_zh.pdf": {"fig1": 4, "fig2": 6, "fig3": 8},
                    "stage_report_5.pdf": {"fig1": 5, "fig2": 7, "fig3": 9}},
-  "page_renders_reviewed": ["zh p1 (title/abstract)", "zh p4/p6/p8 (figures 1-3)", "digest p1"],
+  "page_renders_reviewed": ["pdftotext-level checks only for this revision; page counts unchanged (14/12/3)"],
   "independent_all_page_visual_review": false
  },
  "numbers_pipeline": {
   "report5_numbers": "python scripts/report5_numbers.py > runs/analysis/report5_numbers.txt",
-  "verify": "python scripts/verify_report5.py > docs/report/stage_report_5/verified_numbers.json",
-  "figures": "python scripts/make_report_figures5.py",
+  "verify": "python scripts/verify_report5.py > docs/report/stage_report_5/verified_numbers.json (now includes t0_matched_typing 0.8563824, recomputed from the frozen pred npz with SHA pre-check)",
+  "figures": "python scripts/make_report_figures5.py (unchanged this round)",
   "pytest": "335 passed, 65 warnings (2026-10-13, LM1, pinned env)"
  }
 }
