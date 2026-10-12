@@ -1,0 +1,42 @@
+{
+ "report": "stage_report_5",
+ "built": "2026-10-13",
+ "builder": "LM2 texlive 2026 (/data6/jinxinhao/texlive/2026/bin/x86_64-linux), /tmp/report5_build",
+ "machine_notes_local_only": "ops/report5_build/README.md",
+ "documents": {
+  "stage_report_5.pdf": {
+   "pages": 14, "engine": "pdflatex x2",
+   "sha256": "a931be95ac64f2fed45dba202cc0d78d1acad51d6c22839715701f5235c1cac3",
+   "tex_sha256": "81096f01f97dcbfae33e80e744005fed0c80c7969449880a09660e7669f7fcd9"
+  },
+  "stage_report_5_zh.pdf": {
+   "pages": 12, "engine": "xelatex x2",
+   "sha256": "07e7eafeebcc4819a5a4bdbad6296fb13378f7dcb9ac8a79368bceebcb80f556",
+   "tex_sha256": "cae6bbe39369cb6a7f1b5420af12ed4133078e1f3047dcf1e4c912e97da02ebe",
+   "note": "rebuilt once after two caption/wording fixes (T3 equal-dim sum wording; E3 table caption ambiguity); first-pass hashes superseded"
+  },
+  "summary_plain_zh.pdf": {
+   "pages": 3, "engine": "xelatex x2",
+   "sha256": "2086079966b76c226ac3581da24ebc6c380f814e63ca947b5821842a77ff10f6",
+   "tex_sha256": "05162381acc492bbd49144166ef3c2fa46682416f2bce301314fb11a07edd855"
+  }
+ },
+ "log_checks": {
+  "errors": 0, "overfull": 0, "underfull": 0, "missing_character": 0, "undefined": 0,
+  "scope": "second-pass logs (en_2/zh_2/dg_2) of all three documents"
+ },
+ "post_build_checks": {
+  "pdftotext_chinese_extractable": true,
+  "key_numbers_found_in_text": "32/32 sampled values present in the intended editions (formal zh/en; digest carries rounded variants)",
+  "figure_pages": {"stage_report_5_zh.pdf": {"fig1": 4, "fig2": 6, "fig3": 8},
+                   "stage_report_5.pdf": {"fig1": 5, "fig2": 7, "fig3": 9}},
+  "page_renders_reviewed": ["zh p1 (title/abstract)", "zh p4/p6/p8 (figures 1-3)", "digest p1"],
+  "independent_all_page_visual_review": false
+ },
+ "numbers_pipeline": {
+  "report5_numbers": "python scripts/report5_numbers.py > runs/analysis/report5_numbers.txt",
+  "verify": "python scripts/verify_report5.py > docs/report/stage_report_5/verified_numbers.json",
+  "figures": "python scripts/make_report_figures5.py",
+  "pytest": "335 passed, 65 warnings (2026-10-13, LM1, pinned env)"
+ }
+}

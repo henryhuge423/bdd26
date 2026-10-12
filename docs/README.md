@@ -10,7 +10,8 @@
 | `findings.md` | experiment log — every number, per-date entries |
 | `RESEARCH_AUDIT_2026-10-09.md` | latest audit: verified endpoints, cost aggregation correction, regression fixes and explicit verification gaps |
 | `STRUCTURE_AND_STRATEGY_2026-10-09.md` | revised model primer and experiment review; distinguishes observations from mechanisms and corrects the Inf/Conn-GT oracle interpretation |
-| `report/stage_report_4/` | latest stage IV: E2a, DSB gate closure, E0 cost; README includes October 9 corrections |
+| `report/stage_report_5/` | latest stage V: typing-oracle ceiling, T0–T3 probe closure, E1 no-expert revision (E1-C/E1-M), E1-T label-ambiguity resonance, E3 utility-learning stop (EN + ZH + plain-language ZH, PDF/TeX, verified numbers) |
+| `report/stage_report_4/` | stage IV: E2a, DSB gate closure, E0 cost; README includes October 9 corrections |
 | `report/stage_report_3/` | stage III report: matched-seed P2, existence-filtered P2, audit corrections and limitations (EN + ZH + plain-language ZH, PDF/TeX, verified numbers) |
 | `report/stage_report_1/`, `report/stage_report_2/` | historical stage reports I & II with October 2 audit addenda; later results are in stage III |
 | `superpowers/plans/2026-10-03-matched-seed-validation.md` | matched-seed pre-registration and outcome |

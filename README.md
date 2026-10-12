@@ -18,7 +18,28 @@ Research plan + full progress log: [docs/RESEARCH_PLAN.md](docs/RESEARCH_PLAN.md
 experiment number: [docs/findings.md](docs/findings.md). Course brief:
 `docs/our_project5_nuclei_segmentation.pdf`.
 
-## Current status (2026-10-12)
+## Current status (2026-10-13)
+
+**Stage report V is out** (experiments of October 9–12): see
+[Chinese report](docs/report/stage_report_5/stage_report_5_zh.pdf),
+[plain-language Chinese digest](docs/report/stage_report_5/summary_plain_zh.pdf),
+[English report](docs/report/stage_report_5/stage_report_5.pdf) and
+[sources and reproduction](docs/report/stage_report_5/README.md). In brief: the
+typing-oracle ceiling (.4995→.6632 GT-assisted) is not cashable by post-hoc read-outs
+(T0–T3 gate failed; Dead −.0053 tripped the guard-rail); E1-T's cross-detector jury
+sides with the base label on 72.5% of base mistypes vs 18.2% for GT (intrinsic flip
+rate 1.9%), meeting the pre-registered key for Inf/Conn label-boundary ambiguity as
+detector-resonance evidence; E1-C finds the same resonance on the existence axis
+(66–73% of zero-overlap candidates carry ≥3 cross-fold/cross-architecture support;
+synthetic null 0.75%); E3 shows candidate utility is learnable (CV AUC .721/.737) yet
+every learned row fails the frozen strict-Dead floor, closing the quality-learning
+line by stop rule. Next: write label ambiguity into the final report's analysis
+frame; an image-level class-absence-risk spec if that line is ever reopened; joint
+training stays deferred; the E1 human-review obligation stands. No training this
+stage; only the read-only oracle diagnostic touched historical test artifacts; the
+suite passes 335 tests.
+
+## Prior status (2026-10-12)
 
 **Human expert review is confirmed unavailable for the foreseeable future (no resources,
 user 2026-10-11).** E1's blinded two-stage human path therefore closes *unexecuted* —
@@ -226,7 +247,10 @@ Full methods, uncertainty and provenance: [P0–P3 results](docs/P0_P3_RESULTS_2
 
 ### Reports
 
-- `docs/report/stage_report_4/` — latest stage IV (EN, ZH and plain-language ZH),
+- `docs/report/stage_report_5/` — latest stage V (EN, ZH and plain-language ZH):
+  typing-oracle ceiling, T0–T3 probe closure, E1 no-expert revision (E1-C/E1-M),
+  E1-T label-ambiguity resonance, E3 utility-learning stop; verified numbers included.
+- `docs/report/stage_report_4/` — stage IV (EN, ZH and plain-language ZH),
   E2a controls, DSB gate closure and E0 cost; the README links October 9 corrections.
 - `docs/report/stage_report_3/` — stage III (EN, ZH and plain-language ZH;
   PDF/TeX, figures, numerical tables and verification snapshot). Covers October 2–5
