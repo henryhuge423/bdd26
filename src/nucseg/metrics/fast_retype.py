@@ -100,25 +100,33 @@ class RetypeEvaluator:
     def mpq_bootstrap_delta(self, cls_a: np.ndarray, cls_b: np.ndarray,
                             n_boot: int = 1000, seed: int = 0) -> dict:
         """Paired image bootstrap of mPQ(a) - mPQ(b); images resampled WITHIN each tissue stratum
-        (spec 2026-10-10 §2: 组织内分层, 1000 次, percentile CI)."""
+        (spec 2026-10-10 §2: 组织内分层, 1000 次, percentile CI).
+
+        Each stratum aggregates over ITS OWN draws (block-wise), mirroring the point
+        estimator; slicing a resample-concatenated vector by the original (interleaved)
+        tissue positions mixes strata and miscenters the CI (review 2026-10-14)."""
         def img_mpq(pq):
             with np.errstate(all="ignore"):
                 return np.nanmean(pq, 1)
 
         pa = img_mpq(self.per_image_class_pq(cls_a))
         pb = img_mpq(self.per_image_class_pq(cls_b))
-        strata = [np.nonzero(self.tissue == t)[0] for t in np.unique(self.tissue)]
+        # TISSUES order (as mpq) so the outer mean's float order matches the point estimator
+        strata = [np.nonzero(self.tissue == t)[0] for t in TISSUES if (self.tissue == t).any()]
         rng = np.random.default_rng(seed)
 
         def m(v):
             return np.nanmean([np.nanmean(v[s]) for s in strata])
 
         deltas = np.empty(n_boot)
-        for b in range(n_boot):
-            idx = np.concatenate([rng.choice(s, len(s), replace=True) for s in strata])
-            with np.errstate(all="ignore"), np.testing.suppress_warnings() as sup:
-                sup.filter(RuntimeWarning)
-                deltas[b] = m(pa[idx]) - m(pb[idx])
-        with np.errstate(all="ignore"):
+        with np.errstate(all="ignore"), np.testing.suppress_warnings() as sup:
+            sup.filter(RuntimeWarning)
+            for b in range(n_boot):
+                da, db = [], []
+                for s in strata:
+                    picks = rng.choice(s, len(s), replace=True)  # one draw, both sides (paired)
+                    da.append(np.nanmean(pa[picks]))
+                    db.append(np.nanmean(pb[picks]))
+                deltas[b] = np.nanmean(da) - np.nanmean(db)
             lo, hi = np.nanpercentile(deltas, [2.5, 97.5])
         return {"delta": float(m(pa) - m(pb)), "lo": float(lo), "hi": float(hi)}

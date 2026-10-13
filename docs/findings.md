@@ -47,15 +47,24 @@
 代码指纹在 provenance）。GT 与预测**同时**过合并重映射，官方聚合口径同构（类数 4）；
 纯描述性诊断，无门、无方法主张、不改 5 类成绩表。
 
+**修正记录（2026-10-14，评审驱动）**：首轮工件的全部 69 个 bootstrap CI 因分层重采样
+切块与层位置错位（组织交错时混层）而失准——点估计不受影响，全部结论性数字不变；
+`merged_class.bootstrap_delta` 与同病的 `fast_retype.mpq_bootstrap_delta` 已修复
+（TDD 回归测试 `test_bootstrap_delta_stratum_blocks_aligned` ×2），本轮已用修复后代码
+重新生成并核验（66/66 CI 包含各自点估计）。**既往轮次注意**：typing_oracle 2026-10-09
+与 T 轮（2026-10-10）经 `mpq_bootstrap_delta` 记录的 CI 同样失准——两轮的门判定均基于
+点估计（T2 点 +.0002，修正后 CI 仍跨零），无判定翻转；若引用其 CI 数字需按修复后代码
+重算。
+
 - **绑定全过**：M0 恒等重评对冻结 eval（split1/2/3 eval_test_*）**mPQ 逐位一致**；
   逐类 PQ / bPQ ≤1e-12（冻结值出自 pannuke_eval 的矩阵求和顺序，快速路径为 bincount
   行序累加，逐类存在 1–2 ulp 固有差——typing_oracle 2026-10-09 同样如此，mPQ 恰好逐位）；
   merge(2,3) 下 Dead 逐类 PQ 逐位不变；bPQ 从 **inst 图**独立重算绑定。
-- **10 类对合并 Δofficial**（3-split mean，配对图像 bootstrap 1000 次组织内分层，
-  逐 split CI 下界全部 > +.048；split3 点估计 +.0481 低于其 CI 下界 +.0527，右偏分布的
-  percentile-bootstrap 伪象，如实披露）：**(2,3) +.0519 居首**，(1,3) +.0499、(1,2) +.0190
-  次之，其余 7 对 ≤ +.0099、(4,5) +.0002。strict 口径同构（(2,3) +.0647，逐 split
-  CI 下界 > +.06）。
+- **10 类对合并 Δofficial**（3-split mean，配对图像 bootstrap 1000 次组织内分层；
+  (2,3) 逐 split 点/CI：+0.0553 [.0492,.0621] / +0.0524 [.0460,.0581] / +0.0481
+  [.0423,.0538]，CI 下界全部 > +.04）：
+  **(2,3) +.0519 居首**，(1,3) +.0499、(1,2) +.0190 次之，其余 7 对 ≤ +.0099、
+  (4,5) +.0002。strict 口径同构（(2,3) +.0647，逐 split CI 下界 > +.055）。
 - **合并类 PQ .5079 ≫ 原两类均值 .4280**（Inf .4377 / Conn .4184）。
 - **oracle-under-merge(2,3)**：current .5514 → oracle .6575（差距 .1061）vs 5 类空间
   差距 .1637（typing_oracle 轮）⇒ **合并使 typing-oracle 差距缩小 35.2%**；Inf/Conn-only

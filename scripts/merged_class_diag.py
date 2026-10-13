@@ -147,9 +147,10 @@ def analyze_split(pred: dict, fold, split: int, frozen: dict | None) -> dict:
     oum: dict[str, dict] = {}
     for name, assignment in [("current", cls), ("oracle", oracle), ("inf_conn", inf_conn)]:
         m, _ = mpq(ev, assignment, cmap23)
-        oum[name] = {"mpq": float(m), "delta_vs_current": bootstrap_delta(
-            ev, cls, cmap23, cmap23, N_BOOT, BOOT_SEED + split,
-            cls_b=assignment if name != "current" else None)}
+        oum[name] = {"mpq": float(m)}
+        if name != "current":  # current vs itself would be a vacuous all-zero bootstrap
+            oum[name]["delta_vs_current"] = bootstrap_delta(
+                ev, cls, cmap23, cmap23, N_BOOT, BOOT_SEED + split, cls_b=assignment)
     return {"split": split, "fold": TEST_FOLD[split], "m0": m0, "merges": merges,
             "oracle_under_merge": oum, "invariants": invariants}
 
@@ -160,23 +161,29 @@ def main(argv=None) -> None:
     p.add_argument("--pred", nargs="*", default=[], metavar="SPLIT=PATH",
                    help="optional; every path must resolve to the allowlisted prediction")
     a = p.parse_args(argv)
-    if (a.out / "results.json").exists():
-        raise SystemExit(f"{a.out}/results.json exists — refusing to overwrite a round")
+    if a.out.exists():
+        raise SystemExit(f"{a.out} exists — refusing to overwrite a round directory")
     overrides = {}
     for item in a.pred:
         s, _, path = item.partition("=")
-        overrides[int(s)] = path
+        if s.lstrip("-").isdigit() and int(s) in TEST_FOLD:
+            overrides[int(s)] = path
+        else:
+            raise SystemExit(f"--pred entry '{item}' is not SPLIT=PATH with SPLIT in {sorted(TEST_FOLD)}")
 
     t0 = time.time()
     rows = []
     provenance = {}
+    hashed_gt = set()
     for split in (1, 2, 3):
         ts = time.time()
         pred, fold, frozen = load_split(split, overrides)
         provenance[f"pred_split{split}"] = file_provenance(ALLOWED_PREDS[split])
         provenance[f"frozen_eval_split{split}"] = file_provenance(FROZEN_EVAL[split])
-        provenance[f"gt_channels_fold{TEST_FOLD[split]}"] = file_provenance(
-            fold.dir / "gt_channels.npz")
+        if TEST_FOLD[split] not in hashed_gt:  # splits 1/2 share fold3's GT file
+            provenance[f"gt_channels_fold{TEST_FOLD[split]}"] = file_provenance(
+                fold.dir / "gt_channels.npz")
+            hashed_gt.add(TEST_FOLD[split])
         rows.append(analyze_split(pred, fold, split, frozen))
         print(f"split{split} done in {time.time() - ts:.1f}s", flush=True)
     provenance["script"] = file_provenance(Path(__file__))["sha256"]
@@ -218,8 +225,20 @@ def main(argv=None) -> None:
                      f"| {dsm:+.4f} | [{los:+.4f},{his:+.4f}] "
                      f"| {d['mpq']:.4f} | {d['strict']:.4f} |")
     lines += ["", f"M0 (identity): mPQ {mean['m0_mpq']:.4f} strict {mean['m0_strict']:.4f}",
-              "", "oracle-under-merge(2,3): " +
-              " ".join(f"{k} {mean[f'oum_{k}']:.4f}" for k in ("current", "oracle", "inf_conn"))]
+              "", "bPQ is class-agnostic: identical under every merge by construction (merges",
+              "never touch binary matching); per split it is recomputed from the inst maps and",
+              "bound to the frozen eval (see invariants in results.json).", "",
+              "oracle-under-merge(2,3): " +
+              " ".join(f"{k} {mean[f'oum_{k}']:.4f}" for k in ("current", "oracle", "inf_conn")),
+              "", "Per-class PQ (3-split mean, official): M0 vs merged classes of (2,3)",
+              "| class | M0 | merge(2,3) space |", "|---|---|---|"]
+    pc0 = np.mean([r["m0"]["per_class"] for r in rows], 0)
+    pc23 = np.mean([r["merges"]["(2,3)"]["per_class"] for r in rows], 0)
+    # merge(2,3) 合并类序 = [Neo, Inf+Conn, Dead, Epi]；原类 0/3/4 -> 合并列 0/2/3
+    for i, nm in enumerate(["Neo", "Inf", "Conn", "Dead", "Epi"]):
+        col = 1 if i in (1, 2) else {0: 0, 3: 2, 4: 3}[i]
+        tag = " (merged Inf+Conn)" if i in (1, 2) else ""
+        lines.append(f"| {nm} | {pc0[i]:.4f} | {pc23[col]:.4f}{tag} |")
     (a.out / "tables.md").write_text("\n".join(lines) + "\n")
     (a.out / "commands.md").write_text(
         f"# commands\n\n- host: {__import__('socket').gethostname()}\n"

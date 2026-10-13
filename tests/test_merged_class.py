@@ -196,3 +196,44 @@ def test_bootstrap_delta_strict_mode(world):
         mpq_strict(ev, cls, cmap)[0] - mpq_strict(ev, cls, ident)[0], abs=1e-12)
     d_off = bootstrap_delta(ev, cls, ident, cmap, n_boot=50, seed=4)
     assert abs(d["delta"] - d_off["delta"]) > 1e-6
+
+
+class _EvStub:
+    """最小 evaluator 桩：bootstrap_delta 只读 n / tissue（经 per_image_class_pq 桩）。"""
+
+    n = 4
+    tissue = np.array(["Lung", "Breast", "Lung", "Lung"])  # 交错且层大小不等（1 vs 3）
+    m_img = np.array([0, 1, 2, 3])
+    m_cls = np.ones(4, np.int64)
+    m_row = np.arange(4)
+    m_iou = np.ones(4)
+    n_gt = np.ones((4, 5), np.int64)
+    inst_img = np.arange(4)
+
+
+def test_bootstrap_delta_stratum_blocks_aligned():
+    # C1 回归（评审 2026-10-14）：重抽样必须按层内抽取的 draw 求层均值，再用原层位置
+    # 切重排后的向量（组织交错时混层，CI 系统性失准）。
+    # 构造：image1（层 A，唯一成员）delta 0；images 0/2/3（层 B）delta -1。
+    # 点估计 = (0 + (-1)) / 2 = -0.5；正确 bootstrap 每次 draw 都恰为 -0.5 → CI=[-.5,-.5]。
+    ev = _EvStub()
+
+    import nucseg.metrics.merged_class as mc
+    orig = mc.per_image_class_pq
+
+    def fake_pq(ev_, cls_, cmap_):
+        # pb 侧（cmap_b）：image1 PQ=1（delta 0），其余 0（delta -1）；pa 侧恒 1
+        v = np.where(np.arange(ev_.n) == 1, 1.0, 0.0)
+        if cmap_ is IDENT_A:
+            v = np.ones(ev_.n)
+        return np.repeat(v[:, None], cmap_.max(), 1)
+
+    IDENT_A = np.array([0, 1, 2, 3, 4, 5])
+    IDENT_B = np.array([0, 9, 2, 3, 4, 5])  # 任意非恒等映射，仅作侧别标记
+    mc.per_image_class_pq = fake_pq
+    try:
+        d = mc.bootstrap_delta(ev, np.ones(4), IDENT_A, IDENT_B, n_boot=100, seed=5)
+    finally:
+        mc.per_image_class_pq = orig
+    assert d["delta"] == pytest.approx(-0.5, abs=1e-12)
+    assert d["lo"] == pytest.approx(-0.5, abs=1e-12) and d["hi"] == pytest.approx(-0.5, abs=1e-12)

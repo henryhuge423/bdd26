@@ -68,6 +68,30 @@ def test_bootstrap_delta_identical_and_stratified():
     assert r3["delta"] == 0.0 and np.isfinite(r3["lo"]) and np.isfinite(r3["hi"])
 
 
+def test_mpq_bootstrap_delta_stratum_blocks_aligned():
+    """评审 2026-10-14（I1/C1）：重抽样必须按各层自己的 draw 求层均值。用原（交错的）
+    层位置去切"拼接后的重抽样向量"会混层——组织交错且层大小不等时 CI 确定性失准。"""
+    tissue = np.array([TISSUES[1], TISSUES[0], TISSUES[1], TISSUES[1]])  # 交错，1 vs 3
+
+    class _Stub(RetypeEvaluator):
+        def __init__(self):
+            self.n = 4
+            self.tissue = tissue
+            self.n_gt = np.ones((4, NUM_CLASSES), np.int64)
+            self.inst_img = np.arange(4)
+
+        def per_image_class_pq(self, cls):
+            # cls=ones → pa 侧全 1；否则 pb 侧 image1=1 其余 0。a−b 方向：
+            # m(pa)=1，m(pb)=(1+0)/2=0.5 → 点估计 +0.5，每次 draw 恒 +0.5 → CI=[.5,.5]
+            v = np.ones(4) if np.all(cls == 1) else np.where(np.arange(4) == 1, 1.0, 0.0)
+            return np.repeat(v[:, None], NUM_CLASSES, 1)
+
+    ev = _Stub()
+    r = ev.mpq_bootstrap_delta(np.ones(4), np.zeros(4), n_boot=100, seed=5)
+    assert r["delta"] == pytest.approx(0.5, abs=1e-12)
+    assert r["lo"] == pytest.approx(0.5, abs=1e-12) and r["hi"] == pytest.approx(0.5, abs=1e-12)
+
+
 def test_pool_and_ring():
     from nucseg.typing_probe import pool_instances, pool_rings
     f = np.zeros((8, 8, 2), np.float32); f[1:3, 1:3] = (1., 2.); f[5:7, 5:7] = (3., 4.)

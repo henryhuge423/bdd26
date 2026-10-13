@@ -4,8 +4,9 @@ Merging classes a,b remaps BOTH sides of every IoU>0.5 pair (GT class via ev.m_c
 class via the instance table) and BOTH count tables (per-image GT counts ev.n_gt, predicted
 instance counts); PQ matching itself is class-agnostic so the pairs never change. Aggregation
 is the official one with C=4: per-image nanmean over merged classes present in GT -> tissue
-nanmean -> mean over tissues. bPQ is class-independent and derived once from the pair table
-(invariant 1 of spec 2026-10-13: identical under every merge)."""
+nanmean -> mean over tissues. bPQ is class-independent and is NOT derivable from these
+channel-based tables (PanNuke gt_channels disagree with inst.npy on a small pixel fraction;
+see scripts/merged_class_diag.bpq_inst_maps — spec 2026-10-13 invariant 1)."""
 
 from __future__ import annotations
 
@@ -20,6 +21,10 @@ def class_map(pair: tuple[int, int] | None) -> np.ndarray:
 
     None -> identity [0,1,2,3,4,5]; (2,3) -> [0,1,2,2,3,4]; (1,5) -> [0,1,2,3,4,1].
     cmap[0] == 0 always (untyped instances stay untyped)."""
+    if pair is not None:
+        a, b = pair
+        if not (1 <= a < b <= NUM_CLASSES):
+            raise ValueError(f"invalid class pair {pair}: need 1 <= a < b <= {NUM_CLASSES}")
     cmap = np.arange(NUM_CLASSES + 1, dtype=np.int64)
     if pair is not None:
         a, b = sorted(pair)
@@ -97,7 +102,11 @@ def bootstrap_delta(ev: RetypeEvaluator, cls: np.ndarray, cmap_a: np.ndarray, cm
 
     cls_b: a different instance-class assignment for side b (same length as cls) — used for
     same-space intervention deltas (e.g. typing-oracle assignments under one merged cmap).
-    strict: use the strict PQ tables instead of the official ones."""
+    strict: use the strict PQ tables instead of the official ones.
+
+    Resampling aggregates each stratum over ITS OWN draws (block-wise), mirroring the point
+    estimator; slicing a resample-concatenated vector by the original (interleaved) tissue
+    positions mixes strata and miscenters the CI (review 2026-10-14)."""
     table = _strict_table if strict else per_image_class_pq
 
     def img_mpq(cls_x, cmap_x):
@@ -106,18 +115,22 @@ def bootstrap_delta(ev: RetypeEvaluator, cls: np.ndarray, cmap_a: np.ndarray, cm
 
     pa = img_mpq(cls, cmap_a)
     pb = img_mpq(cls_b if cls_b is not None else cls, cmap_b)
-    strata = [np.nonzero(ev.tissue == t)[0] for t in np.unique(ev.tissue)]
+    # TISSUES order (as mpq) so the outer mean's float order matches the point estimator
+    strata = [np.nonzero(ev.tissue == t)[0] for t in TISSUES if (ev.tissue == t).any()]
     rng = np.random.default_rng(seed)
 
     def m(v):
         return np.nanmean([np.nanmean(v[s]) for s in strata])
 
     deltas = np.empty(n_boot)
-    for b in range(n_boot):
-        idx = np.concatenate([rng.choice(s, len(s), replace=True) for s in strata])
-        with np.errstate(all="ignore"), np.testing.suppress_warnings() as sup:
-            sup.filter(RuntimeWarning)
-            deltas[b] = m(pb[idx]) - m(pa[idx])
-    with np.errstate(all="ignore"):
+    with np.errstate(all="ignore"), np.testing.suppress_warnings() as sup:
+        sup.filter(RuntimeWarning)
+        for b in range(n_boot):
+            db, da = [], []
+            for s in strata:
+                picks = rng.choice(s, len(s), replace=True)  # one draw, both sides (paired)
+                db.append(np.nanmean(pb[picks]))
+                da.append(np.nanmean(pa[picks]))
+            deltas[b] = np.nanmean(db) - np.nanmean(da)
         lo, hi = np.nanpercentile(deltas, [2.5, 97.5])
     return {"delta": float(m(pb) - m(pa)), "lo": float(lo), "hi": float(hi)}
