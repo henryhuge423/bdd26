@@ -84,15 +84,18 @@ def mpq_strict(ev: RetypeEvaluator, cls: np.ndarray, cmap: np.ndarray) -> tuple[
 
 
 def bootstrap_delta(ev: RetypeEvaluator, cls: np.ndarray, cmap_a: np.ndarray, cmap_b: np.ndarray,
-                    n_boot: int = 1000, seed: int = 0) -> dict:
+                    n_boot: int = 1000, seed: int = 0, cls_b: np.ndarray | None = None) -> dict:
     """Paired image bootstrap of mPQ(b) - mPQ(a); images resampled WITHIN each tissue stratum
-    (spec 2026-10-13 §2: 组织内分层, 1000 次, percentile CI)."""
+    (spec 2026-10-13 §2: 组织内分层, 1000 次, percentile CI).
+
+    cls_b: a different instance-class assignment for side b (same length as cls) — used for
+    same-space intervention deltas (e.g. typing-oracle assignments under one merged cmap)."""
     def img_mpq(pq):
         with np.errstate(all="ignore"):
             return np.nanmean(pq, 1)
 
     pa = img_mpq(per_image_class_pq(ev, cls, cmap_a))
-    pb = img_mpq(per_image_class_pq(ev, cls, cmap_b))
+    pb = img_mpq(per_image_class_pq(ev, cls_b if cls_b is not None else cls, cmap_b))
     strata = [np.nonzero(ev.tissue == t)[0] for t in np.unique(ev.tissue)]
     rng = np.random.default_rng(seed)
 

@@ -183,3 +183,14 @@ def test_bootstrap_delta_point_estimate_consistent(world):
     m23 = mpq(ev, cls, class_map((2, 3)))[0]
     assert d["delta"] == pytest.approx(m23 - m0, abs=1e-12)
     assert d["lo"] <= d["delta"] <= d["hi"]
+
+
+def test_bootstrap_delta_two_assignments(world):
+    # 同一合并空间下两个类分配的差（oracle-under-merge 干预差）：delta == mPQ(b)-mPQ(a)
+    _, ev, _, _, _, _, cls, _, _ = world
+    cmap = class_map((2, 3))
+    oracle = cls.copy(); oracle[ev.m_row] = ev.m_cls
+    d = bootstrap_delta(ev, cls, cmap, cmap, n_boot=50, seed=3, cls_b=oracle)
+    assert d["delta"] == pytest.approx(mpq(ev, oracle, cmap)[0] - mpq(ev, cls, cmap)[0],
+                                       abs=1e-12)
+    assert d["lo"] <= d["delta"] <= d["hi"]
