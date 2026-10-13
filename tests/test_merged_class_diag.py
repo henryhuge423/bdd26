@@ -14,6 +14,8 @@ def _rect(a, i, y, x, h, w):
 @dataclass
 class _Fold:
     gt_channels: np.ndarray
+    inst: np.ndarray
+    type: np.ndarray
     tissue: np.ndarray
 
 
@@ -28,6 +30,19 @@ def _mini_world():
     _rect(gt[0, :, :, 4], 1, 22, 2, 5, 5)     # img0 Epi
     _rect(gt[1, :, :, 1], 1, 3, 3, 7, 7)      # img1 Inf
     _rect(gt[1, :, :, 2], 1, 14, 14, 8, 8)    # img1 Conn（pred 拆两半，各 IoU=.5 不匹配）
+    ginst = np.zeros((2, H, W), np.int16); gtyp = np.zeros((2, H, W), np.uint8)
+    nxt = 1
+    for j in range(2):
+        for c in range(5):
+            for cid in np.unique(gt[j, ..., c]):
+                if cid == 0:
+                    continue
+                m = gt[j, ..., c] == cid
+                ginst[j][m] = nxt; gtyp[j][m] = c + 1; nxt += 1
+    # PanNuke 式通道/inst 图不一致（fold3 实测缺陷类）：img0 Epi 核内 2 像素被记进
+    # Inf 通道（inst 图与 type 图不变）——官方 bPQ 用 inst 图，通道配对表看不到这两个像素
+    gt[0, 23, 3, 4] = 0; gt[0, 23, 4, 4] = 0
+    gt[0, 23, 3, 1] = 1; gt[0, 23, 4, 1] = 1
     inst = np.zeros((2, H, W), np.int32); typ = np.zeros((2, H, W), np.uint8)
     _rect(inst[0], 1, 2, 2, 6, 6); typ[0][inst[0] == 1] = 1   # Neo 对
     _rect(inst[0], 2, 12, 4, 5, 5); typ[0][inst[0] == 2] = 2  # Inf 对
@@ -38,8 +53,8 @@ def _mini_world():
     typ[1][np.isin(inst[1], (2, 3))] = 2                     # 拆半的 Conn
     _rect(inst[1], 4, 24, 2, 4, 4)                           # spurious，全 0 type -> cls=0
     pred = {"inst": inst, "type": typ}
-    fold = _Fold(gt, np.array(["Breast", "Lung"]))
-    # frozen=None 时 analyze_split 跳过冻结比对，只做内部不变量（Dead 列逐位、bPQ 同值）。
+    fold = _Fold(gt, ginst, gtyp, np.array(["Breast", "Lung"]))
+    # frozen=None 时 analyze_split 跳过冻结比对，只做内部不变量（Dead 列逐位）。
     return pred, fold
 
 
@@ -60,6 +75,11 @@ def test_analyze_split_mini():
                          np.concatenate(iid), fold.tissue, workers=1)
     cls = np.concatenate([instance_classes(pred["inst"][j], pred["type"][j])[1] for j in range(2)])
     assert out["m0"]["mpq"] == ev.mpq(cls)[0]
+    # bPQ 重算走 inst 图路径（官方 binary 口径），与 pannuke_eval.evaluate 逐位一致
+    from nucseg.metrics.pannuke_eval import evaluate
+    full = evaluate(fold.gt_channels, fold.inst, fold.type, fold.tissue,
+                    pred["inst"], pred["type"], workers=1)["summary"]
+    assert out["m0"]["bpq_recomputed"] == pytest.approx(full["official"]["bPQ"], abs=1e-12)
 
 
 def test_bindings_reject_mismatch():

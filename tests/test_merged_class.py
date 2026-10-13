@@ -5,9 +5,9 @@ import pytest
 from nucseg.constants import NUM_CLASSES
 from nucseg.data.pannuke import PanNukeFold
 from nucseg.metrics.fast_retype import RetypeEvaluator
-from nucseg.metrics.merged_class import (bpq_from_pairs, bootstrap_delta, class_map,
+from nucseg.metrics.merged_class import (bootstrap_delta, class_map,
                                          mpq, mpq_strict, per_image_class_pq)
-from nucseg.metrics.pannuke_eval import evaluate, instance_classes
+from nucseg.metrics.pannuke_eval import instance_classes
 from nucseg.text.retype import paint_types
 
 N = 24  # fold1 前 24 图，覆盖多组织
@@ -158,15 +158,6 @@ def test_untyped_excluded(world):
     # 合并类列：原 Inf 或 Conn 任一有 GT 即 0（否则 NaN）
     n_23 = ev.n_gt[:, 1] + ev.n_gt[:, 2]
     assert np.array_equal(np.isnan(pq1[:, 1]), n_23 == 0)
-
-
-def test_bpq_from_pairs_matches(world):
-    f, ev, inst, typ, ii, iid, cls, gt, tissue = world
-    b_m, per_img = bpq_from_pairs(ev)
-    full = evaluate(gt, np.asarray(f.inst[:N]), np.asarray(f.type[:N]), tissue,
-                    inst, typ, workers=4)["summary"]
-    assert b_m == pytest.approx(full["official"]["bPQ"], abs=1e-12)
-    assert per_img.shape == (N,)
 
 
 def test_bootstrap_delta_same_map_is_zero(world):

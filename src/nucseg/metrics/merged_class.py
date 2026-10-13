@@ -111,25 +111,3 @@ def bootstrap_delta(ev: RetypeEvaluator, cls: np.ndarray, cmap_a: np.ndarray, cm
     with np.errstate(all="ignore"):
         lo, hi = np.nanpercentile(deltas, [2.5, 97.5])
     return {"delta": float(m(pb) - m(pa)), "lo": float(lo), "hi": float(hi)}
-
-
-def bpq_from_pairs(ev: RetypeEvaluator) -> tuple[float, np.ndarray]:
-    """Class-independent bPQ re-derived from the IoU>0.5 pair table (tissue-avg, per-image).
-
-    Binary TP = the class-agnostic pairs themselves (each GT instance lives in exactly one
-    channel, so the concatenated per-channel pairs ARE the union-map pairs); NaN where the
-    image has no GT instances, as pannuke_eval."""
-    n = ev.n
-    tp = np.bincount(ev.m_img, minlength=n).astype(np.float64)
-    siou = np.bincount(ev.m_img, ev.m_iou, minlength=n)
-    n_pred = np.bincount(ev.inst_img, minlength=n).astype(np.float64)
-    n_gt_all = ev.n_gt.sum(1).astype(np.float64)
-    fp, fn = n_pred - tp, n_gt_all - tp
-    d = tp + 0.5 * fp + 0.5 * fn
-    with np.errstate(all="ignore"):
-        pq = np.where(d > 0, (tp / d) * (siou / (tp + 1.0e-6)), np.nan)
-    pq = np.where(n_gt_all > 0, pq, np.nan)
-    with np.errstate(all="ignore"), np.testing.suppress_warnings() as sup:
-        sup.filter(RuntimeWarning)
-        per_t = [np.nanmean(pq[ev.tissue == t]) for t in TISSUES if (ev.tissue == t).any()]
-        return float(np.nanmean(per_t)), pq

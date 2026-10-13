@@ -25,8 +25,8 @@ from typing_oracle import instance_table  # noqa: E402
 
 from nucseg.data.pannuke import PanNukeFold  # noqa: E402
 from nucseg.metrics.fast_retype import RetypeEvaluator  # noqa: E402
-from nucseg.metrics.merged_class import (bootstrap_delta, bpq_from_pairs, class_map,  # noqa: E402
-                                          mpq, mpq_strict)
+from nucseg.metrics.merged_class import bootstrap_delta, class_map, mpq, mpq_strict  # noqa: E402
+from nucseg.metrics.instance import overlap, pq_from_overlap, relabel  # noqa: E402
 from nucseg.metrics.pannuke_eval import instance_classes  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,6 +41,40 @@ N_BOOT = 1000
 TOL = 1e-12  # frozen values come from pannuke_eval's matrix-sum order; the fast path
 # accumulates bincounts row-wise, so per-class/bPQ can differ at the last 1-2 ulp
 # (measured 2026-10-13 on typing_oracle vs eval summary: mPQ bit-exact, per-class ulp).
+
+
+def _bpq_img(args):
+    """Official binary PQ of one image, computed on the INST maps exactly like
+    pannuke_eval._eval_image (NaN when the image has no GT instances).
+
+    The match tables are channel-based, and PanNuke channels disagree with the inst
+    maps on a small fraction of pixels (measured 2026-10-13: 173/2722 fold3 images,
+    e.g. img 77's 3 foreign-type pixels) — so bPQ must NOT be derived from them."""
+    gt_inst, pred_inst = args
+    g_lab, _ = relabel(np.asarray(gt_inst))
+    p_lab, _ = relabel(np.asarray(pred_inst))
+    ov = overlap(g_lab, p_lab)
+    if ov.nt == 0:
+        return np.nan
+    s = pq_from_overlap(ov)
+    d = s.tp + 0.5 * s.fp + 0.5 * s.fn
+    return (s.tp / d) * (s.sum_iou / (s.tp + 1.0e-6))
+
+
+def bpq_inst_maps(fold, pred_inst, workers: int = 16) -> tuple[float, np.ndarray]:
+    """(tissue-averaged bPQ, per-image bPQ) from the inst maps — invariant 1 anchor."""
+    from multiprocessing import Pool
+
+    from nucseg.constants import TISSUES
+    n = len(fold.tissue)
+    jobs = ((fold.inst[j], pred_inst[j]) for j in range(n))
+    with Pool(min(workers, n)) as pool:
+        per = np.array(pool.map(_bpq_img, jobs, chunksize=16))
+    with np.errstate(all="ignore"), np.testing.suppress_warnings() as sup:
+        sup.filter(RuntimeWarning)
+        per_t = [np.nanmean(per[fold.tissue == t]) for t in TISSUES
+                 if (fold.tissue == t).any()]
+        return float(np.nanmean(per_t)), per
 
 
 def load_split(split: int, pred_override: dict[int, str] | None = None) -> tuple[dict, object, dict]:
@@ -63,7 +97,7 @@ def analyze_split(pred: dict, fold, split: int, frozen: dict | None) -> dict:
     ident = class_map(None)
     m0_m, m0_per = mpq(ev, cls, ident)
     m0_s, m0_sper = mpq_strict(ev, cls, ident)
-    b_m, _ = bpq_from_pairs(ev)
+    b_m, _ = bpq_inst_maps(fold, pred["inst"])
     m0 = {"mpq": float(m0_m), "strict": float(m0_s),
           "per_class": [float(v) for v in m0_per],
           "per_class_strict": [float(v) for v in m0_sper],
