@@ -39,6 +39,38 @@
 > Execution: `docs/superpowers/plans/2026-10-02-p0-p3-research.md`. Corrected results and
 > limitations: [P0–P3 report](P0_P3_RESULTS_2026-10-02.md).
 
+## 2026-10-13 — M 合并类度量诊断：{Inf,Conn} 合并增益居 10 类对之首（Δofficial +.0519）；typing-oracle 差距在合并空间缩小 35%
+
+执行 [spec](superpowers/specs/2026-10-13-merged-class-m-design.md)（用户 2026-10-13 批准；
+[plan](superpowers/plans/2026-10-13-merged-class-m.md)）。工件
+`runs/analysis/merged_class_20261013/`（results.json / tables.md / commands.md，输入 SHA256 与
+代码指纹在 provenance）。GT 与预测**同时**过合并重映射，官方聚合口径同构（类数 4）；
+纯描述性诊断，无门、无方法主张、不改 5 类成绩表。
+
+- **绑定全过**：M0 恒等重评对冻结 eval（split1/2/3 eval_test_*）**mPQ 逐位一致**；
+  逐类 PQ / bPQ ≤1e-12（冻结值出自 pannuke_eval 的矩阵求和顺序，快速路径为 bincount
+  行序累加，逐类存在 1–2 ulp 固有差——typing_oracle 2026-10-09 同样如此，mPQ 恰好逐位）；
+  merge(2,3) 下 Dead 逐类 PQ 逐位不变；bPQ 从 **inst 图**独立重算绑定。
+- **10 类对合并 Δofficial**（3-split mean，配对图像 bootstrap 1000 次组织内分层，
+  逐 split CI 下界全部 > +.048；split3 点估计 +.0481 低于其 CI 下界 +.0527，右偏分布的
+  percentile-bootstrap 伪象，如实披露）：**(2,3) +.0519 居首**，(1,3) +.0499、(1,2) +.0190
+  次之，其余 7 对 ≤ +.0099、(4,5) +.0002。strict 口径同构（(2,3) +.0647，逐 split
+  CI 下界 > +.06）。
+- **合并类 PQ .5079 ≫ 原两类均值 .4280**（Inf .4377 / Conn .4184）。
+- **oracle-under-merge(2,3)**：current .5514 → oracle .6575（差距 .1061）vs 5 类空间
+  差距 .1637（typing_oracle 轮）⇒ **合并使 typing-oracle 差距缩小 35.2%**；Inf/Conn-only
+  干预差距 .1146 → .0497（缩小 56.6%）。
+
+**解读边界（spec §8 预注册）**：(2,3) 居首与 E1-T 检测器共鸣证据**方向一致**，但参照分布
+显示前三位全是"两个大类合并"（机械效应 + 混淆结构），+.0519 不得读作"标签模糊损失"；
+oracle 差距的 35% 缩小是合并类空间下的度量变化（mPQ 非线性），**不做可相加份额分解**。
+
+**实现注意（复用价值）**：PanNuke `gt_channels` 与 `inst.npy` 在少数像素上不一致（fold3
+173/2722 图；例 img77：Epi 核内 3 个异型像素并入 Inf 通道对象，通道几何 ≠ inst 图几何）。
+官方 bPQ 在 inst 图上匹配、逐类 PQ 在通道上匹配——**bPQ 不可从通道配对表推导**（本轮
+预注册绑定捕获此点；`merged_class.py` 的 bpq_from_pairs 已删，改 `merged_class_diag.py`
+的 inst 图重算）。本轮无训练、无调参、无选择；测试产物只读诊断，不进入方法成绩表。
+
 ## 2026-10-12 — E3 候选质量学习 dev 轮：三门皆未过，按预注册规则停线；效用可预测、strict-FP 风险不可预测
 
 执行 [spec](superpowers/specs/2026-10-11-e3-candidate-quality-design.md)（用户 2026-10-11 批准；A2 语义
