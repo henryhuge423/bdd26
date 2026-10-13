@@ -128,7 +128,8 @@ def analyze_split(pred: dict, fold, split: int, frozen: dict | None) -> dict:
             "per_class": [float(v) for v in per],
             "per_class_strict": [float(v) for v in sper],
             "delta_official": bootstrap_delta(ev, cls, ident, cmap, N_BOOT, BOOT_SEED + split),
-            "delta_strict": bootstrap_delta(ev, cls, ident, cmap, N_BOOT, BOOT_SEED + split)}
+            "delta_strict": bootstrap_delta(ev, cls, ident, cmap, N_BOOT, BOOT_SEED + split,
+                                            strict=True)}
 
     # 不变量 2：merge(2,3) 不触碰 Dead —— 合并空间 Dead 列 == 恒等空间 Dead 列（逐位）
     dead_ok = merges["(2,3)"]["per_class"][2] == m0["per_class"][3]

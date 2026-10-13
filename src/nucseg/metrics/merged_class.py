@@ -69,13 +69,19 @@ def _pred_counts(ev: RetypeEvaluator, cls: np.ndarray, cmap: np.ndarray) -> np.n
     return np.bincount(ev.inst_img[v] * C + cmap[cls[v]] - 1, minlength=n * C).reshape(n, C)
 
 
-def mpq_strict(ev: RetypeEvaluator, cls: np.ndarray, cmap: np.ndarray) -> tuple[float, np.ndarray]:
-    """Tissue-averaged strict mPQ: merged classes absent in GT but predicted score 0."""
+def _strict_table(ev: RetypeEvaluator, cls: np.ndarray, cmap: np.ndarray) -> np.ndarray:
+    """(n, C) strict PQ table: official table with 0 where GT lacks a merged class that is
+    predicted (pannuke_eval's strict convention)."""
     pq = per_image_class_pq(ev, cls, cmap)
     n_gt_m = np.zeros(pq.shape, np.int64)
     for c in range(1, NUM_CLASSES + 1):
         n_gt_m[:, cmap[c] - 1] += ev.n_gt[:, c - 1]
-    strict = np.where((n_gt_m <= 0) & (_pred_counts(ev, cls, cmap) > 0), 0.0, pq)
+    return np.where((n_gt_m <= 0) & (_pred_counts(ev, cls, cmap) > 0), 0.0, pq)
+
+
+def mpq_strict(ev: RetypeEvaluator, cls: np.ndarray, cmap: np.ndarray) -> tuple[float, np.ndarray]:
+    """Tissue-averaged strict mPQ: merged classes absent in GT but predicted score 0."""
+    strict = _strict_table(ev, cls, cmap)
     with np.errstate(all="ignore"), np.testing.suppress_warnings() as sup:
         sup.filter(RuntimeWarning)
         img = np.nanmean(strict, 1)
@@ -84,18 +90,22 @@ def mpq_strict(ev: RetypeEvaluator, cls: np.ndarray, cmap: np.ndarray) -> tuple[
 
 
 def bootstrap_delta(ev: RetypeEvaluator, cls: np.ndarray, cmap_a: np.ndarray, cmap_b: np.ndarray,
-                    n_boot: int = 1000, seed: int = 0, cls_b: np.ndarray | None = None) -> dict:
+                    n_boot: int = 1000, seed: int = 0, cls_b: np.ndarray | None = None,
+                    strict: bool = False) -> dict:
     """Paired image bootstrap of mPQ(b) - mPQ(a); images resampled WITHIN each tissue stratum
     (spec 2026-10-13 §2: 组织内分层, 1000 次, percentile CI).
 
     cls_b: a different instance-class assignment for side b (same length as cls) — used for
-    same-space intervention deltas (e.g. typing-oracle assignments under one merged cmap)."""
-    def img_mpq(pq):
-        with np.errstate(all="ignore"):
-            return np.nanmean(pq, 1)
+    same-space intervention deltas (e.g. typing-oracle assignments under one merged cmap).
+    strict: use the strict PQ tables instead of the official ones."""
+    table = _strict_table if strict else per_image_class_pq
 
-    pa = img_mpq(per_image_class_pq(ev, cls, cmap_a))
-    pb = img_mpq(per_image_class_pq(ev, cls_b if cls_b is not None else cls, cmap_b))
+    def img_mpq(cls_x, cmap_x):
+        with np.errstate(all="ignore"):
+            return np.nanmean(table(ev, cls_x, cmap_x), 1)
+
+    pa = img_mpq(cls, cmap_a)
+    pb = img_mpq(cls_b if cls_b is not None else cls, cmap_b)
     strata = [np.nonzero(ev.tissue == t)[0] for t in np.unique(ev.tissue)]
     rng = np.random.default_rng(seed)
 

@@ -185,3 +185,14 @@ def test_bootstrap_delta_two_assignments(world):
     assert d["delta"] == pytest.approx(mpq(ev, oracle, cmap)[0] - mpq(ev, cls, cmap)[0],
                                        abs=1e-12)
     assert d["lo"] <= d["delta"] <= d["hi"]
+
+
+def test_bootstrap_delta_strict_mode(world):
+    # strict=True：点估计 == strict mPQ 差，且与本世界的 official 差不同
+    _, ev, _, _, _, _, cls, _, _ = world
+    ident, cmap = class_map(None), class_map((2, 3))
+    d = bootstrap_delta(ev, cls, ident, cmap, n_boot=50, seed=4, strict=True)
+    assert d["delta"] == pytest.approx(
+        mpq_strict(ev, cls, cmap)[0] - mpq_strict(ev, cls, ident)[0], abs=1e-12)
+    d_off = bootstrap_delta(ev, cls, ident, cmap, n_boot=50, seed=4)
+    assert abs(d["delta"] - d_off["delta"]) > 1e-6
