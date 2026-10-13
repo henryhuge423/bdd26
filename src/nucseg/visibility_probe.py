@@ -65,15 +65,22 @@ def original_full(inst: np.ndarray) -> dict[int, bool]:
     return out
 
 
-def miss_table(gt_lab: np.ndarray, pred_inst: np.ndarray, thr: float = 0.1) -> dict[int, bool]:
-    """Per GT instance id -> max IoU against ALL predicted instances < thr (any class;
-    spec E4 §2 miss definition). No predicted instances -> every GT nucleus misses."""
-    ov = overlap(gt_lab, pred_inst)
-    iou = ov.iou
+def max_iou_table(gt_lab: np.ndarray, pred_inst: np.ndarray) -> dict[int, float]:
+    """Per ORIGINAL GT label id -> max IoU against all predicted instances (any class).
+    Ids are preserved (relabel's sorted-unique order maps row k -> k-th smallest id)."""
+    ids = np.unique(gt_lab)
+    ids = ids[ids > 0]
+    iou = overlap(gt_lab, pred_inst).iou
     out = {}
-    for g in range(ov.nt):
-        out[g + 1] = True if iou.shape[1] == 0 else bool(iou[g].max() < thr)
+    for k, i in enumerate(ids):
+        out[int(i)] = 0.0 if iou.shape[1] == 0 else float(iou[k].max())
     return out
+
+
+def miss_table(gt_lab: np.ndarray, pred_inst: np.ndarray, thr: float = 0.1) -> dict[int, bool]:
+    """Per ORIGINAL GT label id -> max IoU against ALL predicted instances < thr (any class;
+    spec E4 §2 miss definition). No predicted instances -> every GT nucleus misses."""
+    return {i: v < thr for i, v in max_iou_table(gt_lab, pred_inst).items()}
 
 
 def bin_area(a: int) -> str:
@@ -103,19 +110,22 @@ def rate_gap_bootstrap(miss_a: np.ndarray, miss_b: np.ndarray, img: np.ndarray,
             return np.nanmean(a[rows]) - np.nanmean(b[rows])
 
     rng = np.random.default_rng(seed)
-    deltas = np.empty(n_boot)
+    deltas = np.full(n_boot, np.nan)
     with np.errstate(all="ignore"), np.testing.suppress_warnings() as sup:
         sup.filter(RuntimeWarning)
         for k in range(n_boot):
-            rows_all = []
+            parts = []
             for s in strata:
                 imgs = np.unique(img[s])
                 picks = rng.choice(imgs, len(imgs), replace=True)
-                rows_all.append(np.concatenate([np.nonzero(img == i)[0] for i in picks]))
-            deltas[k] = pooled_gap(np.concatenate(rows_all))
+                parts.append(np.concatenate([np.nonzero(img == i)[0] for i in picks]))
+            if parts:
+                deltas[k] = pooled_gap(np.concatenate(parts))
         lo, hi = np.nanpercentile(deltas, [2.5, 97.5])
-    keep = ~np.isnan(a) & ~np.isnan(b)
-    point = float(np.nanmean(a[keep]) - np.nanmean(b[keep])) if keep.any() else float("nan")
+    # point: each side NaN-dropped independently (masked/unpaired use — H1 groups, H3 bins;
+    # paired two-condition deltas go through the runner's did_bootstrap instead)
+    with np.errstate(all="ignore"):
+        point = float(np.nanmean(a) - np.nanmean(b))
     return {"gap": point, "lo": float(lo), "hi": float(hi)}
 
 

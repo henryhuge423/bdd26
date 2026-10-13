@@ -3,8 +3,18 @@ import numpy as np
 import pytest
 
 from nucseg.visibility_probe import (bin_area, bin_area_native, crop_group, did,
-                                     miss_table, original_full, rate_gap_bootstrap,
-                                     sample_windows, shift_pad)
+                                     max_iou_table, miss_table, original_full,
+                                     rate_gap_bootstrap, sample_windows, shift_pad)
+
+
+def test_miss_table_keys_by_original_ids():
+    # 非连续 id {3,7}：miss/max-iou 表按原始 id 键（runner 的身份对应依赖）
+    gt = np.zeros((56, 56), np.int32); _disc(gt, 3, 20, 20, 6); _disc(gt, 7, 40, 40, 6)
+    pred = np.zeros((56, 56), np.int32); _disc(pred, 5, 20, 20, 6)
+    m = miss_table(gt, pred)
+    assert sorted(m) == [3, 7] and m[3] is False and m[7] is True
+    u = max_iou_table(gt, pred)
+    assert u[3] == pytest.approx(1.0) and u[7] == 0.0
 
 
 def _disc(a, i, cy, cx, r):
