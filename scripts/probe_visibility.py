@@ -113,6 +113,9 @@ def analyze_records(rec: list[dict], n_boot: int = N_BOOT, seed: int = BOOT_SEED
     for cond in ("C-int", "C2", "C3"):
         rows = [r for r in rec if r["cond"] == cond and r["group"] in ("truncated", "stays_full")]
         pairs = [r for r in rows if (r["image"], r["gt_id"]) in c0_by_key]
+        print(f"[debug] {cond}: rows={len(rows)} pairs={len(pairs)} "
+              f"c0_keys={len(c0_by_key)} sample_row_key={[(r['image'], r['gt_id']) for r in rows[:2]]} "
+              f"in_c0={[(r['image'], r['gt_id']) in c0_by_key for r in rows[:2]]}", file=sys.stderr)
         n_all = len(pairs)
         tr_ck_a = np.full(n_all, np.nan); tr_c0_a = np.full(n_all, np.nan)
         fu_ck_a = np.full(n_all, np.nan); fu_c0_a = np.full(n_all, np.nan)
@@ -122,6 +125,9 @@ def analyze_records(rec: list[dict], n_boot: int = N_BOOT, seed: int = BOOT_SEED
                 tr_ck_a[k], tr_c0_a[k] = r["miss"], base["miss"]
             else:
                 fu_ck_a[k], fu_c0_a[k] = r["miss"], base["miss"]
+        print(f"[debug] {cond} nanmeans tr_ck={np.nanmean(tr_ck_a):.3f} tr_c0={np.nanmean(tr_c0_a):.3f} "
+              f"fu_ck={np.nanmean(fu_ck_a):.3f} fu_c0={np.nanmean(fu_c0_a):.3f} "
+              f"img[:3]={arr(pairs, 'image')[:3]}", file=sys.stderr)
         dids[cond] = did_bootstrap(tr_ck_a, tr_c0_a, fu_ck_a, fu_c0_a,
                                    arr(pairs, "image"),
                                    np.asarray([r["tissue"] for r in pairs]), n_boot, seed)
@@ -164,6 +170,7 @@ def analyze_records(rec: list[dict], n_boot: int = N_BOOT, seed: int = BOOT_SEED
             "n_records": len(rec)}
 
 
+@torch.no_grad()
 def predict_frames(model, frames: np.ndarray, device="cuda", batch=32, workers=16):
     """(inst, type, hv) at the 256 working scale for (N,256,256) uint8 frames —
     predict_fold's forward+decode path, no TTA, decode constants untouched."""
@@ -199,6 +206,8 @@ def main(argv=None) -> None:
     p.add_argument("--fold", type=int, default=2)
     p.add_argument("--out", type=Path, default=ROOT / "runs/analysis/visibility_probe_20261013")
     p.add_argument("--batch-size", type=int, default=32)
+    p.add_argument("--limit", type=int, default=None,
+                   help="debug: first N images only (never write the real round dir)")
     a = p.parse_args(argv)
     if a.fold != 2:
         raise SystemExit(f"--fold {a.fold}: E4 reads fold2 only (split1 val; spec §5)")
@@ -211,25 +220,32 @@ def main(argv=None) -> None:
         raise SystemExit(f"{a.out} exists — refusing to overwrite a round directory")
 
     f = PanNukeFold(2)
-    n = len(f)
+    if a.limit:  # debug shim: first-N views, same attribute surface as PanNukeFold
+        class _Sub:
+            pass
+        s = _Sub()
+        s.images, s.inst, s.type = f.images[:a.limit], f.inst[:a.limit], f.type[:a.limit]
+        s.tissue, s.gt_channels, s.dir = f.tissue[:a.limit], f.gt_channels[:a.limit], f.dir
+        f = s
+    n = len(f.tissue)
     pred0 = dict(np.load(ALLOWED_PRED))
+    if a.limit:
+        pred0 = {"inst": pred0["inst"][:a.limit], "type": pred0["type"][:a.limit]}
     frozen = json.loads(FROZEN_EVAL.read_text())
     t0 = time.time()
 
-    # ---- C0 binding: identity re-eval == frozen eval_fold2 mPQ (bit-exact)
+    # ---- C0 binding: identity re-eval == frozen eval_fold2 mPQ (bit-exact; full run only)
     c0 = evaluate(f.gt_channels, np.asarray(f.inst), np.asarray(f.type), f.tissue,
                   pred0["inst"], pred0["type"], workers=16)["summary"]
-    if c0["official"]["mPQ"] != frozen["official"]["mPQ"]:
+    if a.limit is None and c0["official"]["mPQ"] != frozen["official"]["mPQ"]:
         raise SystemExit(f"C0 binding failed: {c0['official']['mPQ']!r} != "
                          f"{frozen['official']['mPQ']!r}")
 
     # ---- condition frames (pure image ops; GT crops are id-preserving)
     w192 = sample_windows(n, 192, WINDOW_SEED)
     w160 = sample_windows(n, 160, WINDOW_SEED)
-    frames: dict[str, np.ndarray] = {"C1": np.empty((n, 256, 256), np.uint8),
-                                     "C-int": np.empty((n, 256, 256), np.uint8),
-                                     "C2": np.empty((n, 256, 256), np.uint8),
-                                     "C3": np.empty((n, 256, 256), np.uint8)}
+    frames: dict[str, np.ndarray] = {c: np.empty((n, 256, 256, 3), np.uint8)
+                                     for c in ("C1", "C-int", "C2", "C3")}
     imgs = np.asarray(f.images)
     for j in range(n):
         im = imgs[j]
@@ -289,7 +305,9 @@ def main(argv=None) -> None:
                 continue
             rec.append(dict(image=j, tissue=tis, gt_id=i, cls=cls_map[i],
                             area_native=int(areas[i]), original_full=True,
-                            cond="C-int", group=grp["group"], frag_area_bin="n/a",
+                            cond="C-int",
+                            group="stays_full" if grp["group"] == "full" else grp["group"],
+                            frag_area_bin="n/a",
                             miss=bool(missi[i])))
         # C2 / C3 (crop-frame evaluation, id-preserving GT crops)
         for cond, wk, gmap, size in (("C2", w192, g192, 192), ("C3", w160, g160, 160)):
@@ -303,11 +321,13 @@ def main(argv=None) -> None:
                     continue
                 rec.append(dict(image=j, tissue=tis, gt_id=i, cls=cls_map[i],
                                 area_native=int(areas[i]), original_full=True,
-                                cond=cond, group=grp["group"],
+                                cond=cond,
+                                group="stays_full" if grp["group"] == "full" else grp["group"],
                                 frag_area_bin=bin_area(grp["area"]) if grp["group"] == "truncated"
                                 else "n/a", miss=bool(missk[i])))
-            # secondary: hv error inside truncated fragments (diagnostic only)
-            ideal = hv_targets(gt_crop, min_size=0)
+            # secondary: hv error inside truncated fragments (diagnostic only;
+            # min_size=1 = the guard's smallest legal value ≈ spec's "no cutoff")
+            ideal = hv_targets(gt_crop, min_size=1)
             frag = np.isin(gt_crop, [i for i, gp in gmap.items()
                                      if gp["group"] == "truncated" and ofull[i]])
             if frag.any():
@@ -349,10 +369,12 @@ def main(argv=None) -> None:
     # secondary: per-condition image-level mPQ/bPQ (crop frame for C2/C3)
     for cond in ("C1", "C-int", "C2", "C3"):
         if cond == "C1":
-            gt_ch = np.stack([shift_pad(np.asarray(f.gt_channels[..., c]), SHIFT)
-                              for c in range(NUM_CLASSES)], -1)
-            gi, gt_, pi, pt = shift_pad(inst_all, SHIFT), shift_pad(type_all, SHIFT), \
-                preds["C1"][0], preds["C1"][1]
+            # shift PER IMAGE: shift_pad on the (n,256,256) stack would shift the image axis
+            gt_ch = np.stack([np.stack([shift_pad(np.asarray(f.gt_channels[j][..., c]), SHIFT)
+                                        for c in range(NUM_CLASSES)], axis=-1) for j in range(n)])
+            gi = np.stack([shift_pad(inst_all[j], SHIFT) for j in range(n)])
+            gt_ = np.stack([shift_pad(type_all[j], SHIFT) for j in range(n)])
+            pi, pt = preds["C1"][0], preds["C1"][1]
         elif cond == "C-int":
             gt_ch, gi, gt_, pi, pt = f.gt_channels, inst_all, type_all, \
                 preds["C-int"][0], preds["C-int"][1]
@@ -396,7 +418,7 @@ def main(argv=None) -> None:
                         "module": file_provenance(ROOT / "src/nucseg/visibility_probe.py")["sha256"]}},
         indent=2))
     lines = ["# E4 visibility probe (spec 2026-10-13; gates frozen)", "",
-             f"H1 Dead border-interior gap {out['gates']['H1']['gap']:+.4f} "
+             f"H1 Dead border-interior gap {out['gates']['H1']['dead_gap']:+.4f} "
              f"[{out['gates']['H1']['lo']:+.4f},{out['gates']['H1']['hi']:+.4f}] "
              f"pass={out['gates']['H1']['pass']}",
              f"H2 DiD(C2) {out['gates']['H2']['did_c2']:+.4f} "
