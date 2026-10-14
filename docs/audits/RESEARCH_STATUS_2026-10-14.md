@@ -63,5 +63,16 @@ H1 面积分层 Dead 贴边−内部漏检差 +.1738 [.1060,.2528]；H2 DiD(C2) 
 
 可见片段监督四臂实现已完成；独立评审的A3验证HV口径问题以2RED→55GREEN修复。
 最终全量回归 **403 passed，19074 warnings，996.77秒，退出码0**；warnings主要来自既有
-E4合成用例空分组NumPy操作。GPU smoke和队列启动属于下一执行步骤，尚无新方法成绩。
+E4合成用例空分组NumPy操作。GPU smoke已通过、队列已启动；尚无新方法成绩。
 文档分类迁移10文件；独立校验172链接无缺失，既有报告和数值快照不变。
+
+## 当前 dev 训练执行（2026-10-14，美国东部）
+
+用户已授权的四臂双种子 dev 队列已启动，当前run `A0_seed19`，已记录epoch0起的有限训练loss。
+最终全量回归403 passed/19074 warnings；真实fold1上冻结与解冻batch16 smoke通过。
+训练科学源码固定为 `eee3248`，144个源码文件和9个权重/数据输入已保存指纹，
+八个命令与完整config哈希冻结；首run实际config与冻结值一致。
+只训练fold1、验证fold2、130epochs、最后checkpoint、x1无TTA；每run完成后自动原图fold2评估。
+输出根 `runs/visibility_supervision_20261014/`。训练/验证失败即停，不自动恢复或追加菜单。
+当前尚无新dev性能判定；八run完成后仍须固定C2机制复评与原预注册门分析。
+当前训练与运维记录在ignored `ops/visibility_supervision_20261014/`；PID/资源细节不放入公开文档。

@@ -25,7 +25,7 @@ seeds (19/1), split1 training/validation only, 130 epochs with last-checkpoint e
 The [frozen spec](docs/superpowers/specs/2026-10-14-visibility-supervision-design.md) and
 [execution plan](docs/superpowers/plans/2026-10-14-visibility-supervision.md) govern the run.
 Implementation passed its focused tests and independent review; the A3 validation-target
-mismatch was fixed. The final full regression passed (403 tests; 19,074 existing warnings). Runtime smoke precedes the serial queue.
+mismatch was fixed. The final full regression passed (403 tests; 19,074 existing warnings). Runtime smoke passed and the serial queue is now training A0 seed19; seven runs follow, each with fold2 evaluation.
 No test-fold result or three-split confirmation is claimed.
 
 [Research closeout checklist and final-report analysis frame](docs/audits/RESEARCH_STATUS_2026-10-14.md).
