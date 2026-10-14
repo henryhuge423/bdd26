@@ -1,5 +1,12 @@
 # Findings log
 
+> **2026-10-13 E4 视野裁剪可见性探针（2026-10-14 执行）：三门全过。** 详见下方同日条目与
+> [结果文档](E4_VISIBILITY_PROBE_2026-10-13.md)。按预注册键：允许起草可见性监督训练轮
+> spec（另行立项）；路线 A 保持开放。
+
+> **2026-10-11 E1 修订执行（E1-C + E1-M，spec §7）：** 无专家可用，经用户批准改为
+> 检测器共识 + 非专家模型预审。详见下方同日条目；人类评审义务保留，材料包不变。
+
 > **2026-10-11 E1 修订执行（E1-C + E1-M，spec §7）：** 无专家可用，经用户批准改为
 > 检测器共识 + 非专家模型预审。详见下方同日条目；人类评审义务保留，材料包不变。
 
@@ -38,6 +45,33 @@
 > x2 maximum .001308); this and duplicate-seed coverage must be relabelled/recomputed.
 > Execution: `docs/superpowers/plans/2026-10-02-p0-p3-research.md`. Corrected results and
 > limitations: [P0–P3 report](P0_P3_RESULTS_2026-10-02.md).
+
+## 2026-10-13 — E4 视野裁剪可见性探针：三门全过（H1 +.2913 / H2 DiD +.1445 / H3 +.8079，CI 下界全正）；截断→漏检的因果证据成立
+
+执行 [spec](superpowers/specs/2026-10-13-visibility-probe-e4-design.md)（用户 2026-10-13
+批准；[plan](superpowers/plans/2026-10-13-visibility-probe-e4.md)）。工件
+`runs/analysis/visibility_probe_20261013/`（完整数字与 provenance 见
+[结果文档](E4_VISIBILITY_PROBE_2026-10-13.md)）。冻结 split1 检查点（seed19，x1，无 TTA，
+解码常量不动）上 fold2 只读探针；C0 绑定 == eval_fold2 mPQ 逐位（.4835）；窗口 offsets
+逐位复现；门判定从 probe.json 独立复算一致；无训练、无选择。
+
+- **H1 PASS**：Dead 贴边 miss .531（n=143）− 内部 .240（n=741）= **+.2913
+  [+0.1997, +0.3847]**（线 +.05）——自然边框上 Dead 漏检显著更高。
+- **H2 PASS**：嵌套裁窗的 DiD(C2) **+.1445 [+0.1367, +0.1532]**（线 +.03；新截断核
+  miss .043→.171，同窗保持完整核 .060→.043）；插值地板 DiD(C-int) −.0043（|·|<C2 ✓）；
+  剂量点 DiD(C3) +.1435。**FOV 移除本身（非插值/相位：C1 整体 miss .112≈C0 .116）使
+  原完整核截断后漏检率约翻 4 倍**。
+- **H3 PASS**：截断碎片 miss 面积梯度 <30px **.851**（n=1134）/ 30–100px .367 /
+  ≥100px .043（n=8643）；档差 **+.8079 [+0.7848, +0.8298]**（线 +.05）——与
+  `hv_targets` <30 工作像素清零 HV 监督的训练管线机制假设一致。
+- 次端点：crop-frame mPQ/bPQ C2 .4460/.6052、C3 .4211/.5545（zoom 使解码常量相对缩小，
+  如实披露）；HV 诊断 C2 .175/C3 .185；matched 类型正确率 C0 .856→C2 .809。
+
+**按预注册键：三门全过 ⇒ 允许起草可见性监督训练轮 spec（另行立项，对照至少含
+crop-augmentation 加强版与原基线）；路线 A 不关闭。** 限制（截断与位置不可分离、
+zoom 共变由 DiD 分离、单检查点机制证据、fold2 双重身份披露）见结果文档 §限制。
+执行补记：首轮三个实现 bug（栈轴移位 / 组名 full↔stays_full / 打印键）修复后全量重跑；
+`--limit` 调试 shim 保留。
 
 ## 2026-10-13 — M 合并类度量诊断：{Inf,Conn} 合并增益居 10 类对之首（Δofficial +.0519）；typing-oracle 差距在合并空间缩小 35%
 
