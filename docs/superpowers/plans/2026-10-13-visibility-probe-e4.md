@@ -411,3 +411,13 @@ cd /data7/jinxinhao/bdd26 && ~/.conda/envs/nuclei/bin/python scripts/probe_visib
 git add docs/E4_VISIBILITY_PROBE_2026-10-13.md docs/findings.md docs/RESEARCH_PLAN.md
 git commit -m "docs: E4 visibility-probe verdict (pre-registered H1/H2/H3 gates)"
 ```
+
+## 2026-10-14 收尾核验（历史步骤不重演）
+
+Task1/2代码已提交，最新修复988c0cd；Task3全量运行已落地新目录
+runs/analysis/visibility_probe_20261014，旧目录保留为失效历史。独立输入/代码哈希、
+窗口确定性和三门复算通过；结果文档/findings/RESEARCH_PLAN/README已同步新口径。
+全量pytest收尾结果见ignored ops/progress_20261014_codex/test_status.json与pytest.log。
+新训练规格仅草案，另行审阅；不重演历史RED步骤，也不重跑已有全量GPU工件。
+
+收尾全量回归：367 passed，19074 warnings，434.61秒，退出码0；无新代码修改。

@@ -18,7 +18,22 @@ Research plan + full progress log: [docs/RESEARCH_PLAN.md](docs/RESEARCH_PLAN.md
 experiment number: [docs/findings.md](docs/findings.md). Course brief:
 `docs/our_project5_nuclei_segmentation.pdf`.
 
-## Current status (2026-10-13)
+## Current status (2026-10-14)
+
+[Research closeout checklist and final-report analysis frame](docs/RESEARCH_STATUS_2026-10-14.md).
+
+E4's corrected full run is complete in `runs/analysis/visibility_probe_20261014/`
+(code `988c0cd`); its code/input hashes, 2,523 windows per crop size and frozen gate
+arithmetic were independently rechecked. All gates still pass: area-standardized
+H1 +.1738 [.1060,.2528], H2 +.1474 [.1392,.1557] (interpolation −.0006), H3
++.8175 [.7968,.8393]. The prior train-mode run and crude H1 gate are superseded.
+See [corrected results and limits](docs/E4_VISIBILITY_PROBE_2026-10-13.md).
+This permits a [visibility-supervision design draft](docs/superpowers/specs/2026-10-14-visibility-supervision-design.md),
+not a training launch or a method-performance claim. M's merged-class diagnostic
+supports descriptive metric analysis (+.0519 for Inf/Conn); it leaves five-class
+scores unchanged. Human E1 review remains unavailable; closed research lines stay closed.
+
+## Prior status (2026-10-13)
 
 **Stage report V is out** (experiments of October 9–12): see
 [Chinese report](docs/report/stage_report_5/stage_report_5_zh.pdf),
