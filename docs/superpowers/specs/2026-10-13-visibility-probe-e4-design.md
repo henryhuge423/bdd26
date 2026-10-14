@@ -1,6 +1,6 @@
 # 视野裁剪可见性机制探针（E4）设计 spec
 
-起草 2026-10-13｜状态：**待用户批准，未启动。** 依据 [RESEARCH_NEXT_2026-10-06](../../RESEARCH_NEXT_2026-10-06.md)
+起草 2026-10-13｜状态：**待用户批准，未启动。** 依据 [RESEARCH_NEXT_2026-10-06](../../proposals/RESEARCH_NEXT_2026-10-06.md)
 §4 路线A + §5 E4（受控 FOV 裁剪 × 相位平移 × 插值机制探针）。本轮是路线A的**准入探针**：不训练，
 仅在冻结检查点上做受控推理与 GT 身份对应分析；可见性监督训练轮须凭本轮预注册门**另行立项**。
 
@@ -78,7 +78,7 @@ miss 定义：GT 核与全部预测实例的最大 IoU < .1（any 类；与原�
 
 - `scripts/probe_visibility.py`：条件构造、批量推理（复用 predict 前向与解码）、GT 身份对应
   表、全部端点 → `runs/analysis/visibility_probe_20261013/`（JSON + 表 + commands.md）。
-- 结果文档 `docs/E4_VISIBILITY_PROBE_2026-10-13.md` + findings 条目；门判定三值（H1/H2/H3）
+- 结果文档 `docs/results/E4_VISIBILITY_PROBE_2026-10-13.md` + findings 条目；门判定三值（H1/H2/H3）
   从 JSON 工件直接复算。
 - 单元测试：条件构造的确定性（同 seed 逐位复现）、坐标映射正确性（合成数据：已知圆盘经
   C2 后的可见面积/触边标记）、C0 绑定检查。

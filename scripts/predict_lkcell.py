@@ -5,7 +5,7 @@ the released config/checkpoint); everything downstream — data order, decode (o
 HoVer-Net constants), eval — is the shared nucseg pipeline, so only the network differs
 from the CellViT-UNI baseline. Normalization is LKCell's (mean/std 0.5), NOT UNI's.
 
-Fold mapping (survey_2026_09.md §4, read off each run's config.yaml train/val/test):
+Fold mapping (docs/literature/survey_2026_09.md §4, read off each run's config.yaml train/val/test):
   split 1 = 2024-04-22T232903...  (train0/val1/test2 -> test fold 3)
   split 2 = 2024-07-31T221951...  (train1/val0/test2 -> test fold 3)
   split 3 = 2024-04-24T013604...  (train2/val1/test0 -> test fold 1)

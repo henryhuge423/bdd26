@@ -16,20 +16,28 @@ shortfalls along three "new-paradigm" pillars:
 
 Research plan + full progress log: [docs/RESEARCH_PLAN.md](docs/RESEARCH_PLAN.md). Every
 experiment number: [docs/findings.md](docs/findings.md). Course brief:
-`docs/our_project5_nuclei_segmentation.pdf`.
+`docs/reference/our_project5_nuclei_segmentation.pdf`.
 
 ## Current status (2026-10-14)
 
-[Research closeout checklist and final-report analysis frame](docs/RESEARCH_STATUS_2026-10-14.md).
+The user has now authorized the visibility-supervision dev round: four arms × two
+seeds (19/1), split1 training/validation only, 130 epochs with last-checkpoint evaluation.
+The [frozen spec](docs/superpowers/specs/2026-10-14-visibility-supervision-design.md) and
+[execution plan](docs/superpowers/plans/2026-10-14-visibility-supervision.md) govern the run.
+Implementation passed its focused tests and independent review; the A3 validation-target
+mismatch was fixed. The final full regression passed (403 tests; 19,074 existing warnings). Runtime smoke precedes the serial queue.
+No test-fold result or three-split confirmation is claimed.
+
+[Research closeout checklist and final-report analysis frame](docs/audits/RESEARCH_STATUS_2026-10-14.md).
 
 E4's corrected full run is complete in `runs/analysis/visibility_probe_20261014/`
 (code `988c0cd`); its code/input hashes, 2,523 windows per crop size and frozen gate
 arithmetic were independently rechecked. All gates still pass: area-standardized
 H1 +.1738 [.1060,.2528], H2 +.1474 [.1392,.1557] (interpolation −.0006), H3
 +.8175 [.7968,.8393]. The prior train-mode run and crude H1 gate are superseded.
-See [corrected results and limits](docs/E4_VISIBILITY_PROBE_2026-10-13.md).
-This permits a [visibility-supervision design draft](docs/superpowers/specs/2026-10-14-visibility-supervision-design.md),
-not a training launch or a method-performance claim. M's merged-class diagnostic
+See [corrected results and limits](docs/results/E4_VISIBILITY_PROBE_2026-10-13.md).
+The E4 gate originally permitted a [visibility-supervision design](docs/superpowers/specs/2026-10-14-visibility-supervision-design.md),
+while training authorization is recorded separately above; it is not a method-performance claim. M's merged-class diagnostic
 supports descriptive metric analysis (+.0519 for Inf/Conn); it leaves five-class
 scores unchanged. Human E1 review remains unavailable; closed research lines stay closed.
 
@@ -82,7 +90,7 @@ official-metric gains exist descriptively only at a strict-Dead cost. See
 
 ## Prior status (2026-10-09)
 
-The [October 9 audit](docs/RESEARCH_AUDIT_2026-10-09.md) rechecked frozen results,
+The [October 9 audit](docs/audits/RESEARCH_AUDIT_2026-10-09.md) rechecked frozen results,
 corrected stale status text and hardened the remaining dev-fold/cost paths.
 **E2a is complete; DSB is closed by its pre-registered Gate B stop rule**, and its
 code was merged into `master` as tested tooling, not as a trained method.
@@ -90,7 +98,7 @@ code was merged into `master` as tested tooling, not as a trained method.
 (image-weighted correction: 6.08447×; historical chunk-mean estimate: 6.08687×).
 EF-P2 remains mechanism evidence / a teacher candidate, not a deployment win.
 See [stage report IV](docs/report/stage_report_4/README.md) and its audit addendum.
-The [October 9 research update](docs/RESEARCH_NEXT_2026-10-09.md) proposes a small
+The [October 9 research update](docs/proposals/RESEARCH_NEXT_2026-10-09.md) proposes a small
 fixed-geometry instance-typing probe alongside E1 independent candidate annotation.
 The typing oracle is GT-assisted and does not establish an achievable gain; its Inf/Conn
 subset corrects all matched objects with those GT classes, not just pairwise swaps.
@@ -98,7 +106,7 @@ Utility learning remains conditional on candidate evidence. No new training is a
 
 ## Research review (2026-10-06)
 
-[Evidence audit and next-stage proposals](docs/RESEARCH_NEXT_2026-10-06.md) recheck all
+[Evidence audit and next-stage proposals](docs/proposals/RESEARCH_NEXT_2026-10-06.md) recheck all
 108 frozen endpoint deltas, review recent primary literature, and propose controlled
 crop/scale experiments and incremental-instance utility learning. The proposal includes
 independent annotation/validation requirements and staged compute requests. The first
@@ -112,7 +120,7 @@ Broader architecture proposals remain unapproved, and no new performance result 
 **The E2a HV target-threshold controls are complete** — 8/8 runs (x1/x2 × working cutoffs
 30/8/120, seeds 19/1, split1, validation fold2 only), each with a hash-bound audit re-inference
 whose endpoint differences from the original evaluation are exactly zero. Full tables,
-diagnostics and limitations: [results document](docs/HV_CONTROLS_RESULTS_2026-10-07.md);
+diagnostics and limitations: [results document](docs/results/HV_CONTROLS_RESULTS_2026-10-07.md);
 headline (2-seed means): lowering the cutoff at x1 does nothing stable; at x2 it raises
 official Dead PQ in both seeds (+.0098, bootstrap CI crossing zero); at matched native support
 x2 keeps the bPQ tax (CI below zero) and most of the Dead gain, while **strict Dead drops in
@@ -159,7 +167,7 @@ checks of all 108 endpoint deltas and the corrected validation border audit.
 > reconstruction of validation GT channels. Both were fixed; P0–P2 and bootstrap were rerun
 > under the same validation-only menus. v1 artifacts/reports remain archived, not current results.
 > The historical nine-run x2 grid is not nine distinct split/seed pairs: split2 used `{19,1,1}`;
-> base coverage is 3/1/1. [Current results and limitations](docs/P0_P3_RESULTS_2026-10-02.md).
+> base coverage is 3/1/1. [Current results and limitations](docs/results/P0_P3_RESULTS_2026-10-02.md).
 >
 > Corrected x1+M/S reaches **.4998 mPQ / .6656 bPQ**. Validation-gated additions reach
 > **.4999 / .6652**, with Dead PQ **.1767 → .1835** and strict Dead PQ **.1340 → .1371**.
@@ -258,7 +266,7 @@ P2 was a seed19 candidate with small costs and fold-dependent gains, **not a pro
 overall win**. The subsequent matched-seed and EF-P2 rounds are now complete; see the
 October 5 status and stage report III above. P3's separate fixed-subset scale crossing
 shows strong training-scale dependence; its numbers are not mixed into this test table.
-Full methods, uncertainty and provenance: [P0–P3 results](docs/P0_P3_RESULTS_2026-10-02.md).
+Full methods, uncertainty and provenance: [P0–P3 results](docs/results/P0_P3_RESULTS_2026-10-02.md).
 
 ### Reports
 
@@ -271,7 +279,7 @@ Full methods, uncertainty and provenance: [P0–P3 results](docs/P0_P3_RESULTS_2
   PDF/TeX, figures, numerical tables and verification snapshot). Covers October 2–5
   audits, matched-seed validation and EF-P2; see its README for reproduction.
 
-- `docs/P0_P3_RESULTS_2026-10-02.md` — current audited results, inference limits, uncertainty,
+- `docs/results/P0_P3_RESULTS_2026-10-02.md` — current audited results, inference limits, uncertainty,
   artifact paths and reproduction commands (`scripts/p0p3_numbers.py`).
 - `docs/report/stage_report_1/` — Stage report I (EN, ZH and plain-language ZH digest).
 - `docs/report/stage_report_2/` — Stage report II (EN, ZH and plain-language ZH digest).
@@ -303,7 +311,8 @@ src/nucseg/            our package (pip install -e .)
 configs/text/          nucleus prompt bank (LLM-written morphology descriptions)
 docs/                  RESEARCH_PLAN.md (plan + progress log), findings.md (experiment log with
                        all numbers), report/ (stage reports EN+ZH + digests, PDFs),
-                       survey_2026_09.md, course brief PDF — index: docs/
+                       literature/ (survey), reference/ (course brief), results/, audits/,
+                       proposals/, background/, superpowers/ (specs/plans) — index: docs/
 scripts/               portable data, training, inference, evaluation and analysis CLIs
 tests/                 pytest: metrics vs official code, decode scaling, copy-paste, recovery
 third_party/           pinned upstream repos (scripts/fetch_third_party.sh)

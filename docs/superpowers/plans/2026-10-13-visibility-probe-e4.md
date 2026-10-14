@@ -397,7 +397,7 @@ cd /data7/jinxinhao/bdd26 && ~/.conda/envs/nuclei/bin/python scripts/probe_visib
 
 - [ ] **Step 3: 判定记录**
 
-- 结果文档 `docs/E4_VISIBILITY_PROBE_2026-10-13.md`：门数字、次端点、限制（截断与位置
+- 结果文档 `docs/results/E4_VISIBILITY_PROBE_2026-10-13.md`：门数字、次端点、限制（截断与位置
   不可分离、C2 zoom 与 FOV 共变由 DiD 分离、单检查点机制证据、fold2 同时是 T 轮验证折
   ——只读分析无选择，披露）。
 - findings.md 新条目（2026-10-13 E4）：门判定二值文字按 spec §2 预注册键：
@@ -408,7 +408,7 @@ cd /data7/jinxinhao/bdd26 && ~/.conda/envs/nuclei/bin/python scripts/probe_visib
 - [ ] **Step 4: Commit**
 
 ```bash
-git add docs/E4_VISIBILITY_PROBE_2026-10-13.md docs/findings.md docs/RESEARCH_PLAN.md
+git add docs/results/E4_VISIBILITY_PROBE_2026-10-13.md docs/findings.md docs/RESEARCH_PLAN.md
 git commit -m "docs: E4 visibility-probe verdict (pre-registered H1/H2/H3 gates)"
 ```
 

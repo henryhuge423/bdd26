@@ -173,7 +173,7 @@ PQ 还受形状、误报、组织/图像权重与分型影响；本轮未做完�
 `config.json`、`provenance.json`、`log.jsonl`、`audit_val_fold2/inference_provenance.json`、
 `audit_val_fold2/eval/{summary.json,per_image.npz,gt_records.csv.gz}`；原验证评估为`eval_val_fold2/`。
 完整结果为`runs/analysis/hv_threshold_controls_20261006/verified_numbers.json`。
-可移植的原始数值/输入哈希快照见[HV verified numbers](results/hv_threshold_controls_20261007_verified.json)。
+可移植的原始数值/输入哈希快照见[HV verified numbers](hv_threshold_controls_20261007_verified.json)。
 模型、数据和运行目录不纳入 Git。
 
 在保留训练/预测文件且使用**冻结分析源码版本 `39110dd`**的环境中（不要改写正在开发的工作区）：
@@ -188,4 +188,4 @@ python scripts/hv_control_numbers.py \
 
 collector 核验的是当前源码与审计 manifest 的哈希；若在后续 DSB 源码上运行，拒绝哈希差异是预期保护，
 不应关闭检查来“通过”。输出必须取不存在的新文件名。此命令只做 CPU 核验/统计，不重训、不重推、不读 fold3。
-冻结预注册与执行记录：[HV controls plan](superpowers/plans/2026-10-06-hv-threshold-controls.md)。
+冻结预注册与执行记录：[HV controls plan](../superpowers/plans/2026-10-06-hv-threshold-controls.md)。

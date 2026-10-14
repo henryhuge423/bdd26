@@ -64,6 +64,8 @@ def build_parser():
     p.add_argument("--widen", type=int, default=0,
                    help="C1 equal-parameter widening of the NP/HV decoder bottlenecks; resuming "
                         "a widened run requires the same value again")
+    p.add_argument("--visibility-arm", choices=("A0", "A1", "A2", "A3"),
+                   help="frozen visibility dev controls; requires split1 and --train-only")
     mode = p.add_mutually_exclusive_group()
     mode.add_argument("--skip-train", action="store_true")
     mode.add_argument("--train-only", action="store_true", help="train on train/val folds and exit WITHOUT test inference")
@@ -74,6 +76,8 @@ def build_parser():
 def main(argv=None):
     p = build_parser()
     a = p.parse_args(argv)
+    if a.visibility_arm is not None and (a.split != 1 or not a.train_only):
+        p.error("visibility dev requires --split 1 --train-only")
     tr, va, te = split_folds(a.split)
     upscale = run_upscale(a.out, a.upscale)
     hv_min_size = run_hv_min_size(a.out, a.hv_min_size)
@@ -84,7 +88,8 @@ def main(argv=None):
                       cp_prob=a.cp_prob, cp_lam=a.cp_lam, cp_dead_w=a.cp_dead_w,
                       cp_area=tuple(a.cp_area), cp_clearance=a.cp_clearance,
                       synth=a.synth, synth_frac=a.synth_frac, upscale=upscale, hv_min_size=hv_min_size,
-                      dead_expert=a.dead_expert, dead_neg_w=a.dead_neg_w, widen=a.widen)
+                      dead_expert=a.dead_expert, dead_neg_w=a.dead_neg_w, widen=a.widen,
+                      visibility_arm=a.visibility_arm)
     if not a.skip_train:
         train(cfg, [tr], [va])
     if a.train_only:

@@ -1,25 +1,46 @@
-# docs
+# Research documentation
 
-| path | what |
+Start with the [research status and closeout checklist](audits/RESEARCH_STATUS_2026-10-14.md),
+then the [research protocol and dated progress](RESEARCH_PLAN.md) and
+[experiment journal](findings.md). Dates in older documents describe their own historical
+state; a proposal or diagnostic gate is not a training result or continuing authorization.
+The current experiment's approved spec and plan govern execution.
+
+| Location | Purpose |
 |---|---|
-| `RESEARCH_PLAN.md` | current direction + dated historical research log and protocol |
-| `RESEARCH_NEXT_2026-10-09.md` | latest proposal: fixed-geometry instance-typing probe, parallel candidate annotation, explicit stop criteria and independent-validation requirements; no new experiment started |
-| `RESEARCH_NEXT_2026-10-06.md` | earlier evidence review, primary-literature checks and E0–E5 proposals; current execution order is in the October 9 update |
-| `P0_P3_RESULTS_2026-10-02.md` | audited seed19 P0–P3 results and historical corrections; subsequent matched-seed/EF results are in stage III |
-| `superpowers/plans/2026-10-02-p0-p3-research.md` | approved execution plan and decisions |
-| `findings.md` | experiment log — every number, per-date entries |
-| `RESEARCH_AUDIT_2026-10-09.md` | latest audit: verified endpoints, cost aggregation correction, regression fixes and explicit verification gaps |
-| `STRUCTURE_AND_STRATEGY_2026-10-09.md` | revised model primer and experiment review; distinguishes observations from mechanisms and corrects the Inf/Conn-GT oracle interpretation |
-| `report/stage_report_5/` | latest stage V: typing-oracle ceiling, T0–T3 probe closure, E1 no-expert revision (E1-C/E1-M), E1-T label-ambiguity resonance, E3 utility-learning stop (EN + ZH + plain-language ZH, PDF/TeX, verified numbers) |
-| `report/stage_report_4/` | stage IV: E2a, DSB gate closure, E0 cost; README includes October 9 corrections |
-| `report/stage_report_3/` | stage III report: matched-seed P2, existence-filtered P2, audit corrections and limitations (EN + ZH + plain-language ZH, PDF/TeX, verified numbers) |
-| `report/stage_report_1/`, `report/stage_report_2/` | historical stage reports I & II with October 2 audit addenda; later results are in stage III |
-| `superpowers/plans/2026-10-03-matched-seed-validation.md` | matched-seed pre-registration and outcome |
-| `superpowers/plans/2026-10-06-hv-threshold-controls.md` | approved HV working-area control implementation and frozen four-arm, two-seed validation-only experiment |
-| `superpowers/plans/2026-10-05-existence-filter-p2.md` | EF-P2 pre-registration, outcome and post-execution corrections |
-| `survey_2026_09.md` | literature survey backing the plan (2026-09) |
-| `our_project5_nuclei_segmentation.pdf` | course brief |
+| [RESEARCH_PLAN.md](RESEARCH_PLAN.md) | Canonical scientific protocol, research direction and dated progress |
+| [findings.md](findings.md) | Dated experiment journal, numbers, decisions and artifact provenance |
+| [results/](results/README.md) | Detailed experiment results and portable verification snapshots |
+| [audits/](audits/README.md) | Evidence checks, corrections, research status and closeout tasks |
+| [proposals/](proposals/README.md) | Dated research proposals; historical hypotheses and execution order |
+| [background/](background/README.md) | Model explanations and interpretation of research evidence |
+| [literature/](literature/README.md) | Literature survey and source material |
+| [reference/](reference/README.md) | Course brief and stable external requirements |
+| [report/](report/README.md) | Stage report bundles, sources, figures and numerical verification |
+| [superpowers/specs/](superpowers/specs/) | Experiment designs, approval records and frozen decision rules |
+| [superpowers/plans/](superpowers/plans/) | Implementation/execution plans and outcomes |
 
-Entry points elsewhere: repo `README.md` (project intro, layout, common commands) and
-`CLAUDE.md` (project rules). Machine-specific runbooks are local-only under the repository
-root `ops/` and are intentionally absent from this documentation tree.
+## Writing and maintenance conventions
+
+- Put new dated results, audits and proposals in their corresponding folder. Keep existing
+  filename dates and append dated corrections or a superseding-result notice; preserve the
+  original evidence and explain which version is valid.
+- Keep the journal chronological and the navigation concise. Update current status in the
+  status document and project README when an experiment changes state; do not rewrite an
+  old dated proposal as though it already knew a later outcome.
+- Freeze splits, seeds, menus, checkpoint-selection rules and gates in approved specs/plans
+  before execution. Separate proposals, approvals, measured results and interpretations.
+- Tie reported numbers to artifact paths, code/config hashes, split/seed, evaluation protocol,
+  uncertainty and limitations. Preserve verification JSON/CSV alongside report sources.
+  Machine-local run artifacts remain under ignored `runs/`; report bundles carry portable
+  evidence needed to understand the report.
+- Keep each stage report self-contained: English and Chinese reports plus a plain-language
+  Chinese digest, TeX/PDF, figures, source links and reproduction/verification notes. A source
+  edit does not imply that an existing PDF or build-verification snapshot was rebuilt.
+- Use document-relative Markdown links; use repository-root paths for commands and artifact
+  citations. Check incoming/outgoing links whenever moving a file. Keep report folders and
+  frozen workflow filenames stable.
+- Put machine routing, resource inventories, job PIDs/logs, SSH/sync notes and credentials in
+  ignored `ops/` or `CLAUDE.local.md`; portable documentation must not embed secrets.
+
+Repository entry points: [README.md](../README.md) and [CLAUDE.md](../CLAUDE.md).

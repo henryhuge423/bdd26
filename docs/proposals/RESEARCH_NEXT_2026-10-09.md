@@ -169,12 +169,12 @@ CONCH 负结果表明，已试的外部图文特征和融合方式没有提供�
 
 ## 来源与复核范围
 
-- [阶段三报告与核验快照](report/stage_report_3/README.md)
-- [阶段四报告与勘误](report/stage_report_4/README.md)
-- [10 月 9 日研究审计](RESEARCH_AUDIT_2026-10-09.md)
-- [E2a 结果](HV_CONTROLS_RESULTS_2026-10-07.md)
+- [阶段三报告与核验快照](../report/stage_report_3/README.md)
+- [阶段四报告与勘误](../report/stage_report_4/README.md)
+- [10 月 9 日研究审计](../audits/RESEARCH_AUDIT_2026-10-09.md)
+- [E2a 结果](../results/HV_CONTROLS_RESULTS_2026-10-07.md)
 - [10 月 6 日原方案](RESEARCH_NEXT_2026-10-06.md)：保留原 E0–E5 设计、文献线索与历史顺序
-- [模型结构与证据边界](STRUCTURE_AND_STRATEGY_2026-10-09.md)
+- [模型结构与证据边界](../background/STRUCTURE_AND_STRATEGY_2026-10-09.md)
 - `scripts/typing_oracle.py:64–68`：分类上限干预的实际选择条件
 - `src/nucseg/cellvit/model.py:113–134`：现有 TP 特征导出接口
 

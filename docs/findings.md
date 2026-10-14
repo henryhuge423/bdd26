@@ -13,7 +13,7 @@
 > **2026-10-11 E1 修订执行（E1-C + E1-M，spec §7）：** 无专家可用，经用户批准改为
 > 检测器共识 + 非专家模型预审。详见下方同日条目；人类评审义务保留，材料包不变。
 
-> **2026-10-09 audit:** [review and corrections](RESEARCH_AUDIT_2026-10-09.md).
+> **2026-10-09 audit:** [review and corrections](audits/RESEARCH_AUDIT_2026-10-09.md).
 > Rechecked 108 stage-III endpoint deltas and reproduced the frozen stage-IV verification snapshot.
 > Corrected E0's unequal-chunk mean: from saved throughput, image-weighted two-model/x1 =
 > **6.084468×**, TTA/x1 = **4.663162×** (historical chunk means 6.086869× / 4.666531×).
@@ -45,12 +45,12 @@
 > The bPQ "5.3× maximum seed std" claim overlooks baseline split1 std .001548 (versus
 > x2 maximum .001308); this and duplicate-seed coverage must be relabelled/recomputed.
 > Execution: `docs/superpowers/plans/2026-10-02-p0-p3-research.md`. Corrected results and
-> limitations: [P0–P3 report](P0_P3_RESULTS_2026-10-02.md).
+> limitations: [P0–P3 report](results/P0_P3_RESULTS_2026-10-02.md).
 
 ## 2026-10-14 — E4 修复后全量结果收尾：三门仍通过，旧推理与H1口径被替代
 
 有效工件 `runs/analysis/visibility_probe_20261014/`，代码 `988c0cd`；
-[完整结果、分母及限制](E4_VISIBILITY_PROBE_2026-10-13.md)。
+[完整结果、分母及限制](results/E4_VISIBILITY_PROBE_2026-10-13.md)。
 H1面积标准化 +.1738 [.1060,.2528]；H2 +.1474 [.1392,.1557]（C-int −.0006）；
 H3 +.8175 [.7968,.8393]。旧粗H1 +.2913保留为描述；旧train-mode推理工件保留作失效历史。
 收尾复核输入/代码SHA、192/160窗口与冻结门算术一致；未重复推理、无新训练。
@@ -330,7 +330,7 @@ Feature export verified against the cached instance-probability table (max |Δ| 
 
 ## 2026-10-09 — typing-oracle ceiling diagnostic (read-only, unregistered)
 
-Conversation-driven analysis ([digest](STRUCTURE_AND_STRATEGY_2026-10-09.md) §5): how far official
+Conversation-driven analysis ([digest](background/STRUCTURE_AND_STRATEGY_2026-10-09.md) §5): how far official
 mPQ could rise if every IoU>0.5 matched instance were typed correctly, instance geometry untouched.
 Scored with `RetypeEvaluator` on the frozen baseline (CellViT-UNI, no TTA, last checkpoint) test
 predictions — audit-type access to already-evaluated test folds, no tuning, no new inference;
@@ -353,7 +353,7 @@ current values reproduce the official summaries (.4951/.4930/.5104).
   feature separability need independent tests; no universal literature ceiling is established
   here. The tested CONCH retyping methods were null, which argues against simply repeating
   those recipes but does not establish feature saturation. The revised proposal in
-  [RESEARCH_NEXT_2026-10-09.md](RESEARCH_NEXT_2026-10-09.md) separates candidate-existence
+  [RESEARCH_NEXT_2026-10-09.md](proposals/RESEARCH_NEXT_2026-10-09.md) separates candidate-existence
   review from an instance-typing feasibility probe. All proposals remain unapproved;
   selection must stay on training/development data, and a reused benchmark is not a fresh test.
 - Reproduce: `python scripts/typing_oracle.py --out-json runs/analysis/typing_oracle_20261009/summary.json`
@@ -1044,7 +1044,7 @@ permutation p; `logs/analyze_cf3.log`, `runs/analysis/ext_hovernext.json`).
 HoVer-Net / HoVer-NeXt-T; evaluation records collected under a common input root). Consensus stats use splits 1+3 = test folds 3+1 (129,872 GT nuclei; rows verified
 aligned across models: identical image/cls/area); per-model stats use all 3 splits. Frame
 cached at `runs/analysis/artifacts_gt.csv.gz`. Survey of the same date (leaderboard / datasets
-/ multimodal / generators): `docs/survey_2026_09.md`.
+/ multimodal / generators): `docs/literature/survey_2026_09.md`.
 
 **1. Most "missed small nuclei" outside Dead are patch-border fragments.**
 - 89% of GT nuclei < 60 px touch the 256 px patch border (31% of all GT do); 62% of < 60 px GT
@@ -1696,7 +1696,7 @@ CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
 
 Round `runs/hv_threshold_controls_20261006/` (design and contrasts frozen before launch in
 [the plan](superpowers/plans/2026-10-06-hv-threshold-controls.md); full tables, diagnostics and
-limitations: [HV controls results](HV_CONTROLS_RESULTS_2026-10-07.md)). Split1, train fold1 /
+limitations: [HV controls results](results/HV_CONTROLS_RESULTS_2026-10-07.md)). Split1, train fold1 /
 validation fold2 only; no fold3 inference at any point.
 
 - **8/8 runs complete** (x1_hv30 / x1_hv8 / x2_hv30 / x2_hv120 × seeds 19, 1; 130 epochs each,

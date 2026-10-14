@@ -15,8 +15,8 @@ E1 无专家修订执行（E1-C 检测器共识 + E1-M 模型预审）、E1-T �
   （oracle 与官方评测核对、重新计算通过条件的布尔值、E1-C 直方图/匹配率联表重算、
   E1-M 一致率与 kappa 重算、E1-T 核对分组总数，检查区间是否包含点估计、E3 选择规则全行重放）
 - 逐表数字快照：`runs/analysis/report5_numbers.txt`（本地 `runs/`，不随 Git 分发）
-- 上游文档：[研究计划](../../RESEARCH_PLAN.md)、[10-09 建议稿](../../RESEARCH_NEXT_2026-10-09.md)、
-  [结构导读](../../STRUCTURE_AND_STRATEGY_2026-10-09.md)、
+- 上游文档：[研究计划](../../RESEARCH_PLAN.md)、[10-09 建议稿](../../proposals/RESEARCH_NEXT_2026-10-09.md)、
+  [结构导读](../../background/STRUCTURE_AND_STRATEGY_2026-10-09.md)、
   [本阶段预注册规格](../../superpowers/specs/)（T / E1 / E1-T / E3 四份）
 
 ## 主要结论

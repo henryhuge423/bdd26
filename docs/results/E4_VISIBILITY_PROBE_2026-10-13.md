@@ -1,8 +1,8 @@
 # E4 视野裁剪可见性机制探针：修复后有效结果
 
 2026-10-13 预注册；2026-10-14 修复后全量运行与收尾核验。
-[Spec](superpowers/specs/2026-10-13-visibility-probe-e4-design.md)｜
-[Plan](superpowers/plans/2026-10-13-visibility-probe-e4.md)｜
+[Spec](../superpowers/specs/2026-10-13-visibility-probe-e4-design.md)｜
+[Plan](../superpowers/plans/2026-10-13-visibility-probe-e4.md)｜
 有效工件 `runs/analysis/visibility_probe_20261014/`（probe.json / tables.md / commands.md）。
 代码 `988c0cd`；split1 seed19 final checkpoint，x1、无 TTA、解码不变；fold2 2523 图。
 无训练、无调参、无测试折读取。运行记录墙钟 1829.7 秒。
@@ -78,5 +78,5 @@ runner/module；代码指纹与当前文件一致。192/160窗口各2523个与sa
 ## 下一步
 
 按原冻结规则允许起草可见性监督训练轮规格。
-[设计草案](superpowers/specs/2026-10-14-visibility-supervision-design.md)提出基线、加强裁剪、
+[设计草案](../superpowers/specs/2026-10-14-visibility-supervision-design.md)提出基线、加强裁剪、
 截断片段HV和全局HV门槛四臂；尚未批准实现或训练。联合训练、DSB和E3不因此重启。

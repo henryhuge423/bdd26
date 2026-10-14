@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import cv2
 import json
+import random
 import time
 from collections import defaultdict
 from dataclasses import asdict, dataclass
@@ -29,7 +30,7 @@ from ..hovernet.engine import _post, dihedral, undo_dihedral
 from ..text.conch_prior import instance_mean_probs
 from ..hovernet.official import dice_loss, mse_loss, msge_loss, xentropy_loss
 from ..hovernet.targets import validate_hv_min_size
-from .data import PanNukeCellViT, cell_tissue_weights
+from .data import PanNukeCellViT, cell_tissue_weights, VISIBILITY_ARMS, VISIBILITY_COUNTS
 from .model import UNI_MEAN, UNI_STD, CellViTUNI
 
 NR_TYPES = NUM_CLASSES + 1
@@ -78,8 +79,19 @@ class TrainConfig:
     dead_neg_w: float = 0.0
     widen: int = 0
 
+    visibility_arm: str | None = None
+
     def __post_init__(self):
         self.hv_min_size = validate_hv_min_size(self.hv_min_size)
+        if self.visibility_arm is not None:
+            if self.visibility_arm not in VISIBILITY_ARMS:
+                raise ValueError("Unknown visibility arm")
+            if self.split != 1:
+                raise ValueError("visibility dev requires split1")
+            if (self.upscale != 1 or self.hv_min_size != 30 or self.cp_prob or self.synth
+                    or self.synth_frac or self.np_wce or self.dead_w or self.small_w
+                    or self.dead_expert or self.dead_neg_w or self.widen):
+                raise ValueError("visibility dev refuses additional scientific interventions")
 
 
 def prepare_train_config(cfg: TrainConfig) -> None:
@@ -187,10 +199,14 @@ def build_model(cfg: TrainConfig | None = None, pretrained: bool = True) -> Cell
 
 
 def train(cfg: TrainConfig, train_folds: list[int], val_folds: list[int], device="cuda", model=None):
+    if cfg.visibility_arm is not None and (train_folds != [1] or val_folds != [2]):
+        raise ValueError("visibility dev requires fold1 training / fold2 validation")
     prepare_train_config(cfg)
     out = Path(cfg.out_dir)
     torch.manual_seed(cfg.seed)
     np.random.seed(cfg.seed)
+    if cfg.visibility_arm is not None:
+        random.seed(cfg.seed)
     writer = SummaryWriter(out / "tb")
     log = open(out / "log.jsonl", "a")
 
@@ -217,7 +233,7 @@ def train(cfg: TrainConfig, train_folds: list[int], val_folds: list[int], device
     train_ds = PanNukeCellViT(train_folds, train=True, small_area=cfg.small_area, copy_paste=cp,
                               synth=Path(cfg.synth) if cfg.synth else None,
                               synth_frac=cfg.synth_frac, upscale=cfg.upscale, hv_min_size=cfg.hv_min_size,
-                              dead_targets=cfg.dead_expert)
+                              dead_targets=cfg.dead_expert, visibility_arm=cfg.visibility_arm)
     sampler = WeightedRandomSampler(cell_tissue_weights(train_ds, cfg.sampling_gamma), len(train_ds),
                                     replacement=True, generator=torch.Generator().manual_seed(cfg.seed))
     train_dl = DataLoader(train_ds, batch_size=cfg.batch_size, sampler=sampler, drop_last=True,
@@ -232,6 +248,9 @@ def train(cfg: TrainConfig, train_folds: list[int], val_folds: list[int], device
         model.train()
         t0, agg, n = time.time(), defaultdict(float), 0
         for batch in train_dl:
+            if "visibility_counts" in batch:
+                for key, value in zip(VISIBILITY_COUNTS, batch["visibility_counts"].sum(0).tolist()):
+                    agg[f"visibility/{key}"] += value
             batch = _to_device(batch, device)
             with torch.autocast("cuda", dtype=torch.bfloat16):
                 pred = to_nhwc(model(batch["img"]))
@@ -246,7 +265,7 @@ def train(cfg: TrainConfig, train_folds: list[int], val_folds: list[int], device
             global_step += 1
         sched.step()
         rec = {"epoch": ep, "lr": opt.param_groups[0]["lr"], "time": time.time() - t0,
-               **{f"train/{k}": v / n for k, v in agg.items()}}
+               **{f"train/{k}": (v if k.startswith("visibility/") else v / n) for k, v in agg.items()}}
         if (ep + 1) % cfg.val_every == 0 or ep + 1 == cfg.epochs:
             rec.update(validate(model, val_dl, device, cfg))
         for k, v in rec.items():

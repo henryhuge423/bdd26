@@ -1,6 +1,6 @@
 # Matched-seed validation of the fair baseline / P2 (pre-registered)
 
-Date: 2026-10-03. Executes the step recommended by `docs/P0_P3_RESULTS_2026-10-02.md` §7
+Date: 2026-10-03. Executes the step recommended by `docs/results/P0_P3_RESULTS_2026-10-02.md` §7
 ("在 A100 预算恢复后做公平基线/P2 的匹配种子验证"). This document fixes the protocol BEFORE
 any new result is seen; menus, selection rules and evaluator are frozen from the v2 execution.
 

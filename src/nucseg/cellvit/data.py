@@ -11,6 +11,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import albumentations as A
+from albumentations.augmentations.crops import functional as crop_functional
 import cv2
 import numpy as np
 import torch
@@ -26,7 +27,64 @@ from .model import UNI_MEAN, UNI_STD
 cv2.setNumThreads(0)
 
 
-def cellvit_train_augs(size: int = 256) -> A.Compose:
+VISIBILITY_ARMS = ("A0", "A1", "A2", "A3")
+VISIBILITY_COUNTS = ("eligible", "single_pixel", "single_axis", "zero_hv")
+
+
+def original_border_ids(inst: np.ndarray) -> set[int]:
+    """Original patch-border objects are already incomplete, even after a flip/rotation."""
+    ids = np.unique(np.concatenate([inst[0], inst[-1], inst[:, 0], inst[:, -1]]))
+    return set(map(int, ids)) - {0}
+
+
+class VisibilityCrop(A.RandomSizedCrop):
+    """Capture exact ID pixel loss before resize, without additional RNG draws.
+
+    Only masks are inspected. The inherited image/mask transformations and parameters
+    stay identical to pinned albumentations 1.3 RandomSizedCrop. ElasticTransform runs
+    afterwards; its changes alone never label an object crop-truncated.
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.truncated_ids = set()
+
+    def apply_to_mask(self, mask, crop_height=0, crop_width=0, h_start=0, w_start=0, **params):
+        inst = mask[..., 0]
+        cropped = crop_functional.random_crop(inst, crop_height, crop_width, h_start, w_start)
+        full = np.bincount(inst.ravel())
+        kept = np.bincount(cropped.ravel(), minlength=len(full))
+        self.truncated_ids = set(map(int, np.flatnonzero((kept > 0) & (kept < full)))) - {0}
+        return super().apply_to_mask(mask, crop_height=crop_height, crop_width=crop_width,
+                                     h_start=h_start, w_start=w_start, **params)
+
+
+def visibility_hv_targets(inst: np.ndarray, arm: str, truncated_ids: set[int]):
+    """Selective intervention uses surviving IDs and FINAL working-pixel areas.
+
+    Existing HV conventions, including legal degenerate coordinates, are preserved.
+    Counts describe the eligible small objects, including those with all-zero HV.
+    """
+    if arm not in VISIBILITY_ARMS:
+        raise ValueError("Unknown visibility arm")
+    area = np.bincount(inst.ravel())
+    ids = [i for i in truncated_ids if 0 < i < len(area) and 0 < area[i] < 30]
+    counts = dict.fromkeys(VISIBILITY_COUNTS, 0)
+    counts["eligible"] = len(ids)
+    hv = hv_targets(inst, min_size=1 if arm == "A3" else 30)
+    if ids:
+        low = hv if arm == "A3" else hv_targets(inst, min_size=1)
+        for i in ids:
+            pixels = inst == i
+            yy, xx = np.nonzero(pixels)
+            counts["single_pixel"] += int(len(xx) == 1)
+            counts["single_axis"] += int(np.ptp(xx) == 0 or np.ptp(yy) == 0)
+            counts["zero_hv"] += int(not np.any(low[pixels]))
+            if arm == "A2":
+                hv[pixels] = low[pixels]
+    return hv, counts
+
+
+def cellvit_train_augs(size: int = 256, visibility_arm: str | None = None) -> A.Compose:
     return A.Compose([
         A.RandomRotate90(p=0.5),
         A.HorizontalFlip(p=0.5),
@@ -37,7 +95,9 @@ def cellvit_train_augs(size: int = 256) -> A.Compose:
         A.ColorJitter(p=0.2, brightness=0.25, contrast=0.25, saturation=0.1, hue=0.05),
         A.Superpixels(p=0.1, p_replace=0.1, n_segments=200, max_size=size // 2),
         A.ZoomBlur(p=0.1, max_factor=1.05),
-        A.RandomSizedCrop(min_max_height=(size // 2, size), height=size, width=size, p=0.1),
+        (VisibilityCrop if visibility_arm in ("A1", "A2", "A3") else A.RandomSizedCrop)(
+            min_max_height=(size // 2, size), height=size, width=size,
+            p=0.5 if visibility_arm in ("A1", "A2", "A3") else 0.1),
         A.ElasticTransform(p=0.2, sigma=25, alpha=0.5, alpha_affine=15),
     ])
 
@@ -75,7 +135,12 @@ class PanNukeCellViT(Dataset):
     def __init__(self, folds: list[int], train: bool, small_area: int = 100,
                  copy_paste: CopyPasteConfig | None = None, synth: Path | None = None,
                  synth_frac: float = 0.0, upscale: int = 1, hv_min_size: int = 30,
-                 dead_targets: bool = False):
+                 dead_targets: bool = False, visibility_arm: str | None = None):
+        if visibility_arm is not None and visibility_arm not in VISIBILITY_ARMS:
+            raise ValueError("Unknown visibility arm")
+        if visibility_arm is not None and (folds != ([1] if train else [2])):
+            raise ValueError("visibility datasets require fold1 training / fold2 validation")
+        self.visibility_arm = visibility_arm
         self.hv_min_size = validate_hv_min_size(hv_min_size)
         self.folds = [PanNukeFold(k) for k in folds]
         self.index = [("r", fi, j) for fi, f in enumerate(self.folds) for j in range(len(f))]
@@ -84,7 +149,7 @@ class PanNukeCellViT(Dataset):
         self.dead_targets = dead_targets
         # pixel-area thresholds live at the working resolution (areas quadruple at 2x)
         self.small_area = small_area * upscale * upscale
-        self.augs = cellvit_train_augs() if train else None
+        self.augs = cellvit_train_augs(visibility_arm=visibility_arm) if train else None
         self.copy_paste = copy_paste if (train and copy_paste is not None) else None
         self.bank = NucleusBank(self.folds) if self.copy_paste is not None else None
         self._tissue_ids = [tissue_ids(f.tissue) for f in self.folds]
@@ -138,7 +203,9 @@ class PanNukeCellViT(Dataset):
             inst = np.array(f.inst[j]).astype(np.int32)
             typ = np.array(f.type[j]).astype(np.int32)
             tissue = int(self._tissue_ids[fi][j])
+        truncated_ids = set()
         if self.train:
+            incomplete_ids = original_border_ids(inst) if self.visibility_arm else set()
             if kind == "r" and self.copy_paste is not None:
                 # BEFORE the geometric/photometric augmentations, so pasted nuclei are rotated,
                 # blurred and colour-jittered together with the rest of the patch (pasting after
@@ -146,7 +213,13 @@ class PanNukeCellViT(Dataset):
                 img, inst, typ = apply_copy_paste(
                     img, inst, typ, self.bank, self.copy_paste,
                     np.random.default_rng(np.random.randint(2**31)))
+            crop = next((t for t in getattr(self.augs, "transforms", [])
+                         if isinstance(t, VisibilityCrop)), None)
+            if crop is not None:
+                crop.truncated_ids = set()  # skipped crops cannot reuse the preceding sample
             r = self.augs(image=img, mask=np.stack([inst, typ], -1))
+            if crop is not None:
+                truncated_ids = crop.truncated_ids - incomplete_ids
             img, inst, typ = r["image"], r["mask"][..., 0], r["mask"][..., 1]
         if self.upscale > 1:
             img, inst, typ = upsample_patch(img, inst, typ, self.upscale)
@@ -160,10 +233,16 @@ class PanNukeCellViT(Dataset):
                 "dead_hv_map": torch.from_numpy(hv_targets(dead_inst, min_size=self.hv_min_size)),
                 "dead_pos": torch.tensor(bool((dead_inst > 0).any())),
             }
+        if self.visibility_arm is None:
+            hv = hv_targets(inst, min_size=self.hv_min_size)
+        else:
+            # Validation loss always uses baseline HV30, including direct armed datasets.
+            hv, counts = visibility_hv_targets(inst, self.visibility_arm if self.train else "A0", truncated_ids)
+            extra["visibility_counts"] = torch.tensor([counts[k] for k in VISIBILITY_COUNTS], dtype=torch.int64)
         return {
             "img": torch.from_numpy(normalize(img)),                     # (3, 256, 256) float
             "np_map": torch.from_numpy((inst > 0).astype(np.int64)),     # (256, 256)
-            "hv_map": torch.from_numpy(hv_targets(inst, min_size=self.hv_min_size)),  # working-pixel cutoff
+            "hv_map": torch.from_numpy(hv),  # working-pixel cutoff
             "tp_map": torch.from_numpy(typ.astype(np.int64)),            # (256, 256) 0..5
             "small_map": torch.from_numpy(small_nuclei(inst, self.small_area)),  # (256, 256) bool
             "tissue": tissue,
