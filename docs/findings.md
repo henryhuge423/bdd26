@@ -7,11 +7,6 @@
 > **2026-10-11 E1 修订执行（E1-C + E1-M，spec §7）：** 无专家可用，经用户批准改为
 > 检测器共识 + 非专家模型预审。详见下方同日条目；人类评审义务保留，材料包不变。
 
-> **2026-10-11 E1 修订执行（E1-C + E1-M，spec §7）：** 无专家可用，经用户批准改为
-> 检测器共识 + 非专家模型预审。详见下方同日条目；人类评审义务保留，材料包不变。
-
-
-
 > **2026-10-09 audit:** [review and corrections](RESEARCH_AUDIT_2026-10-09.md).
 > Rechecked 108 stage-III endpoint deltas and reproduced the frozen stage-IV verification snapshot.
 > Corrected E0's unequal-chunk mean: from saved throughput, image-weighted two-model/x1 =
