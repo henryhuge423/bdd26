@@ -4,7 +4,8 @@ import pytest
 
 from nucseg.visibility_probe import (bin_area, bin_area_native, crop_group, did,
                                      max_iou_table, miss_table, original_full,
-                                     rate_gap_bootstrap, sample_windows, shift_pad)
+                                     rate_gap_bootstrap, resample_rows, sample_windows,
+                                     shift_pad, stratified_rate_gap_bootstrap)
 
 
 def test_miss_table_keys_by_original_ids():
@@ -127,3 +128,47 @@ def test_bootstrap_stratum_blocks_aligned():
                            np.arange(4), tissue, n_boot=100, seed=5)
     assert r["gap"] == pytest.approx(0.75, abs=1e-12)
     assert r["lo"] == pytest.approx(0.75, abs=1e-12) and r["hi"] == pytest.approx(0.75, abs=1e-12)
+
+
+def test_resample_rows_single_engine():
+    """resample_rows（评审 2026-10-14：三份平行重采样引擎合一）：层内抽图、
+    行按图整块、层内行数守恒、同 rng 逐位确定。"""
+    img = np.array([0, 0, 1, 1, 1, 2, 2])
+    tissue = np.array(["Lung", "Lung", "Breast", "Breast", "Breast", "Lung", "Lung"])
+    rows = resample_rows(img, tissue, np.random.default_rng(7))
+    assert len(rows) == len(img)
+    # 层内守恒：Breast 核 3 个 → Breast 行恰 3；Lung 恰 4
+    assert (tissue[rows] == "Breast").sum() == 3 and (tissue[rows] == "Lung").sum() == 4
+    # 行按图整块：每图行数是原图内行数的整数倍
+    for i in np.unique(img):
+        assert (img[rows] == i).sum() % (img == i).sum() == 0
+    assert np.array_equal(rows, resample_rows(img, tissue, np.random.default_rng(7)))
+    # 单一 TISSUES 顺序引擎：与 rate_gap_bootstrap 同数据同种子 → 同 CI（单 bin 退化时）
+    miss_a = np.array([1, 0, 1, 0]); miss_b = np.zeros(4)
+    img4 = np.arange(4)
+    tissue4 = np.array(["Lung", "Breast", "Lung", "Lung"])
+    r1 = rate_gap_bootstrap(miss_a, miss_b, img4, tissue4, n_boot=50, seed=11)
+    r2 = stratified_rate_gap_bootstrap(miss_a, miss_b, np.array(["100-400"] * 4),
+                                       img4, tissue4, n_boot=50, seed=11)
+    assert r1["gap"] == pytest.approx(r2["gap"], abs=1e-12)
+    assert r1["lo"] == pytest.approx(r2["lo"], abs=1e-12)
+    assert r1["hi"] == pytest.approx(r2["hi"], abs=1e-12)
+
+
+def test_stratified_rate_gap_standardizes():
+    """H1 面积分层（spec §4）：直接标准化差距 ≠ 粗差距（混杂移除）。
+    行布局 [binA贴边×3, binB贴边×1, binA内部×1, binB内部×3]：
+    binA gap = 2/3−0；binB gap = 0−0；权重（bin 内核数）各 4 → 标准化 = 1/3；
+    粗差距 = 贴边 2/4 − 内部 0/4 = 0.5。三张同构图像 → 任何 draw 复现同值，CI 退化。"""
+    a = np.array([1, 1, 0, 0, np.nan, np.nan, np.nan, np.nan] * 3)
+    b = np.array([np.nan, np.nan, np.nan, np.nan, 0, 0, 0, 0] * 3)
+    bins = np.array(["<100", "<100", "<100", ">=400", "<100", ">=400", ">=400", ">=400"] * 3)
+    img = np.repeat([0, 1, 2], 8)
+    tissue = np.array(["Breast"] * 24)
+    r = stratified_rate_gap_bootstrap(a, b, bins, img, tissue, n_boot=100, seed=3)
+    assert r["gap"] == pytest.approx(1 / 3, abs=1e-12)
+    assert r["lo"] == pytest.approx(1 / 3, abs=1e-12) and r["hi"] == pytest.approx(1 / 3, abs=1e-12)
+    # 空侧 bin 剔除后权重再归一：binB 无内部核 → 只用 binA（gap 2/3）
+    b2 = np.where(bins == "<100", b, np.nan)
+    r2 = stratified_rate_gap_bootstrap(a, b2, bins, img, tissue, n_boot=100, seed=3)
+    assert r2["gap"] == pytest.approx(2 / 3, abs=1e-12)

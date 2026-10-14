@@ -35,9 +35,10 @@ from nucseg.constants import NUM_CLASSES  # noqa: E402
 from nucseg.metrics.errors import classify_errors  # noqa: E402
 from nucseg.metrics.instance import overlap  # noqa: E402
 from nucseg.metrics.pannuke_eval import evaluate, instance_classes  # noqa: E402
-from nucseg.visibility_probe import (bin_area, bin_area_native, crop_group,  # noqa: E402
-                                     max_iou_table, miss_table, original_full,
-                                     rate_gap_bootstrap, sample_windows, shift_pad)
+from nucseg.visibility_probe import (bin_area, bin_area_native, crop_group, did,  # noqa: E402
+                                     max_iou_table, original_full,
+                                     rate_gap_bootstrap, resample_rows, sample_windows,
+                                     shift_pad, stratified_rate_gap_bootstrap)
 
 ROOT = Path(__file__).resolve().parents[1]
 ALLOWED_RUN = (ROOT / "runs/cellvit_uni/split1").resolve()
@@ -59,42 +60,27 @@ def gt_class_map(inst: np.ndarray, typ: np.ndarray) -> dict[int, int]:
     return {int(i): int(c) for i, c in zip(ids, cls)}
 
 
-def _resample_rows(img: np.ndarray, tissue: np.ndarray, rng) -> np.ndarray:
-    """Image rows of one draw: images resampled with replacement WITHIN each tissue."""
-    rows = []
-    for t in dict.fromkeys(tissue):
-        s = np.nonzero(tissue == t)[0]
-        imgs = np.unique(img[s])
-        picks = rng.choice(imgs, len(imgs), replace=True)
-        rows.append(np.concatenate([np.nonzero(img == i)[0] for i in picks]))
-    return np.concatenate(rows) if rows else np.zeros(0, int)
-
-
 def did_bootstrap(tr_ck, tr_c0, fu_ck, fu_c0, img, tissue, n_boot, seed) -> dict:
     """DiD with image-clustered, tissue-stratified bootstrap (draws mirror the point:
-    pooled group rates on the drawn multiset; same draw serves all four groups)."""
-    def rates(rows):
-        with np.errstate(all="ignore"):
-            return (np.nanmean(tr_ck[rows]), np.nanmean(tr_c0[rows]),
-                    np.nanmean(fu_ck[rows]), np.nanmean(fu_c0[rows]))
-
+    pooled group rates on the drawn multiset; same draw serves all four groups).
+    Point and per-draw statistic share the module's did() — one formula, one engine."""
     rng = np.random.default_rng(seed)
     deltas = np.full(n_boot, np.nan)
     with np.errstate(all="ignore"), np.testing.suppress_warnings() as sup:
         sup.filter(RuntimeWarning)
         for k in range(n_boot):
-            rows = _resample_rows(img, tissue, rng)
+            rows = resample_rows(img, tissue, rng)
             if len(rows):
-                t_ck, t_c0, f_ck, f_c0 = rates(rows)
-                deltas[k] = (t_ck - t_c0) - (f_ck - f_c0)
+                deltas[k] = did(tr_ck[rows], tr_c0[rows], fu_ck[rows], fu_c0[rows])
         lo, hi = np.nanpercentile(deltas, [2.5, 97.5])
-    t_ck, t_c0, f_ck, f_c0 = rates(np.arange(len(img)))
-    return {"did": float((t_ck - t_c0) - (f_ck - f_c0)), "lo": float(lo), "hi": float(hi)}
+    return {"did": did(tr_ck, tr_c0, fu_ck, fu_c0), "lo": float(lo), "hi": float(hi)}
 
 
 def analyze_records(rec: list[dict], n_boot: int = N_BOOT, seed: int = BOOT_SEED) -> dict:
     """Pure gate arithmetic over per-nucleus records (cond/group/frag/miss/image/tissue).
-    H1: C0 Dead border-vs-interior gap (pooled per-nucleus rates, clustered CI).
+    H1: C0 Dead border-vs-interior gap, area-stratified per spec §4 — direct
+    standardization over <100/100-400/>=400 native-px bins with fixed full-sample
+    weights; the crude pooled gap is kept alongside as a descriptive check.
     H2: DiD per crop condition vs C0 baseline, paired by (image, gt_id).
     H3: C2 truncated <30 px vs >=100 px fragment-bin gap."""
     def arr(rows, key):
@@ -104,18 +90,27 @@ def analyze_records(rec: list[dict], n_boot: int = N_BOOT, seed: int = BOOT_SEED
     dead = [r for r in c0 if r["cls"] == 4]
     a = np.array([r["miss"] if r["group"] == "border" else np.nan for r in dead], float)
     b = np.array([r["miss"] if r["group"] == "interior" else np.nan for r in dead], float)
-    h1 = rate_gap_bootstrap(a, b, arr(dead, "image"), np.asarray([r["tissue"] for r in dead]),
-                            n_boot, seed)
+    nbins = np.array([bin_area_native(r["area_native"]) for r in dead])
+    tis_dead = np.asarray([r["tissue"] for r in dead])
+    h1 = stratified_rate_gap_bootstrap(a, b, nbins, arr(dead, "image"), tis_dead, n_boot, seed)
+    h1_crude = rate_gap_bootstrap(a, b, arr(dead, "image"), tis_dead, n_boot, seed)
     h1_pass = h1["gap"] >= GATE_H1 and h1["lo"] > 0
+    h1_bins = {}
+    for bn in ("<100", "100-400", ">=400"):
+        sel = [r for r in dead if bin_area_native(r["area_native"]) == bn]
+        h1_bins[bn] = {
+            "border_rate": (float(np.mean([r["miss"] for r in sel if r["group"] == "border"]))
+                            if any(r["group"] == "border" for r in sel) else None),
+            "border_n": sum(r["group"] == "border" for r in sel),
+            "interior_rate": (float(np.mean([r["miss"] for r in sel if r["group"] == "interior"]))
+                              if any(r["group"] == "interior" for r in sel) else None),
+            "interior_n": sum(r["group"] == "interior" for r in sel)}
 
     c0_by_key = {(r["image"], r["gt_id"]): r for r in c0 if r["original_full"]}
     dids = {}
     for cond in ("C-int", "C2", "C3"):
         rows = [r for r in rec if r["cond"] == cond and r["group"] in ("truncated", "stays_full")]
         pairs = [r for r in rows if (r["image"], r["gt_id"]) in c0_by_key]
-        print(f"[debug] {cond}: rows={len(rows)} pairs={len(pairs)} "
-              f"c0_keys={len(c0_by_key)} sample_row_key={[(r['image'], r['gt_id']) for r in rows[:2]]} "
-              f"in_c0={[(r['image'], r['gt_id']) in c0_by_key for r in rows[:2]]}", file=sys.stderr)
         n_all = len(pairs)
         tr_ck_a = np.full(n_all, np.nan); tr_c0_a = np.full(n_all, np.nan)
         fu_ck_a = np.full(n_all, np.nan); fu_c0_a = np.full(n_all, np.nan)
@@ -125,9 +120,6 @@ def analyze_records(rec: list[dict], n_boot: int = N_BOOT, seed: int = BOOT_SEED
                 tr_ck_a[k], tr_c0_a[k] = r["miss"], base["miss"]
             else:
                 fu_ck_a[k], fu_c0_a[k] = r["miss"], base["miss"]
-        print(f"[debug] {cond} nanmeans tr_ck={np.nanmean(tr_ck_a):.3f} tr_c0={np.nanmean(tr_c0_a):.3f} "
-              f"fu_ck={np.nanmean(fu_ck_a):.3f} fu_c0={np.nanmean(fu_c0_a):.3f} "
-              f"img[:3]={arr(pairs, 'image')[:3]}", file=sys.stderr)
         dids[cond] = did_bootstrap(tr_ck_a, tr_c0_a, fu_ck_a, fu_c0_a,
                                    arr(pairs, "image"),
                                    np.asarray([r["tissue"] for r in pairs]), n_boot, seed)
@@ -142,7 +134,9 @@ def analyze_records(rec: list[dict], n_boot: int = N_BOOT, seed: int = BOOT_SEED
     h3_pass = h3["gap"] >= GATE_H3 and h3["lo"] > 0
 
     # descriptive: per-class border/interior + per-condition miss rates + frag bins
-    desc: dict = {"h1_by_class": {}, "miss_by_cond": {}, "frag_bins_C2": {}, "frag_bins_C3": {}}
+    # + per-tissue breakdown (spec §6) + H1 per-bin rates
+    desc: dict = {"h1_by_class": {}, "miss_by_cond": {}, "frag_bins_C2": {}, "frag_bins_C3": {},
+                  "by_tissue": {}}
     for cls in range(1, NUM_CLASSES + 1):
         rows = [r for r in c0 if r["cls"] == cls]
         for grp in ("border", "interior"):
@@ -157,9 +151,23 @@ def analyze_records(rec: list[dict], n_boot: int = N_BOOT, seed: int = BOOT_SEED
             sel = [r["miss"] for r in rec if r["cond"] == cond and r["group"] == "truncated"
                    and r["frag_area_bin"] == b]
             desc[key][b] = {"rate": float(np.mean(sel)) if sel else None, "n": len(sel)}
+    for t in sorted({r["tissue"] for r in rec}):
+        rows_t = [r for r in rec if r["tissue"] == t]
+        dead_t = [r for r in rows_t if r["cond"] == "C0" and r["cls"] == 4]
+        entry: dict = {"h1_dead": {}, "miss_by_cond": {}}
+        for grp in ("border", "interior"):
+            sel = [r["miss"] for r in dead_t if r["group"] == grp]
+            entry["h1_dead"][grp] = {"rate": float(np.mean(sel)) if sel else None, "n": len(sel)}
+        for cond in sorted({r["cond"] for r in rows_t}):
+            sel = [r["miss"] for r in rows_t if r["cond"] == cond]
+            entry["miss_by_cond"][cond] = {"rate": float(np.mean(sel)) if sel else None,
+                                           "n": len(sel)}
+        desc["by_tissue"][t] = entry
 
     return {"gates": {"H1": {"dead_gap": h1["gap"], "lo": h1["lo"], "hi": h1["hi"],
-                             "pass": bool(h1_pass)},
+                             "pass": bool(h1_pass),
+                             "crude_gap": h1_crude["gap"], "crude_lo": h1_crude["lo"],
+                             "crude_hi": h1_crude["hi"], "bins": h1_bins},
                       "H2": {"did_c2": h2["did"], "lo": h2["lo"], "hi": h2["hi"],
                              "did_c_int": dids["C-int"]["did"],
                              "did_c_int_lo": dids["C-int"]["lo"], "did_c_int_hi": dids["C-int"]["hi"],
@@ -264,6 +272,13 @@ def main(argv=None) -> None:
                          widen=run_widen(a.run))
     model = build_model(ck_cfg, pretrained=False).cuda()
     model.load_state_dict(torch.load(ALLOWED_CKPT, map_location="cpu", weights_only=False)["model"])
+    # predict_fold's contract (engine calls .eval() before inference): without it the
+    # 2026-10-13 run inferred in train mode — dropout + batch-statistics BN, random and
+    # batch-composition dependent — invalidating every C1/C-int/C2/C3 number against the
+    # eval-mode C0 baseline. Found in the 2026-10-14 review; all published numbers from
+    # that run are superseded by the rerun.
+    model.eval()
+    torch.manual_seed(0)
     preds = {cond: predict_frames(model, fr, batch=a.batch_size)
              for cond, fr in frames.items()}
     del model
@@ -273,33 +288,43 @@ def main(argv=None) -> None:
     rec: list[dict] = []
     inst_all = np.asarray(f.inst)
     type_all = np.asarray(f.type)
-    sec: dict = {"split_merge": {}, "type_acc": {}, "mpq_bpq": {}, "hv_err": {}}
+    sec: dict = {"split_merge": {}, "type_acc": {}, "mpq_bpq": {}, "hv_err": {},
+                 "visible_iou": {}}
+    # crop-frame prediction maps resized back to crop size ONCE (reused by the mPQ block
+    # below — the 2026-10-13 run recomputed every map a second time)
+    crop_pred = {c: {"pi": np.empty((n, s, s), np.int32), "pt": np.empty((n, s, s), np.uint8)}
+                 for c, s in (("C2", 192), ("C3", 160))}
     for j in range(n):
         tis = str(f.tissue[j])
         inst_j = np.asarray(inst_all[j])
         cls_map = gt_class_map(inst_j, np.asarray(type_all[j]))
         areas = np.bincount(inst_j.ravel())
         ofull = original_full(inst_j)
-        # C0 (frozen predictions)
-        miss0 = miss_table(inst_j, pred0["inst"][j])
+        # C0 (frozen predictions); max-iou kept as the visible-mask IoU secondary
+        u0 = max_iou_table(inst_j, pred0["inst"][j])
+        miss0 = {i: v < 0.1 for i, v in u0.items()}
         for i, m in miss0.items():
             rec.append(dict(image=j, tissue=tis, gt_id=i, cls=cls_map[i],
                             area_native=int(areas[i]), original_full=bool(ofull[i]),
                             cond="C0", group="interior" if ofull[i] else "border",
                             frag_area_bin="n/a", miss=bool(m)))
+            sec["visible_iou"].setdefault("C0", []).append(u0[i])
         # C1 (phase shift; same frame, same nuclei)
         sh_inst = shift_pad(inst_j, SHIFT)
-        miss1 = miss_table(sh_inst, preds["C1"][0][j])
+        u1 = max_iou_table(sh_inst, preds["C1"][0][j])
+        miss1 = {i: v < 0.1 for i, v in u1.items()}
         for i, m in miss1.items():
             rec.append(dict(image=j, tissue=tis, gt_id=i, cls=cls_map[i],
                             area_native=int(areas[i]), original_full=bool(ofull[i]),
                             cond="C1", group="interior" if ofull[i] else "border",
                             frag_area_bin="n/a", miss=bool(m)))
+            sec["visible_iou"].setdefault("C1", []).append(u1[i])
         # window groupings (original-full nuclei only enter H2/H3 rows)
         g192 = crop_group(inst_j, (int(w192[j][0]), int(w192[j][1]), 192))
         g160 = crop_group(inst_j, (int(w160[j][0]), int(w160[j][1]), 160))
         # C-int (interpolation floor; groups from the 192 window per spec H2 calibration)
-        missi = miss_table(inst_j, preds["C-int"][0][j])
+        ui = max_iou_table(inst_j, preds["C-int"][0][j])
+        missi = {i: v < 0.1 for i, v in ui.items()}
         for i, grp in g192.items():
             if not ofull[i] or grp["group"] == "outside":
                 continue
@@ -309,13 +334,15 @@ def main(argv=None) -> None:
                             group="stays_full" if grp["group"] == "full" else grp["group"],
                             frag_area_bin="n/a",
                             miss=bool(missi[i])))
+            sec["visible_iou"].setdefault("C-int", []).append(ui[i])
         # C2 / C3 (crop-frame evaluation, id-preserving GT crops)
         for cond, wk, gmap, size in (("C2", w192, g192, 192), ("C3", w160, g160, 160)):
             y, x = wk[j]
             gt_crop = inst_j[y:y + size, x:x + size]
             pi, pt, ph = _resize_maps(preds[cond][0][j], preds[cond][1][j], preds[cond][2][j], size)
-            missk = miss_table(gt_crop, pi)
+            crop_pred[cond]["pi"][j], crop_pred[cond]["pt"][j] = pi, pt
             u = max_iou_table(gt_crop, pi)
+            missk = {i: v < 0.1 for i, v in u.items()}
             for i, grp in gmap.items():
                 if not ofull[i] or grp["group"] == "outside":
                     continue
@@ -325,6 +352,7 @@ def main(argv=None) -> None:
                                 group="stays_full" if grp["group"] == "full" else grp["group"],
                                 frag_area_bin=bin_area(grp["area"]) if grp["group"] == "truncated"
                                 else "n/a", miss=bool(missk[i])))
+                sec["visible_iou"].setdefault(cond, []).append(u[i])
             # secondary: hv error inside truncated fragments (diagnostic only;
             # min_size=1 = the guard's smallest legal value ≈ spec's "no cutoff")
             ideal = hv_targets(gt_crop, min_size=1)
@@ -333,37 +361,48 @@ def main(argv=None) -> None:
             if frag.any():
                 sec["hv_err"].setdefault(cond, []).append(float(np.abs(ph[frag] - ideal[frag]).mean()))
             # secondary: split/merge + matched type accuracy in the crop frame
+            # (type accuracy pooled over matched nuclei in every condition — the
+            # 2026-10-13 run averaged per image for C2/C3 only, an inconsistent statistic)
             ov = overlap(gt_crop, pi)
             gs, ps, _ = classify_errors(ov)
-            sec["split_merge"].setdefault(cond, {}).setdefault("split", 0)
-            sec["split_merge"][cond]["split"] += int((gs == 2).sum())
-            sec["split_merge"][cond]["merged"] = sec["split_merge"][cond].get("merged", 0) + int((gs == 1).sum())
+            sm = sec["split_merge"].setdefault(cond, {"split": 0, "merged": 0, "n_pred": 0, "n_gt": 0})
+            sm["split"] += int((gs == 2).sum())
+            sm["merged"] += int((gs == 1).sum())
+            sm["n_pred"] += int((np.unique(pi) > 0).sum())
+            sm["n_gt"] += int((np.unique(gt_crop) > 0).sum())
             _, p_cls = instance_classes(pi, pt)
             iou = ov.iou
             gi, pii = np.nonzero(iou > 0.5)
             if len(gi):
                 g_ids = np.unique(gt_crop); g_ids = g_ids[g_ids > 0]
-                acc = [cls_map[int(g_ids[g])] == int(p_cls[pii[k]]) for k, g in enumerate(gi)]
-                sec["type_acc"].setdefault(cond, []).append(float(np.mean(acc)))
+                sec["type_acc"].setdefault(cond, []).extend(
+                    cls_map[int(g_ids[g])] == int(p_cls[pii[k]]) for k, g in enumerate(gi))
 
     # secondary: C0/C1/C-int split/merge + type acc on the 256 frame
     for cond, gt_i, pi, pt in (("C0", None, pred0["inst"], pred0["type"]),
                                ("C1", "shift", preds["C1"][0], preds["C1"][1]),
                                ("C-int", None, preds["C-int"][0], preds["C-int"][1])):
-        sp = me = 0
+        sp = me = npr = ngt = 0
         accs = []
         for j in range(n):
-            gtj = shift_pad(np.asarray(inst_all[j]), SHIFT) if gt_i == "shift" else np.asarray(inst_all[j])
-            clsj = gt_class_map(gtj, np.asarray(type_all[j]))
+            instj = np.asarray(inst_all[j])
+            sh = gt_i == "shift"
+            gtj = shift_pad(instj, SHIFT) if sh else instj
+            # C1: the type map must shift WITH the instance map (2026-10-14 review —
+            # pairing shifted inst against the unshifted type map voted 12 px off-nucleus)
+            typej = shift_pad(np.asarray(type_all[j]), SHIFT) if sh else np.asarray(type_all[j])
+            clsj = gt_class_map(gtj, typej)
             ov = overlap(gtj, pi[j])
             gs, _, _ = classify_errors(ov)
             sp += int((gs == 2).sum()); me += int((gs == 1).sum())
+            npr += int((np.unique(pi[j]) > 0).sum())
+            ngt += int((np.unique(gtj) > 0).sum())
             _, p_cls = instance_classes(pi[j], pt[j])
             gi, pii = np.nonzero(ov.iou > 0.5)
             if len(gi):
                 g_ids = np.unique(gtj); g_ids = g_ids[g_ids > 0]
                 accs += [clsj[int(g_ids[g])] == int(p_cls[pii[k]]) for k, g in enumerate(gi)]
-        sec["split_merge"][cond] = {"split": sp, "merged": me}
+        sec["split_merge"][cond] = {"split": sp, "merged": me, "n_pred": npr, "n_gt": ngt}
         sec["type_acc"][cond] = float(np.mean(accs)) if accs else None
 
     # secondary: per-condition image-level mPQ/bPQ (crop frame for C2/C3)
@@ -384,15 +423,12 @@ def main(argv=None) -> None:
             gt_ch = np.empty((n, size, size, NUM_CLASSES), np.int32)
             gi = np.empty((n, size, size), np.int32)
             gt_ = np.empty((n, size, size), np.uint8)
-            pi = np.empty((n, size, size), np.int32)
-            pt = np.empty((n, size, size), np.uint8)
             for j in range(n):
                 y, x = wk[j]
                 gt_ch[j] = np.asarray(f.gt_channels[j])[y:y + size, x:x + size]
                 gi[j] = inst_all[j][y:y + size, x:x + size]
                 gt_[j] = type_all[j][y:y + size, x:x + size]
-                pi[j], pt[j], _ = _resize_maps(preds[cond][0][j], preds[cond][1][j],
-                                               preds[cond][2][j], size)
+            pi, pt = crop_pred[cond]["pi"], crop_pred[cond]["pt"]  # resized once above
         s = evaluate(gt_ch, gi, gt_, f.tissue, np.asarray(pi), np.asarray(pt),
                      workers=16)["summary"]
         sec["mpq_bpq"][cond] = {"mPQ": s["official"]["mPQ"], "bPQ": s["official"]["bPQ"]}
@@ -401,6 +437,8 @@ def main(argv=None) -> None:
     sec["hv_err"] = {k: float(np.mean(v)) for k, v in sec["hv_err"].items()}
     sec["type_acc"] = {k: (float(np.mean(v)) if isinstance(v, list) else v)
                        for k, v in sec["type_acc"].items()}
+    sec["visible_iou"] = {k: (float(np.mean(v)) if v else None)
+                          for k, v in sec["visible_iou"].items()}
 
     out = analyze_records(rec, N_BOOT, BOOT_SEED)
 
@@ -418,8 +456,10 @@ def main(argv=None) -> None:
                         "module": file_provenance(ROOT / "src/nucseg/visibility_probe.py")["sha256"]}},
         indent=2))
     lines = ["# E4 visibility probe (spec 2026-10-13; gates frozen)", "",
-             f"H1 Dead border-interior gap {out['gates']['H1']['dead_gap']:+.4f} "
+             f"H1 Dead border-interior gap (area-stratified, spec §4) "
+             f"{out['gates']['H1']['dead_gap']:+.4f} "
              f"[{out['gates']['H1']['lo']:+.4f},{out['gates']['H1']['hi']:+.4f}] "
+             f"(crude {out['gates']['H1']['crude_gap']:+.4f}) "
              f"pass={out['gates']['H1']['pass']}",
              f"H2 DiD(C2) {out['gates']['H2']['did_c2']:+.4f} "
              f"[{out['gates']['H2']['lo']:+.4f},{out['gates']['H2']['hi']:+.4f}] "

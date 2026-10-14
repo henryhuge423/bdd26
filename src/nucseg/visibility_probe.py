@@ -93,6 +93,23 @@ def bin_area_native(a: int) -> str:
     return "<100" if a < 100 else ("100-400" if a < 400 else ">=400")
 
 
+def resample_rows(img: np.ndarray, tissue: np.ndarray, rng) -> np.ndarray:
+    """Image-cluster rows of one bootstrap draw: images resampled with replacement
+    WITHIN each tissue stratum (TISSUES order), all rows of a drawn image kept together.
+    The ONE resampling engine shared by rate_gap_bootstrap, stratified_rate_gap_bootstrap
+    and the runner's did_bootstrap (2026-10-14 review: a single engine, not parallel
+    copies that can silently drift apart)."""
+    parts = []
+    for t in TISSUES:
+        s = np.nonzero(tissue == t)[0]
+        if not len(s):
+            continue
+        imgs = np.unique(img[s])
+        picks = rng.choice(imgs, len(imgs), replace=True)
+        parts.append(np.concatenate([np.nonzero(img == i)[0] for i in picks]))
+    return np.concatenate(parts) if parts else np.zeros(0, int)
+
+
 def rate_gap_bootstrap(miss_a: np.ndarray, miss_b: np.ndarray, img: np.ndarray,
                        tissue: np.ndarray, n_boot: int = 1000, seed: int = 0) -> dict:
     """P(miss|a) - P(miss|b) over paired nuclei. Point estimate = pooled per-nucleus rate
@@ -103,7 +120,6 @@ def rate_gap_bootstrap(miss_a: np.ndarray, miss_b: np.ndarray, img: np.ndarray,
     NaN entries drop from their side's denominator. Percentile 95% CI."""
     a = np.asarray(miss_a, float)
     b = np.asarray(miss_b, float)
-    strata = [s for t in TISSUES for s in [np.nonzero(tissue == t)[0]] if len(s)]
 
     def pooled_gap(rows):
         with np.errstate(all="ignore"):
@@ -114,19 +130,58 @@ def rate_gap_bootstrap(miss_a: np.ndarray, miss_b: np.ndarray, img: np.ndarray,
     with np.errstate(all="ignore"), np.testing.suppress_warnings() as sup:
         sup.filter(RuntimeWarning)
         for k in range(n_boot):
-            parts = []
-            for s in strata:
-                imgs = np.unique(img[s])
-                picks = rng.choice(imgs, len(imgs), replace=True)
-                parts.append(np.concatenate([np.nonzero(img == i)[0] for i in picks]))
-            if parts:
-                deltas[k] = pooled_gap(np.concatenate(parts))
+            rows = resample_rows(img, tissue, rng)
+            if len(rows):
+                deltas[k] = pooled_gap(rows)
         lo, hi = np.nanpercentile(deltas, [2.5, 97.5])
     # point: each side NaN-dropped independently (masked/unpaired use — H1 groups, H3 bins;
     # paired two-condition deltas go through the runner's did_bootstrap instead)
     with np.errstate(all="ignore"):
         point = float(np.nanmean(a) - np.nanmean(b))
     return {"gap": point, "lo": float(lo), "hi": float(hi)}
+
+
+def stratified_rate_gap_bootstrap(miss_a: np.ndarray, miss_b: np.ndarray, bins: np.ndarray,
+                                  img: np.ndarray, tissue: np.ndarray,
+                                  n_boot: int = 1000, seed: int = 0) -> dict:
+    """Spec §4 H1: border-vs-interior gap for ONE class, standardized over the native-area
+    bins (<100 / 100-400 / >=400). Point = sum_b w_b*(rate_a,b - rate_b,b) with w_b the
+    FULL-SAMPLE nucleus count of bin b (both groups), renormalized over bins where both
+    sides have data; weights stay FIXED across draws (direct standardization — the
+    estimand is the area-controlled gap). Draws mirror rate_gap_bootstrap exactly
+    (same resample_rows engine, tissue-stratified image clusters). NaN entries drop
+    from their side's denominator; a bin missing one side is dropped and the remaining
+    weights renormalized."""
+    a = np.asarray(miss_a, float)
+    b = np.asarray(miss_b, float)
+    bins = np.asarray(bins)
+    uniq = [u for u in np.unique(bins) if u != "n/a"]
+    w = np.array([int(np.sum((bins == s) & (~np.isnan(a) | ~np.isnan(b)))) for s in uniq], float)
+
+    def std_gap(rows):
+        num = den = 0.0
+        with np.errstate(all="ignore"):
+            for s, ws in zip(uniq, w):
+                m = rows[bins[rows] == s]
+                if not len(m):
+                    continue
+                ra, rb = np.nanmean(a[m]), np.nanmean(b[m])
+                if np.isnan(ra) or np.isnan(rb):
+                    continue
+                num += ws * (ra - rb)
+                den += ws
+        return num / den if den else np.nan
+
+    rng = np.random.default_rng(seed)
+    deltas = np.full(n_boot, np.nan)
+    with np.errstate(all="ignore"), np.testing.suppress_warnings() as sup:
+        sup.filter(RuntimeWarning)
+        for k in range(n_boot):
+            rows = resample_rows(img, tissue, rng)
+            if len(rows):
+                deltas[k] = std_gap(rows)
+        lo, hi = np.nanpercentile(deltas, [2.5, 97.5])
+    return {"gap": float(std_gap(np.arange(len(a)))), "lo": float(lo), "hi": float(hi)}
 
 
 def did(trunc_miss_ck: np.ndarray, trunc_miss_c0: np.ndarray,
