@@ -32,6 +32,38 @@ def deconv_block(cin: int, cout: int, k: int = 3, drop: float = 0.0) -> nn.Seque
                          nn.BatchNorm2d(cout), nn.ReLU(True), nn.Dropout(drop))
 
 
+# Skip-path fusion arms (spec docs/superpowers/specs/2026-10-15-fusion-gating-design.md):
+#   plain   - the baseline `cat([skip, up])` fusion (default; every pre-2026-10-15 run)
+#   gate    - per-pixel channel gate on each skip path (SAFViT-motivated minimal form)
+#   adapter - parameter-matched plain control: same modules/shapes, no gating
+FUSION_MODES = ("plain", "gate", "adapter")
+
+
+class SkipGate(nn.Module):
+    """Per-pixel channel gate on one skip path, or its parameter-matched plain adapter.
+
+    gate:    s' = s * (C * softmax(W(s), dim=1))
+    adapter: s' = s + W(s)
+    W = 1x1 conv, zero-initialized, so both arms start exactly at the baseline function
+    (C * softmax(0) = 1 for the gate; the adapter adds zero). The two arms have identical
+    parameter counts; only the gate can reweight channels per pixel."""
+
+    def __init__(self, channels: int, mode: str):
+        super().__init__()
+        if mode not in ("gate", "adapter"):
+            raise ValueError(f"SkipGate takes 'gate' or 'adapter', not {mode!r}")
+        self.mode, self.channels = mode, channels
+        self.proj = nn.Conv2d(channels, channels, 1, bias=True)
+        nn.init.zeros_(self.proj.weight)
+        nn.init.zeros_(self.proj.bias)
+
+    def forward(self, s: torch.Tensor) -> torch.Tensor:
+        logits = self.proj(s)
+        if self.mode == "gate":
+            return s * (self.channels * torch.softmax(logits, dim=1))
+        return s + logits
+
+
 class UNIEncoder(VisionTransformer):
     """timm ViT-L/16 matching the UNI checkpoint; returns (cls token, [tokens after extract_layers])."""
 
@@ -64,8 +96,11 @@ class CellViTUNI(nn.Module):
     def __init__(self, uni_ckpt: str | None = None, num_types: int = NUM_CLASSES + 1,
                  num_tissues: int = len(TISSUES), drop_rate: float = 0.0, drop_path_rate: float = 0.1,
                  attn_drop_rate: float = 0.1, type_head: nn.Module | None = None,
-                 dead_expert: bool = False, widen: int = 0):
+                 dead_expert: bool = False, widen: int = 0, fusion: str = "plain"):
         super().__init__()
+        if fusion not in FUSION_MODES:
+            raise ValueError(f"Unknown fusion mode {fusion!r}; expected one of {FUSION_MODES}")
+        self.fusion = fusion
         self.encoder = UNIEncoder(drop_path_rate=drop_path_rate, attn_drop_rate=attn_drop_rate)
         if uni_ckpt:
             msg = self.encoder.load_state_dict(torch.load(uni_ckpt, map_location="cpu", weights_only=True),
@@ -78,6 +113,10 @@ class CellViTUNI(nn.Module):
                                    deconv_block(256, 128, drop=d))
         self.skip2 = nn.Sequential(deconv_block(e, 512, drop=d), deconv_block(512, 256, drop=d))
         self.skip3 = deconv_block(e, 512, drop=d)
+        # one gate per skip path (64/128/256/512 channels after skip0..skip3); empty for "plain",
+        # so no parameter names or state_dict entries are added to baseline runs
+        self.gates = (nn.ModuleList([SkipGate(c, fusion) for c in (64, 128, 256, 512)])
+                      if fusion != "plain" else nn.ModuleList())
         # widen>0 is the C1 equal-parameter control (spec 2026-10-07 §7): the dead expert's
         # parameters folded back into the class-agnostic detection branches, nothing else changes
         self.np_branch, self.hv_branch = (self._branch(d, 512 + widen) for _ in range(2))
@@ -117,6 +156,9 @@ class CellViTUNI(nn.Module):
         z1, z2, z3, z4 = (z[:, self.encoder.num_prefix_tokens:].transpose(1, 2).reshape(-1, self.embed_dim, hp, wp)
                           for z in zs)
         skips = (self.skip0(x), self.skip1(z1), self.skip2(z2), self.skip3(z3), z4)
+        if self.fusion != "plain":
+            # applied once, so every branch decodes the same gated skips; identity at initialization
+            skips = tuple(g(s) for g, s in zip(self.gates, skips[:4])) + (z4,)
         f_tp = self._decode(skips, self.tp_branch)
         out = {
             "np": self.np_head(self._decode(skips, self.np_branch)),
@@ -146,7 +188,18 @@ def branch_param_count(model: CellViTUNI) -> dict[str, int]:
         mod = getattr(model, name, None)
         if mod is not None:
             groups[name] = sum(p.numel() for p in mod.parameters())
+    if model.fusion != "plain":
+        groups["gates"] = sum(p.numel() for p in model.gates.parameters())
     return groups
+
+
+def fusion_param_count(model: CellViTUNI) -> int:
+    """Parameters the fusion arm adds over the baseline (0 for "plain")."""
+    return sum(p.numel() for p in model.gates.parameters())
+
+
+def total_param_count(model: CellViTUNI) -> int:
+    return sum(p.numel() for p in model.parameters())
 
 
 def solve_c1_widen() -> int:
