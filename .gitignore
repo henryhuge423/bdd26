@@ -28,3 +28,8 @@ __pycache__/
 .pytest_cache/
 .claude/
 ssh_methods.md
+# Presentation/proposal delivery directories track current PDFs only.
+/Presentations/progress/*
+!/Presentations/progress/*.pdf
+/docs/report/project_proposal/*
+!/docs/report/project_proposal/*.pdf
