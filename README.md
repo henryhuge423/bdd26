@@ -1,5 +1,10 @@
 # bdd26 — PanNuke Nuclei Instance Segmentation (course project 5)
 
+[Mechanism closeout](docs/results/VISIBILITY_SUPERVISION_MECHANISM_2026-10-15.md).
+
+> **2026-10-15 update (America/New_York):** All eight visibility-supervision runs and original-image fold2 evaluations are complete. Frozen dev admission fails on original-image clauses 2 and 3: A2−A0 mPQ/bPQ losses exceed .002 in both seeds; seed1 strict Dead falls .004372; mean A2−A1 strict Dead falls .009781. All eight fixed-C2 mechanism evaluations are now complete. A1−A2 mean miss-rate improvement is −.008621 (95% CI [−.040918,+.017699]); the frozen mechanism clause also fails. No added seeds or confirmation. No additional seeds or three-split confirmation; PM-Net remains a proposal. See [full results](docs/results/VISIBILITY_SUPERVISION_DEV_2026-10-15.md). Earlier dated execution statements below are historical snapshots.
+
+
 Nuclei instance segmentation + classification on **PanNuke** (~7,900 H&E patches, 19 tissues,
 5 nucleus classes), evaluated under the **official 3-fold protocol**. On PanNuke, swapping
 backbones moves mPQ by only 1–2 points (CellViT-HIPT .485 → SAM-H .498 → SOTA ~.51); the
@@ -18,15 +23,23 @@ Research plan + full progress log: [docs/RESEARCH_PLAN.md](docs/RESEARCH_PLAN.md
 experiment number: [docs/findings.md](docs/findings.md). Course brief:
 `docs/reference/our_project5_nuclei_segmentation.pdf`.
 
-## Current status (2026-10-14)
+## Current status (2026-10-15)
 
-The user has now authorized the visibility-supervision dev round: four arms × two
-seeds (19/1), split1 training/validation only, 130 epochs with last-checkpoint evaluation.
-The [frozen spec](docs/superpowers/specs/2026-10-14-visibility-supervision-design.md) and
-[execution plan](docs/superpowers/plans/2026-10-14-visibility-supervision.md) govern the run.
-Implementation passed its focused tests and independent review; the A3 validation-target
-mismatch was fixed. The final full regression passed (403 tests; 19,074 existing warnings). Runtime smoke passed. A0–A3 seed19 have each completed all 130 epochs and fold2 evaluation (official mPQ .4840/.4767/.4749/.4789, bPQ .6537/.6465/.6474/.6469, Dead PQ .1611/.1934/.1833/.1976, strict Dead PQ .1175/.1254/.1199/.1183); A0 seed1 completed the same (official mPQ .4784, bPQ .6500, Dead PQ .1575, strict Dead PQ .1239). A1 seed1 is training and two runs remain queued, each followed by fold2 evaluation. These are dev validation results; no intervention verdict is available yet.
-No test-fold result or three-split confirmation is claimed.
+The four-arm × two-seed visibility-supervision dev round and fixed-C2 closeout
+are complete, using final checkpoints and validation fold2 only. Original-image
+quality guards and the crop-mechanism criterion fail; no extra seeds, menu changes
+or three-split confirmation. [Original-image results](docs/results/VISIBILITY_SUPERVISION_DEV_2026-10-15.md),
+[mechanism report](docs/results/VISIBILITY_SUPERVISION_MECHANISM_2026-10-15.md).
+
+Train-only [PM-Net geometry auditing](docs/results/PMNET_TRAIN_GEOMETRY_AUDIT_2026-10-15.md)
+found maximum276 instances per image,23 rounded centers outside masks and116 empty
+images. PM-Net remains a proposal; no new training. Current mechanism runner
+passed52 focused checks; prior403-test full regression belongs to the training implementation.
+
+Latest complete [progress PDF](Presentations/progress/PanNuke_Progress_2026-10-15.pdf)
+and [project proposal PDF](docs/report/project_proposal/PanNuke_Project_Proposal.pdf).
+Only current PDFs are tracked in these delivery directories; the complete PPTX is
+available locally and ignored. Generators/QA/provenance build files live in ignored ops.
 
 [Research closeout checklist and final-report analysis frame](docs/audits/RESEARCH_STATUS_2026-10-14.md).
 

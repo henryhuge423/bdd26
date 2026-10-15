@@ -1,5 +1,17 @@
 # Findings log
 
+## 2026-10-15 — fixed-C2 mechanism closeout and train-only geometry
+
+Eight final checkpoints ×2,523 fixed E4 C2 windows complete. Dead primary support=116 objects/38 images (77 Lung;5 border contacts without pixel loss). A1/A2 misses: seed19 51/54, seed1 52/51. Mean A1−A2 improvement−.008621 [−.040918,+.017699], frozen clause1 fails; original-image guards already fail. A3−A2 descriptive+.008621 [−.014713,+.034834], not equivalence. Stop recipe, no added seeds, tuning or confirmation; no test-fold access.
+
+Actual130-epoch A2 eligible exposures33,424/33,660, all-class repeats; no Dead-specific training count. Single-view audit7/70 Dead is a separate exposure measure. PM-Net fold1 geometry:63,218 instances, max276,256-query overflow20 in one patch;23 rounded centers outside their own mask (1/967 Dead),116 empty images. No new model training. [Mechanism details](results/VISIBILITY_SUPERVISION_MECHANISM_2026-10-15.md), [geometry audit](results/PMNET_TRAIN_GEOMETRY_AUDIT_2026-10-15.md).52 focused checks pass; all input hashes and paired endpoint recompute match. Latest-only progress PDF/PPTX and proposal PDF; Git tracks current PDFs only in these delivery directories.
+
+
+## 2026-10-15 — visibility dev original-image gate closeout
+
+Eight runs complete. Admission fails on frozen original-image clauses 2/3; C2 remains unexecuted. [Full tables, arithmetic and limits](results/VISIBILITY_SUPERVISION_DEV_2026-10-15.md). No new training, test access, threshold selection or scientific implementation changes.
+
+
 > **2026-10-14 可见片段监督 dev 已启动（执行记录，非性能结果）**：用户明确授权四臂×双种子，
 > 规格与配方已冻结。403项全量回归通过，独立审查的A3验证目标问题修复，真实fold1 batch16
 > 冻结/解冻smoke通过。A0–A3 seed19 与 A0 seed1 已完成130轮训练与fold2评估，A1 seed1 训练中，余2次排队（A2/A3 seed1）；源码eee3248与命令/config/输入指纹绑定。

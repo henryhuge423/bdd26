@@ -1,5 +1,10 @@
 # 研究进度与收尾清单（2026-10-14）
 
+[Mechanism closeout](../results/VISIBILITY_SUPERVISION_MECHANISM_2026-10-15.md).
+
+> **2026-10-15 update (America/New_York):** All eight visibility-supervision runs and original-image fold2 evaluations are complete. Frozen dev admission fails on original-image clauses 2 and 3: A2−A0 mPQ/bPQ losses exceed .002 in both seeds; seed1 strict Dead falls .004372; mean A2−A1 strict Dead falls .009781. All eight fixed-C2 mechanism evaluations are now complete. A1−A2 mean miss-rate improvement is −.008621 (95% CI [−.040918,+.017699]); the frozen mechanism clause also fails. No added seeds or confirmation. No additional seeds or three-split confirmation; PM-Net remains a proposal. See [full results](../results/VISIBILITY_SUPERVISION_DEV_2026-10-15.md). Earlier dated execution statements below are historical snapshots.
+
+
 LM1 为权威工作区。本次代码基点 `research/visibility-e4` / `988c0cd`。
 本次独立核验聚焦 E4 修复后工件；其他路线状态来自当前研究计划、findings 和已有报告，不声称全部历史实验重新复现。
 
@@ -128,3 +133,7 @@ A3有效干预范围（代码事实，需写入最终机制分析）：`visibili
 （上节 .1833230/.1199305，工件 .1833232/.1199311），已在上文按工件更正；`A3_seed19` 与 `A0_seed1` 的指标本次直接取自各自summary.json。
 磁盘 /data7 余约22G，仍高于队列14G启动门槛；`smoke_result.json` status=passed（A2、fold1）。
 本检查同时刷新上文“当前 dev 训练执行”与README/计划/findings中的当前状态行，并按项目惯例提交；其余内容不变。
+
+## 2026-10-15 synthesis
+
+[Evidence chain and PM-Net pre-training decisions](../report/RESEARCH_SYNTHESIS_2026-10-15.md).

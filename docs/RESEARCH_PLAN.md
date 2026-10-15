@@ -1,5 +1,10 @@
 # 研究计划：PanNuke 细胞核实例分割与可验证的失败机制
 
+[Mechanism closeout](results/VISIBILITY_SUPERVISION_MECHANISM_2026-10-15.md).
+
+> **2026-10-15 update (America/New_York):** All eight visibility-supervision runs and original-image fold2 evaluations are complete. Frozen dev admission fails on original-image clauses 2 and 3: A2−A0 mPQ/bPQ losses exceed .002 in both seeds; seed1 strict Dead falls .004372; mean A2−A1 strict Dead falls .009781. All eight fixed-C2 mechanism evaluations are now complete. A1−A2 mean miss-rate improvement is −.008621 (95% CI [−.040918,+.017699]); the frozen mechanism clause also fails. No added seeds or confirmation. No additional seeds or three-split confirmation; PM-Net remains a proposal. See [full results](results/VISIBILITY_SUPERVISION_DEV_2026-10-15.md). Earlier dated execution statements below are historical snapshots.
+
+
 > **2026-10-14 当前授权与执行：** 用户已明确批准可见片段监督 dev 实现和启动训练。
 > [冻结规格](superpowers/specs/2026-10-14-visibility-supervision-design.md)与
 > [实施计划](superpowers/plans/2026-10-14-visibility-supervision.md)覆盖四臂×seed19/1，
@@ -517,3 +522,7 @@
 - 生成：PixCell 2506.05127；NucleiMix 2410.16671；DiffMix 2306.14132；HistoSmith 2502.08754；PathDiff 2506.23440；Co-synthesis 2407.14434；NuDiff 2310.14197；合成多样性 2608.03990；StainFuser 2403.09302；反事实压力测试 2605.10894
 - 评测批评：Foucart et al. Sci Rep 2023 (doi 10.1038/s41598-023-35605-7)
 - 可选扩展（分子监督）：GigaTIME-Flash 2607.18218（虚拟 mIF，Apache-2.0）；CytoFormer 2608.16718；STHELAR（Xenium，CC-BY-4.0）
+
+## 2026-10-15 synthesis
+
+[Evidence chain and PM-Net pre-training decisions](report/RESEARCH_SYNTHESIS_2026-10-15.md).
