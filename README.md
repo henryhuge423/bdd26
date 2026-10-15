@@ -1,5 +1,8 @@
 # bdd26 — PanNuke Nuclei Instance Segmentation (course project 5)
 
+> **2026-10-15 tissue/class audit:** [Frozen-prediction analysis](docs/results/TISSUE_CLASS_AUDIT_2026-10-15.md) finds persistent differences across represented tissues. Lung, Skin and Colon rank in the bottom five across all three split-level seed means. Dead detection remains a valid targeted case, but 59.5% of Dead labels occur in Lung and seven tissues have none. Keep tissue/class reliability in scope; unseen-tissue transfer is untested and is not established as the dominant bottleneck. PM-Net remains proposed and subject to existing quality/cost gates. No new training or inference.
+
+
 [Mechanism closeout](docs/results/VISIBILITY_SUPERVISION_MECHANISM_2026-10-15.md).
 
 > **2026-10-15 update (America/New_York):** All eight visibility-supervision runs and original-image fold2 evaluations are complete. Frozen dev admission fails on original-image clauses 2 and 3: A2−A0 mPQ/bPQ losses exceed .002 in both seeds; seed1 strict Dead falls .004372; mean A2−A1 strict Dead falls .009781. All eight fixed-C2 mechanism evaluations are now complete. A1−A2 mean miss-rate improvement is −.008621 (95% CI [−.040918,+.017699]); the frozen mechanism clause also fails. No added seeds or confirmation. No additional seeds or three-split confirmation; PM-Net remains a proposal. See [full results](docs/results/VISIBILITY_SUPERVISION_DEV_2026-10-15.md). Earlier dated execution statements below are historical snapshots.

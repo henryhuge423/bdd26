@@ -1,0 +1,10 @@
+{
+  "passed": [
+    "171 tissue rows and 855 tissue/class rows",
+    "189744 unique GT nuclei and 232 Dead-positive images",
+    "seven tissues without any Dead GT",
+    "Lung/Skin/Colon bottom-five in every split",
+    "mean matched baseline agrees with frozen report to 1e-5"
+  ],
+  "source_script_sha256": "4f4b4af554504d02b7197743d527a730e73d05cac1ad06f096edf0dcfa796068"
+}

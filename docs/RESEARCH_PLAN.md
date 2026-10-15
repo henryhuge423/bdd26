@@ -1,5 +1,8 @@
 # 研究计划：PanNuke 细胞核实例分割与可验证的失败机制
 
+> **2026-10-15 组织与类别分析：** [已完成审计](results/TISSUE_CLASS_AUDIT_2026-10-15.md)复用九个固定 split/seed 对，发现 Lung、Skin、Colon 在三个 split 种子均值中均位于倒数五名，同类比较仍有差距。Dead 检测短板成立，但标签集中且七组织无该类标注。研究定位为可验证的检测/实例质量失败与跨组织类别可靠性，不将未见组织迁移认定为已证实主瓶颈。PM-Net 仍为待验证提案，既定质量/成本门槛与已关闭路线不变。本轮无训练、无新推理；历史测试复用仅作描述性分析，未来方法选择限 train/val。
+
+
 [Mechanism closeout](results/VISIBILITY_SUPERVISION_MECHANISM_2026-10-15.md).
 
 > **2026-10-15 update (America/New_York):** All eight visibility-supervision runs and original-image fold2 evaluations are complete. Frozen dev admission fails on original-image clauses 2 and 3: A2−A0 mPQ/bPQ losses exceed .002 in both seeds; seed1 strict Dead falls .004372; mean A2−A1 strict Dead falls .009781. All eight fixed-C2 mechanism evaluations are now complete. A1−A2 mean miss-rate improvement is −.008621 (95% CI [−.040918,+.017699]); the frozen mechanism clause also fails. No added seeds or confirmation. No additional seeds or three-split confirmation; PM-Net remains a proposal. See [full results](results/VISIBILITY_SUPERVISION_DEV_2026-10-15.md). Earlier dated execution statements below are historical snapshots.
