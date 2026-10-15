@@ -1,5 +1,8 @@
 # 研究计划：PanNuke 细胞核实例分割与可验证的失败机制
 
+> **2026-10-15 组织与类别分析：** [已完成审计](results/TISSUE_CLASS_AUDIT_2026-10-15.md)复用九个固定 split/seed 对，发现 Lung、Skin、Colon 在三个 split 种子均值中均位于倒数五名，同类比较仍有差距。Dead 检测短板成立，但标签集中且七组织无该类标注。研究定位为可验证的检测/实例质量失败与跨组织类别可靠性，不将未见组织迁移认定为已证实主瓶颈。PM-Net 仍为待验证提案，既定质量/成本门槛与已关闭路线不变。本轮无训练、无新推理；历史测试复用仅作描述性分析，未来方法选择限 train/val。
+
+
 > **2026-10-14 当前授权与执行：** 用户已明确批准可见片段监督 dev 实现和启动训练。
 > [冻结规格](superpowers/specs/2026-10-14-visibility-supervision-design.md)与
 > [实施计划](superpowers/plans/2026-10-14-visibility-supervision.md)覆盖四臂×seed19/1，

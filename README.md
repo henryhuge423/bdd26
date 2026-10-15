@@ -1,5 +1,8 @@
 # bdd26 — PanNuke Nuclei Instance Segmentation (course project 5)
 
+> **2026-10-15 tissue/class audit:** [Frozen-prediction analysis](docs/results/TISSUE_CLASS_AUDIT_2026-10-15.md) finds persistent differences across represented tissues. Lung, Skin and Colon rank in the bottom five across all three split-level seed means. Dead detection remains a valid targeted case, but 59.5% of Dead labels occur in Lung and seven tissues have none. Keep tissue/class reliability in scope; unseen-tissue transfer is untested and is not established as the dominant bottleneck. PM-Net remains proposed and subject to existing quality/cost gates. No new training or inference.
+
+
 Nuclei instance segmentation + classification on **PanNuke** (~7,900 H&E patches, 19 tissues,
 5 nucleus classes), evaluated under the **official 3-fold protocol**. On PanNuke, swapping
 backbones moves mPQ by only 1–2 points (CellViT-HIPT .485 → SAM-H .498 → SOTA ~.51); the

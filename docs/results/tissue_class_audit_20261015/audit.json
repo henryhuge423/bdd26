@@ -1,0 +1,458 @@
+{
+  "scope": "descriptive audit of existing test artifacts; no threshold/model selection; future development must use train/val",
+  "bootstrap": {
+    "draws": 2000,
+    "seed": 20261015,
+    "unit": "tissue-stratified image; class PQ conditional on GT-positive images; shared fold3 draws across splits1/2",
+    "limits": "conditional on trained seeds and GT-positive class support; no patient ids; pointwise exploratory intervals, no multiplicity correction"
+  },
+  "checks": [
+    "split1: three seeds; official and all 95 tissue/class means reproduce; baseline/EF GT rows align",
+    "split2: three seeds; official and all 95 tissue/class means reproduce; baseline/EF GT rows align",
+    "split3: three seeds; official and all 95 tissue/class means reproduce; baseline/EF GT rows align"
+  ],
+  "split_seed_scores": [
+    {
+      "split": 1,
+      "seed": 19,
+      "baseline": {
+        "mPQ": 0.49558446762610026,
+        "bPQ": 0.6680718000436612
+      },
+      "ef": {
+        "mPQ": 0.49558446762610026,
+        "bPQ": 0.6680718000436612
+      },
+      "Dead": 0.14240565725442658,
+      "ef_Dead": 0.14240565725442658
+    },
+    {
+      "split": 1,
+      "seed": 1,
+      "baseline": {
+        "mPQ": 0.4912783097972556,
+        "bPQ": 0.6649006715548466
+      },
+      "ef": {
+        "mPQ": 0.49156723072074987,
+        "bPQ": 0.6650177595227236
+      },
+      "Dead": 0.1309564689568768,
+      "ef_Dead": 0.13552498275756772
+    },
+    {
+      "split": 1,
+      "seed": 2,
+      "baseline": {
+        "mPQ": 0.4926748035012039,
+        "bPQ": 0.6665202958595461
+      },
+      "ef": {
+        "mPQ": 0.4943436469505399,
+        "bPQ": 0.6668374832505793
+      },
+      "Dead": 0.14443766809277975,
+      "ef_Dead": 0.15266410414196702
+    },
+    {
+      "split": 2,
+      "seed": 19,
+      "baseline": {
+        "mPQ": 0.4929763484869697,
+        "bPQ": 0.6637462221542229
+      },
+      "ef": {
+        "mPQ": 0.49325894476113297,
+        "bPQ": 0.6639942532466067
+      },
+      "Dead": 0.16341530138245242,
+      "ef_Dead": 0.165252656226911
+    },
+    {
+      "split": 2,
+      "seed": 1,
+      "baseline": {
+        "mPQ": 0.48743530524471756,
+        "bPQ": 0.6620767489657013
+      },
+      "ef": {
+        "mPQ": 0.4882450326935634,
+        "bPQ": 0.6625138829069186
+      },
+      "Dead": 0.16342947374863598,
+      "ef_Dead": 0.16495895423462514
+    },
+    {
+      "split": 2,
+      "seed": 2,
+      "baseline": {
+        "mPQ": 0.48869578760140686,
+        "bPQ": 0.6628206183154262
+      },
+      "ef": {
+        "mPQ": 0.48893790920818264,
+        "bPQ": 0.6628180857927543
+      },
+      "Dead": 0.16513474975706785,
+      "ef_Dead": 0.16628191051090824
+    },
+    {
+      "split": 3,
+      "seed": 19,
+      "baseline": {
+        "mPQ": 0.5109400778930113,
+        "bPQ": 0.6650491640776041
+      },
+      "ef": {
+        "mPQ": 0.5118293343448522,
+        "bPQ": 0.6650005394887507
+      },
+      "Dead": 0.22424236334223216,
+      "ef_Dead": 0.23841743586907008
+    },
+    {
+      "split": 3,
+      "seed": 1,
+      "baseline": {
+        "mPQ": 0.5096610854508242,
+        "bPQ": 0.6667724325149947
+      },
+      "ef": {
+        "mPQ": 0.5107012738043576,
+        "bPQ": 0.6663526959753893
+      },
+      "Dead": 0.211317361319051,
+      "ef_Dead": 0.23052113818361314
+    },
+    {
+      "split": 3,
+      "seed": 2,
+      "baseline": {
+        "mPQ": 0.5091663419586588,
+        "bPQ": 0.6677184801616365
+      },
+      "ef": {
+        "mPQ": 0.510069674791363,
+        "bPQ": 0.6669876731481255
+      },
+      "Dead": 0.2076356386068129,
+      "ef_Dead": 0.21986890463729972
+    }
+  ],
+  "tissue_summary": [
+    {
+      "tissue": "Adrenal_gland",
+      "split": 2.0,
+      "seed": 7.333333333333333,
+      "test_fold": 2.3333333333333335,
+      "n_images": 148.0,
+      "mPQ": 0.5216944223792126,
+      "delta_mPQ": 8.445001367653039e-05,
+      "bPQ": 0.6973307684164676,
+      "delta_bPQ": -0.0009219084634076107,
+      "common3_PQ": 0.45712736871185156,
+      "bottom5_splits": 0
+    },
+    {
+      "tissue": "Bile-duct",
+      "split": 2.0,
+      "seed": 7.333333333333333,
+      "test_fold": 2.3333333333333335,
+      "n_images": 158.33333333333334,
+      "mPQ": 0.4731301086644073,
+      "delta_mPQ": -0.0001438793158064993,
+      "bPQ": 0.6650779161470664,
+      "delta_bPQ": 0.00022146522702193305,
+      "common3_PQ": 0.46425986257433866,
+      "bottom5_splits": 2
+    },
+    {
+      "tissue": "Bladder",
+      "split": 2.0,
+      "seed": 7.333333333333333,
+      "test_fold": 2.3333333333333335,
+      "n_images": 49.666666666666664,
+      "mPQ": 0.5952138741488164,
+      "delta_mPQ": 0.00339639799665798,
+      "bPQ": 0.6954971686396823,
+      "delta_bPQ": 0.0021623827414302254,
+      "common3_PQ": 0.5456058915584873,
+      "bottom5_splits": 0
+    },
+    {
+      "tissue": "Breast",
+      "split": 2.0,
+      "seed": 7.333333333333333,
+      "test_fold": 2.3333333333333335,
+      "n_images": 792.3333333333334,
+      "mPQ": 0.5154740048607798,
+      "delta_mPQ": -0.00042843606604291303,
+      "bPQ": 0.6563706839014363,
+      "delta_bPQ": -0.0012367743253130442,
+      "common3_PQ": 0.4891496018716736,
+      "bottom5_splits": 0
+    },
+    {
+      "tissue": "Cervix",
+      "split": 2.0,
+      "seed": 7.333333333333333,
+      "test_fold": 2.3333333333333335,
+      "n_images": 109.0,
+      "mPQ": 0.49975583884810626,
+      "delta_mPQ": 0.0011859074833691949,
+      "bPQ": 0.6801780821688705,
+      "delta_bPQ": 0.0008686137964065699,
+      "common3_PQ": 0.47002704860449596,
+      "bottom5_splits": 0
+    },
+    {
+      "tissue": "Colon",
+      "split": 2.0,
+      "seed": 7.333333333333333,
+      "test_fold": 2.3333333333333335,
+      "n_images": 488.6666666666667,
+      "mPQ": 0.43696993560431546,
+      "delta_mPQ": 0.0008632736573379472,
+      "bPQ": 0.568723910251904,
+      "delta_bPQ": 4.830662035194678e-05,
+      "common3_PQ": 0.42172769259744647,
+      "bottom5_splits": 3
+    },
+    {
+      "tissue": "Esophagus",
+      "split": 2.0,
+      "seed": 7.333333333333333,
+      "test_fold": 2.3333333333333335,
+      "n_images": 145.66666666666666,
+      "mPQ": 0.5448465163820476,
+      "delta_mPQ": -0.0010374388488895653,
+      "bPQ": 0.6522982129621352,
+      "delta_bPQ": -0.0013722438914131423,
+      "common3_PQ": 0.49471916854148684,
+      "bottom5_splits": 0
+    },
+    {
+      "tissue": "HeadNeck",
+      "split": 2.0,
+      "seed": 7.333333333333333,
+      "test_fold": 2.3333333333333335,
+      "n_images": 120.0,
+      "mPQ": 0.4892391583186853,
+      "delta_mPQ": 0.002686549679020366,
+      "bPQ": 0.6393463766920591,
+      "delta_bPQ": 0.0023471722390461494,
+      "common3_PQ": 0.47874839268178304,
+      "bottom5_splits": 0
+    },
+    {
+      "tissue": "Kidney",
+      "split": 2.0,
+      "seed": 7.333333333333333,
+      "test_fold": 2.3333333333333335,
+      "n_images": 39.666666666666664,
+      "mPQ": 0.5519407442774706,
+      "delta_mPQ": -0.0012966234755086416,
+      "bPQ": 0.7011855695301643,
+      "delta_bPQ": -0.0023081432688714593,
+      "common3_PQ": 0.5048496793131371,
+      "bottom5_splits": 0
+    },
+    {
+      "tissue": "Liver",
+      "split": 2.0,
+      "seed": 7.333333333333333,
+      "test_fold": 2.3333333333333335,
+      "n_images": 83.66666666666667,
+      "mPQ": 0.5208855314015318,
+      "delta_mPQ": -9.608195614701436e-05,
+      "bPQ": 0.7149660873246623,
+      "delta_bPQ": -0.0004569167931053207,
+      "common3_PQ": 0.4953851016351016,
+      "bottom5_splits": 0
+    },
+    {
+      "tissue": "Lung",
+      "split": 2.0,
+      "seed": 7.333333333333333,
+      "test_fold": 2.3333333333333335,
+      "n_images": 60.666666666666664,
+      "mPQ": 0.4063765760322922,
+      "delta_mPQ": 0.002585786770426658,
+      "bPQ": 0.6264379545774854,
+      "delta_bPQ": 0.0025264168279543783,
+      "common3_PQ": 0.3779928160922448,
+      "bottom5_splits": 3
+    },
+    {
+      "tissue": "Ovarian",
+      "split": 2.0,
+      "seed": 7.333333333333333,
+      "test_fold": 2.3333333333333335,
+      "n_images": 52.666666666666664,
+      "mPQ": 0.5224991750275807,
+      "delta_mPQ": -0.00021427118580621653,
+      "bPQ": 0.6565775495132388,
+      "delta_bPQ": -0.00018076016345831066,
+      "common3_PQ": 0.4958622429977709,
+      "bottom5_splits": 0
+    },
+    {
+      "tissue": "Pancreatic",
+      "split": 2.0,
+      "seed": 7.333333333333333,
+      "test_fold": 2.3333333333333335,
+      "n_images": 44.666666666666664,
+      "mPQ": 0.5066863951745032,
+      "delta_mPQ": -0.0007366315267094106,
+      "bPQ": 0.6646188018590031,
+      "delta_bPQ": -0.0017940914385319554,
+      "common3_PQ": 0.49129755550200294,
+      "bottom5_splits": 1
+    },
+    {
+      "tissue": "Prostate",
+      "split": 2.0,
+      "seed": 7.333333333333333,
+      "test_fold": 2.3333333333333335,
+      "n_images": 71.0,
+      "mPQ": 0.5109248445923986,
+      "delta_mPQ": 0.003249426185929913,
+      "bPQ": 0.6564454742780155,
+      "delta_bPQ": 0.00012638437102593011,
+      "common3_PQ": 0.4313690991219568,
+      "bottom5_splits": 0
+    },
+    {
+      "tissue": "Skin",
+      "split": 2.0,
+      "seed": 7.333333333333333,
+      "test_fold": 2.3333333333333335,
+      "n_images": 47.0,
+      "mPQ": 0.42636236851452136,
+      "delta_mPQ": 0.0004069039440287951,
+      "bPQ": 0.6509144466265936,
+      "delta_bPQ": 0.0001584729848496607,
+      "common3_PQ": 0.4139794913232302,
+      "bottom5_splits": 3
+    },
+    {
+      "tissue": "Stomach",
+      "split": 2.0,
+      "seed": 7.333333333333333,
+      "test_fold": 2.3333333333333335,
+      "n_images": 48.666666666666664,
+      "mPQ": 0.4519080538542253,
+      "delta_mPQ": -0.0002864482211269818,
+      "bPQ": 0.6843466750800755,
+      "delta_bPQ": -0.0010950364368261306,
+      "common3_PQ": 0.46137934860184576,
+      "bottom5_splits": 1
+    },
+    {
+      "tissue": "Testis",
+      "split": 2.0,
+      "seed": 7.333333333333333,
+      "test_fold": 2.3333333333333335,
+      "n_images": 58.0,
+      "mPQ": 0.5270502080279917,
+      "delta_mPQ": 0.0020554094391955708,
+      "bPQ": 0.6821294269196524,
+      "delta_bPQ": 0.0005711434893021444,
+      "common3_PQ": 0.508769735037759,
+      "bottom5_splits": 0
+    },
+    {
+      "tissue": "Thyroid",
+      "split": 2.0,
+      "seed": 7.333333333333333,
+      "test_fold": 2.3333333333333335,
+      "n_images": 68.0,
+      "mPQ": 0.4567903792810839,
+      "delta_mPQ": -0.0006841026759434013,
+      "bPQ": 0.7056447399563582,
+      "delta_bPQ": -0.00038662971741037437,
+      "common3_PQ": 0.3868404214159218,
+      "bottom5_splits": 1
+    },
+    {
+      "tissue": "Uterus",
+      "split": 2.0,
+      "seed": 7.333333333333333,
+      "test_fold": 2.3333333333333335,
+      "n_images": 114.33333333333333,
+      "mPQ": 0.49667831168145443,
+      "delta_mPQ": 0.0013403369326905519,
+      "bPQ": 0.6425604039668131,
+      "delta_bPQ": 0.0005484856264511562,
+      "common3_PQ": 0.46770862686158404,
+      "bottom5_splits": 1
+    }
+  ],
+  "inputs_sha256": {
+    "data/pannuke/fold1/tissue.npy": "64746d127bc28e88be6fdc4639af4f21a91fb1fda00e68869ea5fe61a574f615",
+    "data/pannuke/fold2/tissue.npy": "8a960439d4dbe09b762f2c5ba81ee0476dd4ab2e6007a9c246ede30d0327356c",
+    "data/pannuke/fold3/tissue.npy": "b8f0b3b5b0cf9e4024c939c8b1bc6333745f1e6827f6f15cd3a635e8546ec736",
+    "runs/analysis/matched_seed_20261004/p0/split1_seed19/test/base/ms/eval/summary.json": "42a8f686e8b90e1cc5010f0e5fbb1934d3fd913ed1802738f7c0090be5f99adb",
+    "runs/analysis/matched_seed_20261004/p0/split1_seed19/test/base/ms/eval/per_image.npz": "d89f136d472093ee2147214099ea0f31f46803ac2e20bff36394fc76c81cd1ec",
+    "runs/analysis/matched_seed_20261004/p0/split1_seed19/test/base/ms/eval/gt_records.csv.gz": "a3815d6598e5a07e875d334bc6c9908c0703cb3ff6e33076db8f76f027ecd2b4",
+    "runs/analysis/existence_ef_20261005/p2ef/split1_seed19/test/eval/summary.json": "42a8f686e8b90e1cc5010f0e5fbb1934d3fd913ed1802738f7c0090be5f99adb",
+    "runs/analysis/existence_ef_20261005/p2ef/split1_seed19/test/eval/per_image.npz": "d89f136d472093ee2147214099ea0f31f46803ac2e20bff36394fc76c81cd1ec",
+    "runs/analysis/existence_ef_20261005/p2ef/split1_seed19/test/eval/gt_records.csv.gz": "ee3725c074ef69db5e297aad6e636d68a0861b1c20ec5304c5600d2611d6a15e",
+    "runs/analysis/matched_seed_20261004/p0/split1_seed1/test/base/ms/eval/summary.json": "f87c19399c5fd453090dcb07f4b307e61c3c7397e874ae08647a1484b3d397b5",
+    "runs/analysis/matched_seed_20261004/p0/split1_seed1/test/base/ms/eval/per_image.npz": "351c75800712e56d5512b9b4443d3ef160392f6d026087916dbec9d4afec1b46",
+    "runs/analysis/matched_seed_20261004/p0/split1_seed1/test/base/ms/eval/gt_records.csv.gz": "f747bc1fda1cc897302894d3ec5a2aae6147b2b26909ac535c2d2fa2b543a49c",
+    "runs/analysis/existence_ef_20261005/p2ef/split1_seed1/test/eval/summary.json": "e55243717494e9230523fed738ac3cd76efdedd6f787ea4f06bf413fd4f75654",
+    "runs/analysis/existence_ef_20261005/p2ef/split1_seed1/test/eval/per_image.npz": "0b213cc44104308150095dc2260b778a0b7f25ee8e4a6a75be6626fe930936b0",
+    "runs/analysis/existence_ef_20261005/p2ef/split1_seed1/test/eval/gt_records.csv.gz": "8b968060571d3a129697215b32a35c622ebaa108d943137b68711f71d6460d6c",
+    "runs/analysis/matched_seed_20261004/p0/split1_seed2/test/base/ms/eval/summary.json": "6c78e7d48156f7783c5ab976a8529ec3c9b6727b5057be7ffd22dc8099f5f336",
+    "runs/analysis/matched_seed_20261004/p0/split1_seed2/test/base/ms/eval/per_image.npz": "93551b2a7443036e79187cb419534383fd20fbb0fea09469054bc03ad0ae9b4c",
+    "runs/analysis/matched_seed_20261004/p0/split1_seed2/test/base/ms/eval/gt_records.csv.gz": "6fa3c539d89e9bc7524daaed5e87a8e767293e2b17d45ce393ee758009ea13df",
+    "runs/analysis/existence_ef_20261005/p2ef/split1_seed2/test/eval/summary.json": "d220739ac14dff91b9ee018e337f80d8f8d8cb2768542c5defb8faae74f2fb88",
+    "runs/analysis/existence_ef_20261005/p2ef/split1_seed2/test/eval/per_image.npz": "836765b230f00513c94089103413f02983b96f23cfc40a2bcac7724e24ff1799",
+    "runs/analysis/existence_ef_20261005/p2ef/split1_seed2/test/eval/gt_records.csv.gz": "86825aad3e92b9fe011c3828b5310c68b22f5f6740b4c75bb184e42857ba5f27",
+    "runs/analysis/matched_seed_20261004/p0/split2_seed19/test/base/ms/eval/summary.json": "03c59bb1c135dd9b54cdff644437df4272684197dee78f6aea44e67a5fe45fea",
+    "runs/analysis/matched_seed_20261004/p0/split2_seed19/test/base/ms/eval/per_image.npz": "994652b886546e8b996ec7b6be12383f39f5ea02832eb603bc167a32f468ea8f",
+    "runs/analysis/matched_seed_20261004/p0/split2_seed19/test/base/ms/eval/gt_records.csv.gz": "3ac241bc39e8b6772f9a7e4ad07436fc650dd5437823df7edb34a107542e9e95",
+    "runs/analysis/existence_ef_20261005/p2ef/split2_seed19/test/eval/summary.json": "b987b0f6ff84edc6cb6a170627a4267c6dd427653a92facd50d55bc5a5352845",
+    "runs/analysis/existence_ef_20261005/p2ef/split2_seed19/test/eval/per_image.npz": "4dce6114117adec85dc87c7d67820476374c3ee5b9acb976970ecc93f730565d",
+    "runs/analysis/existence_ef_20261005/p2ef/split2_seed19/test/eval/gt_records.csv.gz": "8bb78af5db419c80fd8e112bc63751fe89ac134cc79373f75dc19d95c388e8b2",
+    "runs/analysis/matched_seed_20261004/p0/split2_seed1/test/base/ms/eval/summary.json": "2600ba1b47a46b05dca30932300759c8a57b8b1592be093c9647e0ed11ed8ea4",
+    "runs/analysis/matched_seed_20261004/p0/split2_seed1/test/base/ms/eval/per_image.npz": "0c0bc42e6e14af4badc5d829c2b55ab4a2933a5e2aa74e7a812da61aa3d4462c",
+    "runs/analysis/matched_seed_20261004/p0/split2_seed1/test/base/ms/eval/gt_records.csv.gz": "d0e4502c176b6285bb0286cef42cca09fb03b64417eb6894283c36df4bd49bb7",
+    "runs/analysis/existence_ef_20261005/p2ef/split2_seed1/test/eval/summary.json": "5da25f5105e3d0b8b7a51ad9e547d8b6969ba9eeb46d75b68021df809658a1f7",
+    "runs/analysis/existence_ef_20261005/p2ef/split2_seed1/test/eval/per_image.npz": "8c5e831aec653627a5117efe0876cec7cf5357e2d306174db9e0f72d81cb7a30",
+    "runs/analysis/existence_ef_20261005/p2ef/split2_seed1/test/eval/gt_records.csv.gz": "9f7f9e5f839869274f6ce7c9068d3755a2faeb09963e368a72c186f8a18c8bb5",
+    "runs/analysis/matched_seed_20261004/p0/split2_seed2/test/base/ms/eval/summary.json": "5ddb445a1d2e9a4830ec38322818f459b79c4e92dab8c015a9c41623dabddd35",
+    "runs/analysis/matched_seed_20261004/p0/split2_seed2/test/base/ms/eval/per_image.npz": "5edc254829ef1861c2e2b21c8aaa6e1537eec295fdeba12844f37638d6b3383b",
+    "runs/analysis/matched_seed_20261004/p0/split2_seed2/test/base/ms/eval/gt_records.csv.gz": "d1037a514f0d28c68f7bf05aa7e50237306f2cbca0d88404c3cc2f5d0e4a5d9c",
+    "runs/analysis/existence_ef_20261005/p2ef/split2_seed2/test/eval/summary.json": "c03dae6c241e17921396c58bde2b89f460a1a944e5371e90ca77a5bfca7dfa04",
+    "runs/analysis/existence_ef_20261005/p2ef/split2_seed2/test/eval/per_image.npz": "05f0c4b6401a334985794c2173a75c1598834926569fdf95da27f0365d2343f2",
+    "runs/analysis/existence_ef_20261005/p2ef/split2_seed2/test/eval/gt_records.csv.gz": "e71d02b8bfe8e07a95c6baf338814bcf42f6ac48c375c02f49df538214e6f276",
+    "runs/analysis/matched_seed_20261004/p0/split3_seed19/test/base/ms/eval/summary.json": "0c967e7d579d73cb5030156a89d9e9d920f07e34915431cd9c19607f8fbfdb2b",
+    "runs/analysis/matched_seed_20261004/p0/split3_seed19/test/base/ms/eval/per_image.npz": "bccc835b7bc5040ad676afa6201e12919b216e30f28e6781ead089ae35cdac48",
+    "runs/analysis/matched_seed_20261004/p0/split3_seed19/test/base/ms/eval/gt_records.csv.gz": "e12b55fc136c6053be2476490557df1980494ff07ac3b2094b7f1d9f78ff7104",
+    "runs/analysis/existence_ef_20261005/p2ef/split3_seed19/test/eval/summary.json": "c37dd0de02b48d98752ba7cb364becf1d76a20f15024f0d10541151daa4fe1c5",
+    "runs/analysis/existence_ef_20261005/p2ef/split3_seed19/test/eval/per_image.npz": "921893ae863870c191b0c26c1e7aebff81293e32e61bd074fab03765d4bf4b01",
+    "runs/analysis/existence_ef_20261005/p2ef/split3_seed19/test/eval/gt_records.csv.gz": "bccea0838fbc0c8b0b47ea0bd8aa9c5dfc3e11908a7904da80d04668b5d2b12e",
+    "runs/analysis/matched_seed_20261004/p0/split3_seed1/test/base/ms/eval/summary.json": "4daf12e3aad36a91ae513e05bbc3279557fc16f0c4568cd7b4698ade15122327",
+    "runs/analysis/matched_seed_20261004/p0/split3_seed1/test/base/ms/eval/per_image.npz": "ae4bde52ba6f0d1c9499b9c2724fc51149fae74f8687ec2efe599b0e8c37b22b",
+    "runs/analysis/matched_seed_20261004/p0/split3_seed1/test/base/ms/eval/gt_records.csv.gz": "8298632dd65f696425e459d512f3751bf299412db141b75a0fc2f600fe604ed4",
+    "runs/analysis/existence_ef_20261005/p2ef/split3_seed1/test/eval/summary.json": "7be3dddbd431b8ba300101b49c9b57fcc923327a9f5f464b78c261c5bb3448ef",
+    "runs/analysis/existence_ef_20261005/p2ef/split3_seed1/test/eval/per_image.npz": "0ed641ec86313dbe41e16388bd7b28ac58f954d362b027522c78e9ea422a5139",
+    "runs/analysis/existence_ef_20261005/p2ef/split3_seed1/test/eval/gt_records.csv.gz": "025ed0685350efe7268ff91e50e45975b3938dd7121262fae10e2fb20711cee4",
+    "runs/analysis/matched_seed_20261004/p0/split3_seed2/test/base/ms/eval/summary.json": "eedde3be29ccf3f24b9cd98ac8d1df20c39104831cc7004a86a9a3daa5ab9f02",
+    "runs/analysis/matched_seed_20261004/p0/split3_seed2/test/base/ms/eval/per_image.npz": "bacc077416e125f7c9d791ad2d79b61497379c4e9f34e96781fb4e572ff22eae",
+    "runs/analysis/matched_seed_20261004/p0/split3_seed2/test/base/ms/eval/gt_records.csv.gz": "7fc6d54af170104ce1e0906ed759a37f17fc969b3a42453fe1d4fd58a2737fc7",
+    "runs/analysis/existence_ef_20261005/p2ef/split3_seed2/test/eval/summary.json": "97caeb053b0d1a2a824460f007ce8fbd4ed16b044b5b62630ec022558821c648",
+    "runs/analysis/existence_ef_20261005/p2ef/split3_seed2/test/eval/per_image.npz": "48499b25a1caa4fb19f648752a69d41b6203dc81ba7bf5e65034b66e11a085b9",
+    "runs/analysis/existence_ef_20261005/p2ef/split3_seed2/test/eval/gt_records.csv.gz": "12108e0bff379458afa0f0dab9675be3027b10ec6ab2ed8fa2b1c3f77535f25a",
+    "runs/cellvit_uni/split1/eval_fold2/gt_records.csv.gz": "c9850bbf243c0f567d5e5386e7cb52236080eb9c0d18759f0da596ab89bda9a5",
+    "runs/cellvit_uni/split1/eval_test_fold3/summary.json": "cba7faa0a30bc22ce66c6ffd81c06bb9bd0d3583be26c9824add813b2d4477c4",
+    "runs/cellvit_uni/split2/eval_test_fold3/summary.json": "fc3a5956c67f181f6f80648aa4af13f74bf6549ec11a741e1dc3560805561660",
+    "runs/cellvit_uni/split3/eval_test_fold1/summary.json": "97fb35f9d11ab43092b6ffb19fda76bb915a27a7fc1d260572b277116db63ff1",
+    "runs/hovernet/split1/eval_test_fold3/summary.json": "436d9dce04dd1504d26d6c6ffeea1d9af96e7122c2c6e4eea22a33a9ecf4b089",
+    "runs/hovernet/split2/eval_test_fold3/summary.json": "afa0ed3fb510f665a8376a2a719beda318b3a978a4021876be03173036352a26",
+    "runs/hovernet/split3/eval_test_fold1/summary.json": "e61c17e90ce0f64851b5d1c2ac66b2cb885005c41c8a288210981e00ab4ecf13"
+  },
+  "script_sha256": "4f4b4af554504d02b7197743d527a730e73d05cac1ad06f096edf0dcfa796068"
+}
