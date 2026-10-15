@@ -5,7 +5,7 @@
 > [实施计划](superpowers/plans/2026-10-14-visibility-supervision.md)覆盖四臂×seed19/1，
 > split1 fold1训练/fold2验证，130epochs、x1、最后checkpoint，无TTA或测试折读取。
 > 实现与独立审查已完成；A3验证HV口径问题已按2RED→55GREEN修复，最终全量回归403 passed与真实GPU
-> smoke均通过，正式四臂双种子串行队列已启动。以下较早日期的“未授权/草案”保留历史状态，不覆盖本次授权。
+> smoke均通过，正式四臂双种子串行队列已启动：截至2026-10-14美东时间，A0–A3 seed19与A0 seed1已完成训练与fold2评估，A1 seed1训练中，余2次排队（A2/A3 seed1）。以下较早日期的“未授权/草案”保留历史状态，不覆盖本次授权。
 > 当前仅dev，不启动三split确认；关闭路线和E1专家不可得状态不变。
 
 当前收尾清单与综合报告框架：[2026-10-14 研究进度](audits/RESEARCH_STATUS_2026-10-14.md)。
