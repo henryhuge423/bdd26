@@ -62,6 +62,9 @@ def sha_file(path):
 def make_provenance(cfg):
     sources={str(p.relative_to(ROOT)):sha_file(p) for p in sorted((ROOT/'src/nucseg').rglob('*.py'))}
     sources.update({str(p.relative_to(ROOT)):sha_file(p) for p in sorted((ROOT/'scripts').glob('*setmask*.py'))})
+    for name in ('analyze_fusion_arms.py','probe_visibility.py'):
+        path=ROOT/'scripts'/name
+        sources['scripts/'+name]=sha_file(path)
     inputs={}
     for fold in (1,2):
         ds=PanNukeFold(fold)
