@@ -81,11 +81,18 @@ def test_single_pixel_is_in_matching_samples():
 - [ ] RED: small head tests on B2×64×32×32 features, full native output spatial shape, shared B/Q initialization, exact tie behavior, no-object rejection, one-pixel survival, batch/streaming equivalence.
 
 ```python
-def test_decode_chunks_do_not_change_prediction(example_prediction):
+def test_decode_chunks_do_not_change_prediction():
+    example_prediction={
+        'class_logits':torch.tensor([[[-9.,9.,-9.,-9.,-9.,-9.],
+                                      [-9.,-9.,9.,-9.,-9.,-9.]]]),
+        'mask_embed':torch.ones(1,2,1),
+        'mask_features':torch.ones(1,1,2,2),
+    }
     one=decode_set(example_prediction,chunk_size=1)
     full=decode_set(example_prediction,chunk_size=16)
     assert np.array_equal(one[0],full[0])
     assert np.array_equal(one[1],full[1])
+    assert (one[1]==1).all()  # exact score tie belongs to the lower query ID
 ```
 
 - [ ] Construct normal CellViTUNI first to preserve public-module RNG order; reuse encoder,skip paths,tp-like native branch,tissue head; discard NP/HV branches and pixel type head. Do not alter CellViTUNI defaults.
@@ -137,9 +144,10 @@ def test_mid_iou_is_neither_matched_nor_missed():
 **Files:** New ignored `ops/setmask_e6_20261015/{manifest.json,smoke.py,run_queue.py,HANDOFF.md}`; LM2 new `ops/staging/setmask_e6_20261015/` and new `runs/setmask_e6_20261015/`.
 
 - [ ] Build a scoped portable source archive (src/scripts/tests/configs/env/project metadata and approved docs only), explicitly excluding Git internals/credentials/ops/data/weights/old runs. Compute every source SHA and archive SHA.
-- [ ] Through worker broker status, require livePID1786103 and connection/TCP/auth1/1/1; current main broker also must satisfy its guard. Use this session for all transfer/exec; never invoke legacy SSH/rsync sync scripts.
+- [ ] Through worker broker status, derive live process ownership from this round's broker receipt and require connection/TCP/auth1/1/1; current main broker also must satisfy its guard. This turn's observedPID1786103 is evidence, not a future PID authorization. Use this session for all transfer/exec; never invoke legacy SSH/rsync sync scripts.
 - [ ] Recheck disk≥52GiB and actual free GPU memory/jobs. Current LM2 had~2TiB disk free;GPU7 was nearly empty but must be rechecked. ExcludeGPU2 and preserve all other jobs. Verify fold1/fold2 prepared inputs, UNI checkpoint bytes hash, pinned environment and imported source paths.
 - [ ] Create fresh staging directory exclusively; symlink existing LM2 data/weights/pinned third-party paths without overwriting anything. PYTHONPATH points to frozen staging src. Run tests there before GPU use.
+- [ ] Obtain whole-change code review before formal GPU execution. Resolve blockers, rerun affected tests and freeze the reviewed source hash; no scientific recipe changes are inferred from review.
 - [ ] Smoke B/Q frozen and unfrozen,batch16; finite losses/gradients,actual params,peak memory/step time/checkpoint sizes and stream hashes. If runtime/storage/memory budget cannot hold, stop before formal training and report measurements. No architecture tuning via smoke.
 
 ## Task7: Launch bounded runs, evaluate, hand off
