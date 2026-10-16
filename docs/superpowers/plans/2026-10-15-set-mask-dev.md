@@ -143,12 +143,12 @@ def test_mid_iou_is_neither_matched_nor_missed():
 
 **Files:** New ignored `ops/setmask_e6_20261015/{manifest.json,smoke.py,run_queue.py,HANDOFF.md}`; LM2 new `ops/staging/setmask_e6_20261015/` and new `runs/setmask_e6_20261015/`.
 
-- [ ] Build a scoped portable source archive (src/scripts/tests/configs/env/project metadata and approved docs only), explicitly excluding Git internals/credentials/ops/data/weights/old runs. Compute every source SHA and archive SHA.
-- [ ] Through worker broker status, derive live process ownership from this round's broker receipt and require connection/TCP/auth1/1/1; current main broker also must satisfy its guard. This turn's observedPID1786103 is evidence, not a future PID authorization. Use this session for all transfer/exec; never invoke legacy SSH/rsync sync scripts.
-- [ ] Recheck disk≥52GiB and actual free GPU memory/jobs. Current LM2 had~2TiB disk free;GPU7 was nearly empty but must be rechecked. ExcludeGPU2 and preserve all other jobs. Verify fold1/fold2 prepared inputs, UNI checkpoint bytes hash, pinned environment and imported source paths.
-- [ ] Create fresh staging directory exclusively; symlink existing LM2 data/weights/pinned third-party paths without overwriting anything. PYTHONPATH points to frozen staging src. Run tests there before GPU use.
-- [ ] Obtain whole-change code review before formal GPU execution. Resolve blockers, rerun affected tests and freeze the reviewed source hash; no scientific recipe changes are inferred from review.
-- [ ] Smoke B/Q frozen and unfrozen,batch16; finite losses/gradients,actual params,peak memory/step time/checkpoint sizes and stream hashes. If runtime/storage/memory budget cannot hold, stop before formal training and report measurements. No architecture tuning via smoke.
+- [x] Build a scoped portable source archive (src/scripts/tests/configs/env/project metadata and approved docs only), explicitly excluding Git internals/credentials/ops/data/weights/old runs. Compute every source SHA and archive SHA.
+- [x] Through worker broker status, derive live process ownership from this round's broker receipt and require connection/TCP/auth1/1/1; current main broker also must satisfy its guard. This turn's observedPID1786103 is evidence, not a future PID authorization. Use this session for all transfer/exec; never invoke legacy SSH/rsync sync scripts.
+- [x] Recheck disk≥52GiB and actual free GPU memory/jobs. Current LM2 had~2TiB disk free;GPU7 was nearly empty but must be rechecked. ExcludeGPU2 and preserve all other jobs. Verify fold1/fold2 prepared inputs, UNI checkpoint bytes hash, pinned environment and imported source paths.
+- [x] Create fresh staging directory exclusively; symlink existing LM2 data/weights/pinned third-party paths without overwriting anything. PYTHONPATH points to frozen staging src. Run tests there before GPU use.
+- [x] Obtain whole-change code review before formal GPU execution. Resolve blockers, rerun affected tests and freeze the reviewed source hash; no scientific recipe changes are inferred from review.
+- [x] Smoke B/Q frozen and unfrozen,batch16; finite losses/gradients,actual params,peak memory/step time/checkpoint sizes and stream hashes. If runtime/storage/memory budget cannot hold, stop before formal training and report measurements. No architecture tuning via smoke.
 
 ## Task7: Launch bounded runs, evaluate, hand off
 
@@ -165,3 +165,7 @@ All approved structure,loss,inference,data/restart,capacity,quality/cost and dep
 ## Execution evidence
 
 Tasks1–5 complete after explicit user approval. Full frozen CPU suite:471passed,3skipped,19073warnings in362.49s. Fresh review:3Important findings fixed with6RED→GREEN tests;54E6 focused tests pass. Deployment/smoke/formal runs pending runtime admission.
+
+## Resource admission outcome
+
+Task6 executed: GPU3 bounded smoke264.84s outer, finite B/Q losses/gradients; memory/storage gates pass, time gate fails. Checkpoint saves84.73/80.80s imply4.59/5.82h per run, over4h. Task7 NOT STARTED,0/4 formal runs, no queue PID. Source freeze365b07a; report docs/results/SET_MASK_E6_FEASIBILITY_2026-10-15.md. No automatic retry; follow-up I/O/cadence alternatives are proposals only.
