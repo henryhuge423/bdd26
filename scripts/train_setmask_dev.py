@@ -8,9 +8,10 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--arm',choices=('B','Q'),required=True);p.add_argument('--seed',type=int,choices=(19,1),required=True)
     p.add_argument('--out',required=True);p.add_argument('--uni-ckpt',default='weights/MahmoodLab/UNI/pytorch_model.bin')
+    p.add_argument('--round',choices=('E6','E7'),default='E6')
     p.add_argument('--resume',action='store_true')
     a=p.parse_args()
-    train_dev(SetMaskConfig(a.arm,a.seed,a.out,uni_ckpt=a.uni_ckpt),resume=a.resume)
+    train_dev(SetMaskConfig(a.arm,a.seed,a.out,uni_ckpt=a.uni_ckpt,round=a.round),resume=a.resume)
 
 
 if __name__=='__main__':main()
