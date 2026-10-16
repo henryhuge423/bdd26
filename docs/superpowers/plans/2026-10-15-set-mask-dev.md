@@ -34,7 +34,7 @@
 
 **Interfaces:** `sample_keys(weights,seed,epoch)->list[tuple[index,epoch,draw]]`; `PairedDataset(fold,train,seed,root=None)` with `__getitem__(key)->dict` including img,inst_map,np_map,hv_map,tp_map,small_map,tissue,index,sample_key; `capture_rng()->dict`, `restore_rng(state)->None`, `atomic_save(path,**state)`.
 
-- [ ] RED: verify module absence, then add tests for same epoch sequence regardless of global torch/NumPy/random activity, independently seeded replacement draws, workers0/2 identical augmented tensor hashes, no target access to fold3, and epoch-boundary restart.
+- [x] RED: verify module absence, then add tests for same epoch sequence regardless of global torch/NumPy/random activity, independently seeded replacement draws, workers0/2 identical augmented tensor hashes, no target access to fold3, and epoch-boundary restart.
 
 ```python
 def test_sample_stream_ignores_model_rng():
@@ -45,10 +45,10 @@ def test_sample_stream_ignores_model_rng():
     assert sample_keys(weights,19,5)!=first
 ```
 
-- [ ] Implement `sample_keys` using an independent torch.Generator per epoch and `torch.multinomial(...,replacement=True)`; derive epoch generator seed from fixed BLAKE2b, without Python hash().
-- [ ] Implement PairedDataset from PanNukeFold and existing normalization/augmentation/HV30 functions. Preserve random/NumPy state around each seeded augmentation. Construct every B/Q target from the same augmented inst/type maps; reject synth/copy-paste/visibility and unsupported folds.
-- [ ] Save/restore Python/NumPy/torchCPU/CUDA RNG plus optimizer/scheduler and progress. Use atomic temp+replace for owned new-run files, never mutate older runs.
-- [ ] GREEN focused tests, including a dropout toy model resumed across epoch boundary with identical final weights/optimizer. Commit only these new files.
+- [x] Implement `sample_keys` using an independent torch.Generator per epoch and `torch.multinomial(...,replacement=True)`; derive epoch generator seed from fixed BLAKE2b, without Python hash().
+- [x] Implement PairedDataset from PanNukeFold and existing normalization/augmentation/HV30 functions. Preserve random/NumPy state around each seeded augmentation. Construct every B/Q target from the same augmented inst/type maps; reject synth/copy-paste/visibility and unsupported folds.
+- [x] Save/restore Python/NumPy/torchCPU/CUDA RNG plus optimizer/scheduler and progress. Use atomic temp+replace for owned new-run files, never mutate older runs.
+- [x] GREEN focused tests, including a dropout toy model resumed across epoch boundary with identical final weights/optimizer. Commit only these new files.
 
 ## Task2: Exact targets, matching and full-resolution mask loss
 
@@ -56,7 +56,7 @@ def test_sample_stream_ignores_model_rng():
 
 **Interfaces:** `make_targets(inst,typ,capacity=512)->list[dict]` (ids,classes,inst map,legal yx points); `match_queries(class_logits,mask_embed,mask_features,targets)->list[(query_ids,target_ids)]`; `setmask_loss(pred,batch)->(loss,terms)`.
 
-- [ ] RED with synthetic empty map, IDs2/17, single pixel, disconnected/nonconvex target, exactly512vs513 objects, permuted target order and perfect-vs-wrong predicted masks.
+- [x] RED with synthetic empty map, IDs2/17, single pixel, disconnected/nonconvex target, exactly512vs513 objects, permuted target order and perfect-vs-wrong predicted masks.
 
 ```python
 def test_single_pixel_is_in_matching_samples():
@@ -67,10 +67,10 @@ def test_single_pixel_is_in_matching_samples():
     assert t['points'].tolist()==[[7,11]]
 ```
 
-- [ ] Implement nearest-visible-centroid legal points, deterministic row-major ties, majority type with0ignored, capacity and class validation before allocation.
-- [ ] Sample shared fixed grid plus legal target points, then compute pairwise BCE as `(sum(softplus(logit))-logit@target.T)/P`, Dice by matrix products and class cost from probabilities; call SciPy Hungarian on detached float32 costs.
-- [ ] Use matched query classes for weighted CE and full-native per-instance BCE/Dice. Stream matched mask construction in chunks16. Empty target masks return graph-connected zero; backward must stay finite.
-- [ ] GREEN: exact assignments on unique fixtures, loss invariance under target permutation, gradient reaches both query vector and native features; no dense Q×GT×P intermediate. Commit.
+- [x] Implement nearest-visible-centroid legal points, deterministic row-major ties, majority type with0ignored, capacity and class validation before allocation.
+- [x] Sample shared fixed grid plus legal target points, then compute pairwise BCE as `(sum(softplus(logit))-logit@target.T)/P`, Dice by matrix products and class cost from probabilities; call SciPy Hungarian on detached float32 costs.
+- [x] Use matched query classes for weighted CE and full-native per-instance BCE/Dice. Stream matched mask construction in chunks16. Empty target masks return graph-connected zero; backward must stay finite.
+- [x] GREEN: exact assignments on unique fixtures, loss invariance under target permutation, gradient reaches both query vector and native features; no dense Q×GT×P intermediate. Commit.
 
 ## Task3: Query head, shared initialization and streamed decoding
 
@@ -78,7 +78,7 @@ def test_single_pixel_is_in_matching_samples():
 
 **Interfaces:** `QueryMaskHead(channels=64,dim=256,mask_dim=128,queries=512,layers=3,heads=8)`; `SetMaskUNI(uni_ckpt=None)` with `freeze_encoder`; output keys class_logits,mask_embed,mask_features,tissue. `decode_set(pred,class_threshold=.5,mask_threshold=.5,chunk_size=16)->(inst,type)`.
 
-- [ ] RED: small head tests on B2×64×32×32 features, full native output spatial shape, shared B/Q initialization, exact tie behavior, no-object rejection, one-pixel survival, batch/streaming equivalence.
+- [x] RED: small head tests on B2×64×32×32 features, full native output spatial shape, shared B/Q initialization, exact tie behavior, no-object rejection, one-pixel survival, batch/streaming equivalence.
 
 ```python
 def test_decode_chunks_do_not_change_prediction():
@@ -95,10 +95,10 @@ def test_decode_chunks_do_not_change_prediction():
     assert (one[1]==1).all()  # exact score tie belongs to the lower query ID
 ```
 
-- [ ] Construct normal CellViTUNI first to preserve public-module RNG order; reuse encoder,skip paths,tp-like native branch,tissue head; discard NP/HV branches and pixel type head. Do not alter CellViTUNI defaults.
-- [ ] Implement 32×32 memory pooling/projection/2D sinusoidal positions; three specified attention blocks and query class/mask heads. Use native64→128 mask projection and sqrt128-scaled dot product.
-- [ ] Decode accepted queries in native chunks16 with max-score/lower-index winner semantics; discard empty masks only. Return int32 instances anduint8 pixel types; handle no accepted queries without allocating full mask stack.
-- [ ] GREEN focused tests and exact initialized common parameter comparisons. Record actual parameter counts; commit.
+- [x] Construct normal CellViTUNI first to preserve public-module RNG order; reuse encoder,skip paths,tp-like native branch,tissue head; discard NP/HV branches and pixel type head. Do not alter CellViTUNI defaults.
+- [x] Implement 32×32 memory pooling/projection/2D sinusoidal positions; three specified attention blocks and query class/mask heads. Use native64→128 mask projection and sqrt128-scaled dot product.
+- [x] Decode accepted queries in native chunks16 with max-score/lower-index winner semantics; discard empty masks only. Return int32 instances anduint8 pixel types; handle no accepted queries without allocating full mask stack.
+- [x] GREEN focused tests and exact initialized common parameter comparisons. Record actual parameter counts; commit.
 
 ## Task4: Dev-only training/prediction CLI with frozen configuration
 
@@ -106,7 +106,7 @@ def test_decode_chunks_do_not_change_prediction():
 
 **Interfaces:** immutable `SetMaskConfig(arm,seed,out_dir,uni_ckpt,workers=8)`; `train_dev(cfg,device='cuda')`; `predict_dev(run,fold=2,device='cuda',batch_size=16)`; baseline uses existing `cellvit_loss` with unchanged TrainConfig defaults.
 
-- [ ] RED: reject fold3/seed changes/arm changes/missing provenance/partial checkpoint, preserve existing output on refusal, compare uninterrupted/resumed tiny engine using the Task1 stream.
+- [x] RED: reject fold3/seed changes/arm changes/missing provenance/partial checkpoint, preserve existing output on refusal, compare uninterrupted/resumed tiny engine using the Task1 stream.
 
 ```python
 def test_dev_cli_rejects_fold3_before_loading():
@@ -114,10 +114,10 @@ def test_dev_cli_rejects_fold3_before_loading():
         predict_dev(Path('missing'),fold=3,device='cpu')
 ```
 
-- [ ] Build paired datasets once per epoch with separate loader generator, replace persistent sampler state with deterministic epoch keys, hash emitted keys/augmented target sequence into logs. Both arms use identical data policy.
-- [ ] Train under bf16 forward/float32 losses, freeze/unfreeze encoder at25, same optimizer/scheduler for130epochs. Validation loss every5epochs, final only for scientific evaluation. Use separate new output/config and capture complete epoch checkpoint state.
-- [ ] Predict only fold2 final checkpoints. B uses existing predict_fold; Q uses native streamed decode. Save compressed predictions and invoke existing `scripts/eval_pannuke.py` in a separate process. Never import/load fold3 through these CLIs.
-- [ ] GREEN focused tests, then full CPU suite with CUDA disabled; report real pass/skip/fail counts. Commit.
+- [x] Build paired datasets once per epoch with separate loader generator, replace persistent sampler state with deterministic epoch keys, hash emitted keys/augmented target sequence into logs. Both arms use identical data policy.
+- [x] Train under bf16 forward/float32 losses, freeze/unfreeze encoder at25, same optimizer/scheduler for130epochs. Validation loss every5epochs, final only for scientific evaluation. Use separate new output/config and capture complete epoch checkpoint state.
+- [x] Predict only fold2 final checkpoints. B uses existing predict_fold; Q uses native streamed decode. Save compressed predictions and invoke existing `scripts/eval_pannuke.py` in a separate process. Never import/load fold3 through these CLIs.
+- [x] GREEN focused tests, then full CPU suite with CUDA disabled; report real pass/skip/fail counts. Commit.
 
 ## Task5: Frozen analysis and end-to-end benchmark
 
@@ -125,7 +125,7 @@ def test_dev_cli_rejects_fold3_before_loading():
 
 **Interfaces:** `analyze_round(root,out)->dict`; `admission(comparison,endpoints,cost)->dict`; benchmark writes JSON with config/source/input/checkpoint hashes, device,load snapshots,repetitions and per-image latency.
 
-- [ ] RED: positive DeadPQ/failed recall must fail; strictmPQ−epsilon must fail; matched and miss endpoints must differ on a maxIoU.3 object; changing source/fold/seed fails before analysis.
+- [x] RED: positive DeadPQ/failed recall must fail; strictmPQ−epsilon must fail; matched and miss endpoints must differ on a maxIoU.3 object; changing source/fold/seed fails before analysis.
 
 ```python
 def test_mid_iou_is_neither_matched_nor_missed():
@@ -134,10 +134,10 @@ def test_mid_iou_is_neither_matched_nor_missed():
     assert not (row['max_iou']<.1)
 ```
 
-- [ ] Reuse existing immutable geometric helpers and official summaries; do not modify analyze_fusion_arms or metrics. Bind741interiorDead and paired object keys. Use one shared tissue-stratified image draw across arms/seeds,1000draws/seed20261015; separately calculate actual miss.
-- [ ] Implement all specified per-seed floors and cost gate exactly; no subgroup or threshold search. Output complete endpoints,criteria,hashes,limitations.
-- [ ] Benchmark fixed66fold1images,batch1,16warmup,3repeats; include preprocess/H2D/forward/native decoding with CUDA synchronization. B/Q same device/process settings, run serially; no accuracy-based benchmark selection.
-- [ ] GREEN synthetic gate and pairing tests, full suite, commit.
+- [x] Reuse existing immutable geometric helpers and official summaries; do not modify analyze_fusion_arms or metrics. Bind741interiorDead and paired object keys. Use one shared tissue-stratified image draw across arms/seeds,1000draws/seed20261015; separately calculate actual miss.
+- [x] Implement all specified per-seed floors and cost gate exactly; no subgroup or threshold search. Output complete endpoints,criteria,hashes,limitations.
+- [x] Benchmark fixed66fold1images,batch1,16warmup,3repeats; include preprocess/H2D/forward/native decoding with CUDA synchronization. B/Q same device/process settings, run serially; no accuracy-based benchmark selection.
+- [x] GREEN synthetic gate and pairing tests, full suite, commit.
 
 ## Task6: Isolated LM2 deployment and GPU smoke
 
@@ -161,3 +161,7 @@ def test_mid_iou_is_neither_matched_nor_missed():
 ## Plan self-review
 
 All approved structure,loss,inference,data/restart,capacity,quality/cost and deployment rules map to tasks1–7. Source boundaries preserve historical defaults. No fold3 path or automatic recovery is introduced. Resource figures are admission budgets; current readings are not future reservations. Execution remains native in this chat; the written plan requires user review before code implementation under the writing-plans workflow.
+
+## Execution evidence
+
+Tasks1–5 complete after explicit user approval. Full frozen CPU suite:471passed,3skipped,19073warnings in362.49s. Fresh review:3Important findings fixed with6RED→GREEN tests;54E6 focused tests pass. Deployment/smoke/formal runs pending runtime admission.

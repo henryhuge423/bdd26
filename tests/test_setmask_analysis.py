@@ -81,8 +81,9 @@ def test_provenance_binds_reused_analysis_helpers(tmp_path,monkeypatch):
     import nucseg.setmask.engine as e
     root=tmp_path
     (root/'src/nucseg').mkdir(parents=True);(root/'scripts').mkdir()
-    for name in ('analyze_fusion_arms.py','probe_visibility.py','analyze_setmask_dev.py'):
+    for name in ('analyze_fusion_arms.py','probe_visibility.py','analyze_setmask_dev.py','eval_pannuke.py'):
         (root/'scripts'/name).write_text('# fixed helper')
+    (root/'gt_channels.npz').write_bytes(b'official GT')
     for name in ('images','inst','type','tissue'):(root/(name+'.npy')).write_bytes(b'fixture')
     (root/'uni').write_bytes(b'UNI')
     class Fold:
@@ -90,3 +91,35 @@ def test_provenance_binds_reused_analysis_helpers(tmp_path,monkeypatch):
     monkeypatch.setattr(e,'ROOT',root);monkeypatch.setattr(e,'PanNukeFold',Fold)
     sources=e.make_provenance(e.SetMaskConfig('B',19,'unused',str(root/'uni')))['sources']
     assert 'scripts/analyze_fusion_arms.py' in sources and 'scripts/probe_visibility.py' in sources
+
+
+def test_official_gt_archive_and_evaluator_are_bound(tmp_path,monkeypatch):
+    import nucseg.setmask.engine as e
+    root=tmp_path;(root/'src/nucseg').mkdir(parents=True);(root/'scripts').mkdir()
+    for name in ('analyze_fusion_arms.py','probe_visibility.py','eval_pannuke.py'):(root/'scripts'/name).write_text('# original')
+    for name in ('images.npy','inst.npy','type.npy','tissue.npy','gt_channels.npz','uni'):(root/name).write_bytes(b'original')
+    class Fold:
+        def __init__(self,fold):self.dir=root
+    monkeypatch.setattr(e,'ROOT',root);monkeypatch.setattr(e,'PanNukeFold',Fold)
+    cfg=e.SetMaskConfig('B',19,'unused',str(root/'uni'));original=e.make_provenance(cfg)
+    (root/'gt_channels.npz').write_bytes(b'changed official')
+    assert e.make_provenance(cfg)!=original
+    (root/'gt_channels.npz').write_bytes(b'original')
+    (root/'scripts/eval_pannuke.py').write_text('# changed evaluator')
+    assert e.make_provenance(cfg)!=original
+
+
+def test_missing_or_failed_load_comparability_rejects_cost():
+    module=api()
+    with pytest.raises(ValueError):module.validated_cost({'ratios':{'19':1.,'1':1.}})
+    with pytest.raises(ValueError):module.validated_cost({'ratios':{'19':1.,'1':1.},'load_comparable':False})
+    assert module.validated_cost({'ratios':{'19':1.,'1':1.},'load_comparable':True})=={'19':1.,'1':1.}
+
+
+def test_benchmark_rejects_changed_foreign_gpu_workload():
+    path=Path(__file__).resolve().parents[1]/'scripts/benchmark_setmask_dev.py'
+    spec=importlib.util.spec_from_file_location('e6_bench_test',path)
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    assert module.comparable_load([[],[],[]])
+    assert not module.comparable_load([[],[{'pid':123,'used_memory_mib':1000}],[]])
+    assert not module.comparable_load([[{'pid':123,'used_memory_mib':1000}]]*3)

@@ -73,6 +73,12 @@ def admission(comparison,endpoints,cost):
     return {'admission':all(criteria.values()),'criteria':criteria,'deltas':deltas,'cost_ratios':cost}
 
 
+def validated_cost(latency):
+    if latency.get('load_comparable') is not True:
+        raise ValueError('Benchmark has no validated idle-GPU load comparability')
+    return latency['ratios']
+
+
 def verify_metadata(root):
     """Reject incompatible/incomplete rounds before opening any fold arrays."""
     from nucseg.setmask.engine import load_config,make_provenance,sha_file
@@ -136,7 +142,7 @@ def analyze_round(root,out):
     for name,cfg in configs.items():
         result=load_run(root/name,fold);rows[(cfg.arm,cfg.seed)]=result['rows'];endpoints[name]=result['endpoints']
         if result['endpoints']['interior_dead_n']!=741:raise ValueError('Frozen741 interior Dead population changed')
-    comparison=paired_comparison(rows);verdict=admission(comparison,endpoints,latency['ratios'])
+    comparison=paired_comparison(rows);verdict=admission(comparison,endpoints,validated_cost(latency))
     payload={'round':'E6','split':1,'evaluation_fold':2,'seeds':list(SEEDS),'comparison':comparison,
              'verdict':verdict,'endpoints':endpoints,'descriptive_subgroups':subgroup_support(rows),
              'sources':sources,'training_provenance':provenance,'latency_sha256':sha_file(latency_path),

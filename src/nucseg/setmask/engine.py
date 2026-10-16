@@ -62,7 +62,7 @@ def sha_file(path):
 def make_provenance(cfg):
     sources={str(p.relative_to(ROOT)):sha_file(p) for p in sorted((ROOT/'src/nucseg').rglob('*.py'))}
     sources.update({str(p.relative_to(ROOT)):sha_file(p) for p in sorted((ROOT/'scripts').glob('*setmask*.py'))})
-    for name in ('analyze_fusion_arms.py','probe_visibility.py'):
+    for name in ('analyze_fusion_arms.py','probe_visibility.py','eval_pannuke.py'):
         path=ROOT/'scripts'/name
         sources['scripts/'+name]=sha_file(path)
     inputs={}
@@ -70,8 +70,42 @@ def make_provenance(cfg):
         ds=PanNukeFold(fold)
         for name in ('images','inst','type','tissue'):
             inputs[f'fold{fold}/{name}.npy']=sha_file(ds.dir/(name+'.npy'))
+    inputs['fold2/gt_channels.npz']=sha_file(PanNukeFold(2).dir/'gt_channels.npz')
     inputs['UNI']=sha_file(cfg.uni_ckpt)
     return {'sources':sources,'inputs':inputs,'torch':torch.__version__,'numpy':np.__version__}
+
+
+def reconcile_log(out,state):
+    """Only recover the one append belonging to the committed epoch; preserve original evidence."""
+    out=Path(out);path=out/'log.jsonl';raw=path.read_bytes() if path.exists() else b''
+    record=state['epoch_record'];epoch=state['epoch']
+    if not isinstance(record,dict) or record.get('epoch')!=epoch or 'data_digest' not in record:
+        raise ValueError('Checkpoint lacks its committed epoch record')
+    lines=raw.splitlines(keepends=True);records=[];partial=b''
+    for i,line in enumerate(lines):
+        try:records.append(json.loads(line))
+        except (ValueError,UnicodeError):
+            if i!=len(lines)-1:raise ValueError('Corrupt earlier epoch log')
+            partial=line
+    expected=(json.dumps(record)+'\n').encode()
+    if [r.get('epoch') for r in records] not in (list(range(epoch)),list(range(epoch+1))):
+        raise ValueError('Unexplained epoch log gap/divergence')
+    if len(records)==epoch+1:
+        if records[-1]!=record or partial:raise ValueError('Committed log differs from checkpoint')
+        if raw.endswith(b'\n'):return
+    else:
+        if partial and not expected.startswith(partial):raise ValueError('Partial append differs from checkpoint')
+        records.append(record)
+    evidence=out/f'log.interrupted-{time.time_ns()}.jsonl'
+    with evidence.open('xb') as f:f.write(raw);f.flush();os.fsync(f.fileno())
+    fd,name=tempfile.mkstemp(prefix='.log-recovery-',dir=out)
+    try:
+        with os.fdopen(fd,'w') as f:
+            for item in records:f.write(json.dumps(item)+'\n')
+            f.flush();os.fsync(f.fileno())
+        os.replace(name,path)
+    finally:
+        if os.path.exists(name):os.unlink(name)
 
 
 def prepare_run(cfg,provenance,resume=False):
@@ -83,11 +117,12 @@ def prepare_run(cfg,provenance,resume=False):
             raise ValueError('Configuration/source/input provenance mismatch')
         try:state=torch.load(out/'last.pth',map_location='cpu',weights_only=False)
         except Exception as exc:raise ValueError('Unreadable checkpoint') from exc
-        required={'model','opt','sched','epoch','global_step','rng','config','provenance'}
+        required={'model','opt','sched','epoch','global_step','rng','config','provenance','epoch_record'}
         if not required.issubset(state) or state['config']!=current or state['provenance']!=provenance:
             raise ValueError('Incomplete or mismatched checkpoint state')
         if not isinstance(state['epoch'],int) or not 0<=state['epoch']<cfg.epochs:
             raise ValueError('Invalid completed epoch')
+        reconcile_log(out,state)
         return state
     if out.exists() and (not out.is_dir() or any(out.iterdir())):
         raise ValueError('Refusing existing output; use a new directory or explicit verified resume')
@@ -184,8 +219,8 @@ def train_dev(cfg,device='cuda',resume=False):
             elapsed=previous_elapsed+time.monotonic()-t0
             atomic_save(out/'last.pth',model=model.state_dict(),opt=opt.state_dict(),sched=sched.state_dict(),
                         epoch=epoch,global_step=global_step,rng=capture_rng(),config=asdict(cfg),
-                        provenance=provenance,elapsed_seconds=elapsed)
-            log.write(json.dumps(rec)+'\n');print(json.dumps(rec),flush=True)
+                        provenance=provenance,elapsed_seconds=elapsed,epoch_record=rec)
+            log.write(json.dumps(rec)+'\n');log.flush();os.fsync(log.fileno());print(json.dumps(rec),flush=True)
     if not all(torch.isfinite(p).all() for p in model.parameters()):raise ValueError('Nonfinite final weights')
     atomic_save(out/'final.pth',model=model.state_dict(),config=asdict(cfg),provenance=provenance)
     return model

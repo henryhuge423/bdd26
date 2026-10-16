@@ -75,3 +75,29 @@ def test_real_epoch_runner_resume_reproduces_weights_and_sample_digests(tmp_path
     assert got['data_digest']==want_digest
     assert all(torch.equal(want[k],resumed.state_dict()[k]) for k in want)
     assert ro.param_groups[0]['lr']==opt.param_groups[0]['lr']
+
+
+@pytest.mark.parametrize('raw',[b'',b'{"epoch": 0, "data_di'])
+def test_resume_recovers_committed_epoch_after_missing_or_partial_log_append(tmp_path,raw):
+    from dataclasses import asdict
+    m=api();cfg=m.SetMaskConfig('Q',19,str(tmp_path/'run'));prov={'source':'fixed'}
+    m.prepare_run(cfg,prov);run=Path(cfg.out_dir)
+    rec={'epoch':0,'data_digest':'abc','train/loss':1.}
+    torch.save({'model':{},'opt':{},'sched':{},'epoch':0,'global_step':2,'rng':{},
+                'config':asdict(cfg),'provenance':prov,'epoch_record':rec},run/'last.pth')
+    (run/'log.jsonl').write_bytes(raw)
+    m.prepare_run(cfg,prov,resume=True)
+    assert [json.loads(line) for line in (run/'log.jsonl').read_text().splitlines()]==[rec]
+    evidence=list(run.glob('log.interrupted-*'))
+    assert len(evidence)==1 and evidence[0].read_bytes()==raw
+
+
+def test_resume_refuses_unexplained_committed_log_divergence(tmp_path):
+    from dataclasses import asdict
+    m=api();cfg=m.SetMaskConfig('B',19,str(tmp_path/'run'));prov={}
+    m.prepare_run(cfg,prov);run=Path(cfg.out_dir)
+    torch.save({'model':{},'opt':{},'sched':{},'epoch':0,'global_step':1,'rng':{},
+                'config':asdict(cfg),'provenance':prov,'epoch_record':{'epoch':0,'data_digest':'committed'}},run/'last.pth')
+    raw='{"epoch":0,"data_digest":"different"}\n';(run/'log.jsonl').write_text(raw)
+    with pytest.raises(ValueError):m.prepare_run(cfg,prov,resume=True)
+    assert (run/'log.jsonl').read_text()==raw
