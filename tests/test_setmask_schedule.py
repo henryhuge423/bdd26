@@ -53,3 +53,27 @@ def test_e7_real_schedule_and_resume_preserve_optimizer_updates():
     step(q, other, restored)
     assert torch.equal(q, p)
     assert other.param_groups[0]['lr'] == opt.param_groups[0]['lr']
+
+
+def analysis_api():
+    import importlib.util
+    from pathlib import Path
+    spec=importlib.util.spec_from_file_location('e7_analysis',Path(__file__).resolve().parents[1]/'scripts/analyze_setmask_dev.py')
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);return module
+
+
+def test_analysis_reports_common_e7_round():
+    configs={f'{a}_seed{s}':SetMaskConfig(a,s,'unused',round='E7') for a in ('B','Q') for s in (19,1)}
+    assert analysis_api().common_round(configs)=='E7'
+
+
+def test_mixed_round_rejected_before_any_provenance_or_fold_access(tmp_path,monkeypatch):
+    import nucseg.setmask.engine as engine
+    for a in ('B','Q'):
+        for s in (19,1):
+            run=tmp_path/f'{a}_seed{s}';run.mkdir()
+            cfg=SetMaskConfig(a,s,str(run),round='E7' if a=='Q' else 'E6')
+            (run/'config.json').write_text(json.dumps(asdict(cfg)))
+    def forbid(*args):raise AssertionError('Mixed round reached data/input provenance')
+    monkeypatch.setattr(engine,'make_provenance',forbid)
+    with pytest.raises(ValueError,match='round'):analysis_api().verify_metadata(tmp_path)
