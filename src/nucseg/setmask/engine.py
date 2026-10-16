@@ -3,6 +3,7 @@ from contextlib import nullcontext
 from dataclasses import asdict, dataclass, field
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import random
@@ -44,6 +45,7 @@ class SetMaskConfig:
     gamma:float=field(default=.85,init=False)
     sampling_gamma:float=field(default=.85,init=False)
     hv_min_size:int=field(default=30,init=False)
+    max_train_seconds:int=field(default=10*3600,init=False)
 
     def __post_init__(self):
         if self.arm not in ('B','Q') or self.seed not in (19,1) or self.workers<0:
@@ -187,6 +189,13 @@ def loss_for(cfg):
     return lambda pred,batch:cellvit_loss(to_nhwc(pred),batch,base)
 
 
+def check_train_budget(cfg,elapsed):
+    if not math.isfinite(elapsed) or elapsed<0:raise ValueError('Invalid elapsed training time')
+    remaining=cfg.max_train_seconds-elapsed
+    if remaining<=0:raise RuntimeError('E6 per-run10h budget exhausted')
+    return remaining
+
+
 def train_dev(cfg,device='cuda',resume=False):
     if cfg.workers!=8 or torch.device(device).type!='cuda' or not torch.cuda.is_available() or torch.cuda.device_count()!=1:
         raise ValueError('Formal E6 requires workers8 and exactly one visible admitted CUDA device')
@@ -209,7 +218,7 @@ def train_dev(cfg,device='cuda',resume=False):
     loss_fn=loss_for(cfg);out=Path(cfg.out_dir);t0=time.monotonic()
     with (out/'log.jsonl').open('a',buffering=1) as log:
         for epoch in range(ep0,cfg.epochs):
-            if previous_elapsed+time.monotonic()-t0>4*3600:raise RuntimeError('E6 per-run4h budget exhausted')
+            check_train_budget(cfg,previous_elapsed+time.monotonic()-t0)
             model.freeze_encoder(epoch<cfg.unfreeze_epoch)
             loader=epoch_loader(train_ds,weights,cfg.seed,epoch,cfg.batch_size,cfg.workers)
             rec=run_epoch(model,loader,opt,loss_fn,device,cfg.arm);global_step+=rec['steps'];sched.step()
