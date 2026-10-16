@@ -169,3 +169,7 @@ Tasks1–5 complete after explicit user approval. Full frozen CPU suite:471passe
 ## Resource admission outcome
 
 Task6 executed: GPU3 bounded smoke264.84s outer, finite B/Q losses/gradients; memory/storage gates pass, time gate fails. Checkpoint saves84.73/80.80s imply4.59/5.82h per run, over4h. Task7 NOT STARTED,0/4 formal runs, no queue PID. Source freeze365b07a; report docs/results/SET_MASK_E6_FEASIBILITY_2026-10-15.md. No automatic retry; follow-up I/O/cadence alternatives are proposals only.
+
+## User-authorized long-run continuation
+
+The user explicitly relaxed runtime/cost on this chat and wants results on Oct16. Budget amendment: docs/superpowers/specs/2026-10-15-set-mask-longrun-amendment.md. Task7 now active: frozen four-run queue launched, first B19 epoch logs and complete checkpoint verified. Per-run10h/cumulative40GPUh are operational runaway protections; recipe and scientific gates unchanged. Current operational handoff: ignored ops/setmask_e6_long10_20261015/HANDOFF.md. All E6 focused61passed on LM1 and LM2 after budget-only code change. No complete-run result yet.
