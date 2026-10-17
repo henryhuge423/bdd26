@@ -32,6 +32,9 @@ The sequence localizes the unresolved stage more clearly than another mask-reado
 
 The independent verifier rebuilt object coverage, detector counts, all four allocation deltas and A0 rows from the saved artifacts. A0 matches E11 exactly on the selected images. E18 exited 0 in 74.69 seconds with 1.43 GiB peak reserved memory on LM2 GPU0. The initial launch exited during setup because the precreated results directory violated the runner's empty-output requirement; that attempt used no model/GPU training. The final run used a fresh `results/run1/` directory. No validation/test fold, full-split development or large training was run.
 
-Frozen code SHA256 `e39dbc0808a78ffccfefceeac6460b9a512e6f1cd07c8ccafa184ba01ba0700c`; design SHA256 `238955224fe9fc72d37d7bc48ebc960bc7b36c90e4a213d928c6114feebf484b`
+Worker-executed code SHA256 `e39dbc0808a78ffccfefceeac6460b9a512e6f1cd07c8ccafa184ba01ba0700c`; design SHA256 `238955224fe9fc72d37d7bc48ebc960bc7b36c90e4a213d928c6114feebf484b`
 
 Frozen test SHA256 `c6eee2ce12a9e1cb74a1de67bf85f8a68855fc667fe2b4e46ed76e470736dc41`; result SHA256 `f3f07c6a062a445bb20ce98c99d8688a4c34699e3bccf4fbb979242a25063fbc`. The independent verification record is stored with the local research output.
+
+The runner used CRLF code with SHA256 e39dbc0808a78ffccfefceeac6460b9a512e6f1cd07c8ccafa184ba01ba0700c. The Git-tracked LF-normalized script has SHA256 bf2b97f0a7123b69768ae9ced9bec25e392be97d6d6fd2877644bae56356ea5c; replacing each CRLF with LF reproduces the tracked file byte-for-byte. The test source hash is unchanged.
+
