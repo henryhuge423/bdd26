@@ -79,13 +79,22 @@ def validated_cost(latency):
     return latency['ratios']
 
 
+def common_round(configs):
+    rounds={cfg.round for cfg in configs.values()}
+    if len(rounds)!=1:
+        raise ValueError('Mixed or empty round identities')
+    return next(iter(rounds))
+
+
 def verify_metadata(root):
     """Reject incompatible/incomplete rounds before opening any fold arrays."""
     from nucseg.setmask.engine import load_config,make_provenance,sha_file
-    root=Path(root);configs={};sources={};first=None;logs={}
+    root=Path(root);sources={};first=None;logs={}
+    configs={f'{arm}_seed{seed}':load_config(root/f'{arm}_seed{seed}') for seed in SEEDS for arm in ('B','Q')}
+    common_round(configs)
     for seed in SEEDS:
         for arm in ('B','Q'):
-            name=f'{arm}_seed{seed}';run=root/name;cfg=load_config(run)
+            name=f'{arm}_seed{seed}';run=root/name;cfg=configs[name]
             if cfg.arm!=arm or cfg.seed!=seed or cfg.workers!=8 or Path(cfg.out_dir).resolve()!=run.resolve():
                 raise ValueError('Round/config identity differs')
             p=json.loads((run/'provenance.json').read_text())
@@ -143,7 +152,7 @@ def analyze_round(root,out):
         result=load_run(root/name,fold);rows[(cfg.arm,cfg.seed)]=result['rows'];endpoints[name]=result['endpoints']
         if result['endpoints']['interior_dead_n']!=741:raise ValueError('Frozen741 interior Dead population changed')
     comparison=paired_comparison(rows);verdict=admission(comparison,endpoints,validated_cost(latency))
-    payload={'round':'E6','split':1,'evaluation_fold':2,'seeds':list(SEEDS),'comparison':comparison,
+    payload={'round':common_round(configs),'split':1,'evaluation_fold':2,'seeds':list(SEEDS),'comparison':comparison,
              'verdict':verdict,'endpoints':endpoints,'descriptive_subgroups':subgroup_support(rows),
              'sources':sources,'training_provenance':provenance,'latency_sha256':sha_file(latency_path),
              'limitations':['Development fold2 reused; this is not held-out test performance.',

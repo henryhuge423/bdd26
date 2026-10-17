@@ -34,7 +34,7 @@ class SetMaskConfig:
     out_dir:str
     uni_ckpt:str='weights/MahmoodLab/UNI/pytorch_model.bin'
     workers:int=8
-    round:str=field(default='E6',init=False)
+    round:str='E6'
     split:int=field(default=1,init=False)
     upscale:int=field(default=1,init=False)
     epochs:int=field(default=130,init=False)
@@ -48,6 +48,9 @@ class SetMaskConfig:
     max_train_seconds:int=field(default=10*3600,init=False)
 
     def __post_init__(self):
+        if self.round not in ('E6','E7'):
+            raise ValueError('Only frozen E6/E7 rounds are supported')
+        object.__setattr__(self,'gamma',.85 if self.round=='E6' else .99)
         if self.arm not in ('B','Q') or self.seed not in (19,1) or self.workers<0:
             raise ValueError('Frozen E6 arms B/Q, seeds19/1 and nonnegative worker count required')
         object.__setattr__(self,'out_dir',str(self.out_dir))
@@ -237,7 +240,7 @@ def train_dev(cfg,device='cuda',resume=False):
 
 def load_config(run):
     payload=json.loads((Path(run)/'config.json').read_text())
-    cfg=SetMaskConfig(**{k:payload[k] for k in ('arm','seed','out_dir','uni_ckpt','workers')})
+    cfg=SetMaskConfig(**{k:payload[k] for k in ('arm','seed','out_dir','uni_ckpt','workers','round')})
     if asdict(cfg)!=payload:raise ValueError('Unsupported E6 configuration')
     return cfg
 
