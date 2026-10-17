@@ -234,7 +234,7 @@ def extract_uni2h(model, images, batch, device):
     layers = {6, 12, 18, 24}
     n = len(images)
     probe = _probe_features(model, images[:2], device, layers, mode="uni2h")
-    _, c, g, _ = probe.shape
+    _, _, c, g, _ = probe.shape
     cache = np.lib.format.open_memmap(_current_cache_path, mode="w+", dtype=np.float16,
                                       shape=(n, 4, c, g, g))
     for i in range(0, n, batch):
@@ -292,7 +292,7 @@ def _probe_features(model, images, device, layers, mode):
 def extract_uni(enc, images, batch, device):
     n = len(images)
     probe = _probe_features(enc, images[:2], device, None, mode="uni")
-    _, c, g, _ = probe.shape
+    _, _, c, g, _ = probe.shape
     cache = np.lib.format.open_memmap(_current_cache_path, mode="w+", dtype=np.float16,
                                       shape=(n, 4, c, g, g))
     for i in range(0, n, batch):
