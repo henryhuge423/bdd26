@@ -64,6 +64,10 @@ def build_parser():
     p.add_argument("--widen", type=int, default=0,
                    help="C1 equal-parameter widening of the NP/HV decoder bottlenecks; resuming "
                         "a widened run requires the same value again")
+    p.add_argument("--fusion", choices=("plain", "gate", "adapter"), default="plain",
+                   help="skip-path fusion arm (spec 2026-10-15): 'gate' = per-pixel channel gate, "
+                        "'adapter' = parameter-matched non-gating control; both require split1 "
+                        "and --train-only")
     p.add_argument("--visibility-arm", choices=("A0", "A1", "A2", "A3"),
                    help="frozen visibility dev controls; requires split1 and --train-only")
     mode = p.add_mutually_exclusive_group()
@@ -78,6 +82,11 @@ def main(argv=None):
     a = p.parse_args(argv)
     if a.visibility_arm is not None and (a.split != 1 or not a.train_only):
         p.error("visibility dev requires --split 1 --train-only")
+    if a.fusion != "plain":
+        if a.visibility_arm is not None:
+            p.error("the fusion dev arm is not combinable with the visibility arms")
+        if a.split != 1 or not a.train_only:
+            p.error("fusion dev requires --split 1 --train-only")
     tr, va, te = split_folds(a.split)
     upscale = run_upscale(a.out, a.upscale)
     hv_min_size = run_hv_min_size(a.out, a.hv_min_size)
@@ -89,7 +98,7 @@ def main(argv=None):
                       cp_area=tuple(a.cp_area), cp_clearance=a.cp_clearance,
                       synth=a.synth, synth_frac=a.synth_frac, upscale=upscale, hv_min_size=hv_min_size,
                       dead_expert=a.dead_expert, dead_neg_w=a.dead_neg_w, widen=a.widen,
-                      visibility_arm=a.visibility_arm)
+                      fusion=a.fusion, visibility_arm=a.visibility_arm)
     if not a.skip_train:
         train(cfg, [tr], [va])
     if a.train_only:

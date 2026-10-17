@@ -1,6 +1,31 @@
 # bdd26 — PanNuke Nuclei Instance Segmentation (course project 5)
 
+**Current research status (2026-10-17):** E17's sparse point detector emitted zero candidates; E18's dense votes overproduced proposals and failed precision/A0 gates. GT-point mask fitting passes on fit images but does not solve proposal generation. No large training or independent E18 validation/test was run. See the [E7–E18 closeout](docs/results/QUERY_POINT_CLOSEOUT_E7_E18_2026-10-17.md), [E17](docs/results/PREDICTED_POINTS_E17_DIAGNOSTIC_2026-10-17.md), and [E18](docs/results/DENSE_VOTES_E18_DIAGNOSTIC_2026-10-17.md).
+
+2026-10-17 E12/E13: GT-assisted fixed-feature fitting witness passes (Dead86.32/87.37%), not method admission; freezing mask projection fails both quality gates. E14 exact-native matching was completed later; exact matching did not pass the allocation or A0 guard. No large training. [E12](docs/results/FREE_MASK_E12_DIAGNOSTIC_2026-10-17.md), [E13](docs/results/STABLE_MASK_E13_DEV_2026-10-17.md).
+
+E11 (2026-10-17): four-stage auxiliary supervision failed both original allocation and A0 guards (two seeds,300steps). Full CPU:512passed/3skipped. No large training. [Results](docs/results/AUX_QUERY_E11_DEV_2026-10-17.md).
+
+> **2026-10-17 E10:** Predicted-mask constrained attention fails both train-only allocation gates and the separate A0 guard. Audit Dead recall M-G changes -.067511/+.008439; overall recall -.095944/-.056694. A0 reproduced exactly in both seeds before reusing E9 G. Stop this300-step recipe; no expanded training. Full regression507passed/3skipped. [E10 results and mechanism limits](docs/results/MASKED_QUERY_E10_DEV_2026-10-17.md).
+
+> **2026-10-17 E9:** Local-content initialization fails the frozen train-only allocation gate in both seeds. L-G audit Dead recall gains are +.004219/+.018987, with precision losses -.027199/-.023349; fit recall .134321/.168889. Both adapted arms also underperform frozen A0 on audit geometry. Stop this recipe; no full train/val or large training. Current-source regression501passed/3skipped. [Full E9 review](docs/results/LOCAL_QUERY_E9_DEV_2026-10-17.md).
+
+> **2026-10-17 E8a/E8b:** The frozen classifier-only probe fails allocation: fit foreground accuracy95.17%/97.58%, audit foreground changes-7.69/-6.87pp and final geometric recall gains+2.20/+2.47pp. Stop this balanced-head recipe. Separate original-model audit of all65Dead-positive fold1 images/967objects finds raw-mask matches35.57%/36.40%, final typed matches2.79%/12.20%. These are train-only diagnostics, not validation/test performance. [Full mechanism review](docs/results/QUERY_MECHANISM_2026-10-17.md).
+
+
+> **2026-10-17 E7 review:** All four 130-epoch runs and final-checkpoint fold2 evaluations are complete. Slower decay does not rescue Q (two-seed mPQ .087958 vs matched B .472939). A new fixed-train-batch audit localizes substantial loss between assigned raw masks and query retention/overlap resolution; this is diagnostic, not method performance. The independent clean-GPU closeout is complete (exit0): all quality gates fail, interior-Dead matching change -.528340 [95%CI -.589426,-.468664]; cost passes (Q/B .738576/.764427). Preserve the failed recipe; no expansion. [Detailed E7 review](docs/results/SET_MASK_E7_DEV_2026-10-17.md).
+
+
+> **2026-10-16 E6 closeout:** All four final-checkpoint fold2 runs and frozen analysis complete; Q fails every quality gate (mean interior-Dead matching change -.507422, 95%CI[-.563164,-.451449]) while passing latency. The train-only learning-rate restoration probe supports allocating a separate E7 gamma.99 schedule control, not a generalization or causal claim. [Results and next decisions](docs/results/SET_MASK_E6_DEV_2026-10-16.md).
+
+> **2026-10-15 E5 closeout:** Both fusion-gating runs and fold2 evaluations are complete. Interior Dead matching changes −.032389/+.025641, mean−.003374 (95%CI [−.014273,+.007486]); the frozen primary gate fails despite mean Dead PQ+.017897 and passing quality floors. Stop this recipe: no adapter controls, extra seeds or confirmation. [Results](docs/results/FUSION_GATING_DEV_2026-10-15.md); [new train-only point-grid audit](docs/results/PMNET_POINT_GRID_AUDIT_2026-10-15.md). PM-Net remains proposed.
+
 > **2026-10-15 tissue/class audit:** [Frozen-prediction analysis](docs/results/TISSUE_CLASS_AUDIT_2026-10-15.md) finds persistent differences across represented tissues. Lung, Skin and Colon rank in the bottom five across all three split-level seed means. Dead detection remains a valid targeted case, but 59.5% of Dead labels occur in Lung and seven tissues have none. Keep tissue/class reliability in scope; unseen-tissue transfer is untested and is not established as the dominant bottleneck. PM-Net remains proposed and subject to existing quality/cost gates. No new training or inference.
+
+
+[Mechanism closeout](docs/results/VISIBILITY_SUPERVISION_MECHANISM_2026-10-15.md).
+
+> **2026-10-15 update (America/New_York):** All eight visibility-supervision runs and original-image fold2 evaluations are complete. Frozen dev admission fails on original-image clauses 2 and 3: A2−A0 mPQ/bPQ losses exceed .002 in both seeds; seed1 strict Dead falls .004372; mean A2−A1 strict Dead falls .009781. All eight fixed-C2 mechanism evaluations are now complete. A1−A2 mean miss-rate improvement is −.008621 (95% CI [−.040918,+.017699]); the frozen mechanism clause also fails. No added seeds or confirmation. No additional seeds or three-split confirmation; PM-Net remains a proposal. See [full results](docs/results/VISIBILITY_SUPERVISION_DEV_2026-10-15.md). Earlier dated execution statements below are historical snapshots.
 
 
 Nuclei instance segmentation + classification on **PanNuke** (~7,900 H&E patches, 19 tissues,
@@ -21,15 +46,23 @@ Research plan + full progress log: [docs/RESEARCH_PLAN.md](docs/RESEARCH_PLAN.md
 experiment number: [docs/findings.md](docs/findings.md). Course brief:
 `docs/reference/our_project5_nuclei_segmentation.pdf`.
 
-## Current status (2026-10-14)
+## Current status (2026-10-15)
 
-The user has now authorized the visibility-supervision dev round: four arms × two
-seeds (19/1), split1 training/validation only, 130 epochs with last-checkpoint evaluation.
-The [frozen spec](docs/superpowers/specs/2026-10-14-visibility-supervision-design.md) and
-[execution plan](docs/superpowers/plans/2026-10-14-visibility-supervision.md) govern the run.
-Implementation passed its focused tests and independent review; the A3 validation-target
-mismatch was fixed. The final full regression passed (403 tests; 19,074 existing warnings). Runtime smoke passed. A0–A3 seed19 have each completed all 130 epochs and fold2 evaluation (official mPQ .4840/.4767/.4749/.4789, bPQ .6537/.6465/.6474/.6469, Dead PQ .1611/.1934/.1833/.1976, strict Dead PQ .1175/.1254/.1199/.1183); A0 seed1 completed the same (official mPQ .4784, bPQ .6500, Dead PQ .1575, strict Dead PQ .1239). A1 seed1 is training and two runs remain queued, each followed by fold2 evaluation. These are dev validation results; no intervention verdict is available yet.
-No test-fold result or three-split confirmation is claimed.
+The four-arm × two-seed visibility-supervision dev round and fixed-C2 closeout
+are complete, using final checkpoints and validation fold2 only. Original-image
+quality guards and the crop-mechanism criterion fail; no extra seeds, menu changes
+or three-split confirmation. [Original-image results](docs/results/VISIBILITY_SUPERVISION_DEV_2026-10-15.md),
+[mechanism report](docs/results/VISIBILITY_SUPERVISION_MECHANISM_2026-10-15.md).
+
+Train-only [PM-Net geometry auditing](docs/results/PMNET_TRAIN_GEOMETRY_AUDIT_2026-10-15.md)
+found maximum276 instances per image,23 rounded centers outside masks and116 empty
+images. PM-Net remains a proposal; no new training. Current mechanism runner
+passed52 focused checks; prior403-test full regression belongs to the training implementation.
+
+Latest complete [progress PDF](Presentations/progress/PanNuke_Progress_2026-10-15.pdf)
+and [project proposal PDF](docs/report/project_proposal/PanNuke_Project_Proposal.pdf).
+Only current PDFs are tracked in these delivery directories; the complete PPTX is
+available locally and ignored. Generators/QA/provenance build files live in ignored ops.
 
 [Research closeout checklist and final-report analysis frame](docs/audits/RESEARCH_STATUS_2026-10-14.md).
 

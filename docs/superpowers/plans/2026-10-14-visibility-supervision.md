@@ -72,3 +72,7 @@ Interfaces: TrainConfig.visibility_arm: str|None；`--visibility-arm {A0,A1,A2,A
 
 - [ ] 最后checkpoint在fold2原图及固定E4 C2窗口推理，nucseg.metrics.pannuke_eval评估；无TTA、同解码、配对图像聚类bootstrap，门只按原spec判断。正式队列先在每个run后执行原图fold2预测/评估，C2机制比较与最终门判定留给八run完成后。
 - [ ] 训练启动交接记录清楚：本次完成实现/启动，8次训练与最终端点仍在执行或待执行。队列不自动启动确认轮，不读fold3。
+
+## Task5 completion — 2026-10-15
+
+All8 original-image and fixed-C2 evaluations complete. Mechanism clause1 and original-image clauses2/3 fail; see `docs/results/VISIBILITY_SUPERVISION_MECHANISM_2026-10-15.md`. No confirmation or extra training. New runner52 focused checks pass, independent review and raw-record/hash recomputation complete. Earlier unchecked steps are the original execution checklist, not current queue status.

@@ -1,0 +1,193 @@
+{
+  "timestamp": "2026-10-15T00:07:13.783735-04:00",
+  "code_commit": "65a770f1ded7308c3f538d548018389b01fb716f",
+  "queue": {
+    "state": "training_and_fold2_complete",
+    "queue_pid": 1423016,
+    "time": 1792036644.3531194,
+    "runs": 8,
+    "next_step": "Paired C2 mechanism evaluation and frozen gates; no test-fold or confirmation launch"
+  },
+  "metrics": {
+    "A0_seed19": {
+      "mPQ": 0.4840002083015374,
+      "bPQ": 0.6536900266771575,
+      "Dead": 0.16108163090071903,
+      "strictDead": 0.11745535586510762,
+      "n_images": 2523,
+      "summary_path": "runs/visibility_supervision_20261014/A0_seed19/eval_fold2/summary.json",
+      "sha256": "1ac8381a15049fdb6b105e91e3235322a1dc73f8433967c4b137f1c492621986"
+    },
+    "A1_seed19": {
+      "mPQ": 0.47670936258290075,
+      "bPQ": 0.6464515220103749,
+      "Dead": 0.19344761696817975,
+      "strictDead": 0.12538271470159798,
+      "n_images": 2523,
+      "summary_path": "runs/visibility_supervision_20261014/A1_seed19/eval_fold2/summary.json",
+      "sha256": "f34466c8e0cea662f166ada262ee6a35c6d0e91a8b03dd9a18bab45111d88910"
+    },
+    "A2_seed19": {
+      "mPQ": 0.47488760593304763,
+      "bPQ": 0.6474459688808529,
+      "Dead": 0.1833232045249901,
+      "strictDead": 0.11993106838083464,
+      "n_images": 2523,
+      "summary_path": "runs/visibility_supervision_20261014/A2_seed19/eval_fold2/summary.json",
+      "sha256": "ff3db4c0b94b5648c933414e7e107a337ee66949ab3a64afcbfcde44df1db1dc"
+    },
+    "A3_seed19": {
+      "mPQ": 0.4789207711562922,
+      "bPQ": 0.6468693310442571,
+      "Dead": 0.1976473258999117,
+      "strictDead": 0.11825053686319505,
+      "n_images": 2523,
+      "summary_path": "runs/visibility_supervision_20261014/A3_seed19/eval_fold2/summary.json",
+      "sha256": "5793488cf3141fc2dddab37d322f1a68187515b74abb060b3460acafcd926562"
+    },
+    "A0_seed1": {
+      "mPQ": 0.47844696214289917,
+      "bPQ": 0.6499800942165133,
+      "Dead": 0.1575459861909927,
+      "strictDead": 0.12391257340864593,
+      "n_images": 2523,
+      "summary_path": "runs/visibility_supervision_20261014/A0_seed1/eval_fold2/summary.json",
+      "sha256": "0a962d16f287d8b3805f0a7a4e41829ae0d61e49c56c83e3cbb0960a6fa4b920"
+    },
+    "A1_seed1": {
+      "mPQ": 0.475170044001002,
+      "bPQ": 0.6449741107500376,
+      "Dead": 0.20047559421190406,
+      "strictDead": 0.13365039614126936,
+      "n_images": 2523,
+      "summary_path": "runs/visibility_supervision_20261014/A1_seed1/eval_fold2/summary.json",
+      "sha256": "12f1321c3d13e95e16219f05a69ccda1ffe61d38a2c6a219c546fc19349a5a3c"
+    },
+    "A2_seed1": {
+      "mPQ": 0.47502135993185984,
+      "bPQ": 0.6453491884343773,
+      "Dead": 0.18443424210827664,
+      "strictDead": 0.11954071247758671,
+      "n_images": 2523,
+      "summary_path": "runs/visibility_supervision_20261014/A2_seed1/eval_fold2/summary.json",
+      "sha256": "53cb91f04f0be97cac50ef5b7788782ca501a9f01faabfb0cbaf94c7bc3907d3"
+    },
+    "A3_seed1": {
+      "mPQ": 0.4722105800603041,
+      "bPQ": 0.6439356516946989,
+      "Dead": 0.18003875243449363,
+      "strictDead": 0.1177823614057435,
+      "n_images": 2523,
+      "summary_path": "runs/visibility_supervision_20261014/A3_seed1/eval_fold2/summary.json",
+      "sha256": "7838968901a1c548d1a77539dcb9692df522078da6051d8c53a2c35568b6689d"
+    }
+  },
+  "comparisons": {
+    "A1-A0": {
+      "19": {
+        "mPQ": -0.0072908457186366404,
+        "bPQ": -0.0072385046667825526,
+        "Dead": 0.03236598606746072,
+        "strictDead": 0.007927358836490359
+      },
+      "1": {
+        "mPQ": -0.0032769181418971782,
+        "bPQ": -0.0050059834664756275,
+        "Dead": 0.042929608020911364,
+        "strictDead": 0.009737822732623427
+      },
+      "mean": {
+        "mPQ": -0.005283881930266909,
+        "bPQ": -0.00612224406662909,
+        "Dead": 0.03764779704418604,
+        "strictDead": 0.008832590784556893
+      }
+    },
+    "A2-A0": {
+      "19": {
+        "mPQ": -0.009112602368489764,
+        "bPQ": -0.006244057796304547,
+        "Dead": 0.022241573624271066,
+        "strictDead": 0.0024757125157270216
+      },
+      "1": {
+        "mPQ": -0.0034256022110393247,
+        "bPQ": -0.004630905782135986,
+        "Dead": 0.026888255917283943,
+        "strictDead": -0.004371860931059221
+      },
+      "mean": {
+        "mPQ": -0.006269102289764544,
+        "bPQ": -0.0054374817892202665,
+        "Dead": 0.024564914770777505,
+        "strictDead": -0.0009480742076660997
+      }
+    },
+    "A2-A1": {
+      "19": {
+        "mPQ": -0.0018217566498531235,
+        "bPQ": 0.0009944468704780052,
+        "Dead": -0.010124412443189651,
+        "strictDead": -0.005451646320763337
+      },
+      "1": {
+        "mPQ": -0.0001486840691421465,
+        "bPQ": 0.00037507768433964195,
+        "Dead": -0.01604135210362742,
+        "strictDead": -0.014109683663682648
+      },
+      "mean": {
+        "mPQ": -0.000985220359497635,
+        "bPQ": 0.0006847622774088236,
+        "Dead": -0.013082882273408536,
+        "strictDead": -0.009780664992222993
+      }
+    },
+    "A3-A1": {
+      "19": {
+        "mPQ": 0.0022114085733914712,
+        "bPQ": 0.00041780903388222157,
+        "Dead": 0.004199708931731966,
+        "strictDead": -0.007132177838402934
+      },
+      "1": {
+        "mPQ": -0.002959463940697904,
+        "bPQ": -0.0010384590553387252,
+        "Dead": -0.020436841777410425,
+        "strictDead": -0.015868034735525866
+      },
+      "mean": {
+        "mPQ": -0.00037402768365321637,
+        "bPQ": -0.0003103250107282518,
+        "Dead": -0.00811856642283923,
+        "strictDead": -0.0115001062869644
+      }
+    },
+    "A2-A3": {
+      "19": {
+        "mPQ": -0.004033165223244595,
+        "bPQ": 0.0005766378365957836,
+        "Dead": -0.014324121374921617,
+        "strictDead": 0.0016805315176395969
+      },
+      "1": {
+        "mPQ": 0.0028107798715557575,
+        "bPQ": 0.0014135367396783671,
+        "Dead": 0.004395489673783004,
+        "strictDead": 0.0017583510718432172
+      },
+      "mean": {
+        "mPQ": -0.0006111926758444186,
+        "bPQ": 0.0009950872881370754,
+        "Dead": -0.004964315850569306,
+        "strictDead": 0.001719441294741407
+      }
+    }
+  },
+  "gate2_pass": false,
+  "gate3_strict_floor_pass": false,
+  "gate1_C2": "not_evaluated",
+  "admission": "fail",
+  "interpretation": "Conjunction fails on observed original-image endpoints. C2 mechanism unmeasured; no significance or causal conclusion.",
+  "scope": "Original-image snapshot taken before the subsequent fixed-C2 closeout; original metrics and gate arithmetic unchanged."
+}

@@ -1,5 +1,10 @@
 # 下一阶段路线提案：PanNuke"从零"新模型（非 HoVerNet 范式）
 
+[Mechanism closeout](../results/VISIBILITY_SUPERVISION_MECHANISM_2026-10-15.md).
+
+> **2026-10-15 update (America/New_York):** All eight visibility-supervision runs and original-image fold2 evaluations are complete. Frozen dev admission fails on original-image clauses 2 and 3: A2−A0 mPQ/bPQ losses exceed .002 in both seeds; seed1 strict Dead falls .004372; mean A2−A1 strict Dead falls .009781. All eight fixed-C2 mechanism evaluations are now complete. A1−A2 mean miss-rate improvement is −.008621 (95% CI [−.040918,+.017699]); the frozen mechanism clause also fails. No added seeds or confirmation. No additional seeds or three-split confirmation; PM-Net remains a proposal. See [full results](../results/VISIBILITY_SUPERVISION_DEV_2026-10-15.md). Earlier dated execution statements below are historical snapshots.
+
+
 **2026-10-14 起草｜研究建议草案：尚未批准、未启动任何新训练、未读取任何测试折。**
 本文回应"从头设计一个不依赖 HoVerNet 类结构的新模型"的设想：先复核现有路线留下了什么、
 约束是什么，再结合截至今日可核实的最新文献给出候选架构与分阶段、带证据门的执行路线。
@@ -20,9 +25,10 @@
 - KongNet（检测优先 CenterNet 复评）：.346 mPQ 负；LKCell-L 复评：分割好、分型差。
 - 训练侧加权/采样/免训练恢复：全部负或不可确认。
 
-**进行中**
-- 可见片段监督 dev 轮（四臂×两种子）：A0/A1/A2 seed19 已完成 130 轮 + fold2 验证；A3 seed19 训练中；seed1 四臂排队。每 run 约 2 小时，预计约 10 小时内跑完；完成后须执行固定 C2 配对机制复评与预注册门分析（需新实现 + 独立审查）。
-- 综合最终报告：阶段材料齐备，综合稿待整合（框架见 RESEARCH_STATUS_2026-10-14）。
+**当前收尾与下一步（2026-10-15）**
+- 可见片段监督四臂双种子训练、原图评估和固定C2机制复评均已完成。A1−A2漏检改善均值−.008621，95%CI [−.040918,+.017699]；机制门和原图质量门均失败，按原停止规则不扩训。
+- PM-Net仍为提案。训练原图最大276对象，暂定256查询不足；合法可见点、空图、容量/显存/延迟和增强恢复规则须先验证。无新增模型训练。
+- 综合最终报告继续整合；最新完整progress与课程proposal同步当前结果。
 
 **仍开放的三个核心短板（新模型必须正面回应）**
 1. **Dead 检测召回**：38.5% Dead GT 与任何预测 max-IoU<.1；内部 missed_bg .31（其他类 .03–.10）；外观效应跨全部已测稠密解码器（<60px 档 .67，≥256px 仍 .17）；漏检形态含小块碎裂、无深色染色质的苍白凋亡体、以及 Uterus 腔内脱落细胞群（中位 156px，非小对象）。oracle 插入漏检内部 Dead → Dead PQ +.156（Gate D）。
@@ -33,7 +39,7 @@
 - 换骨干 ≤.01 mPQ（CellViT++ 全表）；范式/解码差异可达 ±.15（KongNet 崩、LKCell 分割/分型倒挂）→ 架构的落点在"任务表述与解码"而非骨干。
 - x2 尺度：内部 Dead 匹配 61.3%→71.0%（尺度解释），但 bPQ 税经 du2 修复后仍 -.0045~-.0083（三折），strict Dead 四种子对皆负；EF-P2 用过滤换回 bPQ 但成本 6.09×x1。
 - 点提示 + SAM 家族 Dead F1 .45–.46（最好）；DETR 家族 F1 .46–.47 但 Dead PQ 仅 .130（F1→PQ 转换失败）；稠密解码器 .23–.36。
-- 边界/截断：89% 的 <60px GT 触边、57% 的 CellViT FN 触边（40% 兼为 <100px）；E4 受控裁窗 H1/H2/H3 三门通过（+.1738/+.1474/+.8175）——截断→漏检的因果证据；可见性轮正检验 HV 门槛机制。
+- 边界/截断：89% 的 <60px GT 触边、57% 的 CellViT FN 触边（40% 兼为 <100px）；E4 受控裁窗 H1/H2/H3 三门通过（+.1738/+.1474/+.8175）——裁剪干预下的受控关联证据，不能将其归因为HV清零；可见性轮正检验 HV 门槛机制。
 - 成本锚点（A100、bf16、batch32）：x1 15.50 ms/img；x2-du2 52.88（3.4×）；x1-TTA 72.33（4.67×）；双模型+融合 6.09×。新模型单遍成本目标建议 ≤2× x1。
 
 **资源现状（2026-10-14 核查）**
@@ -43,7 +49,7 @@
 
 ## 1. 为什么"从零"是合理下一步，以及硬约束
 
-**依据**：证据一致指向"任务表述 + 解码结构"是主要杠杆，而现有三分支（NP/HV/TP）+ 分水岭范式有两处结构性弱点在证据中反复出现：(i) HV 只提供相邻核的分离信号，对小对象（<30 工作像素被清零）与苍白低对比对象没有召回信号，漏检后没有任何下游补救；(ii) NP 二值前景把"真实小核 / 截断残片 / 碎裂碎片"输出成同一形式，训练监督未显式表述可见性与对象单位（E4/路线 A 的原始假设）；(iii) 实例分离依赖逐像素距离场 + 分水岭，对同类密簇（karyorrhexis）是已知最弱点。
+**依据**：证据一致指向"任务表述 + 解码结构"是主要杠杆，而现有三分支（NP/HV/TP）+ 分水岭范式有若干待验证的结构性假设在证据中反复出现：(i) HV 主要提供几何分离目标，小于30工作像素的对象仍保留NP/TP监督；HV目标清零不等于缺少检测监督，当前选择性HV干预也未通过原图质量门，不能将其作为已证的漏检原因；(ii) NP 二值前景把"真实小核 / 截断残片 / 碎裂碎片"输出成同一形式，训练监督未显式表述可见性与对象单位（E4/路线 A 的原始假设）；(iii) 实例分离依赖逐像素距离场 + 分水岭，对同类密簇（karyorrhexis）是已知最弱点。
 
 **要求清单（新模型的验收前提）**
 - R1 Dead/小对象召回：主端点 = 内部 Dead recall + Uterus-excluded Dead PQ（多 split×多种子），strict Dead 不退化；
@@ -161,7 +167,7 @@
 | 点提示+SAM 家族 Dead F1 .45–.46 最好；DETR 家族 F1 .46–.47 但 PQ 仅 .130 | 检测（点）与掩码质量解耦：点负责召回，掩码头在 stride-2/4 局部特征上生成 | 共享编码器 + 局部（ROI 式）掩码解码，单遍 |
 | LSP-DETR（2601.03163）：径向距离损失显式容纳标注不确定性，星凸多边形参数化，代码公开 | 边界参数化要能表达"不确定/被截断"的轮廓，而非二值逐像素硬标签 | 星凸多边形径向回归头（备选或并列掩码参数化） |
 | LSP-DETR 官方折已验证集合预测（48.2 mPQ、推理无分水岭、重叠宽容）；自诊断 DETR micro 归一化对稀有类有偏 | 稀有类需宏平均/密度感知损失；一对多辅助查询加密监督（核上零先例） | 一对多辅助查询 + 逆频采样/focal + 密度感知损失 |
-| E4：截断→漏检因果证据；可见性轮在检验 HV 机制 | 可见性/截断状态要显式监督或显式输出 | 截断标志辅助任务 + 可见掩码一致性目标 |
+| E4：受控裁剪关联证据，HV清零因果作用未证实；可见性轮在检验 HV 机制 | 可见性建模仅作待检验辅助假设，不作为已证的核心需求 | 截断标志辅助任务 + 可见掩码一致性目标 |
 | Inf/Conn 模糊（E1-T 72.5% 共鸣；M 合并 +.0519；CytoFormer 增益最大在 inflammatory） | 分型不假设 5 类边界锐利；软标签/层次有文献先例 | 层次辅助头（5 类 + 合并父节点）+ 可选 jury 软标签蒸馏 |
 | 分类 oracle .6632 vs 现状 .4995；T0–T3 冻结特征读出负 | 分型信息可能需联合几何训练进入特征 | 实例级分类头（掩码池化 + 固定上下文），与检测/掩码联合训练 |
 | 单遍成本 ≤2× x1（对照 6.09×/4.67×） | 不允许双模型/双尺度推理 | stride-4/8 CNN adapter；单遍 512 或 256+adapter，预算核对 |
@@ -170,7 +176,7 @@
 
 - **骨干**：**UNI2-h + ViT-Adapter 式交叉注意力注入**（CellVTA 配方；泄漏干净、PFM-DenseBench PanNuke 稠密最佳；交叉注意力注入优于门控卷积）。备选：H-optimus-0（Apache-2.0 最宽松）/ Virchow / 现基线 UNI（已集成，回退选项）。
 - **像素解码器**：多尺度特征金字塔 + **通道 softmax 门控融合**（SAFViT 教训），输出 stride-4 高分辨率特征。
-- **检测支路（召回优先）**：类感知中心热图（stride 4），focal loss；峰值初始化 K≈256 实例查询（或直接点监督 + 匈牙利匹配）。显式承载 Dead 召回目标；类可以是"先类无关、再分型"（对照臂）。
+- **检测支路（召回优先）**：类感知中心热图（stride 4），focal loss；峰值初始化实例查询（容量需覆盖训练最大276；候选512待显存/延迟核验）（或直接点监督 + 匈牙利匹配）。显式承载 Dead 召回目标；类可以是"先类无关、再分型"（对照臂）。
 - **实例解码**：查询在 stride-4 特征上做变形注意力；掩码参数化三选一（实现时冻结其一做主臂，其余做消融）：
   - (a) 动态卷积掩码头：每实例在局部窗口生成 mask logits；
   - (b) 星凸多边形径向回归（LSP-DETR 式）：对截断/模糊边界更宽容，且天然给"轮廓外延"能力；
@@ -241,3 +247,15 @@
 - 可见性轮的结果是本提案 P1/P2 规格的**输入条件**（机制端点设计）。
 - EF-P2、x2-du2、M 诊断作为新模型的对照与成本锚点复用，不重新包装为方法收益。
 - 若本提案获批准，建议按项目惯例：先出 spec（预注册），再 plan（TDD 实施），最后 smoke → dev → 确认。
+
+
+## 2026-10-15 train-only feasibility evidence
+
+[Training geometry audit](../results/PMNET_TRAIN_GEOMETRY_AUDIT_2026-10-15.md):
+fold1 has63,218 labeled instances over2,656 original patches; max276 in one
+Uterus patch means provisional256 queries cannot cover all targets (at least20
+unrepresentable).512 covers original-label counts, but is not a validated memory/
+latency budget.23 rounded centroids are outside their own masks (1 Dead), and116
+patches have zero instances. Prototype prerequisites include legal visible-mask
+points, valid empty-target loss/matching, capacity overflow and augmentation
+checks, parameter controls and runtime measurement. No new model training.

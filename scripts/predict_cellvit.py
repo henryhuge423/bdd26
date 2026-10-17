@@ -17,7 +17,7 @@ import numpy as np
 import torch
 
 from nucseg.cellvit.engine import (TrainConfig, build_model, predict_fold, res_tag, run_dead_expert,
-                                   run_upscale, run_widen)
+                                   run_fusion, run_upscale, run_widen)
 from nucseg.data.pannuke import PanNukeFold
 from nucseg.metrics.pannuke_eval import evaluate, format_summary, save_report
 
@@ -66,7 +66,7 @@ def main(argv=None):
     # a TrainConfig shim is the cheapest way to hand build_model the run's architecture flags
     # (the dead branch / widening live in the checkpoint; --dead only chooses whether to decode it)
     cfg = TrainConfig(split=1, out_dir=str(a.run), dead_expert=run_dead_expert(a.run),
-                      widen=run_widen(a.run))
+                      widen=run_widen(a.run), fusion=run_fusion(a.run))
     model = build_model(cfg, pretrained=False).cuda()
     model.load_state_dict(torch.load(a.run / a.ckpt, map_location="cpu", weights_only=False)["model"])
     f = PanNukeFold(a.fold)

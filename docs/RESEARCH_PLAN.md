@@ -1,6 +1,36 @@
 # 研究计划：PanNuke 细胞核实例分割与可验证的失败机制
 
+2026-10-17 E17/E18 closeout: the sparse point detector emitted zero proposals; the dense voting detector emitted thousands with only 3.5–4.3% fit and 3.5–3.7% audit precision. Both fail the new-cohort allocation/A0 gates. GT-point readout fitting is diagnostic only. No large training or E18 validation/test. [E7–E18 synthesis](results/QUERY_POINT_CLOSEOUT_E7_E18_2026-10-17.md), [E17](results/PREDICTED_POINTS_E17_DIAGNOSTIC_2026-10-17.md), [E18](results/DENSE_VOTES_E18_DIAGNOSTIC_2026-10-17.md).
+
+2026-10-17 E12/E13: GT-assisted fixed-feature fitting witness passes (Dead86.32/87.37%), not method admission; freezing mask projection fails both quality gates. E14 exact-native matching was completed later; exact matching did not pass the allocation or A0 guard. No large training. [E12](results/FREE_MASK_E12_DIAGNOSTIC_2026-10-17.md), [E13](results/STABLE_MASK_E13_DEV_2026-10-17.md).
+
+E11 (2026-10-17): four-stage auxiliary supervision failed both original allocation and A0 guards (two seeds,300steps). Full CPU:512passed/3skipped. No large training. [Results](results/AUX_QUERY_E11_DEV_2026-10-17.md).
+
+> **2026-10-17 E10:** Predicted-mask constrained attention fails both train-only allocation gates and the separate A0 guard. Audit Dead recall M-G changes -.067511/+.008439; overall recall -.095944/-.056694. A0 reproduced exactly in both seeds before reusing E9 G. Stop this300-step recipe; no expanded training. Full regression507passed/3skipped. [E10 results and mechanism limits](results/MASKED_QUERY_E10_DEV_2026-10-17.md).
+
+> **2026-10-17 E9:** Local-content initialization fails the frozen train-only allocation gate in both seeds. L-G audit Dead recall gains are +.004219/+.018987, with precision losses -.027199/-.023349; fit recall .134321/.168889. Both adapted arms also underperform frozen A0 on audit geometry. Stop this recipe; no full train/val or large training. Current-source regression501passed/3skipped. [Full E9 review](results/LOCAL_QUERY_E9_DEV_2026-10-17.md).
+
+> **2026-10-17 E8a/E8b:** The frozen classifier-only probe fails allocation: fit foreground accuracy95.17%/97.58%, audit foreground changes-7.69/-6.87pp and final geometric recall gains+2.20/+2.47pp. Stop this balanced-head recipe. Separate original-model audit of all65Dead-positive fold1 images/967objects finds raw-mask matches35.57%/36.40%, final typed matches2.79%/12.20%. These are train-only diagnostics, not validation/test performance. [Full mechanism review](results/QUERY_MECHANISM_2026-10-17.md).
+
+
+> **2026-10-17 E7 review:** All four 130-epoch runs and final-checkpoint fold2 evaluations are complete. Slower decay does not rescue Q (two-seed mPQ .087958 vs matched B .472939). A new fixed-train-batch audit localizes substantial loss between assigned raw masks and query retention/overlap resolution; this is diagnostic, not method performance. The independent clean-GPU closeout is complete (exit0): all quality gates fail, interior-Dead matching change -.528340 [95%CI -.589426,-.468664]; cost passes (Q/B .738576/.764427). Preserve the failed recipe; no expansion. [Detailed E7 review](results/SET_MASK_E7_DEV_2026-10-17.md).
+
+
+> **2026-10-16 E6 closeout:** All four final-checkpoint fold2 runs and frozen analysis complete; Q fails every quality gate (mean interior-Dead matching change -.507422, 95%CI[-.563164,-.451449]) while passing latency. The train-only learning-rate restoration probe supports allocating a separate E7 gamma.99 schedule control, not a generalization or causal claim. [Results and next decisions](results/SET_MASK_E6_DEV_2026-10-16.md).
+
+> **2026-10-15 实例表示前置实验：**
+
+> 已完成 fold1 全量训练标签的点邻域与掩码表示 CPU 审计。stride4 硬块掩码上界涉及29/801内部Dead，stride8涉及373/801；该上界不适用于双线性logits或原生细化，也不能解释为现有模型漏检原因。已区分HV30训练门与推理面积过滤。下一步建议先冻结“基本集合查询+高分辨率掩码”的最小对照，点初始化等后置；当前无新训练。[完整结果](results/POINT_MASK_FEASIBILITY_2026-10-15.md)与[待审阅草案](proposals/RESEARCH_NEXT_2026-10-15-instance-representation.md)。
+
+
+> **2026-10-15 E5结果与推进：** 门控两种子训练/验证完成；内部Dead匹配率变化−.032389/+.025641，均值−.003374，95%CI [−.014273,+.007486]，主门失败。Dead PQ均值+.017897及质量门通过，不改变停止结论；不启动容量对照、加种子或确认轮。[完整分析](results/FUSION_GATING_DEV_2026-10-15.md)。已补[训练点网格可行性审计](results/PMNET_POINT_GRID_AUDIT_2026-10-15.md)：stride4单槽超额1对象，stride8超额45对象；仅训练标签描述，无新训练。下一方案聚焦实例表示并先冻结设计，PM-Net尚未训练。
+
 > **2026-10-15 组织与类别分析：** [已完成审计](results/TISSUE_CLASS_AUDIT_2026-10-15.md)复用九个固定 split/seed 对，发现 Lung、Skin、Colon 在三个 split 种子均值中均位于倒数五名，同类比较仍有差距。Dead 检测短板成立，但标签集中且七组织无该类标注。研究定位为可验证的检测/实例质量失败与跨组织类别可靠性，不将未见组织迁移认定为已证实主瓶颈。PM-Net 仍为待验证提案，既定质量/成本门槛与已关闭路线不变。本轮无训练、无新推理；历史测试复用仅作描述性分析，未来方法选择限 train/val。
+
+
+[Mechanism closeout](results/VISIBILITY_SUPERVISION_MECHANISM_2026-10-15.md).
+
+> **2026-10-15 update (America/New_York):** All eight visibility-supervision runs and original-image fold2 evaluations are complete. Frozen dev admission fails on original-image clauses 2 and 3: A2−A0 mPQ/bPQ losses exceed .002 in both seeds; seed1 strict Dead falls .004372; mean A2−A1 strict Dead falls .009781. All eight fixed-C2 mechanism evaluations are now complete. A1−A2 mean miss-rate improvement is −.008621 (95% CI [−.040918,+.017699]); the frozen mechanism clause also fails. No added seeds or confirmation. No additional seeds or three-split confirmation; PM-Net remains a proposal. See [full results](results/VISIBILITY_SUPERVISION_DEV_2026-10-15.md). Earlier dated execution statements below are historical snapshots.
 
 
 > **2026-10-14 当前授权与执行：** 用户已明确批准可见片段监督 dev 实现和启动训练。
@@ -520,3 +550,7 @@
 - 生成：PixCell 2506.05127；NucleiMix 2410.16671；DiffMix 2306.14132；HistoSmith 2502.08754；PathDiff 2506.23440；Co-synthesis 2407.14434；NuDiff 2310.14197；合成多样性 2608.03990；StainFuser 2403.09302；反事实压力测试 2605.10894
 - 评测批评：Foucart et al. Sci Rep 2023 (doi 10.1038/s41598-023-35605-7)
 - 可选扩展（分子监督）：GigaTIME-Flash 2607.18218（虚拟 mIF，Apache-2.0）；CytoFormer 2608.16718；STHELAR（Xenium，CC-BY-4.0）
+
+## 2026-10-15 synthesis
+
+[Evidence chain and PM-Net pre-training decisions](report/RESEARCH_SYNTHESIS_2026-10-15.md).
