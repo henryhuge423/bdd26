@@ -1,5 +1,40 @@
 # Findings log
 
+## 2026-10-17 — E17/E18 closeout
+
+E17's fixed sparse heatmap detector produced zero candidates across 16 images and two seeds. E18 retained the conditional-mask readout and replaced only the point detector with dense foreground-to-instance-point voting. GT-point fit recall exceeded 80% for all/Dead objects on fit images in both seeds, but actual detector fit recall was 34.18%/41.84%; fit precision was 3.67%/4.26%. Audit precision was 3.67%/3.52%. Seed 19 lost 5.26 pp audit Dead recall; seed 1 gained 21.05 pp but lost 15.06 pp precision. Both allocation gates and A0 guards fail. A0 matches E11 on the selected images, and the independent result verifier passes. This is train-only evidence (audit images were seen by E7; 19 audit Dead objects), not independent validation/test. Stop at E18; no large training. [E7–E18 synthesis](results/QUERY_POINT_CLOSEOUT_E7_E18_2026-10-17.md), [E17](results/PREDICTED_POINTS_E17_DIAGNOSTIC_2026-10-17.md), [E18](results/DENSE_VOTES_E18_DIAGNOSTIC_2026-10-17.md).
+
+
+2026-10-17 E12/E13: GT-assisted fixed-feature fitting witness passes (Dead86.32/87.37%), not method admission; freezing mask projection fails both quality gates. E14 exact-native matching was completed later; exact matching did not pass the allocation or A0 guard. No large training. [E12](results/FREE_MASK_E12_DIAGNOSTIC_2026-10-17.md), [E13](results/STABLE_MASK_E13_DEV_2026-10-17.md).
+
+E11 (2026-10-17): four-stage auxiliary supervision failed both original allocation and A0 guards (two seeds,300steps). Full CPU:512passed/3skipped. No large training. [Results](results/AUX_QUERY_E11_DEV_2026-10-17.md).
+
+> **2026-10-17 E10:** Predicted-mask constrained attention fails both train-only allocation gates and the separate A0 guard. Audit Dead recall M-G changes -.067511/+.008439; overall recall -.095944/-.056694. A0 reproduced exactly in both seeds before reusing E9 G. Stop this300-step recipe; no expanded training. Full regression507passed/3skipped. [E10 results and mechanism limits](results/MASKED_QUERY_E10_DEV_2026-10-17.md).
+
+> **2026-10-17 E9:** Local-content initialization fails the frozen train-only allocation gate in both seeds. L-G audit Dead recall gains are +.004219/+.018987, with precision losses -.027199/-.023349; fit recall .134321/.168889. Both adapted arms also underperform frozen A0 on audit geometry. Stop this recipe; no full train/val or large training. Current-source regression501passed/3skipped. [Full E9 review](results/LOCAL_QUERY_E9_DEV_2026-10-17.md).
+
+## 2026-10-17 E8a/E8b query mechanism closeout (train-only)
+
+E8a fixed-query classifier probe: A2 fits foreground95.17%/97.58%, but audit foreground-7.69/-6.87pp and final untyped recall+2.20/+2.47pp fail the frozen allocation rule; stop this balanced-head recipe. Both fixed batches contain zero Dead. E8b separately audits all65Dead-positive fold1 images/967Dead (801interior,166border) with original E7 Q19/Q1: any-raw IoU>.5 coverage35.57%/36.40%; final typed matches2.79%/12.20%; canonical background76.32%/32.37%. Raw coverage is not a strict final-decoder ceiling (8/37raw-bad objects improve after competition). No validation/test performance, no additional full training, no weights saved.
+
+[Complete results and limits](results/QUERY_MECHANISM_2026-10-17.md). Independent per-object recounts pass; final fullCPU494passed/3skipped/19073warnings, exit0. Invalid import-route run, bf16 flattened-input run and root-full fixture errors preserved separately. Existing E7 source/weights and scientific gates unchanged.
+
+
+## 2026-10-16 E6 complete; train-only optimization probe; E7 allocation
+
+All4 B/Q脳seed19/1 runs complete on final checkpoints, fold2 dev only. Frozen741-object primary Q鈭払=-.507422 (95%CI[-.563164,-.451449]); every quality criterion fails, latency passes(.7712/.7955脳). Two-seed mean B/Q mPQ=.481432/.102699, bPQ=.650773/.192614, DeadPQ=.179635/.005951. Paired130-epoch data digests and returned completion hashes verified. E6 recipe closed, no threshold/seed expansion or test confirmation.
+
+Fixed16-image fold1/Q19-final trainability probe, identical Adam state and frozen encoder,300steps each: resetting LR3e-4 reduces eval loss36.24%, assigned-decoded recall18.73%鈫?6.86% vs terminal-LR control20.24%. Allocation gate passes; this does not prove schedule causality, gamma.99 validity or generalization. Independent E7 round changes only exponential gamma.85鈫?99, both B/Q retrained from matched original initialization with same seeds/quality/cost gates. Formal queue launched on LM2 GPU6 after fullCPU487passed/3skipped and fresh admitted smoke; first B19 epoch complete. See [complete analysis](results/SET_MASK_E6_DEV_2026-10-16.md). No metric/HoVer code changes, dependency upgrade or publishing.
+
+## 2026-10-15 — point/mask representation feasibility, fold1 only
+
+New CPU analysis covers63,218 training instances (967 Dead). Under hard block-mask nearest-upsample representation, stride4 cannot reach IoU>.5 for65 Dead, including29/801 interior; stride8 affects460 Dead, including373 interior. This is not a bound for bilinear logits or native refinement, and does not explain the existing baseline mechanism. Fixed stride4 3x3 point-neighbour conflicts involve191 targets/19 Dead;94 vertex-disjoint edges give a representation exclusion lower bound under strict local-winner decoding. HV30 is a target-support rule, not a final-mask area filter. Independent438 real-object oracle checks and all-image sparse graph reconstruction agree. [Analysis](results/POINT_MASK_FEASIBILITY_2026-10-15.md), [next draft](proposals/RESEARCH_NEXT_2026-10-15-instance-representation.md). No model fitting/inference/fold3; existing stop rules unchanged.
+
+
+## 2026-10-15 — fusion gating frozen-gate failure and point-grid feasibility
+
+Two G seeds complete. Interior Dead matched changes−.032389/+.025641; mean−.003374 [−.014273,+.007486], clause1 fails. Dead PQ mean+.017897, strict Dead+.014202; clauses2/3 pass. Actual mean miss change+.009447 (worse); comparison.miss_improvement in the frozen artifact is an invalid auxiliary complement of matching, unused by admission. Stop, no C controls or extra seeds. [Full results](results/FUSION_GATING_DEV_2026-10-15.md). New fold1-only point audit:63,218 objects, legal nearest-visible-centroid points; stride2/4/8 single-slot excess0/1/45. [Audit](results/PMNET_POINT_GRID_AUDIT_2026-10-15.md). No new training/inference/test access.
+
 ## 2026-10-15 — fixed-C2 mechanism closeout and train-only geometry
 
 Eight final checkpoints ×2,523 fixed E4 C2 windows complete. Dead primary support=116 objects/38 images (77 Lung;5 border contacts without pixel loss). A1/A2 misses: seed19 51/54, seed1 52/51. Mean A1−A2 improvement−.008621 [−.040918,+.017699], frozen clause1 fails; original-image guards already fail. A3−A2 descriptive+.008621 [−.014713,+.034834], not equivalence. Stop recipe, no added seeds, tuning or confirmation; no test-fold access.

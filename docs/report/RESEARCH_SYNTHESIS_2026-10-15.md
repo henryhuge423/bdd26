@@ -1,5 +1,9 @@
 # Research synthesis and next decisions — 2026-10-15
 
+> **2026-10-16 E6 closeout:** All four final-checkpoint fold2 runs and frozen analysis complete; Q fails every quality gate (mean interior-Dead matching change -.507422, 95%CI[-.563164,-.451449]) while passing latency. The train-only learning-rate restoration probe supports allocating a separate E7 gamma.99 schedule control, not a generalization or causal claim. [Results and next decisions](../results/SET_MASK_E6_DEV_2026-10-16.md).
+
+> **Latest E5 closeout:** [Fusion dev](../results/FUSION_GATING_DEV_2026-10-15.md) fails its frozen internal-Dead-matching gate (mean−.003374, CI[−.014273,+.007486]), despite official/strict Dead PQ increases. Do not advance to C or confirmation. Earlier suggested gated fusion is no longer a default justified component. [Train-only point-grid audit](../results/PMNET_POINT_GRID_AUDIT_2026-10-15.md) adds legal-target/collision constraints. Next architecture remains a hypothesis: isolate instance representation, preserve recipe controls, freeze design and resource/cost criteria before training. Earlier unexecuted-C2 wording below is historical; that study is closed as described above.
+
 > Later 2026-10-15 closeout: all eight C2 evaluations completed; selective-HV mean miss improvement −.008621 [−.040918,+.017699], frozen criterion fails. [Full mechanism report](../results/VISIBILITY_SUPERVISION_MECHANISM_2026-10-15.md); [train-only geometry audit](../results/PMNET_TRAIN_GEOMETRY_AUDIT_2026-10-15.md). The earlier unexecuted-C2 statements below describe the pre-closeout synthesis. No expansion or new training.
 
 ## Main conclusion
