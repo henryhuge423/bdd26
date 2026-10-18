@@ -68,6 +68,9 @@ def build_parser():
                    help="skip-path fusion arm (spec 2026-10-15): 'gate' = per-pixel channel gate, "
                         "'adapter' = parameter-matched non-gating control; both require split1 "
                         "and --train-only")
+    p.add_argument("--hires-adapter", action="store_true",
+                   help="add the high-resolution CNN adapter to the finest decoder skip "
+                        "(spec 2026-10-18); requires --split 1 --train-only")
     p.add_argument("--visibility-arm", choices=("A0", "A1", "A2", "A3"),
                    help="frozen visibility dev controls; requires split1 and --train-only")
     mode = p.add_mutually_exclusive_group()
@@ -87,6 +90,11 @@ def main(argv=None):
             p.error("the fusion dev arm is not combinable with the visibility arms")
         if a.split != 1 or not a.train_only:
             p.error("fusion dev requires --split 1 --train-only")
+    if a.hires_adapter:
+        if a.visibility_arm is not None or a.fusion != "plain":
+            p.error("the hires adapter is not combinable with the fusion or visibility arms")
+        if a.split != 1 or not a.train_only:
+            p.error("hires adapter requires --split 1 --train-only")
     tr, va, te = split_folds(a.split)
     upscale = run_upscale(a.out, a.upscale)
     hv_min_size = run_hv_min_size(a.out, a.hv_min_size)
@@ -98,7 +106,7 @@ def main(argv=None):
                       cp_area=tuple(a.cp_area), cp_clearance=a.cp_clearance,
                       synth=a.synth, synth_frac=a.synth_frac, upscale=upscale, hv_min_size=hv_min_size,
                       dead_expert=a.dead_expert, dead_neg_w=a.dead_neg_w, widen=a.widen,
-                      fusion=a.fusion, visibility_arm=a.visibility_arm)
+                      fusion=a.fusion, hires_adapter=a.hires_adapter, visibility_arm=a.visibility_arm)
     if not a.skip_train:
         train(cfg, [tr], [va])
     if a.train_only:

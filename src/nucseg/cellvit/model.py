@@ -149,16 +149,20 @@ class CellViTUNI(nn.Module):
         x = br.up1(torch.cat([s1, x], 1))
         return br.out(torch.cat([s0, x], 1))
 
-    def forward(self, x: torch.Tensor, return_features: bool = False) -> dict:
-        """x: (B, 3, H, W) normalised, H and W multiples of 16 -> NCHW logits dict."""
-        cls, zs = self.encoder(x)
+    def _skips(self, x: torch.Tensor, zs):
+        """Decoder skips (s0 full-res, s1..s3, z4 at stride16); overridable by feature adapters."""
         hp, wp = x.shape[-2] // self.patch_size, x.shape[-1] // self.patch_size
         z1, z2, z3, z4 = (z[:, self.encoder.num_prefix_tokens:].transpose(1, 2).reshape(-1, self.embed_dim, hp, wp)
                           for z in zs)
-        skips = (self.skip0(x), self.skip1(z1), self.skip2(z2), self.skip3(z3), z4)
+        return (self.skip0(x), self.skip1(z1), self.skip2(z2), self.skip3(z3), z4)
+
+    def forward(self, x: torch.Tensor, return_features: bool = False) -> dict:
+        """x: (B, 3, H, W) normalised, H and W multiples of 16 -> NCHW logits dict."""
+        cls, zs = self.encoder(x)
+        skips = self._skips(x, zs)
         if self.fusion != "plain":
             # applied once, so every branch decodes the same gated skips; identity at initialization
-            skips = tuple(g(s) for g, s in zip(self.gates, skips[:4])) + (z4,)
+            skips = tuple(g(s) for g, s in zip(self.gates, skips[:4])) + (skips[4],)
         f_tp = self._decode(skips, self.tp_branch)
         out = {
             "np": self.np_head(self._decode(skips, self.np_branch)),
@@ -178,6 +182,39 @@ class CellViTUNI(nn.Module):
     def freeze_encoder(self, freeze: bool = True):
         for p in self.encoder.parameters():
             p.requires_grad = not freeze
+
+
+class HiResAdapter(nn.Module):
+    """Trainable high-resolution CNN adapter on the finest decoder skip (spec 2026-10-18).
+
+    Maps the raw normalised input to 64 channels at the input resolution, channel-compatible with
+    ``skip0``. The final 1x1 convolution is zero-initialised, so the adapter adds exactly zero at
+    initialization and the model is then functionally identical to the baseline.
+    """
+
+    def __init__(self, drop: float = 0.0):
+        super().__init__()
+        self.stem = nn.Sequential(conv_block(3, 32, drop=drop), conv_block(32, 64, drop=drop),
+                                  conv_block(64, 64, drop=drop))
+        self.out = nn.Conv2d(64, 64, 1)
+        nn.init.zeros_(self.out.weight)
+        nn.init.zeros_(self.out.bias)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.out(self.stem(x))
+
+
+class HiResCellViTUNI(CellViTUNI):
+    """``CellViTUNI`` with a high-resolution adapter added to the finest decoder skip (E19)."""
+
+    def __init__(self, uni_ckpt: str | None = None, **kwargs):
+        # CellViTUNI first, so every shared module keeps its initialization and RNG order
+        super().__init__(uni_ckpt=uni_ckpt, **kwargs)
+        self.hires = HiResAdapter(drop=kwargs.get("drop_rate", 0.0))
+
+    def _skips(self, x, zs):
+        s0, s1, s2, s3, z4 = super()._skips(x, zs)
+        return (s0 + self.hires(x), s1, s2, s3, z4)
 
 
 def branch_param_count(model: CellViTUNI) -> dict[str, int]:

@@ -31,7 +31,7 @@ from ..text.conch_prior import instance_mean_probs
 from ..hovernet.official import dice_loss, mse_loss, msge_loss, xentropy_loss
 from ..hovernet.targets import validate_hv_min_size
 from .data import PanNukeCellViT, cell_tissue_weights, VISIBILITY_ARMS, VISIBILITY_COUNTS
-from .model import FUSION_MODES, UNI_MEAN, UNI_STD, CellViTUNI
+from .model import FUSION_MODES, UNI_MEAN, UNI_STD, CellViTUNI, HiResCellViTUNI
 
 NR_TYPES = NUM_CLASSES + 1
 DEAD = 4
@@ -83,12 +83,23 @@ class TrainConfig:
     # per-pixel channel gate per skip path, "adapter" the parameter-matched non-gating control.
     fusion: str = "plain"
 
+    # high-resolution CNN adapter on the finest decoder skip (spec 2026-10-18): dev-only, split1
+    hires_adapter: bool = False
+
     visibility_arm: str | None = None
 
     def __post_init__(self):
         self.hv_min_size = validate_hv_min_size(self.hv_min_size)
         if self.fusion not in FUSION_MODES:
             raise ValueError(f"Unknown fusion mode: {self.fusion!r}")
+        if self.hires_adapter:
+            if self.split != 1:
+                raise ValueError("hires dev requires split1")
+            if (self.fusion != "plain" or self.upscale != 1 or self.cp_prob or self.synth
+                    or self.synth_frac or self.np_wce or self.dead_w or self.small_w
+                    or self.dead_expert or self.dead_neg_w or self.widen
+                    or self.visibility_arm is not None):
+                raise ValueError("hires dev refuses additional scientific interventions")
         if self.visibility_arm is not None:
             if self.visibility_arm not in VISIBILITY_ARMS:
                 raise ValueError("Unknown visibility arm")
@@ -199,10 +210,11 @@ def _save(path: Path, **state):
 
 
 def build_model(cfg: TrainConfig | None = None, pretrained: bool = True) -> CellViTUNI:
-    return CellViTUNI(uni_ckpt=cfg.uni_ckpt if (cfg and pretrained) else None,
-                      dead_expert=bool(cfg.dead_expert) if cfg else False,
-                      widen=cfg.widen if cfg else 0,
-                      fusion=cfg.fusion if cfg else "plain")
+    cls = HiResCellViTUNI if (cfg is not None and cfg.hires_adapter) else CellViTUNI
+    return cls(uni_ckpt=cfg.uni_ckpt if (cfg and pretrained) else None,
+               dead_expert=bool(cfg.dead_expert) if cfg else False,
+               widen=cfg.widen if cfg else 0,
+               fusion=cfg.fusion if cfg else "plain")
 
 
 def train(cfg: TrainConfig, train_folds: list[int], val_folds: list[int], device="cuda", model=None):
@@ -210,6 +222,8 @@ def train(cfg: TrainConfig, train_folds: list[int], val_folds: list[int], device
         raise ValueError("visibility dev requires fold1 training / fold2 validation")
     if cfg.fusion != "plain" and (train_folds != [1] or val_folds != [2]):
         raise ValueError("fusion dev requires fold1 training / fold2 validation")
+    if cfg.hires_adapter and (train_folds != [1] or val_folds != [2]):
+        raise ValueError("hires dev requires fold1 training / fold2 validation")
     prepare_train_config(cfg)
     out = Path(cfg.out_dir)
     torch.manual_seed(cfg.seed)
@@ -359,6 +373,14 @@ def run_fusion(run, override: str | None = None) -> str:
     if value not in FUSION_MODES:
         raise ValueError(f"Unknown fusion mode {value!r} in {path}")
     return value
+
+
+def run_hires_adapter(run, override: bool | None = None) -> bool:
+    """High-res-adapter flag of a run dir: explicit override wins, else config.json, else False."""
+    if override is not None:
+        return bool(override)
+    path = Path(run) / "config.json"
+    return bool(json.loads(path.read_text()).get("hires_adapter", False)) if path.exists() else False
 
 
 def run_widen(run, override: int | None = None) -> int:
