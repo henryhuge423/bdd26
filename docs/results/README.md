@@ -1,5 +1,9 @@
 # Experiment results
 
+## 2026-10-18 high-resolution adapter dev (E19)
+
+- [E19 result: dev negative](HIRES_ADAPTER_E19_DEV_2026-10-18.md) -- a high-resolution CNN adapter on the finest decoder skip of the CellViT-UNI baseline does not improve internal-Dead recall; `dev_admission=false` (clauses 1/2/3 fail, cost clause passes).
+
 ## 2026-10-17 query/point representation closeout
 
 - [E7–E18 synthesis and decisions](QUERY_POINT_CLOSEOUT_E7_E18_2026-10-17.md)
