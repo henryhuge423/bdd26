@@ -1,5 +1,8 @@
 # bdd26 — PanNuke Nuclei Instance Segmentation (course project 5)
 
+> **2026-10-18 E19 in flight:** a pre-registered single-mechanism contrast -- a high-resolution CNN adapter on the finest decoder skip of the CellViT-UNI baseline (`skip0(x) + hires(x)`, zero-initialised so it starts as the baseline) -- is training on LM2 as four matched runs (B0/H x seeds 19/1, fold1->fold2, last checkpoint, no TTA). Spec `docs/superpowers/specs/2026-10-18-hires-adapter-design.md`; frozen gates in the spec. No result yet; fold3 never read. LM1 GPU2 unused.
+
+
 **Current research status (2026-10-17):** E17's sparse point detector emitted zero candidates; E18's dense votes overproduced proposals and failed precision/A0 gates. GT-point mask fitting passes on fit images but does not solve proposal generation. No large training or independent E18 validation/test was run. See the [E7–E18 closeout](docs/results/QUERY_POINT_CLOSEOUT_E7_E18_2026-10-17.md), [E17](docs/results/PREDICTED_POINTS_E17_DIAGNOSTIC_2026-10-17.md), and [E18](docs/results/DENSE_VOTES_E18_DIAGNOSTIC_2026-10-17.md).
 
 2026-10-17 E12/E13: GT-assisted fixed-feature fitting witness passes (Dead86.32/87.37%), not method admission; freezing mask projection fails both quality gates. E14 exact-native matching was completed later; exact matching did not pass the allocation or A0 guard. No large training. [E12](docs/results/FREE_MASK_E12_DIAGNOSTIC_2026-10-17.md), [E13](docs/results/STABLE_MASK_E13_DEV_2026-10-17.md).

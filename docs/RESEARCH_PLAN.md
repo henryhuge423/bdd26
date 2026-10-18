@@ -1,3 +1,5 @@
+> **2026-10-18 E19 in flight:** a pre-registered single-mechanism contrast -- a high-resolution CNN adapter on the finest decoder skip of the CellViT-UNI baseline (`skip0(x) + hires(x)`, zero-initialised so it starts as the baseline) -- is training on LM2 as four matched runs (B0/H x seeds 19/1, fold1->fold2, last checkpoint, no TTA). Spec `docs/superpowers/specs/2026-10-18-hires-adapter-design.md`; frozen gates in the spec. No result yet; fold3 never read. LM1 GPU2 unused.
+
 # 研究计划：PanNuke 细胞核实例分割与可验证的失败机制
 
 2026-10-17 E17/E18 closeout: the sparse point detector emitted zero proposals; the dense voting detector emitted thousands with only 3.5–4.3% fit and 3.5–3.7% audit precision. Both fail the new-cohort allocation/A0 gates. GT-point readout fitting is diagnostic only. No large training or E18 validation/test. [E7–E18 synthesis](results/QUERY_POINT_CLOSEOUT_E7_E18_2026-10-17.md), [E17](results/PREDICTED_POINTS_E17_DIAGNOSTIC_2026-10-17.md), [E18](results/DENSE_VOTES_E18_DIAGNOSTIC_2026-10-17.md).
