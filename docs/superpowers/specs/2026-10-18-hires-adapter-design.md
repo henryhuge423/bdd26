@@ -59,7 +59,7 @@ objects) max-IoU>.5 match rate, computed with the existing immutable geometric h
 official evaluator `nucseg.metrics.pannuke_eval`.
 
 1. **Main:** both seeds improve; two-seed mean Delta >= **+.02**; fixed 1000-draw tissue-stratified
-   image-cluster paired bootstrap (seed **20261018**) 95% CI lower bound **> 0**.
+   image-cluster paired bootstrap (seed **20261015**) 95% CI lower bound **> 0**.
 2. **official Dead PQ:** both seeds not lower; two-seed mean Delta >= **+.005**.
 3. **Floors:** per seed official mPQ, bPQ and strict Dead PQ >= B0 - **.002**; strict mPQ per seed not
    lower; merge rate <= B0 + **.002**. All five classes and 19 tissues reported with support; no
@@ -92,3 +92,13 @@ Two seeds; reused fold2 (dev signal only); image bootstrap conditional on the tw
 single adapter placement (finest skip only) and one adapter depth; no augmentation/architecture/
 schedule search; cost measured on one device/load. Passing clause thresholds is evidence about this
 bounded change only, not a method admission.
+
+## Amendment (2026-10-18, before any run started)
+
+- Bootstrap seed set to **20261015** so clauses 1-3 are computed by the already-frozen, tested
+  `scripts/analyze_fusion_arms.py` unchanged (its `BOOT_SEED`, `MATCH_GAIN`, `GUARD`, `MERGE_GUARD`
+  and `DEAD_GAIN` already match clauses 1-3 here). No gate value changes.
+- Clause 4 (cost) is not covered by that analyzer; it is measured and reported separately (matched
+  device, batch 1, warmed, end-to-end) as `cost_fold2.json` beside each run and compared H:B0.
+- `scripts/predict_cellvit.py` now forwards the run's `hires_adapter` flag to `build_model` so the
+  H checkpoint loads strictly.
