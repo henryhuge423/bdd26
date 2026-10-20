@@ -8,7 +8,7 @@ The frozen design lives in the P3 study's provenance (commit856b713). Four arms 
 
 | arm | fit recall | audit recall | audit precision | audit internalDead recall | audit smallDead recall |
 |---|---:|---:|---:|---:|---:|
-| F0 | .999922 | .442776 | .706999 | .351724 | .187500 |
+| F0 | .999922 | .442776 | .706998 | .351724 | .187500 |
 | F1 | .538848 | .428857 | .815171 | .396552 | .312500 |
 | T0 | .999833 | .509918 | .724614 | .375862 | .218750 |
 | T1 | .977035 | .588939 | .692705 | .437931 | .234375 |
