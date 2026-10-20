@@ -1,0 +1,29 @@
+# P4: dense foreground supervision for proposal generalization
+
+Frozen before new P4 model outputs, 2026-10-20 America/New_York. The user requests autonomous research advancement through the next substantial Expanse submission. P3 remains failed/closed; this is an independent hypothesis, not Phase B or a rescued P3 result.
+
+P3 Phase A (522 held-out fold1 images; 145 internal Dead objects in 11 images) failed its original gate. T1 versus F1 raised overall recall about .429 to .589, with precision .691/.694 and internal-Dead recall .428/.448. T1 fit recall .977 with precision .998 does not transfer. Zero images saturated the 512 proposal cap. Nuclear-inside fractions about .895 exceed radius3 one-to-one precision, but the difference does not identify a causal localization mechanism. E19 and earlier failed recipes remain closed.
+
+Hypothesis: center-only sparse supervision underconstrains transferable nuclear foreground representation. Adding dense foreground supervision to the same shared decoder may improve held-out proposals. This is a plausible experiment, not an established mechanism. No new literature claim or clinical claim.
+
+## Fixed comparison
+
+Two arms C (center-only control) and N (center plus foreground BCE), seeds 19/1. Four fresh 130-epoch runs, P3 Phase A cohorts, fold1 only, original image-disjoint stratification and exact indices. Match all P3 T1 settings: UNI, blocks13-24 trainable, zero dropout, encoder eval, LayerNorm, head, geometric/photometric augmentation, AdamW, cosine schedule, focal numerator normalized over effective-batch GT count, microbatch4/accumulate4, BF16 forward/FP32 loss, global main-gradient clip1. Last checkpoint only. No resuming P3, threshold search, fold2/fold3 model evaluation, extra seeds or schedule extensions.
+
+Keep the center head unchanged. Attach a new 1x1 Conv2d(64,1) to the last 128x128 decoder feature; bilinear upsample to256 (align_corners=False). Both arms instantiate this head AFTER the original center model, initialized identically per seed; zero weights/bias. N adds foreground BCE weight1. C never uses auxiliary loss or auxiliary output to train or decode. C auxiliary parameters remain frozen; N auxiliary parameters use head LR, weight decay and a separate clip1 so auxiliary parameter gradients do not alter the main clipping norm. N shared-feature gradients are intentionally affected by BCE. Minor extra trainable capacity is a limitation; no capacity-causal claim.
+
+Binary target = inst>0, no type weighting or border filtering. For each image loss = .5*mean(BCE over foreground) + .5*mean(BCE over background), absent groups contribute zero. Effective-batch auxiliary loss is mean over IMAGES, including partial batches; each microbatch sum divided by effective image count. Synchronized geometry transforms RGB, center target and foreground target once; photometric changes RGB only. Center logits remain the only inference input; sigmoid .5, plateau-inclusive3x3 maxima, cap512 and exact P3 unique radius3 matching unchanged. Auxiliary masks are semantic supervision, not instance predictions or PQ performance.
+
+## Admission and stopping
+
+Use original P3 admission verbatim, mapping baseline F1=C and trainable T1=N. BOTH seeds: support>=10 Dead-positive images and100 internalDead objects; N Dead recall>=.60, N-C>=.05 with stratified paired image-bootstrap 1000 draws seed20261018 lower95%>0; N all-object precision>=.75 and>=C-.02, recall>=C-.02, nondegeneracy>=.95. Null denominators cannot pass. Also summarize fit, audit, small Dead (<67 pixels), candidate counts, cap saturation and loss curves. Do not compare this point metric with E19 mask-IoU as if identical. Reused audit images are development evidence, not independent patient validation.
+
+No automatic Phase B even if admission passes; a subsequent full-fold1->fold2 study requires its own recorded design. Failure/inconclusive closes THIS recipe at THIS budget. No new masks, decoding changes or post-result tuning in this job.
+
+## Execution
+
+LM1 authoritative, isolated Git worktree based on P3 commit856b7134edbc74e6260bc8867b3a83f2dca28643. New small source snapshot on Expanse; reuse SHA-verified migrated compact arrays/UNI weights and pinned p3 runtime. No dependency changes or large transfers. Standard V100 Lustre partition, account and quota rechecked live. Smoke must check C/N gradients, parameter updates, loss finiteness, synchronized targets, base control parity and fresh-model checkpoint reload on V100 before formal submission. No compute on login nodes.
+
+Submit four independent jobs as one array, concurrency<=2, 1GPU/4CPU/32GiB, 12h per task (48GPU-hour hard maximum; estimated12-20GPU-hours total, uncertain). no-requeue. At job start check actual free GPU memory>=12GiB and scratch free>=80GiB. Original atomic checkpoint headroom20GiB retained. All four use new scratch outputs, copy final/last/small evidence into a new project result directory; no existing data modified. Record source hashes/commit, data hashes, frozen design hash, GPU/precision, jobs, full commands and receipts. Create-only submission guard; one sbatch per submission, unknown outcomes investigated before further actions.
+
+Builder-review clarifications (before P4 outputs): smoke checks nonzero N shared-feature auxiliary gradients AFTER auxiliary weights update (zero-init makes the first such gradient zero); C contribution stays zero. Fresh reload checks both auxiliary weights/logits and center logits. Formal readiness requires a representative full-effective-batch V100 throughput estimate for130epochs, plus measured checkpoint costs and1800seconds evaluation allowance, multiplied by1.5 safety factor, below12hours. Failure stops before the formal array; no silent budget extension. This runtime bound is an operational check, not a scientific metric or convergence stopping rule.
