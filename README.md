@@ -1,4 +1,4 @@
-> **2026-10-20 P4 closed; P5 frozen:** P4 four130epoch center/foreground runs completed, original admission=false in both seeds. Dead changes -.027586/+.006897 with both CIs crossing zero; N unique precision .686001/.690812. No PhaseB. Independent P5 compares equal-capacity refinement at128/256 grids on unchanged fold1 fit/audit, seeds19/1,130epochs; formal submission requires V100 smoke. Results: [P4 closeout](docs/results/PROPOSAL_P4_PHASE_A_2026-10-20.md), [P5 design](docs/superpowers/specs/2026-10-20-proposal-p5-design.md). No test-fold evaluation.
+> **2026-10-20 P5 submitted:** array55128210, L/R x seeds19/1, fresh130epochs, fold1-only, unchanged original admission; no automatic PhaseB. Initial allPENDING. V100 smoke55128179 COMPLETED/0:0,40focused tests, real gradients/reloads/precision/cohort/source bindings verified; runtime safety estimates7.31/8.43h below12h. P4 foreground-BCE recipe remains closed (both seeds fail). [P4 results](docs/results/PROPOSAL_P4_PHASE_A_2026-10-20.md), [P5 submission and operational limits](docs/results/PROPOSAL_P5_SUBMISSION_2026-10-20.md).
 
 # bdd26 — PanNuke Nuclei Instance Segmentation (course project 5)
 

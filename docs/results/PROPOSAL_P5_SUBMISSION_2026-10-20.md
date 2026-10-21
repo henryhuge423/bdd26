@@ -1,0 +1,17 @@
+# P5 submitted — 2026-10-20 America/New_York
+
+Formal array **55128210**, submitted **20:40:27 EDT** (2026-10-21T00:40:27Z). Four fresh130epoch runs: L/R x seeds19/1, array0-3%2, gpu-shared/gpu-shared-normal/jhu159, each1V100/4CPU/32GiB/12h, Lustre, no-requeue. Hard maximum48GPU-hours. Initial accounting/queue state: all four PENDING/Priority, none completed. Submission is not a performance result.
+
+Question: equal-capacity center refinement at128x128 (L) versus256x256 (R), otherwise unchanged P3/P4 C training, exact fold1 fit/audit, decoder and original admission. [Frozen design](../superpowers/specs/2026-10-20-proposal-p5-design.md). [P4 remains closed](PROPOSAL_P4_PHASE_A_2026-10-20.md); no P3 PhaseB, test-fold reads, additional seeds or automatic PM-Net expansion.
+
+Training source commit `cebd200d22625f0ac86bbc29c6e9e11904a50c2b`, branch `research/proposal-p5`. Snapshot manifest SHA256 `8d696c09adc35fa35ff15ae167182d8b79efb9c8e6fbebf19dce7db59d1a427f`. Frozen array-script SHA256 `af2538cb28f6eb5699932d81fefec511033c421e81737a96524c5e97fffe6aa2`. Data/weights/runtime reuse the previously verified migrated inputs and pinned Python3.10/PyTorch2.5.1+cu124/NumPy1.23.5 environment. All run outputs are new, source originals preserved.
+
+Validation **55128179 COMPLETED/0:0**,2m24s,V100-32GiB. Forty P3/P4/P5 focused tests; both seeds' L/R full initial states exactly equal. Real encoder/refinement/output gradients finite and positive; their parameters update; fresh last/final reload predictions equal. Actual CUDA BF16 autocast/qkv/refinement/output convolution trace verified; terminal L interpolationFP32 and R convolutionBF16 follow pinned autocast policy. No model precision switch.
+
+Representative256-image timing: L14.303s, R16.795s; original130epoch/checkpoint/evaluation extrapolation4.87h/5.62h, with1.5safety7.31h/8.43h, both below12h. This is an estimate, not a completion guarantee. Training peaks4.06/4.19GiB; smoke peaks5.56/5.63GiB include fresh reload models and must not be called training-only peaks.
+
+Retained operational failures:55127074 failed an incorrect uniform-BF16 output assertion before any optimizer step; corrected to actual documented operator policy without changing model operations.55127515 passed learning/reload but failed an unrepresentative36-image runtime extrapolation; no formal run was submitted. Independent train-only timing55127795 COMPLETED/0:0 showed stable16-image batch times .8173s(P4C)/.8671s(L)/1.0203s(R). The smoke sample increased to256 while retaining the formula,12h limit and every formal scientific setting. First timing script55127725 failed on a3-versus4 batch-return unpacking mistake; corrected diagnostic kept separately. These are operational observations, not method selection or positive audit results.
+
+Local final CPU checks:40passed12.42s, compilation/bash-n/diff-check passed. No metrics/HoVer-Net modifications; full suite not rerun. Historical P4 full suite588passed/3skipped/5known dense_votes failures remains disclosed, not claimed green.
+
+At completion, collect and hash-check small per-image JSONs and preserved checkpoint manifests; call unchanged `proposal_p3_utils.admission` with F1=L/T1=R. Both seeds must pass every frozen clause; failed/inconclusive closes the recipe at this budget. Even passing requires a separate recorded fullfold1->fold2 design. These are reused development point metrics, not PQ, patient-independent validation or three-split test performance.
