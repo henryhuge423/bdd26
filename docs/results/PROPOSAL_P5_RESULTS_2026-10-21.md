@@ -30,3 +30,17 @@ The11Dead-positive audit images/145objects have been reused for development. Int
 ## Evidence
 
 LM1 ignored ops/review_20261021/{p5_collected,p5_collection_manifest.json,p5_gate.json,p5_analysis.json}; Expanse project bdd26/p5_20261020_03/results retains last/final checkpoints and original preservation manifests. Training memory at last epoch: L4.05GiB, R4.18GiB; elapsed training+evaluation around4.5/5.2hours per arm. Lustre copies still require external archival backup.
+
+## Additional frozen-output checks
+
+All four loss histories contain exactly epochs1–130 with finite nonnegative losses. This checks execution continuity, not convergence of the population objective. InternalDead contains32small(<67pixel) and113larger objects. Seed19 L/R small hits7/10 are offset by larger-object hits64/61, giving the same71/145 overall; seed1 small hits7/7 and larger hits61/60 give68/67 of145. The small-subset observation is descriptive and does not override the frozen gate or justify retuning. P6 was already frozen before this secondary summary and is unchanged.
+
+| Tissue with internalDead | Positive images | Objects | Seed19 L/R hits | Seed1 L/R hits |
+|---|---:|---:|---:|---:|
+| Breast | 1 | 1 | 0/0 | 0/0 |
+| Cervix | 1 | 15 | 6/8 | 9/7 |
+| Colon | 2 | 56 | 19/18 | 19/15 |
+| Esophagus | 1 | 8 | 4/5 | 2/6 |
+| Lung | 3 | 60 | 40/39 | 37/37 |
+| Stomach | 2 | 4 | 1/0 | 0/1 |
+| Uterus | 1 | 1 | 1/1 | 1/1 |
