@@ -99,7 +99,7 @@ def main():
         first=state['completed_epoch'];torch.set_rng_state(state['torch_rng']);torch.cuda.set_rng_state_all(state['cuda_rng'])
     if args.smoke:
         assert not args.resume
-        fit=fit[:36];epochs=1
+        fit=fit[:256];epochs=1
         watched=model.encoder.blocks[12].attn.qkv.weight
         before=watched.detach().clone();head_before=model.head.out.weight.detach().clone();refine_before=model.head.refine.weight.detach().clone()
     else:epochs=130
