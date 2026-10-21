@@ -23,3 +23,9 @@ def verify_hashes(root,hashes):
     for name,expected in hashes.items():
         if hashlib.sha256((Path(root)/name).read_bytes()).hexdigest()!=expected:
             raise ValueError('artifact identity mismatch: '+name)
+
+
+def validate_precision_trace(native,trace):
+    expected='torch.bfloat16' if native else 'torch.float32'
+    if not trace['enabled'] or trace['amp_dtype']!='torch.bfloat16' or trace['logits_dtype']!=expected or trace['layers']!=dict(encoder='torch.bfloat16',refinement='torch.bfloat16',output='torch.bfloat16'):
+        raise ValueError('CUDA BF16 autocast operation policy mismatch')

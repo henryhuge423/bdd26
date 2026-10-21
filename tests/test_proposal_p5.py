@@ -97,3 +97,15 @@ def test_changed_submission_script_is_rejected(tmp_path):
     m.verify_hashes(tmp_path,expected)
     p.write_bytes(b'changed resources')
     with pytest.raises(ValueError):m.verify_hashes(tmp_path,expected)
+
+
+@pytest.mark.parametrize('native,logits',[(False,'torch.float32'),(True,'torch.bfloat16')])
+def test_cuda_autocast_trace_accepts_documented_interpolation_dtype(native,logits):
+    m=p5();assert hasattr(m,'validate_precision_trace'), 'CUDA AMP policy trace gate is missing'
+    m.validate_precision_trace(native,dict(enabled=True,amp_dtype='torch.bfloat16',layers=dict(encoder='torch.bfloat16',refinement='torch.bfloat16',output='torch.bfloat16'),logits_dtype=logits))
+
+
+@pytest.mark.parametrize('enabled,encoder',[(False,'torch.bfloat16'),(True,'torch.float32')])
+def test_cuda_autocast_trace_rejects_disabled_or_fp32_linear_path(enabled,encoder):
+    m=p5();assert hasattr(m,'validate_precision_trace'), 'CUDA AMP policy trace gate is missing'
+    with pytest.raises(ValueError):m.validate_precision_trace(False,dict(enabled=enabled,amp_dtype='torch.bfloat16',layers=dict(encoder=encoder,refinement='torch.bfloat16',output='torch.bfloat16'),logits_dtype='torch.float32'))

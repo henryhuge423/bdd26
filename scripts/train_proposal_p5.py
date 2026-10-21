@@ -19,7 +19,7 @@ from train_proposal_p3 import (WEIGHT_SHA,DATA_SHA,sha,dump,configure_encoder,
     load_adapted,Fold,checkpoint,evaluate,Proposal as BaseProposal)
 from train_proposal_p4 import PointHead as BaseHead
 from p5_contracts import (TISSUE_SHA,COHORT_SHA,validate_cohort,
-    require_positive_gradients,verify_hashes)
+    require_positive_gradients,verify_hashes,validate_precision_trace)
 
 
 class PointHead(BaseHead):
@@ -87,6 +87,10 @@ def main():
     else:dump(out/'manifest.json',manifest)
     groups=[dict(params=list(model.head.parameters()),lr=3e-4,initial_lr=3e-4),dict(params=[p for p in model.encoder.parameters() if p.requires_grad],lr=1e-5,initial_lr=1e-5)]
     opt=torch.optim.AdamW(groups,betas=(.9,.999),weight_decay=.01)
+    precision_trace=dict(layers={});precision_checked=False;handles=[]
+    for name,module in [('encoder',model.encoder.blocks[12].attn.qkv),('refinement',model.head.refine),('output',model.head.out)]:
+        def capture(module,inputs,result,name=name):precision_trace['layers'][name]=str(result.dtype)
+        handles.append(module.register_forward_hook(capture))
     first=0
     if args.resume:
         state=torch.load(out/'last.pth',map_location='cpu',weights_only=False)
@@ -110,8 +114,16 @@ def main():
             selected=ids[start:start+16];den=max(1,sum(len(fold.gt[i]) for i in selected));opt.zero_grad(set_to_none=True);step_loss=0.
             for begin in range(0,len(selected),4):
                 batch=selected[begin:begin+4];x,y,_=fold.batch(batch,args.seed,epoch,True);x=x.cuda();y=y.cuda()
-                with torch.autocast('cuda',dtype=torch.bfloat16):logits=model(x)
-                assert logits.dtype==torch.bfloat16,logits.dtype
+                with torch.autocast('cuda',dtype=torch.bfloat16):
+                    logits=model(x)
+                    if not precision_checked:
+                        precision_trace.update(enabled=torch.is_autocast_enabled(),amp_dtype=str(torch.get_autocast_dtype('cuda')),logits_dtype=str(logits.dtype))
+                if not precision_checked:
+                    validate_precision_trace(args.arm=='R',precision_trace)
+                    for handle in handles:handle.remove()
+                    precision_checked=True;manifest['precision_trace']=precision_trace
+                    if not args.resume:dump(out/'manifest.json',manifest)
+                    print(json.dumps(dict(event='precision_trace',trace=precision_trace)),flush=True)
                 loss=focal_numerator(logits,y)/den
                 if not torch.isfinite(loss):raise FloatingPointError('nonfinite loss')
                 loss.backward();step_loss+=float(loss.detach())
@@ -144,7 +156,7 @@ def main():
         assert torch.equal(before_reload,after_final)
         estimate=130*training_seconds/len(fit)*2134+130*save_seconds+final_save_seconds+1800
         assert estimate*1.5<12*3600,estimate
-        dump(out/'smoke.json',dict(changes=changes,gradients=gradients,reload_equal=True,final_reload_equal=True,estimated_seconds_130=estimate,safety_factor=1.5,logits_dtype=str(logits.dtype),training_seconds=training_seconds,measured_images=len(fit),last_checkpoint_seconds=save_seconds,final_checkpoint_seconds=final_save_seconds,peak_memory=torch.cuda.max_memory_allocated(),elapsed_seconds=time.monotonic()-started))
+        dump(out/'smoke.json',dict(changes=changes,gradients=gradients,reload_equal=True,final_reload_equal=True,estimated_seconds_130=estimate,safety_factor=1.5,precision_trace=precision_trace,logits_dtype=str(logits.dtype),training_seconds=training_seconds,measured_images=len(fit),last_checkpoint_seconds=save_seconds,final_checkpoint_seconds=final_save_seconds,peak_memory=torch.cuda.max_memory_allocated(),elapsed_seconds=time.monotonic()-started))
         return
     dump(out/'fit.json',evaluate(model,fold,fit));rows=evaluate(model,fold,audit)
     dump(out/'evaluation.json',rows);dump(out/'summary.json',aggregate(rows))
