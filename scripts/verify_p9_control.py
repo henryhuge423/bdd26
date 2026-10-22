@@ -58,13 +58,14 @@ def main():
     fit,audit=p9.split_indices(fold.tissue,[any(g[0]==4 and g[2] for g in row) for row in fold.gt])
     p9.validate_cohort(fit,audit)
     # Match the P9 smoke membership and epoch0 ordering exactly, not full-cohort shuffle.
-    ids=np.random.default_rng(np.random.SeedSequence([19,0,123])).permutation(fit[:256]).tolist()[:32]
+    smoke_fit=p9.smoke_indices(fit,fold.gt)
+    ids=np.random.default_rng(np.random.SeedSequence([19,0,123])).permutation(smoke_fit).tolist()[:32]
     results=[]
     for implementation,f in ((original,reference),(p9,fold)):
         torch.manual_seed(19);model=implementation.Proposal(weights,True).cuda()
         results.append(run(model,f,ids,implementation is p9));del model;gc.collect();torch.cuda.empty_cache()
     assert results[0]==results[1]
-    p9.dump(out,dict(status='PASS',seeds=[19,1],exact_initial_state_equal=initial,actual_two_optimizer_steps_equal=True,all_trainable_gradients_equal=True,all_adapted_parameters_equal=True,all_optimizer_states_equal=True,smoke_membership=256,optimizer_images=ids,fold1_only=True,weighted_focal_gpu_equal=True))
+    p9.dump(out,dict(status='PASS',seeds=[19,1],exact_initial_state_equal=initial,actual_two_optimizer_steps_equal=True,all_trainable_gradients_equal=True,all_adapted_parameters_equal=True,all_optimizer_states_equal=True,smoke_membership=256,smoke_fit=smoke_fit,optimizer_images=ids,fold1_only=True,weighted_focal_gpu_equal=True))
 
 
 if __name__=='__main__':main()

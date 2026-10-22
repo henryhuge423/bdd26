@@ -27,6 +27,15 @@ def positive_weights(gt,height=256,width=256):
     return weights
 
 
+def smoke_indices(fit,gt):
+    base=list(fit[:240])
+    dead=[int(i) for i in fit[240:] if any(g[0]==4 for g in gt[i])][:16]
+    result=base+dead
+    if len(base)!=240 or len(dead)!=16 or len(set(result))!=256:
+        raise ValueError('smoke requires240fit images and16distinct subsequent Dead-positive fit images')
+    return result
+
+
 class Fold(OriginalFold):
     def __init__(self,root,fold,arm):
         if fold!=1 or arm not in ('C','D'):raise ValueError('P9 is fold1 C/D only')
@@ -95,6 +104,7 @@ def main():
     counts=np.asarray([len(fold.gt[i]) for i in fit])
     manifest['fit_count_summary']=dict(images=len(fit),objects=int(counts.sum()),empty_images=int((counts==0).sum()),count_percentiles=np.percentile(counts,[0,25,50,75,100]).tolist())
     manifest['fit_dead_summary']=dict(objects=sum(sum(g[0]==4 for g in fold.gt[i]) for i in fit),images=sum(any(g[0]==4 for g in fold.gt[i]) for i in fit),unique_centers=sum(len({g[1] for g in fold.gt[i] if g[0]==4}) for i in fit),all_centers=sum(len({g[1] for g in fold.gt[i]}) for i in fit))
+    if args.smoke:manifest['smoke_fit']=smoke_indices(fit,fold.gt)
     assert torch.cuda.is_available()
     torch.cuda.set_per_process_memory_fraction(.85)
     model=Proposal(args.weights,True).cuda()
@@ -106,9 +116,9 @@ def main():
     groups=[dict(params=list(model.head.parameters()),lr=3e-4,initial_lr=3e-4),dict(params=[p for p in model.encoder.parameters() if p.requires_grad],lr=1e-5,initial_lr=1e-5)]
     opt=torch.optim.AdamW(groups,betas=(.9,.999),weight_decay=.01)
     watched=dict(encoder=model.encoder.blocks[12].attn.qkv.weight,output=model.head.out.weight)
-    gradients={k:0. for k in watched};precision={};handles=[]
+    gradients={k:0. for k in watched};precision={};handles=[];weighted_positive_pixels=0
     if args.smoke:
-        fit=fit[:256];epochs=1
+        fit=manifest['smoke_fit'];epochs=1
         before={k:v.detach().clone() for k,v in watched.items()}
         for key,module in [('encoder',model.encoder.blocks[12].attn.qkv),('output',model.head.out)]:
             handles.append(module.register_forward_hook(lambda m,a,o,key=key:precision.update({key:str(o.dtype)})))
@@ -132,6 +142,9 @@ def main():
                         assert precision==dict(encoder='torch.bfloat16',output='torch.bfloat16')
                         assert logits.dtype==torch.float32
                 weights=(fold.positive_weights(batch,args.seed,epoch,True).cuda() if args.arm=='D' else torch.ones_like(y))
+                if args.smoke and args.arm=='D':
+                    assert torch.all(y[weights==4]==1),'Dead weight not on augmented true centers'
+                    weighted_positive_pixels+=int(((weights==4)&(y==1)).sum())
                 loss=loss_for_microbatch(logits,y,weights,total_count,args.arm)
                 if not torch.isfinite(loss):raise FloatingPointError('nonfinite loss')
                 loss.backward();step_loss+=float(loss.detach())
@@ -169,6 +182,8 @@ def main():
         torch.cuda.synchronize();reload_seconds=time.monotonic()-reload_start
         estimate=130*training_seconds/len(fit)*2134+130*save_seconds+final_seconds+1800
         report=dict(status='MEASURED',estimated_seconds_130=estimate,safety_seconds=1.5*estimate,training_images=len(fit),training_seconds=training_seconds,checkpoint_seconds=save_seconds,final_checkpoint_seconds=final_seconds,changes=changes,gradients=gradients,precision_trace=dict(enabled=True,amp_dtype='torch.bfloat16',layers=precision,logits_dtype='torch.float32'),reload_equal=True,final_reload_equal=True,reload_seconds=reload_seconds,training_peak_memory=training_peak,peak_memory=torch.cuda.max_memory_allocated(),seconds=time.monotonic()-started)
+        report.update(smoke_fit=fit,weighted_positive_pixels=weighted_positive_pixels)
+        if args.arm=='D':assert weighted_positive_pixels>0,'real weighted path was not exercised'
         dump(out/'smoke_measurements.json',report)
         assert estimate*1.5<43200,estimate
         report['status']='PASS';dump(out/'smoke.json',report);return

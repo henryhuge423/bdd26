@@ -86,3 +86,15 @@ def test_config_cli_fold_contract():
  for fold,arm in [(2,'C'),(1,'I')]:
   with pytest.raises(ValueError):p9.Fold('/not/read',fold,arm)
  with pytest.raises(SystemExit):p9.parse_args(['--data','x','--weights','x','--out','x','--arm','I'])
+
+def test_smoke_membership_has_real_dead_and_stays_in_fit():
+ fit=list(range(270));gt=[[] for _ in range(300)]
+ for i in range(245,270):gt[i]=[(4,(2,3),True,4)]
+ gt[299]=[(4,(1,1),True,8)]
+ ids=p9.smoke_indices(fit,gt)
+ assert ids==list(range(240))+list(range(245,261))
+ assert len(ids)==len(set(ids))==256 and set(ids)<=set(fit)
+ assert sum(any(g[0]==4 for g in gt[i]) for i in ids)==16
+
+def test_smoke_membership_rejects_missing_dead():
+ with pytest.raises(ValueError):p9.smoke_indices(list(range(270)),[[] for _ in range(270)])
