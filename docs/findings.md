@@ -1958,3 +1958,7 @@ du2 VAL lever sweeps (+.0014/+.0012/+.0018, baseline .4836/.6455 -> best .4850/.
 external-table F_d and per-class columns. CONCH pillar-A probe outputs were never cached
 anywhere — the only remaining unverifiable entries (gt embeddings exist, probes would need
 CONCH re-runs).
+
+## 2026-10-21 P6 closure and P7 submission
+
+> **2026-10-21 P6 closed / P7 submitted:** All four P6 130-epoch runs completed; original bandwidth admission failed in both seeds (Dead +.02069 each, absolute .48966 and precision .66035/.67345). Independent P7 training-only RGB gains, C/J × seeds19/1, preserve the original cohort, targets, model, decode and gate. V100 smoke 55175430 passed; formal array 55176183 was submitted once: four tasks, concurrency2, maximum48 GPU-hours. Submission is not completion. No Phase B, masks or fold2/fold3 model evaluation. [P6 results](results/PROPOSAL_P6_RESULTS_2026-10-21.md), [P7 submission](results/PROPOSAL_P7_SUBMISSION_2026-10-21.md).
