@@ -43,3 +43,19 @@ These are point matching rates on a repeatedly reused fold1 image development au
 Evidence: LM1 ignored ops/review_20261023_next/{p10_collection_manifest.json,p10_gate_01.json,p10_analysis_01.json,p10_live_01.json,p10_collected_01/}. Expanse project/scratch bdd26/p10_20261023_01 retains checkpoints; project/results has preservation manifests. Lustre external archive remains outstanding.
 
 Live machine check2026-10-23 19:24EDT: LM1/data7~5.9GiB free/root2.3GiB; LM2/data6~8.8GiB/root1.7GiB; no project training process observed on either. Unrelated processes/jobs preserved. Existing broker counters1, no reconnect needed. Expanse existing master1391366 reused; numeric PID is historical evidence only.
+
+## P10 tissue decomposition (descriptive only)
+
+The audit contains145internalDead across11images. Lung60objects/3images and Colon56objects/2images account for80% of these objects. Several remaining tissue strata have only1image; the fixed bootstrap cannot represent all uncertainty in such sparse strata. Tissue summaries are exploratory, not evidence for tissue-specific treatment choices. No new model evaluation or tuning.
+
+| Tissue | Dead-positive images | InternalDead | S−C hits,seed19 | S−C hits,seed1 |
+|---|---:|---:|---:|---:|
+| Breast | 1 | 1 | +0 | +0 |
+| Cervix | 1 | 15 | +4 | +3 |
+| Colon | 2 | 56 | +0 | -7 |
+| Esophagus | 1 | 8 | +1 | -2 |
+| Lung | 3 | 60 | -2 | +4 |
+| Stomach | 2 | 4 | +1 | +0 |
+| Uterus | 1 | 1 | +0 | +0 |
+
+Lung and Colon changes do not have a stable positive sign across both seeds. The small overall Dead gains/losses reflect only a few objects. This helps explain why subgroup positives cannot support promotion after the original admission failed. S−C total matched changes across all nuclei are −495/−502; each audit contains12,250GT nuclei.
