@@ -1,3 +1,5 @@
+> **2026-10-23 P9 closed:** all four130epoch runs completed; originaladmission=false inbothseeds. Dead-positiveweight4 changes+.006897/+.048276 butfailsabsoluteDead/precisionandCIgates. [Auditedresults](results/PROPOSAL_P9_RESULTS_2026-10-23.md). P10restrictedencoderadaptation independentlyfrozen;GPUvalidation/formalsubmissionpending. Reusedfold1development,notPQ/test.
+
 ## 2026-10-22 evening: P7/P8 closeout and independent P9 submission
 
 > **2026-10-22 evening:** P7/P8 eight130epoch runs completed and both original two-seed gates failed. [Final results](results/PROPOSAL_P7_P8_RESULTS_2026-10-22.md). P9 fixedDead-center positiveweight4 control passed98focusedchecks and realV100 smoke55208331; formal array **55208619** submitted once19:55:04 EDT,fourfresh130epoch runs. [Submission and limits](results/PROPOSAL_P9_SUBMISSION_2026-10-22.md). Training completion is not claimed; no automaticPhaseB/masks/confirmation.
