@@ -1,3 +1,5 @@
+> **2026-10-23 evening P10 closed:** four130epoch runs completed and preservation hashes verified. Originaladmission=false bothseeds; S(last4)−C(last12) internalDead+.027586/−.013793, both95%CIs span0, overallrecall falls~.041. Close last4 recipe; no expansion. [Finalresults](results/PROPOSAL_P10_RESULTS_2026-10-23.md). Reusedfold1development,notPQ/test.
+
 > **2026-10-23 P10 submitted:** restrictedencoderadaptation C(last12)/S(last4),seeds19/1,fourfresh130epochs,formalarray55227144,concurrency2. V100smoke55226781COMPLETED/0:0,119focusedtests/parity/frozenparameter/reload/AMP/timingandstrictreadyverified. Submissionisnotcompletedtraining. [Submissionandprotocol](results/PROPOSAL_P10_SUBMISSION_2026-10-23.md). P9closedbyoriginalgate;reusedfold1development,notPQ/test.
 
 > **2026-10-23 P9 closed:** all four130epoch runs completed; originaladmission=false inbothseeds. Dead-positiveweight4 changes+.006897/+.048276 butfailsabsoluteDead/precisionandCIgates. [Auditedresults](results/PROPOSAL_P9_RESULTS_2026-10-23.md). P10restrictedencoderadaptation independentlyfrozen andsubmitted;see latestentry. Reusedfold1development,notPQ/test.

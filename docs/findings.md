@@ -2041,3 +2041,8 @@ Trainingcommit 0a62bf8d4cc38bbe44e9ce2e992fff8fb20e6dc9; source manifest 795fb49
 Operational receipts,review,validation logs and collected evidence are in ignored LM1 ops/p8_development_20261022. Project/scratch paths are in its HANDOFF. Query exact job IDs; retain failed/unfinished outputs, inspect unknown outcomes without replay. Checkpoints/results are preserved on project with SHA256 manifests and scratch logs; Lustre is not archival backup.
 
 Current [SDSC Expanse guide](https://www.sdsc.edu/systems/expanse/user_guide.html) was rechecked this round; allocation/partition/QoS/quota were verified live. LM1/LM2 did not receive new GPU workloads. Main checkout/teammate changes remain intact; no shared merge or push.
+
+
+## 2026-10-23 evening P10 final closeout
+
+Four130epoch runs, SLURM0:0,40smallfiles/36payloadpreservationhashesverified. S-C Dead+.027586/-.013793,95%CIs[-.010000,.047297]/[-.055556,.051020],originalgatefalsebothseeds. S overallrecall falls .040408/.040980 and precision .704591/.716963<.75. Close last4recipe. Fitrecall also falls; not evidence of generalizationimprovement. See results/PROPOSAL_P10_RESULTS_2026-10-23.md. Reusedfold1development,notPQ/test. IndependentP11 spatialpositive-massredistribution frozen under currentuser autonomousauthorization.
