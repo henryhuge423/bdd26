@@ -2046,3 +2046,14 @@ Current [SDSC Expanse guide](https://www.sdsc.edu/systems/expanse/user_guide.htm
 ## 2026-10-23 evening P10 final closeout
 
 Four130epoch runs, SLURM0:0,40smallfiles/36payloadpreservationhashesverified. S-C Dead+.027586/-.013793,95%CIs[-.010000,.047297]/[-.055556,.051020],originalgatefalsebothseeds. S overallrecall falls .040408/.040980 and precision .704591/.716963<.75. Close last4recipe. Fitrecall also falls; not evidence of generalizationimprovement. See results/PROPOSAL_P10_RESULTS_2026-10-23.md. Reusedfold1development,notPQ/test. IndependentP11 spatialpositive-massredistribution frozen under currentuser autonomousauthorization.
+
+
+## 2026-10-23 evening P11 submitted
+
+Formal array **55244166** was submitted once at **2026-10-23T20:07:03.418066-04:00 (America/New_York)**. Submission does not mean completed training. Task0=C19,1=G19,2=C1,3=G1; four fresh130epoch runs, concurrency2. Each requests1V100/4CPU/32GiB/12hours, gpu-shared/gpu-shared-normal/jhu159, Lustre/no-requeue; formal ceiling48GPUhours. Existing unrelated jobs are preserved.
+
+Real V100 smoke **55243478 COMPLETED/0:0**, stderr0bytes. Node checks: ........................................................................ [ 51%]
+...................................................................      [100%]
+139 passed in 143.82s (0:02:23). Two-seed full initial state equality; C/P3 two effective updates with bitwise equality of all trainable gradients, adapted parameters and AdamW states; independent G GPU loss/analytic-gradient agreement; unchanged negative gradients outside support; real augmented positive shoulders/mass conservation; finite updates/AMP/frozen tensors/optimizer membership/last+final reload/cross-arm rejection and strictready all passed. Safety-adjusted130epoch estimates: {'C': 7.197, 'G': 7.021} hours; training peaks: {'C': 4.072, 'G': 4.072} GiB. Estimates do not guarantee completion. CPU LM1 focused139passed12.21s. No metrics/HV edits or current full-suite claim; historical5dense_votesfailures remain disclosed.
+
+See results/PROPOSAL_P11_SUBMISSION_2026-10-23.md. No formal completion or performance claim.
