@@ -2070,3 +2070,8 @@ See results/PROPOSAL_P11_SUBMISSION_2026-10-23.md. No formal completion or perfo
 
 
 P12 closeout (2026-10-24): all four 130-epoch runs completed; original admission failed for both seeds (Dead recall R−C −0.034483 / −0.027586). This fixed decoder-dropout recipe is closed. See `results/PROPOSAL_P12_RESULTS_2026-10-24.md`. Development point metrics only; no test claim.
+
+
+## 2026-10-24 evening — P12 independent closeout recheck; P13 submitted
+
+P12 original gate reproduced exactly after40smallfile/36payload hashes and130epoch/cohort/config checks; bothseeds fail, Dead R-C-.034483/-.027586. Fixed dropout remains closed. Independent P13 fixed25%replacement of epoch positions from52fit-only any-Dead images; C/S×seed19/1,fourfresh130epochs,original model/loss/augment/lastcheckpoint/decode/gate. Epoch0 S yields578/573Dead-image exposures and1608/1613unique images at unchanged2134total exposures; duplicate augmentations unchanged. Sampling changes image/background weighting and coverage,not an isolated causal test. CPU195passed14.98s and realV100smoke55262502COMPLETED/0:0,strict two-seed C/P3 gradient/parameter/AdamW/RNG parity and Sorder/AMP/frozen/reload/timing passed. Formal array55262695 single submission2026-10-24T18:41:22.310662-04:00,0-3%2,each1GPU4CPU32GiB12h,max48GPUhours; completion not claimed. [Full protocol/provenance](results/PROPOSAL_P13_SUBMISSION_2026-10-24.md). No fold2/fold3/PhaseB/masks. Reusedfold1development,notPQ/test; no full-suite claim.
