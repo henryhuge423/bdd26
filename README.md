@@ -411,3 +411,6 @@ also remain untracked. Keep portable experiment commands in `scripts/`, not in `
 
 This separation applies to the current tree and future commits; it does not remove files
 from existing Git history.
+
+
+P12 closeout (2026-10-24): all four 130-epoch runs completed; original admission failed for both seeds (Dead recall R−C −0.034483 / −0.027586). This fixed decoder-dropout recipe is closed. See `docs/results/PROPOSAL_P12_RESULTS_2026-10-24.md`. Development point metrics only; no test claim.

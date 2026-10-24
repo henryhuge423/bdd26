@@ -2067,3 +2067,6 @@ Real V100 smoke **55243478 COMPLETED/0:0**, stderr0bytes. Node checks: .........
 139 passed in 143.82s (0:02:23). Two-seed full initial state equality; C/P3 two effective updates with bitwise equality of all trainable gradients, adapted parameters and AdamW states; independent G GPU loss/analytic-gradient agreement; unchanged negative gradients outside support; real augmented positive shoulders/mass conservation; finite updates/AMP/frozen tensors/optimizer membership/last+final reload/cross-arm rejection and strictready all passed. Safety-adjusted130epoch estimates: {'C': 7.197, 'G': 7.021} hours; training peaks: {'C': 4.072, 'G': 4.072} GiB. Estimates do not guarantee completion. CPU LM1 focused139passed12.21s. No metrics/HV edits or current full-suite claim; historical5dense_votesfailures remain disclosed.
 
 See results/PROPOSAL_P11_SUBMISSION_2026-10-23.md. No formal completion or performance claim.
+
+
+P12 closeout (2026-10-24): all four 130-epoch runs completed; original admission failed for both seeds (Dead recall R−C −0.034483 / −0.027586). This fixed decoder-dropout recipe is closed. See `results/PROPOSAL_P12_RESULTS_2026-10-24.md`. Development point metrics only; no test claim.

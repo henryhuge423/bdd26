@@ -576,3 +576,6 @@ E11 (2026-10-17): four-stage auxiliary supervision failed both original allocati
 ## 2026-10-15 synthesis
 
 [Evidence chain and PM-Net pre-training decisions](report/RESEARCH_SYNTHESIS_2026-10-15.md).
+
+
+P12 closeout (2026-10-24): all four 130-epoch runs completed; original admission failed for both seeds (Dead recall R−C −0.034483 / −0.027586). This fixed decoder-dropout recipe is closed. See `results/PROPOSAL_P12_RESULTS_2026-10-24.md`. Development point metrics only; no test claim.

@@ -43,3 +43,6 @@ superseded version and preserve the original artifacts. [Documentation index](..
 
 - [E12 fixed-feature GT fitting diagnostic](FREE_MASK_E12_DIAGNOSTIC_2026-10-17.md)
 - [E13 stable projection: allocation failed](STABLE_MASK_E13_DEV_2026-10-17.md)
+
+
+P12 closeout (2026-10-24): all four 130-epoch runs completed; original admission failed for both seeds (Dead recall R−C −0.034483 / −0.027586). This fixed decoder-dropout recipe is closed. See `PROPOSAL_P12_RESULTS_2026-10-24.md`. Development point metrics only; no test claim.
