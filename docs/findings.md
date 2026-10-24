@@ -1,3 +1,7 @@
+# 2026-10-24 P12 formal submission verified
+
+Array55251406 single submission2026-10-24T07:20:40.533905-04:00;C19/R19/C1/R1,fresh130epochs,max48GPUhours. Smoke55251401 COMPLETED/0:0,153passed,empty stderr,allstrictreadinesschecks passed. Sourcecommit77cfa9ac17b278c67b750762191e6bdd5b9b4cc9,manifest35748e383fa57d626c3c8a03fc09871627872c19599d2a3003559a1845bb1a3d. No formalcompletion/performanceclaim. [Full review](results/EXPERIMENT_REVIEW_2026-10-24_ZH.md).
+
 # 2026-10-24: P11 complete, original admission failed
 
 All4runs completed130epochs/SLURM0:0/emptystderr.40smallfiles2,985,074bytes,36payloadpreservationhashes verified; config/cohort/input/UNI identical. C/GDead=.468966/.510345(seed19),.462069/.462069(seed1);G-C+.041379/0,originalpaired95%CI[.025381,.075310]/[-.038462,.035398]. BothfailabsoluteDead.60,gain.05,precision.75;seed1CIfails. Relativeprecision/recall,support/nondegpass. Close exactmassredistributionrecipe. Cfitrecall.975/.980 vsGaudit.576/.579 is not causal proof. NoPQ/test/fold2/fold3/newmaskstage. Full[results](results/PROPOSAL_P11_RESULTS_2026-10-24.md).
