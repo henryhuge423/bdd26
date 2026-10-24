@@ -99,3 +99,14 @@ def test_config_and_cli_reject_wrong_experiment():
     with pytest.raises(ValueError):p12.validate_config(c,r)
     for args in (['--phase','B'],['--arm','G'],['--seed','2']):
         with pytest.raises(SystemExit):p12.parse_args(['--data','x','--weights','x','--out','x','--arm','C']+args)
+
+
+
+def test_stochastic_witness_survives_bf16_output_quantization():
+    from verify_p12_control import assert_training_stochastic
+    class HeadModel(nn.Module):
+        def __init__(self):super().__init__();self.head=p12.DropoutPointHead('R')
+        def forward(self,x):return self.head(x)
+    torch.manual_seed(19);model=HeadModel()
+    features=[torch.randn(2,1024,16,16) for _ in range(4)]
+    assert assert_training_stochastic(model,features,device_type='cpu')>0

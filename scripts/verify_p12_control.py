@@ -38,6 +38,19 @@ def run(model,fold,ids,use_p12):
     return hashes(model.adapted_state().items()),traces
 
 
+def assert_training_stochastic(model,x,device_type='cuda'):
+    # Validation-only readout; never used by the scientific training runner.
+    with torch.no_grad():
+        model.head.out.weight.fill_(.01)
+        model.head.out.bias.zero_()
+    model.train()
+    with torch.no_grad(),torch.autocast(device_type,dtype=torch.bfloat16):
+        first=model(x);second=model(x)
+    difference=float((first-second).abs().max())
+    assert difference>0,'stochastic feature differences hidden at output'
+    return difference
+
+
 def main():
     torch.set_num_threads(4);weights,data,out=sys.argv[1:]
     initial={}
@@ -67,11 +80,7 @@ def main():
     # Full model same-state eval equivalence; train stochasticity after nonzero output.
     torch.manual_seed(19);model=p12.Proposal(weights,True,'R').cuda()
     x,_,_=fold.batch(smoke_fit[:2],19,0,False);x=x.cuda()
-    with torch.no_grad():model.head.out.weight.fill_(.01)
-    model.train()
-    with torch.no_grad(),torch.autocast('cuda',dtype=torch.bfloat16):
-        first=model(x);second=model(x)
-    assert not torch.equal(first,second)
+    stochastic_difference=assert_training_stochastic(model,x)
     model.eval()
     with torch.no_grad(),torch.autocast('cuda',dtype=torch.bfloat16):prediction=model(x)
     torch.manual_seed(19);control=p12.Proposal(weights,True,'C').cuda().eval()
@@ -79,7 +88,7 @@ def main():
     with torch.no_grad(),torch.autocast('cuda',dtype=torch.bfloat16):
         assert torch.equal(prediction,control(x)) and torch.equal(prediction,model(x))
     assert not model.head.dropout.training
-    p12.dump(out,dict(dropout_structure_pass=True,dropout_fraction=fraction,real_train_stochastic=True,same_state_eval_equal=True,all_update_parameters_equal=True,all_update_rng_equal=True,status='PASS',seeds=[19,1],exact_initial_state_equal=initial,actual_two_optimizer_steps_equal=True,all_trainable_gradients_equal=True,all_adapted_parameters_equal=True,all_optimizer_states_equal=True,smoke_membership=256,smoke_fit=smoke_fit,optimizer_images=ids,fold1_only=True,dropout_initial_states_equal=True))
+    p12.dump(out,dict(dropout_structure_pass=True,dropout_fraction=fraction,real_train_stochastic=True,stochastic_output_maxdiff=stochastic_difference,same_state_eval_equal=True,all_update_parameters_equal=True,all_update_rng_equal=True,status='PASS',seeds=[19,1],exact_initial_state_equal=initial,actual_two_optimizer_steps_equal=True,all_trainable_gradients_equal=True,all_adapted_parameters_equal=True,all_optimizer_states_equal=True,smoke_membership=256,smoke_fit=smoke_fit,optimizer_images=ids,fold1_only=True,dropout_initial_states_equal=True))
 
 
 if __name__=='__main__':main()
