@@ -1,3 +1,9 @@
+# 2026-10-24: P11 complete, original admission failed
+
+All4runs completed130epochs/SLURM0:0/emptystderr.40smallfiles2,985,074bytes,36payloadpreservationhashes verified; config/cohort/input/UNI identical. C/GDead=.468966/.510345(seed19),.462069/.462069(seed1);G-C+.041379/0,originalpaired95%CI[.025381,.075310]/[-.038462,.035398]. BothfailabsoluteDead.60,gain.05,precision.75;seed1CIfails. Relativeprecision/recall,support/nondegpass. Close exactmassredistributionrecipe. Cfitrecall.975/.980 vsGaudit.576/.579 is not causal proof. NoPQ/test/fold2/fold3/newmaskstage. Full[results](results/PROPOSAL_P11_RESULTS_2026-10-24.md).
+
+P12 fixeddecoderchannelDropout2d.2 afterstemReLU,C/Rxseeds19/1,new130epochs,originalgates. Agent-chosen under user's autonomousexperimentrequest. DesignbuilderreviewcheckedinitRNG,per-updateRNGtraces,andReLUzeroconfound; all implemented. Baseline139passed12.46s,REDmissingP12module,focusedGREEN152passed14.98s. No metrics/HV edits; historical5dense_votes failures disclosed,nofullsuitepassclaim. RealV100smoke/formalsubmissionpending. Evidenceignoredops/p12_development_20261024 andops/review_20261024.
+
 > **2026-10-23 P10 submitted:** restrictedencoderadaptation C(last12)/S(last4),seeds19/1,fourfresh130epochs,formalarray55227144,concurrency2. V100smoke55226781COMPLETED/0:0,119focusedtests/parity/frozenparameter/reload/AMP/timingandstrictreadyverified. Submissionisnotcompletedtraining. [Submissionandprotocol](results/PROPOSAL_P10_SUBMISSION_2026-10-23.md). P9closedbyoriginalgate;reusedfold1development,notPQ/test.
 
 > **2026-10-23 P9 closed:** all four130epoch runs completed; originaladmission=false inbothseeds. Dead-positiveweight4 changes+.006897/+.048276 butfailsabsoluteDead/precisionandCIgates. [Auditedresults](results/PROPOSAL_P9_RESULTS_2026-10-23.md). P10restrictedencoderadaptation independentlyfrozen andsubmitted;see latestentry. Reusedfold1development,notPQ/test.
