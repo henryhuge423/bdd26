@@ -87,3 +87,15 @@ def test_config_binds_optimizer_recipe_and_reload_rejects_mismatches():
 @pytest.mark.parametrize('epoch',[-1,130,True,1.5])
 def test_invalid_schedule_epoch(epoch):
     with pytest.raises(ValueError):p14().schedule_epoch(p14().make_optimizer(Tiny(),'C'),epoch)
+
+def test_control_verifier_optimizer_matches_original_actual_state():
+    import verify_p14_control as verifier
+    torch.manual_seed(7);a=Tiny();b=copy.deepcopy(a)
+    opt_a=verifier.reference_optimizer(a);opt_b=p14().make_optimizer(b,'C')
+    x=torch.tensor([[1.,2.],[-1.,3.]])
+    for _ in range(2):
+        for model,opt in [(a,opt_a),(b,opt_b)]:
+            opt.zero_grad(set_to_none=True);model(x).square().mean().backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(),1,error_if_nonfinite=True);opt.step()
+    assert verifier.optimizer_hash(opt_a.state_dict())==verifier.optimizer_hash(opt_b.state_dict())
+    assert all(torch.equal(v,b.state_dict()[k]) for k,v in a.state_dict().items())

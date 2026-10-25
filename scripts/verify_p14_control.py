@@ -34,8 +34,14 @@ def reset(seed):
     random.seed(seed);np.random.seed(seed);torch.manual_seed(seed)
 
 
+def reference_optimizer(model):
+    # Exact original runner metadata as well as numeric rates; no P14 helper used.
+    return torch.optim.AdamW([dict(params=list(model.head.parameters()),lr=3e-4,initial_lr=3e-4),
+        dict(params=[p for p in model.encoder.parameters() if p.requires_grad],lr=1e-5,initial_lr=1e-5)],betas=(.9,.999),weight_decay=.01)
+
+
 def run(model,fold,ids,seed,arm=None):
-    opt=torch.optim.AdamW([dict(params=list(model.head.parameters()),lr=3e-4),dict(params=[p for p in model.encoder.parameters() if p.requires_grad],lr=1e-5)],betas=(.9,.999),weight_decay=.01)
+    opt=reference_optimizer(model)
     if arm is not None:opt=p14.make_optimizer(model,arm)
     assert [g['lr'] for g in opt.param_groups]==[3e-4,1e-6 if arm=='L' else 1e-5]
     if arm is not None:
