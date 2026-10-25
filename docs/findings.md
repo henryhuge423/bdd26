@@ -1,3 +1,5 @@
+> **2026-10-25 P13 closed:** all four130epoch runs COMPLETED/0:0; fixed25%rare-positive replacement worsens audit Dead recall by .137931/.048276 despite fit recall .998476/1; both original gates fail. [Final result](results/PROPOSAL_P13_RESULTS_2026-10-25.md). P14 independently freezes encoderLR1e-6 vs original1e-5 with same last12 blocks; validation/submission pending. Reusedfold1development,notPQ/test.
+
 # 2026-10-24 P12 formal submission verified
 
 Array55251406 single submission2026-10-24T07:20:40.533905-04:00;C19/R19/C1/R1,fresh130epochs,max48GPUhours. Smoke55251401 COMPLETED/0:0,153passed,empty stderr,allstrictreadinesschecks passed. Sourcecommit77cfa9ac17b278c67b750762191e6bdd5b9b4cc9,manifest35748e383fa57d626c3c8a03fc09871627872c19599d2a3003559a1845bb1a3d. No formalcompletion/performanceclaim. [Full review](results/EXPERIMENT_REVIEW_2026-10-24_ZH.md).
