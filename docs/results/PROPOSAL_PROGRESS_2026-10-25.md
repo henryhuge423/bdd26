@@ -1,6 +1,8 @@
+> Latest closeout: [P14](PROPOSAL_P14_RESULTS_2026-10-25.md) verified41smallfiles36payloads; precision rises but fit/audit recall falls; bothoriginalgatesfail. The P14 design text below records its pre-result rationale. P15 independently tests training integer translation with originalLR/model/loss/cohort and original admission; smoke validation is pending, no claimed improvement. Full boundaries in [P15 frozen design](../superpowers/specs/2026-10-25-proposal-p15-design.md).
+
 # Proposal research review — 2026-10-25
 
-The tested P3–P13 recipes have not produced an admitted proposal detector. This is a bounded negative result on repeatedly reused fold1 development images, not a conclusion that point detection, foundation encoders or class balancing cannot work. P13 is newly verified here; earlier rows below summarize their committed closeout reports rather than independently rehash all historical artifacts again.
+The tested P3–P14 recipes have not produced an admitted proposal detector. This is a bounded negative result on repeatedly reused fold1 development images, not a conclusion that point detection, foundation encoders or class balancing cannot work. P13 is newly verified here; earlier rows below summarize their committed closeout reports rather than independently rehash all historical artifacts again.
 
 |Round|Fixed treatment vs its own fresh control|Internal Dead recall change seed19 / seed1|Original admission|
 |---|---|---|---|
@@ -14,6 +16,7 @@ The tested P3–P13 recipes have not produced an admitted proposal detector. Thi
 |P11|Positive focal mass redistribution|+.041379 / .000000|false|
 |P12|Post-stem channel dropout.2|−.034483 / −.027586|false|
 |P13|Fixed25%rare-positive replacement|−.137931 / −.048276|false|
+|P14|Encoder initialLR1e-6 instead of1e-5|−.068966 / −.089655|false|
 
 P3's original T1−F1 was+.068966/+.013793 but failed absolute Dead, precision and uncertainty clauses. The later within-round comparisons must not be pooled with those arms, ranked as a hyperparameter search, or treated as independent patient replications. Fresh controls vary; only each round's own matched control enters its original admission.
 
