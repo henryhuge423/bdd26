@@ -1,3 +1,5 @@
+> **2026-10-25 P14 submitted:** fixedencoderLR1e-6 vsoriginal1e-5,C/L×19/1,fourfresh130epochs; V100smoke55270073COMPLETED/0:0,214nodechecks,exactcontrolparity/actualLR/AMP/reload/frozen/time/strictready PASS. Formalarray55270432submittedonce2026-10-25T04:16:21.488338-04:00,concurrency2,max48GPUhours. Submissionisnotcompletedtraining. [Protocol](results/PROPOSAL_P14_SUBMISSION_2026-10-25.md), [P3–P13 synthesis](results/PROPOSAL_PROGRESS_2026-10-25.md). Reusedfold1development,notPQ/test.
+
 > **2026-10-25 P13 closed:** all four130epoch runs COMPLETED/0:0; fixed25%rare-positive replacement worsens audit Dead recall by .137931/.048276 despite fit recall .998476/1; both original gates fail. [Final result](results/PROPOSAL_P13_RESULTS_2026-10-25.md). P14 independently freezes encoderLR1e-6 vs original1e-5 with same last12 blocks; validation/submission pending. Reusedfold1development,notPQ/test.
 
 # 2026-10-24 P12 formal submission verified
