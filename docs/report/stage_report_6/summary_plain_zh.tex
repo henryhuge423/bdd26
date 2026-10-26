@@ -1,80 +1,251 @@
 \documentclass[UTF8,zihao=-4,fontset=windows]{ctexart}
-\usepackage[a4paper,margin=24mm]{geometry}
-\usepackage{booktabs,tabularx,graphicx,xcolor,fancyhdr}
+\usepackage[a4paper,margin=23mm]{geometry}
+\usepackage{booktabs,tabularx,array,amsmath,xcolor,fancyhdr,tikz,pgfplots,float}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\pgfplotsset{compat=1.18}
 \usepackage[hidelinks]{hyperref}
 \definecolor{ink}{HTML}{173E52}
-\ctexset{section={format=\large\bfseries\color{ink}}}
-\setlength{\parskip}{6pt}\setlength{\emergencystretch}{3em}
-\pagestyle{fancy}\fancyhf{}\fancyhead[L]{\small 阶段报告 6 · 中文导读}\fancyfoot[C]{\thepage}\setlength{\headheight}{15pt}
-\title{\bfseries 模型能记住训练图，\\为什么换一张图还是找不全？\\[8pt]\large 阶段报告 6 导读}
-\author{Xinhao Jin · bdd26}\date{2026 年 10 月 26 日}
-\begin{document}\maketitle
+\definecolor{teal}{HTML}{278B87}
+\definecolor{amber}{HTML}{D98B32}
+\definecolor{rose}{HTML}{B95765}
+\definecolor{pale}{HTML}{F0F5F6}
+\ctexset{section={format=\Large\bfseries\color{ink}}}
+\setlength{\parskip}{6pt}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\small 阶段报告 6 · 中文导读}
+\fancyhead[R]{\small 2026 年 10 月 26 日}
+\fancyfoot[C]{\thepage}\setlength{\headheight}{15pt}
+\newcommand{\pagelead}[2]{\section*{#1}\noindent{\large\color{teal}#2}\par\medskip}
+\newcommand{\evidence}[1]{\par{\footnotesize\color{gray}数字依据：#1；详细口径见正式报告。}\par}
+\begin{document}
+\begin{center}
+{\small\color{teal}研究范围：2026 年 10 月 13 日至 26 日}\par\vspace{9mm}
+{\huge\bfseries 找到一个核，\par 找全一张图}\par\vspace{5mm}
+{\Large 核实例分割研究 · 阶段报告 6 导读}\par\vspace{4mm}
+Xinhao Jin · Biomedical Data Design
+\end{center}
+\vspace{4mm}
+我们希望模型交出的，是一张图里完整的一组细胞核：每个核各有轮廓，类别也有依据。上一阶段重点检查“已经找到，为什么分错类”；这两周把目光往前移，追问模型到底在哪一步丢掉了对象。
 
-\section*{这两周主要做了什么}
+几条路线给出了相似的提醒：画出一些像样的轮廓，与把它们保留成完整结果，中间还有距离；训练图上找得很全，换一批图也可能漏掉大半。本阶段的收获，是把这些距离量了出来，让下一轮有更具体的问题可问。
 
-上一阶段，我们检查过“找到了核，却分错类别”的问题。简单地换分类器没有带来稳定改善，也看到了一些标签边界可能不清的证据。从 10 月 13 日起，研究进一步往前移：先不急着让模型分对类别，而是检查它能不能真正找到一组完整、可信的细胞核。
+\begin{figure}[H]\centering
+\begin{tikzpicture}[node distance=8mm,>=Stealth,font=\small]
+\node[draw=teal,fill=pale,rounded corners,text width=36mm,minimum height=19mm,align=center] (a) {看见对象\\裁切后还认得吗？};
+\node[draw=teal,fill=pale,rounded corners,text width=36mm,minimum height=19mm,align=center,right=of a] (b) {形成实例\\轮廓能留下来吗？};
+\node[draw=teal,fill=pale,rounded corners,text width=36mm,minimum height=19mm,align=center,right=of b] (c) {迁移到别的图\\找得全，也报得准？};
+\draw[->,thick,teal] (a)--(b);\draw[->,thick,teal] (b)--(c);
+\end{tikzpicture}
+\caption{本阶段的三条问题线索。流程为概念示意。}
+\end{figure}
 
-这段时间试了三类办法：改变裁切后小核的训练监督；用查询模型一次生成一组独立实例；先找中心点，再考虑如何画出轮廓。完整训练和小规模诊断都已积累了不少结果，但目前还没有一个新配方通过原先定好的条件，可以进入最终大规模确认。
+\noindent\colorbox{pale}{\parbox{.95\linewidth}{\small
+\textbf{这份导读的时间停在这里：}2026 年 10 月 26 日 09:27（EDT，美东夏令时）。P16 已取得 seed 19 的完整结果，seed 1 对照／处理组已到第 85／73 轮；P17 已于 09:08:19 提交，四项任务仍排队。本文保留这份静态记录。}}
 
-这不是“没有任何数字上涨”。恰恰相反，多次出现了某项指标变好、另一项变差的情况。本阶段的重要工作，是看清这些上涨究竟意味着什么，避免把更高的训练拟合、更少的预测，或者真值帮助下的理想结果误当成方法进步。
+阅读时只需先记住三个词。\textbf{召回}问“真有的核找回多少”；\textbf{精度}问“报出来的核有多少是真的”；\textbf{PQ}还要检查实例轮廓与类别。三者各自回答不同问题。后文的图会分别标明口径。
 
-\input{status.tex}
+目前，已有完整结果的配方都未满足预设的全部通过条件。P16 的局部上涨值得记录，P17 则刚开始检验另一种表示配方。下面按问题读，比按实验编号逐项读更容易看清这段研究。
 
-\section*{第一件事：发现弱点，不代表已经知道怎么修}
+\newpage
+\pagelead{1\quad 裁掉一角之后，模型还认得吗？}{发现脆弱点，是修复工作的起点。}
+原来完整的核，被画面边缘切掉一块后，留下的面积更小，周围参照也变了。受控裁切实验显示，这样的对象更容易漏掉；很小的残片尤其困难。修正推理模式并按面积分层后，这个现象仍然成立。
 
-我们把原本完整的核裁成只露出一部分，发现模型确实更容易漏掉它们。这个现象在修正推理模式、考虑面积差异后仍然成立。于是进一步改变训练监督，希望模型学会处理这类局部可见的小核。
+\begin{figure}[H]\centering
+\begin{tikzpicture}[font=\small]
+\foreach \shift/\lab in {0/完整可见,5.1/裁切后局部可见}{
+\begin{scope}[xshift=\shift cm]
+\fill[pale] (0,0) rectangle (4,2.7);
+\begin{scope}\clip (0,0) rectangle (4,2.7);
+\foreach \x/\y/\r in {.8/.8/.32,2.0/1.7/.46,3.3/.65/.38}{\fill[rose!40] (\x,\y) ellipse[x radius=\r cm,y radius=.35cm];\draw[rose] (\x,\y) ellipse[x radius=\r cm,y radius=.35cm];}
+\ifdim\shift pt>0pt\fill[white] (0,0) rectangle (1,2.7);\draw[amber,very thick] (1,0)--(1,2.7);\fi
+\end{scope}
+\draw[ink!40] (0,0) rectangle (4,2.7);
+\node at (2,-.4) {\lab};
+\end{scope}}
+\draw[-{Stealth},thick,ink] (4.2,1.35)--(4.9,1.35);
+\end{tikzpicture}
+\caption{裁切如何改变可见面积与上下文：概念示意，椭圆为手绘对象，非真实显微图像、非实验样本。}
+\end{figure}
 
-但四组、两个随机种子的完整训练没有支持这套修复办法。普通裁切增强让 Dead 类的某些指标提高，却降低了整体分割质量；加上选择性监督以后，表现也没有进一步变好。在固定裁切样本中，两种子的效果还一正一负。
+于是，接下来的干预很自然：训练时多给裁切图，并调整小残片的监督，让模型学会处理不完整对象。四组、两个种子的完整训练给出的答案却更复杂。
 
-所以我们保留“裁切是一个脆弱点”，停止“这一套监督已经能修复它”的设想。前一个观察是研究线索，后一个需要真正的干预实验，不能跳过。
+\begin{table}[H]\centering\small
+\begin{tabularx}{\linewidth}{p{38mm}rrX}\toprule
+相对原始训练的变化 & mPQ & strict Dead PQ & 读法\\\midrule
+裁切增强 A1 & $-0.0053$ & $+0.0088$ & Dead 有局部收益，总体质量付出代价\\
+裁切增强＋选择性监督 A2 & $-0.0063$ & $-0.0009$ & 预期修复没有出现\\\bottomrule
+\end{tabularx}
+\caption{fold2 原图开发结果，两个固定种子的均值；这里用的是分割指标。}
+\end{table}
 
-\section*{第二件事：画出一些像样的轮廓，还不等于找到了一组核}
+更直接的检验，来自固定裁切图中 116 个符合条件的 Dead 对象。选择性监督相对普通裁切增强，两个种子的漏检改善一负一正；平均为 $-0.86$ 个百分点，95\% 区间为 $[-4.09,+1.77]$ 个百分点。
 
-查询模型的想法是：让很多查询各自负责一个对象，再把它们组成最终结果。实际训练却出现了严重退化。把学习率降得慢一些，也没有救回来。以同轮基线约 .473 的 mPQ 为参照，查询模型只有约 .088；这个差距不是小幅随机波动。
+这组证据把两个问题分开了。\textbf{“裁切会增加困难”有观察支持；“这套监督可以修复困难”需要干预结果支持。}后者没有过关，因此这条具体配方停止扩量。保留下来的线索，是可见面积、边界和上下文值得继续细分研究。
+\evidence{E4 修正裁切审计；10 月 15 日可见性监督开发评估与机制检验。Dead 沿用数据集类名，涵盖凋亡、坏死相关核。}
 
-进一步查看同一批训练图，问题更清楚了。331 个目标中，一个种子的原始查询掩码能与 212 个目标有足够重叠；模型自己筛选完查询，只剩 104 个；处理轮廓重叠后剩 84 个。另一个种子是 227、119、97。
+\newpage
+\pagelead{2\quad 画出来的轮廓，为什么又消失了？}{查询模型的损失，发生在不止一个环节。}
+查询模型让一组查询各自尝试负责一个对象。最终交卷前，它还要判断哪些查询可信，并处理轮廓之间的像素争夺。这些步骤共同决定图里最后剩下多少个核。
 
-这说明模型并非完全没有生成可用轮廓，而是有一大部分没有被保留成最终实例。同时，原始掩码也远没覆盖全部目标。因此，单纯降低一个置信度阈值不够，继续扩大同一套训练也缺少依据。要分别检查：它有没有画出对象、有没有把它当成对象、对象之间冲突时有没有丢掉它。
+完整训练中，E7 查询模型的 mPQ 约为 0.088，同轮密集基线约为 0.473。进一步追踪同一批 16 张训练图、331 个目标，能看到对象是怎样逐步丢失的。
 
-\section*{第三件事：有标准答案帮助时能做，不等于推理时会做}
+\begin{figure}[H]\centering
+\begin{tikzpicture}
+\begin{axis}[width=.97\linewidth,height=7cm,ybar,bar width=17pt,ymin=0,ymax=370,
+ ylabel={可匹配目标数},symbolic x coords={全部目标,原始掩码,分类保留,像素竞争后},xtick=data,
+ nodes near coords,nodes near coords style={font=\scriptsize},tick label style={font=\small},
+ legend style={at={(.5,1.03)},anchor=south,legend columns=2,draw=none},
+ ymajorgrids=true,grid style={gray!15},enlarge x limits=.2]
+\addplot[fill=teal!75,draw=teal] coordinates {(全部目标,331)(原始掩码,212)(分类保留,104)(像素竞争后,84)};
+\addplot[fill=amber!75,draw=amber] coordinates {(全部目标,331)(原始掩码,227)(分类保留,119)(像素竞争后,97)};
+\legend{seed 19,seed 1}
+\end{axis}
+\end{tikzpicture}
+\caption{E7 固定训练批次的实际诊断。原始掩码阶段由真值寻找最佳重叠（IoU$>0.5$），展示诊断覆盖空间；后续两阶段在同一批目标上计数，各阶段达标对象并非严格包含关系。}
+\end{figure}
 
-有些小实验直接给模型真值中心或对象对应关系，再让它画轮廓。这时，训练图上可以拟合相当一部分 Dead 核。乍看像是好消息，但标准答案已经替模型完成了最难的一部分——告诉它该看哪里。
+以 seed 19 为例，原始查询掩码能够覆盖 212 个目标；模型分类保留后剩 104 个，处理像素竞争后剩 84 个。另一个种子也有相同走向：227、119、97。
 
-再看两套真正预测点的配方：E17 没有产生候选；E18 产生很多候选，但最终实例推理的审计精度只有约 3.5\%--3.7\%。这是实例推理结果，不是后续实验的中心点匹配率。另一项真值点实验中，本轮读出留出图像也明显弱于拟合图像；不过冻结的 E7 已经见过这些图，不能把它说成整模型对新图像的独立检验。因此，我们没有直接把这些模块拼起来训练完整 PM-Net，而是先检查真正预测的候选是否既全又准。
+这解释了为什么“把置信度阈值降一点”很难独自解决问题。原始掩码已覆盖的对象，在后处理中大量流失；与此同时，331 个目标中还有一部分从起点就缺少合格轮廓。需要分别检查\textbf{轮廓生成、对象置信度、实例间冲突}，才能知道改动究竟修在哪一处。
 
-\section*{为什么反复强调“训练图”和“留出图”}
+后续真值辅助的小实验，还表明给定正确位置或对应关系时，网络能够拟合一部分 Dead 核。真正自己预测候选时，E17 没有候选，E18 的最终实例审计精度仅约 3.5\%--3.7\%。因此研究转向更基础的一关：先让实际预测出来的候选足够可靠，再考虑接上轮廓生成。
+\evidence{E6/E7 完整训练、查询机制诊断与 E7--E18 收尾。E18 为最终实例推理指标。}
 
-在后续 P3 起的实验中，可以把拟合图理解为平时练习过的题，审计图是没有参与该轮参数拟合的题。一个模型把练习题记住，并不代表它学会了处理同类新题。这个定义不能倒用到前面所有小诊断上，每项实验的留出范围要分别看。
+\newpage
+\pagelead{3\quad 练习题几乎全对，换一批图呢？}{高拟合说明模型记得住，迁移还要另看。}
+中心点路线先给每个核找一个位置，再考虑如何画轮廓。后续 P3 起，研究在训练折内部固定分出 2,134 张拟合图像和 522 张审计图像。前者参与本轮参数学习，后者用于比较同轮配方。
 
-最早的冻结特征点头在补足训练以后，训练内召回已经约 94\%--98\%，但换到开发图像，内部 Dead 点召回仍只有约 40\%。后来允许模型适配特征，并加入增强，训练图表现进一步改善；在留出图像上，却总是在“少漏掉一些”和“别报错太多”之间付出代价。
+\begin{figure}[H]\centering
+\begin{tikzpicture}
+\begin{axis}[width=.97\linewidth,height=6.6cm,ybar,bar width=16pt,ymin=0,ymax=112,
+ ylabel={总体点召回（\%）},symbolic x coords={冻结无增强,冻结有增强,适配无增强,适配有增强},xtick=data,
+ xticklabel style={font=\small,rotate=12,anchor=east},
+ nodes near coords,nodes near coords style={font=\scriptsize},
+ legend style={at={(.5,1.03)},anchor=south,legend columns=2,draw=none},
+ ymajorgrids=true,grid style={gray!15},enlarge x limits=.17]
+\addplot[fill=teal!70,draw=teal] coordinates {(冻结无增强,99.99)(冻结有增强,53.88)(适配无增强,99.98)(适配有增强,97.70)};
+\addplot[fill=amber!75,draw=amber] coordinates {(冻结无增强,44.28)(冻结有增强,42.89)(适配无增强,50.99)(适配有增强,58.89)};
+\legend{拟合图像,审计图像}
+\end{axis}
+\end{tikzpicture}
+\caption{P3 实际结果，两个固定种子的均值。点匹配采用原生图像 3 像素半径、唯一匹配；图中为所有类别总体召回。}
+\end{figure}
 
-为了把这种落差看清，后续在训练折内部固定留下 522 张图，另外 2,134 张用于拟合。这个审计集里只有 11 张内部 Dead 阳性图、145 个对象，而且大部分来自 Lung 和 Colon。后面所有点检测配方都用同一批图来作比较，方便控制变量，也意味着不能把一轮轮结果当成新的独立验证。
+无增强的两组，拟合召回几乎达到 100\%，审计召回却只有约 44\% 和 51\%。加增强后，冻结表征本身难以拟合；允许 UNI 适配，拟合能力大幅恢复，审计总体召回也提高到约 59\%。
 
-\section*{连续试验排除了哪些简单办法}
+这一步确实有收益。适配加增强相对冻结加增强，审计总体召回提高约 16 个百分点；同时，精度下降约 12.25 个百分点。研究关注的内部 Dead 召回，两个种子只提高 6.90 和 1.38 个百分点，区间均跨零。可见，总体核的改善与稀有类别的稳定改善仍是两件事。
 
-我们分别检查了更细的输出网格、更宽的目标邻域、颜色扰动、稀有类加权、少训练一些骨干层、dropout、稀有类重采样、更小的骨干学习率，以及平移增强。它们都没有同时满足原先的双种子通过条件。
+\begin{center}\small
+\begin{tabular}{lrrr}\toprule
+固定审计集 & 图像 & 内部 Dead 阳性图 & 内部 Dead 对象\\\midrule
+规模 & 522 & 11 & 145\\\bottomrule
+\end{tabular}
+\end{center}
 
-其中两个例子尤其有解释力。把四分之一的训练位置换成稀有类阳性图以后，拟合 Dead 召回几乎 100\%，留出图像却降到约 35\%--36\%。这套方案不能靠“让模型多看几遍稀有类”解决问题。
+145 个 Dead 对象中，Lung 与 Colon 合计 116 个。这批图适合控制变量，支持却很集中。后续每轮都用它比较处理和对照，因而每次“换一套训练办法”并没有同时得到一份新的独立验证。
 
-平移增强是另一种失败。模型在训练图上本身就明显学不好：总体召回从约 98\% 降到 47\%。它报得少了，所以精度从约 69\% 升到 86\%，但正确找回的核也少了很多。只看精度就会得出相反的结论。白色填边、部分核被移出画面和更强的任务要求同时改变，不能简单归咎于某一种位置编码。
+一个便于理解的类比是：一套练习卷、一套反复查看的诊断卷。诊断卷能帮助发现问题；真正的最终考试仍需另外安排。
+\evidence{P3 Phase A；早期 P1-R1 延长拟合后，fold2 内部 Dead 点召回仍约 40\%。}
 
-\section*{小核确实难，但还不能说原因只有尺寸}
+\newpage
+\pagelead{4\quad 少报一些，精度就可能变高}{一张更干净的结果图，也可能漏得更多。}
+\begin{figure}[H]\centering
+\begin{tikzpicture}[font=\small]
+\foreach \shift/\lab in {0/方案甲：多报一些,7.0/方案乙：少报一些}{
+\begin{scope}[xshift=\shift cm]
+\fill[pale] (0,0) rectangle (5.5,2.1);
+\foreach \x in {.6,1.65,2.7,3.75,4.8}{\draw[ink,line width=.9pt] (\x,1.1) circle (.32);}
+\ifdim\shift pt=0pt
+\foreach \x in {.6,1.65,2.7,3.75}{\fill[teal] (\x,1.1) circle (.08);}
+\fill[rose] (2.15,.35) circle (.08);\fill[rose] (4.3,1.8) circle (.08);
+\node[align=center] at (2.75,-.65) {找回 4/5：召回 80\%\\报对 4/6：精度 67\%};
+\else
+\foreach \x in {.6,1.65}{\fill[teal] (\x,1.1) circle (.08);}
+\node[align=center] at (2.75,-.65) {找回 2/5：召回 40\%\\报对 2/2：精度 100\%};
+\fi
+\node at (2.75,2.45) {\lab};
+\end{scope}}
+\end{tikzpicture}
+\caption{概念示意，数值为说明指标而设，非实验结果。圆圈代表真值对象，绿点为匹配预测，红点为误报。少报提高精度时，也可能损失覆盖。}
+\end{figure}
 
-高分辨率适配器也做了完整训练，却没有稳定提高内部 Dead 的匹配率。对四个模型共同失败的对象作检查，发现小核确实占多数；但较大的对象同样会持续失败。
+P15 的平移增强就出现了这种实际变化。训练时随机平移图像、用白色补边，原本是希望模型减少对固定位置的依赖。结果它在拟合图像上也明显学不好：总体召回由约 98\% 降到 47\%。
 
-更细查训练数据后，尺寸和对比度各个粗分组里都能找到训练样本。也就是说，不能简单解释为“训练里没有这种小核”。但有相似尺寸的样本，不代表同样的组织、外观和患者差异都覆盖了。现在还不能把这些相关性说成唯一原因，更不能在缺少专家判断时宣布标签一定有错。
+\begin{table}[H]\centering\small
+\begin{tabular}{lrr}\toprule
+P15，seed 19 审计结果 & 本轮对照 & 平移增强\\\midrule
+候选数 & 10,469 & 5,498\\
+唯一匹配数 & 7,241 & 4,758\\
+精度 & 约 69.2\% & 约 86.5\%\\\bottomrule
+\end{tabular}
+\caption{实际点检测结果。候选减少，匹配成功的对象也随之减少；另一种子方向一致。}
+\end{table}
 
-\section*{最新结果，以及为什么下一轮换了一个问题}
+所以，这轮精度上涨的解释是“报得更少、更保守”，同时付出了大量漏检的代价。平移还改变了填边、可见核和每轮保留的中心目标，后续若研究具体机制，需要把这些因素拆开。
 
-P16 把只在精确中心给正监督的损失，改成直接拟合完整 Gaussian 热图。已完成的 seed 19 中，Dead 点召回从 48.28\% 提高到 51.72\%，多匹配了 5 个对象；但区间仍跨零，精度约 70.11\%，都不足以通过原条件。另一个种子尚未收齐，目前不能给出完整实验结论。
+连续试验也呈现了另外两类失败。P13 让模型更频繁地看到稀有类阳性图，拟合 Dead 召回几乎 100\%，审计却只有约 35\%--36\%；它属于“记住了，但迁移不足”。减少适配层、加 dropout、降低骨干学习率，则没有同时改善覆盖和精度。更细网格、颜色扰动、损失重加权等 P4--P15 固定配方，也都未满足双种子通过条件。
 
-下一轮 P17 比较两套表示：一套是原 UNI 检测器，另一套是从头训练的卷积金字塔。问题是：在同一批数据、损失、解码和预算下，换一种表示配方是否值得继续？这轮没有同时加掩码头、查询或新的稀有类技巧，也不把它包装成一个已经有效的新方法。卷积模型与对照的预训练和学习率不同，结果只能评价整套配方，不能单独证明“局部特征就是原因”。
+这给下一轮一个实用判断顺序：先看模型是否学得动，再看审计召回，最后同时检查误报。只有两个方向都站得住，候选才能成为后续分割的可靠起点。
+\evidence{P4--P15 各轮结果；各轮比较均采用本轮重新训练的对照。}
 
-\input{p17_receipt_plain.tex}
+\newpage
+\pagelead{5\quad 小核最难，大核也有盲区}{尺寸提供了一条线索，组织与外观仍在其中。}
+E19 在高分辨率解码分支加入卷积残差适配器，希望补充细节。双种子完整训练后，内部 Dead 匹配率平均变化约为 $-0.81$ 个百分点，区间跨零。这套适配器没有完成预设的主要目标。
 
-\section*{接下来怎样判断，而不是继续盲目试}
+更值得细看的，是四个模型反复失败的对象。741 个内部 Dead 中，233 个在四模型里都未达到 IoU$>0.5$；其中 176 个面积小于 100 原生像素。按训练折预先确定的面积组，差异很明显。
 
-先把 P16 剩余运行收齐，再核验 P17。每轮都要检查实际训练轮数、来源、配置和保存文件，再按两个种子分别套用原标准。对于点检测，必须既找得全又报得准；只有这样，接掩码模型才有实际意义。
+\begin{figure}[H]\centering
+\begin{tikzpicture}
+\begin{axis}[width=.95\linewidth,height=6.4cm,ybar,bar width=28pt,ymin=0,ymax=82,
+ ylabel={四模型共同未匹配比例（\%）},xlabel={对象面积（原生像素）},
+ symbolic x coords={小于67,67至102,103至157,至少158},xtick=data,
+ nodes near coords,nodes near coords style={font=\scriptsize},
+ ymajorgrids=true,grid style={gray!15},enlarge x limits=.2]
+\addplot[fill=rose!65,draw=rose] coordinates {(小于67,68.7)(67至102,26.3)(103至157,10.6)(至少158,21.3)};
+\end{axis}
+\end{tikzpicture}
+\caption{E19 实际对象审计。各组开发对象数依次为 179、209、189、164；共同未匹配数依次为 123、55、20、35。未匹配包含已有局部重叠但轮廓不合格的对象。}
+\end{figure}
 
-本阶段没有新的三划分测试成绩。图像层面的抽样区间不等于患者层面的保证，多轮使用同一开发数据也会使后续判断更容易乐观。已有负结果应当约束下一步，而不是被换一种说法重新打开。完整数字、指标定义、停止理由和来源见正式报告及核验文件。
+最小组约七成持续未匹配，中间两组明显较低，最大组又回升到约两成。读这张图时，既能看到小核的困难，也能看到“尺寸”尚未解释掉的部分。
+
+训练折中，四个面积组分别有 200、196、204、201 个对象；面积与局部对比度组成的 16 个粗分格也都有训练支持。因此，简单增加同尺寸样本未必就能补上缺口。相似面积的核，仍可能来自不同组织、有不同染色与周围结构。
+
+这批 741 个内部 Dead 中，Lung 占 535 个，Colon 占 83 个。这样的组织集中度提醒我们：接下来真正有价值的图像复核，应把大小、组织、外观与失败类型放在一起看。四个模型都失败，可以帮助筛选值得复核的对象；生物学判断仍需要专家参与。
+\evidence{E19 高分辨率适配与固定对象交集审计；分组切点来自训练折。}
+
+\newpage
+\pagelead{6\quad 最新一轮：多找回五个，下一问是什么？}{P16 记录局部变化，P17 检验另一套表示。}
+P16 改变中心热图的学习方式：原损失把精确中心当正点，Gaussian 周边主要用于减轻附近负损失；新损失直接拟合整张 Gaussian 热图。seed 19 两组都已完成 130 轮，并核验逐图结果、日志与小文件清单。
+
+\begin{table}[H]\centering\small
+\begin{tabular}{lrr}\toprule
+P16 seed 19 & 原 focal 对照 & Gaussian 回归\\\midrule
+审计内部 Dead 匹配数 & 70/145 & 75/145\\
+审计内部 Dead 召回 & 48.28\% & 51.72\%\\
+审计总体召回 & 59.80\% & 60.25\%\\
+审计精度 & 69.41\% & 70.11\%\\\bottomrule
+\end{tabular}
+\caption{实际点检测结果。Dead 增益为 3.45 个百分点，即多匹配 5 个对象。}
+\end{table}
+
+这个变化的 95\% 区间为 $[-3.41,+13.11]$ 个百分点。按原条件，两个种子需分别达到 Dead 召回至少 60\%、比对照提高至少 5 个百分点、增益区间下界大于零，同时精度至少 75\%，并满足其他质量约束。已完成的 seed 19 尚未满足这些要求；截至 09:27，seed 1 对照／处理组分别为第 85／73 轮。
+
+\begin{figure}[H]\centering
+\begin{tikzpicture}[font=\small,>=Stealth]
+\node[draw=teal,fill=pale,rounded corners,text width=54mm,minimum height=23mm,align=center] (c) {P17 对照 C\\UNI 检测器\\保留原预训练与适配配方};
+\node[draw=amber,fill=amber!8,rounded corners,text width=54mm,minimum height=23mm,align=center,right=12mm of c] (k) {P17 处理 K\\从头训练卷积金字塔\\宽度 32 / 64 / 128};
+\node[below=7mm of $(c.south)!.5!(k.south)$,align=center,text width=130mm] {共同固定：拟合／审计队列、原 focal 损失、目标、增强、解码、130 轮、两个种子};
+\end{tikzpicture}
+\caption{P17 设计示意。比较整套表示配方；初始化、预训练与学习率也有差异。}
+\end{figure}
+
+P17 问得更直接：在同一批图、同一任务和原预算内，换成从头训练的卷积金字塔，是否值得继续？真实 V100 验证已经通过，正式数组 \textbf{55297061} 于 10 月 26 日 09:08:19 EDT 单次提交，四项任务、最多同时运行两项。提交时均排队；截至本文静态快照，尚无 P17 效果结论。
+
+下一步先收齐 P16，再核验 P17 的来源、配置、130 轮日志和保存清单，按两个种子分别判断。候选同时做到找得全、报得准，才值得讨论掩码头与后续联合训练。
+
+\noindent\colorbox{pale}{\parbox{.95\linewidth}{\footnotesize
+\textbf{阅读边界。}本阶段没有新的官方三划分测试成绩。分割 PQ、半径 3 像素点匹配和真值辅助诊断各有口径；小规模审计集被多轮复用，图像级区间也不代表患者级保证。历史结果来自已保存证据的综合，本文没有重新评估全部旧模型。所有示意图均已标明；实际数字可在正式报告及 \texttt{verified\_numbers.json} 中追溯。}}
 \end{document}

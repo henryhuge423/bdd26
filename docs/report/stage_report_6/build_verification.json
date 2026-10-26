@@ -1,57 +1,45 @@
 {
-  "pdf_pages": {
-    "stage_report_6_zh.pdf": 15,
-    "summary_plain_zh.pdf": 4
-  },
-  "output_files": {
+  "compiler": "C:\\texlive\\2022\\bin\\win32\\xelatex.exe",
+  "generation": "All three PDFs compiled directly from LaTeX with XeLaTeX. All illustrations and charts use TikZ/PGFPlots within LaTeX. No PDF authoring libraries or external graphic PDFs.",
+  "cutoff": "2026-10-26 09:27 EDT",
+  "outputs": {
+    "stage_report_6_en.pdf": {
+      "pages": 14,
+      "bytes": 86314,
+      "sha256": "09796d80c0eef9d001f8c617a44882c3d82aedc51d5dbc5b4cb6b6a8648bb2a9",
+      "source": "stage_report_6_en.tex",
+      "creator": "LaTeX with hyperref",
+      "producer": "xdvipdfmx (20211117)"
+    },
     "stage_report_6_zh.pdf": {
-      "bytes": 299611,
-      "sha256": "78740f997bbb9143818c0115a730973cdf2fabbf8ebbff7a679a19d5a10c9d7d"
+      "pages": 14,
+      "bytes": 259118,
+      "sha256": "a9d46d2ed96355d86ae12bfe74a42997e5e5b6c6104197471c495f54f8fd87e7",
+      "source": "stage_report_6_zh.tex",
+      "creator": "LaTeX with hyperref",
+      "producer": "xdvipdfmx (20211117)"
     },
     "summary_plain_zh.pdf": {
-      "bytes": 139909,
-      "sha256": "3f74d092fabde5ecb319e5fd916bca36d2ecdde1c270eb34552beeca94dd2e20"
-    },
-    "stage_report_6_zh.tex": {
-      "bytes": 31161,
-      "sha256": "461aa7296553f46981edc89a2b19080744aecef9a2e2645a712e88fa671b4941"
-    },
-    "summary_plain_zh.tex": {
-      "bytes": 8717,
-      "sha256": "30842468551a1b5d2af9470000f1afc3c1a18f252beb080dba2973b58e1d6ea1"
-    },
-    "status.tex": {
-      "bytes": 351,
-      "sha256": "bb9310fa91dbea10c56d3e837b527ef59416702a28efae60e1504a705c11a678"
-    },
-    "p17_receipt.tex": {
-      "bytes": 1070,
-      "sha256": "3144552bcf7f18d5adbf1efc7be45fdc3ba5a88d5cda8361b13e0042e00e49e7"
-    },
-    "p17_receipt_plain.tex": {
-      "bytes": 391,
-      "sha256": "48e23bad8caa3dd6fcdcc5379083b5cc1c4a68778f4e3149986acd9d7e94c1fd"
-    },
-    "verified_numbers.json": {
-      "bytes": 37251,
-      "sha256": "2c2d3245d70798fe58af62336df7382af273c306c11ae8d90160696934052968"
-    },
-    "figs/proposal_deltas.pdf": {
-      "bytes": 20175,
-      "sha256": "da32149bb56518d9309fae3809cb0c52207db0d4445d6295cfeb8703158df95c"
-    },
-    "figs/query_attrition.pdf": {
-      "bytes": 24016,
-      "sha256": "46c8d511bee7d8145f915e8898b24f093b4747ef8da0927b72b464ee577ce96c"
+      "pages": 7,
+      "bytes": 182665,
+      "sha256": "98765055d3d10c7292a6272e5de9faf4391454832ca9e71bc2d76ecd9c264db4",
+      "source": "summary_plain_zh.tex",
+      "creator": "LaTeX with hyperref",
+      "producer": "xdvipdfmx (20211117)"
     }
   },
-  "visual_review": "All15formal and4digest pages rendered and inspected; final changed pages re-rendered; no clipping,overlap,missingglyphs or overfull boxes.",
-  "independent_review": "P17 design+implementation and report scientific-boundary reviews; important findings fixed.",
-  "final_cpu": {
-    "passed": 861,
-    "skipped": 3,
-    "warnings": 19073,
-    "exit_code": 0
-  },
-  "training_commit": "5a7e85ba7e876109449aab85767bc66942952daf"
+  "compiled_utc": "2026-10-26T14:25:05.427591+00:00",
+  "visual_review": "All 35 pages rendered to PNG and reviewed; final revised figures, tables and page transitions inspected. No clipping, overlap, missing glyphs or overfull boxes.",
+  "scientific_review": "Cross-language numerical/endpoint review completed. Clarified E9 all-Dead geometric recall, E16 GT-point-conditioned coverage and raw-mask stage sets not necessarily nested.",
+  "validation_scope": "Report-only revision after P17 final CPU suite 861 passed / 3 skipped; no experiment code or scientific settings changed in this revision.",
+  "source_files": {
+    "stage_report_6_en.tex": "567e13b5dd2c107c843de9b82b7bfb05fbfb8cfac23254a6323451675f2d029d",
+    "stage_report_6_zh.tex": "982a36056152d4602ef0ea4bb87f3cad1edc9949cb96028ae422605ed18d08e6",
+    "summary_plain_zh.tex": "8a6a5b08b0bfdfe5c34cf80561f7b5067e24a1071ea170fc1674cd48430bab33",
+    "status.tex": "5463cf46f56672940e903686317a4e95eeab035bec585440797669c895e6a1bb",
+    "p17_receipt.tex": "3144552bcf7f18d5adbf1efc7be45fdc3ba5a88d5cda8361b13e0042e00e49e7",
+    "figs/query_attrition.tex": "176f2efcedc40294e5bbee146f4caaf2608a7501005364b0b938c57d57a566ce",
+    "figs/proposal_deltas.tex": "7759586407bb455ad781aee816385582d294353961cd7dcc6eb29fa1c0573e0d",
+    "build.ps1": "6df07cf266f024fcce3e64fde3717e31a6965951e4650a3e986a980a2b7ad463"
+  }
 }

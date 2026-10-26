@@ -1,6 +1,8 @@
+> **Stage report 6, completed bilingual edition (2026-10-26):** [Detailed English report](docs/report/stage_report_6/stage_report_6_en.pdf), [详细中文报告](docs/report/stage_report_6/stage_report_6_zh.pdf), and [中文导读](docs/report/stage_report_6/summary_plain_zh.pdf). All three are compiled from LaTeX; charts and illustrations are drawn with TikZ/PGFPlots. Sources and build instructions are included.
+
 # bdd26 — PanNuke Nuclei Instance Segmentation (course project 5)
 
-> **2026-10-26 — P16 partial results, P17 submitted, stage report 6:** P16 seed 19 C/R completed 130 epochs and passed preservation/source checks. Dead matches changed from 70/145 to 75/145, with original CI [-.034091,+.131144]; this seed failed admission. Seed 1 remains running. Independent P17 passed V100 smoke 55297045, 291 node checks and strict readiness. Formal array 55297061 was submitted once at 09:08:19 EDT: four 130-epoch tasks, concurrency 2, maximum 48 GPU-hours. Submission is not completion or admission. These are reused fold-1 point metrics, not PQ/test results. No automatic Phase B, masks or menus. See [P16 partial results](docs/results/PROPOSAL_P16_PROGRESS_2026-10-26.md), [P17 submission](docs/results/PROPOSAL_P17_SUBMISSION_2026-10-26.md), and [Chinese stage report 6](docs/report/stage_report_6/README.md).
+> **2026-10-26 — P16 partial results, P17 submitted, stage report 6:** P16 seed 19 C/R completed 130 epochs and passed preservation/source checks. Dead matches changed from 70/145 to 75/145, with original CI [-.034091,+.131144]; this seed failed admission. Seed 1 remains running. Independent P17 passed V100 smoke 55297045, 291 node checks and strict readiness. Formal array 55297061 was submitted once at 09:08:19 EDT: four 130-epoch tasks, concurrency 2, maximum 48 GPU-hours. Submission is not completion or admission. These are reused fold-1 point metrics, not PQ/test results. No automatic Phase B, masks or menus. See [P16 partial results](docs/results/PROPOSAL_P16_PROGRESS_2026-10-26.md), [P17 submission](docs/results/PROPOSAL_P17_SUBMISSION_2026-10-26.md), and [Stage report 6: English, Chinese and Chinese reader](docs/report/stage_report_6/README.md).
 
 Start with the [documentation and evidence audit](docs/audits/DOCUMENTATION_RESULTS_GIT_AUDIT_2026-10-26.md)
 and [current results index](docs/results/README.md). The dated entries below preserve historical
@@ -347,7 +349,7 @@ Full methods, uncertainty and provenance: [P0–P3 results](docs/results/P0_P3_R
 
 ### Reports
 
-- `docs/report/stage_report_6/` — latest Chinese stage VI and plain-language digest: visibility, query/point diagnostics, E19 and P3–P17 progress.
+- `docs/report/stage_report_6/` — latest stage VI: detailed English/Chinese reports and illustrated Chinese reader: visibility, query/point diagnostics, E19 and P3–P17 progress.
 - `docs/report/stage_report_5/` — prior stage V (EN, ZH and plain-language ZH):
   typing-oracle ceiling, T0–T3 probe closure, E1 no-expert revision (E1-C/E1-M),
   E1-T label-ambiguity resonance, E3 utility-learning stop; verified numbers included.

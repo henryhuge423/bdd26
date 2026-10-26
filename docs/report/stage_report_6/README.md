@@ -1,30 +1,21 @@
-# 阶段报告六
+# Stage report 6 — 13–26 October 2026
 
-**从“能拟合”到“能可靠地找到”——核实例分割研究进展**
+Three companion documents cover visibility supervision, query-mask diagnostics, high-resolution adaptation, the P3–P16 point-detector studies, and the verified P17 submission.
 
-覆盖阶段报告5之后的2026年10月13–26日：M类别合并审计；修正E4及可见性监督；E5门控；E6/E7完整查询训练与输出链条；E8–E18训练内诊断；E19高分辨率适配及对象支持；P1R1、P3–P15点检测；P16部分结果与P17正式提交。全文中文，不新增未经核实的测试成绩。
+| Document | PDF | LaTeX source |
+|---|---|---|
+| Detailed English report, 14 pages | [English report](stage_report_6_en.pdf) | [source](stage_report_6_en.tex) |
+| 详细中文报告，14 页 | [中文详报](stage_report_6_zh.pdf) | [源码](stage_report_6_zh.tex) |
+| 中文导读，7 页、7 幅图 | [中文导读](summary_plain_zh.pdf) | [源码](summary_plain_zh.tex) |
 
-- [中文正式报告](stage_report_6_zh.pdf)
-- [中文导读](summary_plain_zh.pdf)
-- [数字核验快照](verified_numbers.json)
-- [正式报告TeX](stage_report_6_zh.tex) · [导读TeX](summary_plain_zh.tex)
+导读按六个问题展开：裁切脆弱性、查询对象流失、拟合与泛化、精度与召回、小核失败分布，以及 P16/P17 的最新进展。手绘核与精度示例均标为概念示意；数据图保留样本数与指标口径。
 
-## 结论
+## Build
 
-裁切脆弱性成立，但测试的监督修复失败；查询模型的原始掩码没有可靠转化为最终实例；多轮点检测能拟合训练图像，却未同时达到留出图像上的召回与精度要求。没有一个P3–P15配方获准自动扩量。不能将多个负结果解释为统一机制或整个方法家族无效。
+All three PDFs are compiled directly from LaTeX using XeLaTeX. Every chart and illustration is drawn in TikZ/PGFPlots during compilation. No externally generated PDF figures are required. Sources are self-contained within this directory. The Chinese sources use `ctex` with the Windows font set; the English source uses TeX Gyre Termes. Packages are supplied by the existing TeX Live installation.
 
-P16seed19已核验130轮，Dead点召回70/145→75/145，差+.034483，原95%CI[-.034091,+.131144]，单种子原条件失败；seed1尚运行，未生成双种子结论。P17独立卷积表示配方在真实V100验证后，于10月26日09:08:19EDT单次提交正式数组55297061；提交时四项排队，非训练完成或方法通过。
+On Windows with XeLaTeX on PATH, run `powershell -NoProfile -File build.ps1`. Else run XeLaTeX twice for each of the three main `.tex` files. The build writes compiler output under `build_logs/` and leaves the three PDFs beside the sources.
 
-报告区分点/掩码指标、训练拟合/读出留出/整模型审计/fold2开发/历史测试。E16的E7骨干已见过读出审计图，E18实例精度不混作P3点匹配。人类专家评审仍不可用，数据重复使用、患者相关性未知及Dead组织支持不均是实质限制。
+The experimental snapshot is **26 October 2026, 09:27 EDT**. P16 seed19 completed; C1/R1 reached epochs85/73. P17 array55297061 was submitted09:08:19EDT and was pending at the snapshot. The report is a dated stage record. This editorial revision does not alter training configurations or the original admission rules.
 
-## 核验范围
-
-历史数字对照当前结果文档及各轮收尾记录，不声称重新评估全部旧模型。本轮P16两项18小文件与保存清单匹配、401封存源码哈希核验；逐图聚合、拟合/审计身份、130轮历史与原1000次组织分层bootstrap重算。大型checkpoint未独立重哈希，外部归档未完成。`verified_numbers.json`保存数字与来源文本SHA。
-
-P17节点291项、双种子C/P3两有效步全状态对照、K各阶段第二步真实梯度/超出纯衰减的更新、AMP/重载/时间/严格readiness已通过。最终CPU全仓861项通过、3项跳过（19073条旧依赖弃用警告），784.55秒、exit0。精确作业/配置/来源/连接收据记录在本轮ignoredops交接；历史828、初始859与最终861均保留各自回执。
-
-## 构建
-
-TeX Live 2022或兼容版本，ctex/xeCJK及Windows字体；本轮在Windows使用XeLaTeX各两遍。图表由Matplotlib从冻结文档表及核验数字生成；PDF逐页渲染检查，无overfull或缺字。跨平台编译可在有Fandol字体的环境显式改fontset，不改变正文数字。
-
-`xelatex stage_report_6_zh.tex`、`xelatex summary_plain_zh.tex`，各运行两遍。图在figs/，状态和收据段落为同目录tex输入。图表仅作描述，不是独立超参数排名或新的显著性检验。
+Numerical evidence is in [verified_numbers.json](verified_numbers.json); compilation, PDF metadata and hashes are in [build_verification.json](build_verification.json). All35pages were rendered and visually inspected. Relevant result records: [P16](../../results/PROPOSAL_P16_PROGRESS_2026-10-26.md), [P17](../../results/PROPOSAL_P17_SUBMISSION_2026-10-26.md).
