@@ -18,27 +18,50 @@
 \fancyfoot[C]{\thepage}
 \setlength{\headheight}{15pt}
 \newcommand{\src}[1]{\par{\footnotesize\color{gray}Evidence: #1}\par}
-\title{\bfseries From Fitting Nuclei to Finding Them Reliably\\[8pt]\Large Nuclear instance segmentation: stage report 6}
+\title{\bfseries Finding More Nuclei Without More False Alarms\\[8pt]\Large Nuclear instance segmentation: stage report 6}
 \author{Xinhao Jin \quad Biomedical Data Design}
-\date{Research period: 13--26 October 2026\\Evidence cutoff: 26 October 2026, 09:27 EDT}
+\date{Research period: 13--26 October 2026\\Evidence cutoff: 26 October 2026, 11:55 EDT}
 \begin{document}
 \maketitle
 \begin{abstract}
-Stage report 5 ended without a successful route from post-hoc typing or learned candidate quality to a qualified improvement. This stage moved the investigation upstream, into supervision, instance generation, and candidate detection. Three questions guided the work: can visibility-aware supervision repair crop-related failures; where do set-query models lose usable objects; and can a point detector produce reliable candidates before a mask model is introduced?
+This project asks a computer to find each nucleus in a pathology image, draw its boundary, and assign a type. Existing models often miss the less common Dead category, which includes apoptosis- and necrosis-related nuclei. A better type classifier cannot recover a nucleus whose location was never found. Work from 13 to 26 October therefore focused on locating where objects are lost and testing ways to reduce those losses.
 
-No completed method in this stage qualified for three-split confirmation. The experiments nevertheless separated several mechanisms that had previously been easy to conflate. Crop sensitivity was reproducible, but the tested supervision repair did not work. Query models produced some useful raw masks, then lost many objects through query retention and pixel competition. Point detectors could almost memorize the fitting images, yet their recall and precision on held-out images remained insufficient. More training, rare-class resampling, and restricted backbone adaptation did not resolve this problem under the tested recipes.
+The completed experiments have not produced a method that meets the requirements for further confirmation. Cropping made nuclei harder to detect, but the tested training change did not repair this. Query-based models lost many usable outlines during filtering and overlap resolution. Center-point detectors could find almost every nucleus in fitting images, yet still missed many and reported false candidates on held-out images.
 
-This report records both the negative results and the limited positive signals, with the evaluation population attached to each number. At the cutoff, P16 had one fully verified seed; its other seed was incomplete. P17 had passed implementation and real-V100 validation and had been submitted as a new, independently specified comparison of a convolutional pyramid detector with the existing UNI detector. Submission is a procedural milestone, not a performance result.
+The latest completed study, P16, changed the center-training objective. It recovered five and nine additional Dead nuclei in two runs, but still found only about half of them, with overall precision near 70\%. Both runs failed the original requirements. P17 compares the existing UNI detector with a convolutional detector trained from scratch. At 11:55 EDT on 26 October, its first pair was still training and its second pair was queued; there is no completed performance result. This report explains the questions, findings, and remaining work, with technical records retained for reference.
+
 \end{abstract}
 
 \begin{quote}\small
-\textbf{Snapshot status.} P16 seed 19 was complete and checked; seed 1 C/R had reached epochs 85/73. P17 validation job 55297045 completed successfully. Production array \textbf{55297061} was submitted once at \textbf{09:08:19 EDT on 26 October}; all four tasks remained pending at the 09:27 cutoff.
+\textbf{Latest status.} All four P16 runs completed 130 epochs; both seeds failed the original joint recall/precision rule. At 11:55 EDT, P17 control/convolutional seed-19 runs had reached epochs 58/81 of 130. Both seed-1 runs were pending under the concurrency limit.
+
 \end{quote}
 \newpage
-{\small\tableofcontents}
+{\footnotesize\setlength{\parskip}{0pt}\tableofcontents}
 \newpage
 
-\section{Scope and the change in research question}
+\section{The project and this stage of the work}
+
+\subsection{Background for a new reader}
+
+Nuclear instance segmentation means drawing a separate outline for each nucleus, including nuclei that touch one another. The model must also assign a type. We use PanNuke, a dataset of about 7,900 pathology images from 19 tissues, with five nucleus classes. Earlier work reproduced the HoVer-Net and CellViT-UNI reference models and established a common scoring pipeline. This stage builds on that work to reduce missed nuclei without accepting more false detections.
+
+\begin{table}[H]\centering\small
+\begin{tabularx}{\linewidth}{p{30mm}X}\toprule
+Term & Meaning in this report\\\midrule
+Mask & The pixels occupied by one nucleus; a correct center does not guarantee a correct outline.\\
+Recall & The fraction of annotated nuclei found: 60 out of 100 means 60\%.\\
+Precision & The fraction of reported nuclei that match annotations: 60 correct out of 80 reports means 75\%.\\
+PQ, mPQ, bPQ & Segmentation scores combining detection and outline quality. mPQ also considers type; bPQ ignores type. A score of .48 does not mean 48\% recall.\\
+Strict Dead PQ & A score that also penalizes Dead reports on images without annotated Dead nuclei.\\
+Fitting / audit images & Images used to learn parameters / images held out for comparing recipes. Repeated reuse makes the audit set development data.\\
+Seed & A number controlling initialization and other randomness. Seeds 19 and 1 provide two runs of each recipe.\\
+Admission rule & Requirements written before an experiment, covering recall, precision and other quality constraints together.\\\bottomrule
+\end{tabularx}
+\caption{Terms needed to read the results. Interior Dead refers to Dead nuclei that do not touch the original image boundary. E and P numbers identify experiments for lookup.}
+\end{table}
+
+
 
 The previous stage chiefly asked whether existing features could support a better decision about nuclear type. The present stage asked an earlier question: without access to ground-truth locations, can a model first generate a sufficiently complete and precise collection of objects, then turn those objects into dependable instance masks? This matters for the Dead class, for crowded-instance separation, and for tissue-dependent robustness. Throughout this report, \emph{Dead} retains the dataset's category name. It includes apoptosis- and necrosis-related nuclei and is not synonymous with apoptosis alone.
 
@@ -51,7 +74,7 @@ Visibility supervision & Controlled crop audit; four training arms, two seeds & 
 Set-query segmentation & Full E6/E7 training; object-level output tracing & Severe quality loss; slower decay did not recover it\\
 High-resolution adaptation & Two-seed E19 comparison; shared failure set & Tested single-skip residual adapter did not repair interior Dead recall\\
 Point detection & P1-R1 and P3--P15 fitting/audit contrasts & Strong fitting did not yield qualified generalization\\
-Latest work & One complete P16 seed; P17 validation and submission & P16 incomplete; P17 has no production outcome yet\\
+Latest work & Complete two-seed P16 results; P17 training in progress & P16 failed the rule; P17 awaits complete results\\
 \bottomrule
 \end{tabularx}
 \caption{Research decisions at the fixed evidence cutoff.}
@@ -73,7 +96,7 @@ An Inf/Conn class-merging audit was also completed. In the merged label space, t
 
 \src{Stage report 5; 15 October research synthesis; 18 October E-series review; P3--P15 progress synthesis. Historical results were checked against the current saved documents, rather than rerunning every historical model.}
 
-\section{Visibility: a reproducible vulnerability without a successful repair}
+\section{Can training reduce the losses caused by cropping?}
 
 \subsection{What the corrected crop audit established}
 
@@ -310,41 +333,40 @@ The three failure patterns give concrete stopping reasons for the tested recipes
 
 \src{Individual P4--P15 result records; proposal progress, 26 October. The summary rows were cross-checked against the saved result documents; all historical large checkpoints were not independently rehashed.}
 
-\section{P16: full Gaussian regression, with only one completed seed}
+\section{P16: a few more nuclei found, but requirements still unmet}
 
 \subsection{What changed}
 
-In the original focal loss, only an exact center is positive; Gaussian neighborhood values reduce nearby negative loss. P16 retained target geometry but directly minimized the sum of squared differences between sigmoid outputs and the Gaussian target, divided by the valid-batch object count, with coefficient fixed at 1.
+The original objective emphasizes exact center points and reduces penalties nearby. P16 instead asks the model to reproduce a smooth center heatmap, with larger target values nearer each center. Technically, it replaces focal loss with the sum of squared differences between sigmoid output and Gaussian targets, divided by valid-batch object count, with coefficient 1. Background weighting, gradients and loss scale change together; this does not isolate neighborhood supervision or calibration.
 
-This changes gradients, background weighting, and loss scale together. A result cannot therefore be interpreted as an isolated test of Gaussian neighborhood supervision or probability calibration.
+\subsection{Complete results for both random seeds}
 
-\subsection{Verified seed-19 result}
-
-At the first recovery, both seed-19 arms had completed 130 epochs with SLURM state COMPLETED/0:0. Eighteen small result files matched their stored sizes and SHA256 values; 401 archived source files were checked individually. Fitting/audit identities, epoch logs, and per-image aggregation were also checked.
+By 11:29 EDT, all four C/R runs had completed 130 epochs with exit 0:0. The closeout checked 28 small result files against stored sizes and hashes, 401 archived source files, cohort identities, complete epoch logs and per-image aggregation. The original bootstrap and decision rule were reproduced. Large checkpoints were not independently rehashed or externally archived.
 
 \begin{table}[H]\centering\small
-\begin{tabular}{lrr}\toprule
-Seed 19 endpoint & C: original focal & R: Gaussian regression\\\midrule
-Fitting overall recall & .980007 & .872135\\
-Fitting interior Dead recall & .961890 & .846037\\
-Audit overall recall & .598041 & .602531\\
-Audit unique-match precision & .694079 & .701149\\
-Audit interior Dead recall & .482759 & .517241\\\bottomrule
+\begin{tabular}{llrrr}\toprule
+Seed & Objective & Interior Dead found & Overall recall & Precision\\\midrule
+19 & Original C & 70/145 (48.28\%) & 59.80\% & 69.41\%\\
+19 & Gaussian R & 75/145 (51.72\%) & 60.25\% & 70.11\%\\
+1 & Original C & 63/145 (43.45\%) & 59.40\% & 69.51\%\\
+1 & Gaussian R & 72/145 (49.66\%) & 60.09\% & 70.50\%\\\bottomrule
 \end{tabular}
-\caption{P16 last-checkpoint point results for the completed seed only.}
+\caption{Complete P16 point-matching results on held-out audit images, using last checkpoints.}
 \end{table}
 
-The Dead gain was $+.034483$, corresponding to five additional matched objects. Replaying the original 1,000 tissue-stratified image bootstrap draws gave a 95\% interval of $[-.034091,+.131144]$. The seed failed the original rule: absolute recall remained below .60, gain below .05, the interval crossed zero, and precision remained below .75.
+The treatment found five and nine additional Dead objects: gains of 3.45 and 6.21 percentage points, with original 95\% intervals of $[-3.41,+13.11]$ and $[+2.82,+11.50]$ percentage points. Seed 1 met the gain and positive-lower-bound clauses. Both seeds nevertheless remained below the required 60\% Dead recall and 75\% precision. Seed 19 also failed the gain and interval clauses.
 
-At the first recovery, seed 1 was still running, with C/R at epochs 70/58; the final 09:27 EDT snapshot recorded 85/73. Neither arm had completed at the cutoff. A two-seed mean or complete closeout would therefore be premature. Even a favorable second seed could not erase failure of a rule that must pass separately in each seed. Large checkpoints were not independently rehashed in this round, and external archiving remained pending.
+The fixed recipe therefore closes under the original rule. The additional matches are real observations on this audit set, but insufficient for further expansion. Fitting overall recall also fell from about 98\% to 87\%, showing that the objective changed learning behavior on fitting images. This complete result replaces the earlier partial-seed status.
 
-\src{Recovered P16 seed-19 small-file package; stored manifest; per-image records; original gate and bootstrap replay.}
+\src{P16 completed results, 26 October 2026; 11:29 EDT closeout and original bootstrap replay.}
 
-\section{P17: an independently specified convolutional detector comparison}
+
+
+\section{P17: does a different detector find nuclei more reliably?}
 
 \subsection{Question and controlled boundaries}
 
-P17 was fixed before P16 seed 1 finished and does not depend on its incomplete outcome. Control C retains the existing UNI detector. Treatment K trains a three-stage convolutional pyramid from scratch, with widths 32/64/128, multiscale fusion, and native-center heatmap output. It does not add queries, masks, rare-class resampling, or extra supervision.
+P17 was fixed before P16 seed 1 finished and was specified without using that second result. Control C retains the existing UNI detector. Treatment K trains a three-stage convolutional pyramid from scratch, with widths 32/64/128, multiscale fusion, and native-center heatmap output. It does not add queries, masks, rare-class resampling, or extra supervision.
 
 Both arms retain the same fitting/audit cohorts, original focal loss, Gaussian targets, augmentation, fixed decoding, and admission rule. K uses learning rate $3\times10^{-4}$ for all parameters. C retains $3\times10^{-4}$ for its head and $10^{-5}$ for its backbone.
 
@@ -352,7 +374,29 @@ This is a practical comparison of recipes that differ in architecture, initializ
 
 The decision question is whether this from-scratch convolutional representation merits further work within the original budget. Failure closes this width, schedule, and loss combination without expanding widths, seeds, thresholds, or epochs. Passing would justify discussing another validation plan; it would not automatically authorize masks or three-split confirmation.
 
-\subsection{Implementation validation and submission receipt}
+\subsection{Current progress}
+
+At \textbf{11:55 EDT on 26 October}, the first control/convolutional pair had reached epochs \textbf{58/81} of the planned 130. The two seed-1 tasks remained pending under the concurrency limit. The exact array is 55297061. No complete P17 performance comparison is available. Implementation checks and submission details are retained in the appendix.
+
+\section{What the evidence supports and what remains open}
+
+The strongest contribution of this stage is a more precise account of failure. It separates crop vulnerability from successful supervision repair, raw query masks from retained instances, and fitting images from transfer to held-out images. These separations provide a basis for choosing the next experiment instead of stacking previously unsuccessful components.
+
+Several concrete claims are now supported. The corrected crop audit found a substantial vulnerability. The tested selective HV supervision did not repair it. Full query-mask training suffered broad instance-quality losses, and the slower decay schedule was insufficient. The tested single-skip adapter did not improve the chosen interior Dead endpoint. The point-detector studies showed substantial fitting capacity but no completed recipe meeting the joint recall, precision, and stability conditions.
+
+The evidence does not establish that the problem is impossible or that a whole architecture family is unsuitable. E19 failures are associated with small area but are not explained solely by size. Coarse training support does not guarantee coverage of the joint distribution. High fitting recall shows image memorization capacity, not a transferable model of nuclear appearance. Expert review remains unavailable, and detector agreement is not a substitute for biological adjudication.
+
+P16 is complete and its fixed recipe closes under the original rule. The next step is to wait for P17 to finish. P17 likewise requires verification of 130 epochs, provenance, input identities, configurations, and manifests before a seed-by-seed decision. Only genuinely predicted candidates meeting recall and precision requirements would justify discussing a mask head or joint training. If they fail, the appropriate output is a documented failure mode and stopping rationale, not a larger parameter menu on the same 11 positive audit images.
+
+\subsection{Limits that must accompany the final research account}
+
+Fold2 and the internal fold1 audit set have been reused across experiments. Images are not necessarily independent patients. Bootstrap intervals condition on the fixed trained models and available images; they do not describe the full distribution over training seeds. Dead labels are unevenly distributed across tissues, and some tissues offer no Dead evaluation support. This stage has no new official three-split test result.
+
+These limitations affect interpretation, not just presentation. A sequence of development failures cannot be treated as a collection of independent confirmatory trials. Similarly, a favorable future point estimate on this audit set would still require a fresh validation plan. The human-expert review obligation retained from stage report 5 remains unresolved.
+
+\clearpage
+\appendix
+\section{P17 implementation checks and submission record}
 
 Real-V100 validation job 55297045 completed on exp-7-59 with state COMPLETED/0:0 in 6 minutes 12 seconds; 291 node checks passed. For both seeds, control initialization and the complete two-step gradients, parameters, AdamW state, and random state agreed with P3. K's three convolutional stages, fusion head, and output layer all had nonzero second-step gradients and updates; pure weight decay was excluded as their explanation.
 
@@ -377,7 +421,7 @@ Initial scheduler state & All four tasks pending at submission\\\bottomrule
 
 \src{Frozen P17 design; real-V100 validation receipt; archived source and evidence manifest; single production submission receipt.}
 
-\section{Research execution and compute migration}
+\section{Compute migration and validation records}
 
 Formal recent training moved to Expanse. The initial replica comprised 420 files, approximately 8.10 GB, whose sizes and hashes were checked on a compute node. Large files moved through official Globus. Later rounds reused this data replica, UNI weights, and the fixed environment, while separately archiving source, configurations, and submission receipts.
 
@@ -389,27 +433,10 @@ P17 reused the persistent execution channel and existing Expanse ControlMaster w
 
 P13--P16 and earlier review corrections were merged and published to master on 26 October, at baseline commit \texttt{f67ce20}. The complete CPU regression at that point passed 828 tests with three skipped. P17 was implemented on a separate branch. Its final complete CPU suite passed 861 tests with three skipped and 19,073 warnings from older dependency deprecations. Proposal-specific and node-specific checks each passed 291 tests. These counts correspond to different code versions or check scopes; the original receipts were retained.
 
-\section{What the evidence supports and what remains open}
 
-The strongest contribution of this stage is a more precise account of failure. It separates crop vulnerability from successful supervision repair, raw query masks from retained instances, and fitting images from transfer to held-out images. These separations provide a basis for choosing the next experiment instead of stacking previously unsuccessful components.
-
-Several concrete claims are now supported. The corrected crop audit found a substantial vulnerability. The tested selective HV supervision did not repair it. Full query-mask training suffered broad instance-quality losses, and the slower decay schedule was insufficient. The tested single-skip adapter did not improve the chosen interior Dead endpoint. The point-detector studies showed substantial fitting capacity but no completed recipe meeting the joint recall, precision, and stability conditions.
-
-The evidence does not establish that the problem is impossible or that a whole architecture family is unsuitable. E19 failures are associated with small area but are not explained solely by size. Coarse training support does not guarantee coverage of the joint distribution. High fitting recall shows image memorization capacity, not a transferable model of nuclear appearance. Expert review remains unavailable, and detector agreement is not a substitute for biological adjudication.
-
-The immediate next step is to close out the remaining P16 runs under the original decision rule. P17 likewise requires verification of 130 epochs, provenance, input identities, configurations, and manifests before a seed-by-seed decision. Only genuinely predicted candidates meeting recall and precision requirements would justify discussing a mask head or joint training. If they fail, the appropriate output is a documented failure mode and stopping rationale, not a larger parameter menu on the same 11 positive audit images.
-
-\subsection{Limits that must accompany the final research account}
-
-Fold2 and the internal fold1 audit set have been reused across experiments. Images are not necessarily independent patients. Bootstrap intervals condition on the fixed trained models and available images; they do not describe the full distribution over training seeds. Dead labels are unevenly distributed across tissues, and some tissues offer no Dead evaluation support. This stage has no new official three-split test result.
-
-These limitations affect interpretation, not just presentation. A sequence of development failures cannot be treated as a collection of independent confirmatory trials. Similarly, a favorable future point estimate on this audit set would still require a fresh validation plan. The human-expert review obligation retained from stage report 5 remains unresolved.
-
-\clearpage
-\appendix
 \section{Evidence index and verification scope}
 
-Historical numbers in this report synthesize the saved research documents and closeout records. They are not presented as new evaluations of every old checkpoint. P16 seed 19 received a deeper check in this round: per-image reaggregation, replay of the original bootstrap, cohort verification, and 130-epoch log checks. Source-summary hashes and recovered numerical evidence are retained in the accompanying \texttt{verified\_numbers.json}.
+Historical numbers in this report synthesize the saved research documents and closeout records. They are not presented as new evaluations of every old checkpoint. The latest P16 closeout verified both seeds through per-image aggregation, the original bootstrap, cohort identities and 130-epoch logs. This editorial revision uses that verified closeout and does not reevaluate old models. Numerical verification records remain in the ignored operations archive; the public P16 closeout provides the current results.
 
 \begin{longtable}{p{31mm}p{121mm}}
 \toprule Evidence group & Saved record family and purpose\\\midrule\endhead
