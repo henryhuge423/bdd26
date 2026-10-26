@@ -95,17 +95,23 @@ def run(model,fold,ids,seed,arm=None):
     return traces
 
 
-def validate_k_witness(gradients,changes):
+def measure_k_step(before,after,lrs,weight_decay):
+    if set(before)!=set(after) or set(before)!=set(lrs):raise ValueError('K update key mismatch')
+    changes={k:float((after[k]-before[k]).abs().max()) for k in before}
+    adaptive={k:float((after[k]-before[k]*(1-lrs[k]*weight_decay)).abs().max()) for k in before}
+    return changes,adaptive
+
+def validate_k_witness(gradients,changes,adaptive_changes):
     expected={'stage0','stage1','stage2','fusion','output'}
-    if set(gradients)!=expected or set(changes)!=expected:raise ValueError('incomplete K learning witness')
-    if not all(math.isfinite(x) and x>0 for x in list(gradients.values())+list(changes.values())):raise ValueError('invalid K learning witness')
+    if set(gradients)!=expected or set(changes)!=expected or set(adaptive_changes)!=expected:raise ValueError('incomplete K learning witness')
+    if not all(math.isfinite(x) and x>0 for x in list(gradients.values())+list(changes.values())+list(adaptive_changes.values())):raise ValueError('invalid K learning witness')
     return True
 
 def run_k(model,fold,ids,seed):
     opt=p17.make_optimizer(model,'K');assert [g['lr'] for g in opt.param_groups]==[3e-4,3e-4]
     assert {id(p) for g in opt.param_groups for p in g['params']}=={id(p) for p in model.parameters()}
     watched={**{'stage'+str(i):model.encoder.blocks[i][0].weight for i in range(3)},'fusion':model.head.fusion[0].weight,'output':model.head.out.weight}
-    before={k:p.detach().cpu().clone() for k,p in watched.items()};gradients={};model.train();precision={};handles=[]
+    gradients={};model.train();precision={};handles=[]
     for key,module in [('encoder',model.encoder.blocks[2][0]),('output',model.head.out)]:
         handles.append(module.register_forward_hook(lambda m,a,o,key=key:precision.update({key:str(o.dtype)})))
     for start in (0,16):
@@ -121,12 +127,15 @@ def run_k(model,fold,ids,seed):
             torch.testing.assert_close(torch.autograd.grad(loss,logits,retain_graph=True)[0],torch.autograd.grad(ref,logits,retain_graph=True)[0],rtol=0,atol=0)
             loss.backward()
         assert all(p.grad is not None and torch.isfinite(p.grad).all() for p in model.parameters())
-        if start==16:gradients={k:float(p.grad.float().norm()) for k,p in watched.items()}
+        if start==16:
+            gradients={k:float(p.grad.float().norm()) for k,p in watched.items()}
+            before={k:p.detach().cpu().clone() for k,p in watched.items()}
+            lrs={k:next(g['lr'] for g in opt.param_groups if any(p is q for q in g['params'])) for k,p in watched.items()}
         torch.nn.utils.clip_grad_norm_(model.parameters(),1,error_if_nonfinite=True);opt.step()
     for h in handles:h.remove()
-    changes={k:float((p.detach().cpu()-before[k]).abs().max()) for k,p in watched.items()}
-    validate_k_witness(gradients,changes)
-    return dict(gradients=gradients,changes=changes,all_trainable_finite=True,AMP_verified=True,actual_data_loss_gradient_equal=True)
+    changes,adaptive=measure_k_step(before,{k:p.detach().cpu() for k,p in watched.items()},lrs,.01)
+    validate_k_witness(gradients,changes,adaptive)
+    return dict(gradients=gradients,changes=changes,adaptive_changes=adaptive,second_step_only=True,all_trainable_finite=True,AMP_verified=True,actual_data_loss_gradient_equal=True)
 
 def main():
     torch.set_num_threads(4);weights,data,out=sys.argv[1:]
