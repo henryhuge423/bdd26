@@ -3,7 +3,7 @@ from pathlib import Path
 import torch
 
 def api():
-    p=Path(__file__).with_name('probe_dense_votes.py')
+    p=Path(__file__).resolve().parents[1]/'scripts'/'probe_dense_votes.py'
     if not p.exists():
         class Missing:pass
         return Missing()
