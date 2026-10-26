@@ -1,100 +1,108 @@
-> **2026-10-25 P14 submitted:** fixedencoderLR1e-6 vsoriginal1e-5,C/L×19/1,fourfresh130epochs; V100smoke55270073COMPLETED/0:0,214nodechecks,exactcontrolparity/actualLR/AMP/reload/frozen/time/strictready PASS. Formalarray55270432submittedonce2026-10-25T04:16:21.488338-04:00,concurrency2,max48GPUhours. Submissionisnotcompletedtraining. [Protocol](results/PROPOSAL_P14_SUBMISSION_2026-10-25.md), [P3–P13 synthesis](results/PROPOSAL_PROGRESS_2026-10-25.md). Reusedfold1development,notPQ/test.
+# Experiment findings
 
-> **2026-10-25 P13 closed:** all four130epoch runs COMPLETED/0:0; fixed25%rare-positive replacement worsens audit Dead recall by .137931/.048276 despite fit recall .998476/1; both original gates fail. [Final result](results/PROPOSAL_P13_RESULTS_2026-10-25.md). P14 independently freezes encoderLR1e-6 vs original1e-5 with same last12 blocks; validation/submission pending. Reusedfold1development,notPQ/test.
+The [current results index](results/README.md), [P3–P15 synthesis](results/PROPOSAL_PROGRESS_2026-10-26.md)
+and [documentation audit](audits/DOCUMENTATION_RESULTS_GIT_AUDIT_2026-10-26.md) provide the latest overview.
+P13–P15 failed their original gates; P16 submission is verified, with completion not rechecked
+in this documentation audit. The full dated journal below preserves the historical order
+and execution states; later closeouts supersede earlier pending statements.
+
+> **2026-10-25 — P14 submitted:** Fixed encoder learning rate 1e-6 versus original 1e-5, C/L × seeds 19/1, four fresh 130-epoch runs. V100 smoke job 55270073 completed/0:0; 214 node checks passed, including exact-control parity, actual learning rate, AMP, reload, frozen parameters, timing, and strict readiness. Formal array 55270432 was submitted once at 2026-10-25T04:16:21.488338-04:00, concurrency 2, maximum 48 GPU-hours. Submission is not training completion. See the [protocol](results/PROPOSAL_P14_SUBMISSION_2026-10-25.md) and [P3–P13 synthesis](results/PROPOSAL_PROGRESS_2026-10-25.md). Reused fold-1 development data are not PQ or test results.
+
+> **2026-10-25 — P13 closed:** All four 130-epoch runs completed/0:0. Fixed 25% rare-positive replacement worsened audit Dead recall by .137931/.048276 despite fit recall .998476/1; both original gates failed. See the [final result](results/PROPOSAL_P13_RESULTS_2026-10-25.md). P14 independently freezes encoder learning rate 1e-6 versus original 1e-5 with the same last 12 blocks; validation/submission was pending. Reused fold-1 development data are not PQ or test results.
 
 # 2026-10-24 P12 formal submission verified
 
-Array55251406 single submission2026-10-24T07:20:40.533905-04:00;C19/R19/C1/R1,fresh130epochs,max48GPUhours. Smoke55251401 COMPLETED/0:0,153passed,empty stderr,allstrictreadinesschecks passed. Sourcecommit77cfa9ac17b278c67b750762191e6bdd5b9b4cc9,manifest35748e383fa57d626c3c8a03fc09871627872c19599d2a3003559a1845bb1a3d. No formalcompletion/performanceclaim. [Full review](results/EXPERIMENT_REVIEW_2026-10-24_ZH.md).
+Array 55251406 was submitted once at 2026-10-24T07:20:40.533905-04:00: C19/R19/C1/R1, four fresh 130-epoch runs, maximum 48 GPU-hours. Smoke job 55251401 completed/0:0; 153 checks passed, stderr was empty, and all strict-readiness checks passed. Source commit 77cfa9ac17b278c67b750762191e6bdd5b9b4cc9; manifest 35748e383fa57d626c3c8a03fc09871627872c19599d2a3003559a1845bb1a3d. No formal completion or performance claim. See the [full review](results/EXPERIMENT_REVIEW_2026-10-24_ZH.md).
 
 # 2026-10-24: P11 complete, original admission failed
 
-All4runs completed130epochs/SLURM0:0/emptystderr.40smallfiles2,985,074bytes,36payloadpreservationhashes verified; config/cohort/input/UNI identical. C/GDead=.468966/.510345(seed19),.462069/.462069(seed1);G-C+.041379/0,originalpaired95%CI[.025381,.075310]/[-.038462,.035398]. BothfailabsoluteDead.60,gain.05,precision.75;seed1CIfails. Relativeprecision/recall,support/nondegpass. Close exactmassredistributionrecipe. Cfitrecall.975/.980 vsGaudit.576/.579 is not causal proof. NoPQ/test/fold2/fold3/newmaskstage. Full[results](results/PROPOSAL_P11_RESULTS_2026-10-24.md).
+All 4 runs completed 130 epochs (SLURM 0:0; empty stderr). We verified 40 small files totaling 2,985,074 bytes and 36 payload-preservation hashes; config/cohort/input/UNI were identical. C/G Dead recall was .468966/.510345 (seed 19) and .462069/.462069 (seed 1); G−C changes were +.041379/0. Original paired 95% CIs were [.025381,.075310]/[−.038462,.035398]. Both seeds failed the absolute Dead .60, gain .05, and precision .75 thresholds; seed 1 also failed the CI gate. Relative precision/recall, support, and nondegeneracy passed. Close the exact mass-redistribution recipe. C fit recall .975/.980 versus G audit recall .576/.579 is not causal evidence. No PQ/test, fold2/fold3, or new mask stage. See the full [results](results/PROPOSAL_P11_RESULTS_2026-10-24.md).
 
-P12 fixeddecoderchannelDropout2d.2 afterstemReLU,C/Rxseeds19/1,new130epochs,originalgates. Agent-chosen under user's autonomousexperimentrequest. DesignbuilderreviewcheckedinitRNG,per-updateRNGtraces,andReLUzeroconfound; all implemented. Baseline139passed12.46s,REDmissingP12module,focusedGREEN152passed14.98s. No metrics/HV edits; historical5dense_votes failures disclosed,nofullsuitepassclaim. RealV100smoke/formalsubmissionpending. Evidenceignoredops/p12_development_20261024 andops/review_20261024.
+P12 applies decoder `Dropout2d(.2)` after stem ReLU, C/R × seeds 19/1, four new 130-epoch runs, original gates. It was chosen by the agent under the user's autonomous experiment request. Design review checked initialization RNG, per-update RNG traces, and the ReLU-zero confound; all were implemented. Baseline: 139 passed in 12.46 s; RED: missing P12 module; focused GREEN: 152 passed in 14.98 s. No metrics/HoVer-Net edits; historical 5 dense-vote failures are disclosed, and no full-suite pass is claimed. Real V100 smoke/formal submission was pending. Evidence: ignored `ops/p12_development_20261024` and `ops/review_20261024`.
 
-> **2026-10-23 P10 submitted:** restrictedencoderadaptation C(last12)/S(last4),seeds19/1,fourfresh130epochs,formalarray55227144,concurrency2. V100smoke55226781COMPLETED/0:0,119focusedtests/parity/frozenparameter/reload/AMP/timingandstrictreadyverified. Submissionisnotcompletedtraining. [Submissionandprotocol](results/PROPOSAL_P10_SUBMISSION_2026-10-23.md). P9closedbyoriginalgate;reusedfold1development,notPQ/test.
+> **2026-10-23 — P10 submitted:** Restricted encoder adaptation, C (last 12 blocks)/S (last 4 blocks), seeds 19/1, four fresh 130-epoch runs. Formal array 55227144, concurrency 2. V100 smoke 55226781 completed/0:0; 119 focused tests, parity, frozen parameters, reload, AMP, timing, and strict readiness were verified. Submission is not training completion. See the [submission and protocol](results/PROPOSAL_P10_SUBMISSION_2026-10-23.md). P9 closed under the original gate. Reused fold-1 development data are not PQ or test results.
 
-> **2026-10-23 P9 closed:** all four130epoch runs completed; originaladmission=false inbothseeds. Dead-positiveweight4 changes+.006897/+.048276 butfailsabsoluteDead/precisionandCIgates. [Auditedresults](results/PROPOSAL_P9_RESULTS_2026-10-23.md). P10restrictedencoderadaptation independentlyfrozen andsubmitted;see latestentry. Reusedfold1development,notPQ/test.
+> **2026-10-23 — P9 closed:** All four 130-epoch runs completed; original admission was false for both seeds. Dead-positive weight 4 changed audit recall by +.006897/+.048276 but failed the absolute Dead, precision, and CI gates. See the [audited results](results/PROPOSAL_P9_RESULTS_2026-10-23.md). P10 restricted encoder adaptation was independently frozen and submitted; see the latest entry. Reused fold-1 development data are not PQ or test results.
 
 ## 2026-10-22 evening: P7/P8 closeout and independent P9 submission
 
-> **2026-10-22 evening:** P7/P8 eight130epoch runs completed and both original two-seed gates failed. [Final results](results/PROPOSAL_P7_P8_RESULTS_2026-10-22.md). P9 fixedDead-center positiveweight4 control passed98focusedchecks and realV100 smoke55208331; formal array **55208619** submitted once19:55:04 EDT,fourfresh130epoch runs. [Submission and limits](results/PROPOSAL_P9_SUBMISSION_2026-10-22.md). Training completion is not claimed; no automaticPhaseB/masks/confirmation.
+> **2026-10-22 evening:** All eight P7/P8 130-epoch runs completed, and both original two-seed gates failed. See the [final results](results/PROPOSAL_P7_P8_RESULTS_2026-10-22.md). The P9 fixed Dead-center positive-weight-4 control passed 98 focused checks and real V100 smoke 55208331. Formal array **55208619** was submitted once at 19:55:04 EDT for four fresh 130-epoch runs. See the [submission and limits](results/PROPOSAL_P9_SUBMISSION_2026-10-22.md). Training completion is not claimed; no automatic Phase B, masks, or confirmation.
 
 # P9 Dead-center weighting: verified submission — 2026-10-22
 
-Formal array **55208619** submitted once at **2026-10-22 19:55:04 EDT**. Submission is not completed training or an experimental result. C19/D19/C1/D1 are four fresh130epoch fold1-development runs; original admission F1=C/T1=D remains frozen. No automatic PhaseB,mask,fold2/fold3 or confirmation.
+Formal array **55208619** was submitted once at **2026-10-22 19:55:04 EDT**. Submission is not completed training or an experimental result. C19/D19/C1/D1 are four fresh 130-epoch fold-1 development runs; original admission F1=C/T1=D remains frozen. No automatic Phase B, mask, fold2/fold3 evaluation, or confirmation.
 
 ## Frozen intervention
 
-C is original center focal/actual effective-batch instance count. D multiplies only annotated Dead-center positive focal terms by4; original negative terms and denominator stay unchanged. Includes boundaryDead,maximum4 on collisions; original D4 geometry synchronizes positive weights without consuming image/target RNG. Inference remains type-agnostic and unchanged. This independent point-loss recipe differs from historical failed dense-model Dead-pixel weighting; it does not establish imbalance or gradient conflict as a cause. [Design](superpowers/specs/2026-10-22-proposal-p9-design.md), [P7/P8 closeout](results/PROPOSAL_P7_P8_RESULTS_2026-10-22.md).
+C is the original center-focal/actual effective-batch instance count. D multiplies only annotated Dead-center positive focal terms by 4; original negative terms and denominator remain unchanged. This includes boundary Dead, with a maximum of 4 on collisions. Original D4 geometry synchronizes positive weights without consuming image/target RNG. Inference remains type-agnostic and unchanged. This independent point-loss recipe differs from the failed historical dense-model Dead-pixel weighting; it does not establish imbalance or gradient conflict as a cause. See the [design](superpowers/specs/2026-10-22-proposal-p9-design.md) and [P7/P8 closeout](results/PROPOSAL_P7_P8_RESULTS_2026-10-22.md).
 
-Original fit2134/audit522,cohort55894f3274a1f65338ccd6cb885abc218056be64318405ad5e4d67b895ea5d22,seeds19/1,130epochs,originalaugmentation,UNI/head/optimizer/BF16,finalcheckpoint,decode and original admission retained. Both seeds must meet all original Dead recall/gain/CI/precision/relativequality/support gates. Failure/inconclusive closes this fixedweight4 budget without a weight sweep or extra runs. Reused development audit11images/145internalDead,two seeds and image-level splitting limit evidence; no PQ/test/independent validation claim.
+Original fit/audit: 2134/522; cohort 55894f3274a1f65338ccd6cb885abc218056be64318405ad5e4d67b895ea5d22; seeds 19/1; 130 epochs; original augmentation, UNI/head/optimizer/BF16, final checkpoint, decoding, and original admission retained. Both seeds must meet all original Dead recall/gain/CI/precision/relative-quality/support gates. Failure or inconclusive results close this fixed-weight-4 budget without a weight sweep or extra runs. Reused development audit: 11 images/145 interior Dead objects; two seeds and image-level splitting limit evidence. No PQ/test/independent validation claim.
 
 ## Validation
 
-Original75focused checks pass12.67s. Initial new-module tests RED; original implementation96passed11.47s. Predeployment scan found first256fit images contain0Dead (fullfit780Dead),so inherited smoke would not exercise real weighting. Before any P9GPU submission,freeze validation-only first240fit plus first16distinct subsequent fit images with anyDead,identical for C/D/verifier. Two membership checks RED then final focusedP3-P9 **98passed11.58s**. Formal complete-fit membership/order never changed. Independent design and code review found no blockers. No metrics/HoVer-Net edits; historical5dense_votes failures disclosed,no full-suite pass claimed.
+Original: 75 focused checks passed in 12.67 s. Initial new-module tests RED; original implementation: 96 passed in 11.47 s. Predeployment scan found 0 Dead objects in the first 256 fit images (780 Dead in the full fit set), so the inherited smoke would not exercise real weighting. Before any P9 GPU submission, freeze a validation-only smoke set: first 240 fit images plus the first 16 distinct later fit images containing any Dead, identical for C/D/verifier. Two membership checks were RED; final focused P3–P9 suite: **98 passed in 11.58 s**. Formal complete-fit membership/order never changed. Independent design and code review found no blockers. No metrics/HoVer-Net edits; historical 5 dense-vote failures are disclosed; no full-suite pass is claimed.
 
-RealV100 smoke **55208331 COMPLETED/0:0**. Nodefocused98passed293.72s; initial states equal in bothseeds; C/P3 two real effective optimizer steps have all trainablegradients,adaptedparameters and AdamWstates bitwise equal. SyntheticGPU Dvalue/gradient agrees analytically; both arms have nonzero finite encoder/head updates and gradients. Actual internalBF16/terminalbilinearFP32 checked; last/finalreload predictions equal. Identical256smokeFit IDs recorded; D observed461augmented weightedpositivepixels,C0,all mapped to target==1. No audit predictions.
+Real V100 smoke **55208331 COMPLETED/0:0**. Node-focused suite: 98 passed in 293.72 s. Initial states matched in both seeds. C/P3's two real effective optimizer steps had bitwise-equal trainable gradients, adapted parameters, and AdamW states. Synthetic-GPU D values/gradients matched the analytic results. Both arms had nonzero finite encoder/head updates and gradients. Internal BF16 and terminal bilinear FP32 were verified; last/final reload predictions matched. Identical 256 smoke-fit IDs were recorded. D observed 461 augmented weighted-positive pixels; C had 0; all mapped to target==1. No audit predictions.
 
 |Measure|C|D|
 |---|---:|---:|
-|1.5x safety estimated130epoch hours|7.077|7.033|
-|TrainingpeakGiB (before reload)|4.060|4.060|
-|Reloadconstruction+verification seconds|5.384|5.253|
+|1.5x safety estimate for 130-epoch runs (hours)|7.077|7.033|
+|Training peak (GiB, before reload)|4.060|4.060|
+|Reload reconstruction and verification (seconds)|5.384|5.253|
 
-Both pass unchanged12h timing gate; estimates do not guarantee runtime. strictready binds source/scripts/input/cohort/UNI plus tests/parity before formal. Same pending smokeID moved from gpu-shared to legalgpu-debug/gpu-debug-normal with identical30min/1GPU/4CPU/32GiB resources and sealed script hashes; no cancellation,newsubmission or source reseal. Override receipt retained. Official [SDSC guide](https://www.sdsc.edu/systems/expanse/user_guide.html) and current allocation/quota/queue/QoS checked.
+Both pass the unchanged 12 h timing gate; estimates do not guarantee runtime. Strict readiness binds source/scripts/input/cohort/UNI plus tests/parity before formal submission. The same pending smoke ID was moved from gpu-shared to legalgpu-debug/gpu-debug-normal with identical 30 min/1 GPU/4 CPU/32 GiB resources and sealed script hashes; no cancellation, new submission, or source reseal. Override receipt retained. The official [SDSC guide](https://www.sdsc.edu/systems/expanse/user_guide.html) and current allocation/quota/queue/QoS were checked.
 
 ## Submission provenance
 
-Training source commit 051082692dce2dd1f29a8b6383d9cf4a9dad1988; manifest 85ef261efe90a495cbdbf16a6465369cbc076f8eebfe5c0c4585727e1d9edb32. Formal array0-3%2,mapping0=C19,1=D19,2=C1,3=D1; per task1V100/4CPU/32GiB/12h,gpu-shared/gpu-shared-normal/jhu159,Lustre,no-requeue,max48GPU-hours. Durable submissionguard/jobID/receipt saved. Do not rerun once-only scripts; inspect exact IDs before action. Shared runtime/data/UNI reused without upgrades or large transfers. Completed results copied with project quota guards and preservationmanifest while retaining scratch; Lustre is not archival backup.
+Training source commit 051082692dce2dd1f29a8b6383d9cf4a9dad1988; manifest 85ef261efe90a495cbdbf16a6465369cbc076f8eebfe5c0c4585727e1d9edb32. Formal array 0–3%2, mapping 0=C19, 1=D19, 2=C1, 3=D1; per task: 1 V100/4 CPU/32 GiB/12 h, gpu-shared/gpu-shared-normal/jhu159, Lustre, no requeue, maximum 48 GPU-hours. Durable submission guard/job ID/receipt saved. Do not rerun once-only scripts; inspect exact IDs before action. Shared runtime/data/UNI reused without upgrades or large transfers. Completed results were copied with project quota guards and a preservation manifest while retaining scratch; Lustre is not archival backup.
 
-P7/P8 both close under original gates. Main checkout,all previous branches/output and unrelatedjobs preserved. Research branch stays isolated; no merge/push. After allfourP9 complete,verify130epochs,exitcodes,preservation/input/config hashes,collect small artifacts,apply originaladmission once. No automatic expansion.
+P7/P8 both close under the original gates. Main checkout, all previous branches/output, and unrelated jobs were preserved. Research branch remains isolated; no merge/push. After all four P9 runs complete, verify 130 epochs, exit codes, preservation/input/config hashes, collect small artifacts, and apply the original admission rule once. No automatic expansion.
 
 
-> **2026-10-21 P5 closeout:** all four130epoch L/R x seeds19/1 completed. Original admission=false in both seeds: R-L internalDead recall0.000000/-.006897, paired95%CI[-.032680,+.053846]/[-.031579,+.013514]; R unique precision.685397/.691238. Fit recall>.98/precision>.998 does not transfer. Close this matched-capacity native-grid refinement recipe. See [P5 results](results/PROPOSAL_P5_RESULTS_2026-10-21.md). Independent P6 center-target bandwidth control passed real V100 smoke55148203 and was submitted once as array55148533 at09:56:52EDT, C/W x seeds19/1, four130epoch runs/concurrency2; initialPENDING, results pending. No PhaseB/fold2/fold3 model evaluation.
+> **2026-10-21 — P5 closeout:** All four 130-epoch L/R runs for seeds 19/1 completed. Original admission was false for both seeds: R−L internal Dead recall changed by 0.000000/−.006897, paired 95% CIs [−.032680,+.053846]/[−.031579,+.013514]; R unique precision .685397/.691238. Fit recall >.98/precision >.998 did not transfer. Close this matched-capacity native-grid refinement recipe. See [P5 results](results/PROPOSAL_P5_RESULTS_2026-10-21.md). The independent P6 center-target bandwidth control passed real V100 smoke 55148203 and was submitted once as array 55148533 at 09:56:52 EDT, C/W × seeds 19/1, four 130-epoch runs, concurrency 2; it was initially PENDING and results were pending. No Phase B or fold2/fold3 model evaluation.
 
 # Findings log
 
 ## 2026-10-17 — E17/E18 closeout
 
-E17's fixed sparse heatmap detector produced zero candidates across 16 images and two seeds. E18 retained the conditional-mask readout and replaced only the point detector with dense foreground-to-instance-point voting. GT-point fit recall exceeded 80% for all/Dead objects on fit images in both seeds, but actual detector fit recall was 34.18%/41.84%; fit precision was 3.67%/4.26%. Audit precision was 3.67%/3.52%. Seed 19 lost 5.26 pp audit Dead recall; seed 1 gained 21.05 pp but lost 15.06 pp precision. Both allocation gates and A0 guards fail. A0 matches E11 on the selected images, and the independent result verifier passes. This is train-only evidence (audit images were seen by E7; 19 audit Dead objects), not independent validation/test. Stop at E18; no large training. [E7–E18 synthesis](results/QUERY_POINT_CLOSEOUT_E7_E18_2026-10-17.md), [E17](results/PREDICTED_POINTS_E17_DIAGNOSTIC_2026-10-17.md), [E18](results/DENSE_VOTES_E18_DIAGNOSTIC_2026-10-17.md).
+E17's fixed sparse heatmap detector produced zero candidates across 16 images and two seeds. E18 retained the conditional-mask readout and replaced only the point detector with dense foreground-to-instance-point voting. GT-point fit recall exceeded 80% for all/Dead objects on fit images in both seeds, but actual detector fit recall was 34.18%/41.84%; fit precision was 3.67%/4.26%. Audit precision was 3.67%/3.52%. Seed 19 lost 5.26 pp audit Dead recall; seed 1 gained 21.05 pp but lost 15.06 pp precision. Both allocation gates and A0 guards failed. A0 matches E11 on the selected images, and the independent result verifier passed. This is train-only evidence (audit images were seen by E7; 19 audit Dead objects), not independent validation/test. Stop at E18; no large training. See the [E7–E18 synthesis](results/QUERY_POINT_CLOSEOUT_E7_E18_2026-10-17.md), [E17](results/PREDICTED_POINTS_E17_DIAGNOSTIC_2026-10-17.md), and [E18](results/DENSE_VOTES_E18_DIAGNOSTIC_2026-10-17.md).
 
 
-2026-10-17 E12/E13: GT-assisted fixed-feature fitting witness passes (Dead86.32/87.37%), not method admission; freezing mask projection fails both quality gates. E14 exact-native matching was completed later; exact matching did not pass the allocation or A0 guard. No large training. [E12](results/FREE_MASK_E12_DIAGNOSTIC_2026-10-17.md), [E13](results/STABLE_MASK_E13_DEV_2026-10-17.md).
+On 2026-10-17, E12/E13's GT-assisted fixed-feature fitting witness passed (Dead 86.32/87.37%); this was not method admission. Freezing the mask projection failed both quality gates. E14 exact-native matching was completed later, but did not pass the allocation or A0 guard. No large training. See [E12](results/FREE_MASK_E12_DIAGNOSTIC_2026-10-17.md) and [E13](results/STABLE_MASK_E13_DEV_2026-10-17.md).
 
-E11 (2026-10-17): four-stage auxiliary supervision failed both original allocation and A0 guards (two seeds,300steps). Full CPU:512passed/3skipped. No large training. [Results](results/AUX_QUERY_E11_DEV_2026-10-17.md).
+E11 (2026-10-17): Four-stage auxiliary supervision failed both original allocation and A0 guards (two seeds, 300 steps). Full CPU suite: 512 passed/3 skipped. No large training. See the [results](results/AUX_QUERY_E11_DEV_2026-10-17.md).
 
-> **2026-10-17 E10:** Predicted-mask constrained attention fails both train-only allocation gates and the separate A0 guard. Audit Dead recall M-G changes -.067511/+.008439; overall recall -.095944/-.056694. A0 reproduced exactly in both seeds before reusing E9 G. Stop this300-step recipe; no expanded training. Full regression507passed/3skipped. [E10 results and mechanism limits](results/MASKED_QUERY_E10_DEV_2026-10-17.md).
+ > **2026-10-17 E10:** Predicted-mask constrained attention failed both train-only allocation gates and the separate A0 guard. Audit Dead recall M−G changes: −.067511/+.008439; overall recall: −.095944/−.056694. A0 was reproduced exactly in both seeds before reusing E9 G. Stop this 300-step recipe; no expanded training. Full regression: 507 passed/3 skipped. See [E10 results and mechanism limits](results/MASKED_QUERY_E10_DEV_2026-10-17.md).
 
-> **2026-10-17 E9:** Local-content initialization fails the frozen train-only allocation gate in both seeds. L-G audit Dead recall gains are +.004219/+.018987, with precision losses -.027199/-.023349; fit recall .134321/.168889. Both adapted arms also underperform frozen A0 on audit geometry. Stop this recipe; no full train/val or large training. Current-source regression501passed/3skipped. [Full E9 review](results/LOCAL_QUERY_E9_DEV_2026-10-17.md).
+ > **2026-10-17 E9:** Local-content initialization failed the frozen train-only allocation gate in both seeds. L−G audit Dead recall gains were +.004219/+.018987, with precision losses −.027199/−.023349; fit recall was .134321/.168889. Both adapted arms also underperformed frozen A0 on audit geometry. Stop this recipe; no full train/validation or large training. Current-source regression: 501 passed/3 skipped. See the [full E9 review](results/LOCAL_QUERY_E9_DEV_2026-10-17.md).
 
 ## 2026-10-17 E8a/E8b query mechanism closeout (train-only)
 
-E8a fixed-query classifier probe: A2 fits foreground95.17%/97.58%, but audit foreground-7.69/-6.87pp and final untyped recall+2.20/+2.47pp fail the frozen allocation rule; stop this balanced-head recipe. Both fixed batches contain zero Dead. E8b separately audits all65Dead-positive fold1 images/967Dead (801interior,166border) with original E7 Q19/Q1: any-raw IoU>.5 coverage35.57%/36.40%; final typed matches2.79%/12.20%; canonical background76.32%/32.37%. Raw coverage is not a strict final-decoder ceiling (8/37raw-bad objects improve after competition). No validation/test performance, no additional full training, no weights saved.
+E8a fixed-query classifier probe: A2 fit foreground accuracy 95.17%/97.58%, but audit foreground changes −7.69/−6.87 pp and final untyped recall gains +2.20/+2.47 pp failed the frozen allocation rule; stop this balanced-head recipe. Both fixed batches contain zero Dead. E8b separately audits all 65 Dead-positive fold1 images/967 Dead (801 interior, 166 border) with original E7 Q19/Q1: any-raw IoU>.5 coverage 35.57%/36.40%; final typed matches 2.79%/12.20%; canonical background 76.32%/32.37%. Raw coverage is not a strict final-decoder ceiling (8/37 raw-bad objects improve after competition). No validation/test performance, additional full training, or saved weights.
 
-[Complete results and limits](results/QUERY_MECHANISM_2026-10-17.md). Independent per-object recounts pass; final fullCPU494passed/3skipped/19073warnings, exit0. Invalid import-route run, bf16 flattened-input run and root-full fixture errors preserved separately. Existing E7 source/weights and scientific gates unchanged.
+See [complete results and limits](results/QUERY_MECHANISM_2026-10-17.md). Independent per-object recounts passed. Final full CPU suite: 494 passed/3 skipped/19073 warnings, exit 0. Invalid import-route, bf16 flattened-input, and root-full fixture-error runs are preserved separately. Existing E7 source/weights and scientific gates were unchanged.
 
 
 ## 2026-10-16 E6 complete; train-only optimization probe; E7 allocation
 
-All4 B/Q脳seed19/1 runs complete on final checkpoints, fold2 dev only. Frozen741-object primary Q鈭払=-.507422 (95%CI[-.563164,-.451449]); every quality criterion fails, latency passes(.7712/.7955脳). Two-seed mean B/Q mPQ=.481432/.102699, bPQ=.650773/.192614, DeadPQ=.179635/.005951. Paired130-epoch data digests and returned completion hashes verified. E6 recipe closed, no threshold/seed expansion or test confirmation.
+All 4 B/Q × seed 19/1 runs completed using final checkpoints; fold-2 development only. Frozen 741-object primary endpoint, Q−B = −.507422 (95% CI [−.563164,−.451449]); every quality criterion failed, while latency passed (.7712/.7955×). Two-seed mean B/Q mPQ = .481432/.102699, bPQ = .650773/.192614, Dead PQ = .179635/.005951. Paired 130-epoch data digests and returned completion hashes were verified. E6 recipe closed; no threshold/seed expansion or test confirmation.
 
-Fixed16-image fold1/Q19-final trainability probe, identical Adam state and frozen encoder,300steps each: resetting LR3e-4 reduces eval loss36.24%, assigned-decoded recall18.73%鈫?6.86% vs terminal-LR control20.24%. Allocation gate passes; this does not prove schedule causality, gamma.99 validity or generalization. Independent E7 round changes only exponential gamma.85鈫?99, both B/Q retrained from matched original initialization with same seeds/quality/cost gates. Formal queue launched on LM2 GPU6 after fullCPU487passed/3skipped and fresh admitted smoke; first B19 epoch complete. See [complete analysis](results/SET_MASK_E6_DEV_2026-10-16.md). No metric/HoVer code changes, dependency upgrade or publishing.
+Fixed 16-image fold1/Q19-final trainability probe; identical Adam state and frozen encoder, 300 steps each. Resetting LR to 3e-4 reduced evaluation loss 36.24%; assigned-decoded recall changed from 18.73% to 36.86% versus 20.24% for the terminal-LR control. The allocation gate passed; this does not prove schedule causality, gamma .99 validity, or generalization. The independent E7 round changes only exponential gamma .85→.99; both B/Q arms were retrained from matched original initialization with the same seeds and quality/cost gates. Formal queue launched on LM2 GPU6 after full CPU 487 passed/3 skipped and a fresh admitted smoke; first B19 epoch completed. See the [complete analysis](results/SET_MASK_E6_DEV_2026-10-16.md). No metric/HoVer-Net code changes, dependency upgrade, or publishing.
 
 ## 2026-10-15 — point/mask representation feasibility, fold1 only
 
-New CPU analysis covers63,218 training instances (967 Dead). Under hard block-mask nearest-upsample representation, stride4 cannot reach IoU>.5 for65 Dead, including29/801 interior; stride8 affects460 Dead, including373 interior. This is not a bound for bilinear logits or native refinement, and does not explain the existing baseline mechanism. Fixed stride4 3x3 point-neighbour conflicts involve191 targets/19 Dead;94 vertex-disjoint edges give a representation exclusion lower bound under strict local-winner decoding. HV30 is a target-support rule, not a final-mask area filter. Independent438 real-object oracle checks and all-image sparse graph reconstruction agree. [Analysis](results/POINT_MASK_FEASIBILITY_2026-10-15.md), [next draft](proposals/RESEARCH_NEXT_2026-10-15-instance-representation.md). No model fitting/inference/fold3; existing stop rules unchanged.
+New CPU analysis covers 63,218 training instances (967 Dead). Under a hard block-mask, nearest-upsample representation, stride 4 cannot reach IoU > .5 for 65 Dead instances, including 29/801 interior instances; stride 8 affects 460 Dead instances, including 373 interior instances. This is not a bound for bilinear logits or native refinement, and it does not explain the existing baseline mechanism. Fixed stride-4 3x3 point-neighbor conflicts involve 191 targets/19 Dead; 94 vertex-disjoint edges provide a representation-exclusion lower bound under strict local-winner decoding. HV30 is a target-support rule, not a final-mask area filter. Independent checks on 438 real objects and all-image sparse-graph reconstruction agree. [Analysis](results/POINT_MASK_FEASIBILITY_2026-10-15.md), [next draft](proposals/RESEARCH_NEXT_2026-10-15-instance-representation.md). No model fitting/inference/fold3; existing stop rules unchanged.
 
 
 ## 2026-10-15 — fusion gating frozen-gate failure and point-grid feasibility
 
-Two G seeds complete. Interior Dead matched changes−.032389/+.025641; mean−.003374 [−.014273,+.007486], clause1 fails. Dead PQ mean+.017897, strict Dead+.014202; clauses2/3 pass. Actual mean miss change+.009447 (worse); comparison.miss_improvement in the frozen artifact is an invalid auxiliary complement of matching, unused by admission. Stop, no C controls or extra seeds. [Full results](results/FUSION_GATING_DEV_2026-10-15.md). New fold1-only point audit:63,218 objects, legal nearest-visible-centroid points; stride2/4/8 single-slot excess0/1/45. [Audit](results/PMNET_POINT_GRID_AUDIT_2026-10-15.md). No new training/inference/test access.
+Both G-seed runs are complete. Interior-Dead matched changes were −.032389/+.025641; the mean was −.003374 [−.014273,+.007486], so clause 1 fails. Mean Dead PQ changed by +.017897, and strict Dead PQ by +.014202; clauses 2/3 pass. The actual mean miss-rate change was +.009447 (worse); `comparison.miss_improvement` in the frozen artifact is an invalid auxiliary complement of matching and was not used for admission. Stop this recipe; no C controls or extra seeds. [Full results](results/FUSION_GATING_DEV_2026-10-15.md). A new fold-1-only point audit covers 63,218 objects and legal nearest-visible-centroid points; single-slot excess for strides 2/4/8 is 0/1/45. [Audit](results/PMNET_POINT_GRID_AUDIT_2026-10-15.md). No new training/inference/test access.
 
 ## 2026-10-15 — fixed-C2 mechanism closeout and train-only geometry
 
-Eight final checkpoints ×2,523 fixed E4 C2 windows complete. Dead primary support=116 objects/38 images (77 Lung;5 border contacts without pixel loss). A1/A2 misses: seed19 51/54, seed1 52/51. Mean A1−A2 improvement−.008621 [−.040918,+.017699], frozen clause1 fails; original-image guards already fail. A3−A2 descriptive+.008621 [−.014713,+.034834], not equivalence. Stop recipe, no added seeds, tuning or confirmation; no test-fold access.
+Eight final checkpoints and 2,523 fixed E4 C2 windows are complete. Primary Dead support is 116 objects across 38 images (77 in Lung; 5 border contacts without pixel loss). A1/A2 misses were 51/54 for seed 19 and 52/51 for seed 1. Mean A1−A2 improvement was −.008621 [−.040918,+.017699], so frozen clause 1 fails; the original-image guards already fail. The descriptive A3−A2 change was +.008621 [−.014713,+.034834]; this does not establish equivalence. Stop the recipe; no added seeds, tuning, confirmation, or test-fold access.
 
-Actual130-epoch A2 eligible exposures33,424/33,660, all-class repeats; no Dead-specific training count. Single-view audit7/70 Dead is a separate exposure measure. PM-Net fold1 geometry:63,218 instances, max276,256-query overflow20 in one patch;23 rounded centers outside their own mask (1/967 Dead),116 empty images. No new model training. [Mechanism details](results/VISIBILITY_SUPERVISION_MECHANISM_2026-10-15.md), [geometry audit](results/PMNET_TRAIN_GEOMETRY_AUDIT_2026-10-15.md).52 focused checks pass; all input hashes and paired endpoint recompute match. Latest-only progress PDF/PPTX and proposal PDF; Git tracks current PDFs only in these delivery directories.
+Actual 130-epoch A2 eligible exposures were 33,424/33,660, with all-class repeats; there was no Dead-specific training count. The single-view audit’s 7/70 Dead exposure is a separate measure. PM-Net fold-1 geometry: 63,218 instances, maximum 276, and 20 instances overflowed the 256-query limit in one patch; 23 rounded centers fell outside their own masks (1/967 Dead), and 116 images were empty. No new model training. See [mechanism details](results/VISIBILITY_SUPERVISION_MECHANISM_2026-10-15.md) and the [geometry audit](results/PMNET_TRAIN_GEOMETRY_AUDIT_2026-10-15.md). All 52 focused checks pass; input hashes and paired-endpoint recomputation match. Only the latest progress PDF/PPTX and proposal PDF are present; Git tracks current PDFs only in these delivery directories.
 
 
 ## 2026-10-15 — visibility dev original-image gate closeout
@@ -102,231 +110,231 @@ Actual130-epoch A2 eligible exposures33,424/33,660, all-class repeats; no Dead-s
 Eight runs complete. Admission fails on frozen original-image clauses 2/3; C2 remains unexecuted. [Full tables, arithmetic and limits](results/VISIBILITY_SUPERVISION_DEV_2026-10-15.md). No new training, test access, threshold selection or scientific implementation changes.
 
 
-> **2026-10-14 可见片段监督 dev 已启动（执行记录，非性能结果）**：用户明确授权四臂×双种子，
-> 规格与配方已冻结。403项全量回归通过，独立审查的A3验证目标问题修复，真实fold1 batch16
-> 冻结/解冻smoke通过。A0–A3 seed19 与 A0 seed1 已完成130轮训练与fold2评估，A1 seed1 训练中，余2次排队（A2/A3 seed1）；源码eee3248与命令/config/输入指纹绑定。
-> 无测试折读取、无TTA、最后checkpoint；关闭路线不重开。完整状态见
-> [研究状态](audits/RESEARCH_STATUS_2026-10-14.md)。尚无新方法性能或准入判定。
+ > **2026-10-14 — Visible-Fragment Supervision development started (execution record, not a performance result):** The user explicitly authorized four arms × two seeds.
+ > The specification and recipes were frozen. Full regression passed (403 checks); an independent review's A3 validation-target issue was fixed. Real fold1 batch-16
+ > freeze/unfreeze smoke passed. A0–A3 seed19 and A0 seed1 completed 130-epoch training and fold2 evaluation; A1 seed1 was training, with 2 runs queued (A2/A3 seed1). Source eee3248 and command/config/input fingerprints are bound.
+ > No test-fold reads, no TTA, final checkpoint only; closed routes remain closed. Full status is recorded in
+ > [research status](audits/RESEARCH_STATUS_2026-10-14.md). No new method performance or admission decision was available.
 
-> **2026-10-14 修复后 E4 已核验、文档收尾：** 当前有效工件为
-> `runs/analysis/visibility_probe_20261014/`，绑定代码 `988c0cd`；旧 10-13 工件含 train-mode
-> 推理及未面积分层的 H1，保留作失效历史，不再引用为正式结果。H1 面积分层 Dead 差
-> **+.1738 [.1060,.2528]**（粗差 +.2913 仅描述）；H2 DiD **+.1474 [.1392,.1557]**
-> （插值对照 −.0006）；H3 **+.8175 [.7968,.8393]**。三冻结门独立复算全过，代码与
-> 检查点/预测/GT/eval SHA256、两组各2523个窗口均核验一致。该结果仅准许起草下一轮
-> 规格，不证明 HV 清零是漏检原因，也不授权训练。下一轮
-> [可见片段监督设计草案](superpowers/specs/2026-10-14-visibility-supervision-design.md)
-> 已形成，待审阅；已关闭研究线和 E1 专家不可得状态维持。
+ > **2026-10-14 — E4 verified after correction; documentation closed:** The active artifact is
+ > `runs/analysis/visibility_probe_20261014/`, bound to code `988c0cd`. The older 10-13 artifact includes train-mode
+ > inference and an H1 result not stratified by area; retain it as invalidated history and do not cite it as the formal result. H1 area-standardized Dead change:
+ > **+.1738 [.1060,.2528]** (the coarse estimate +.2913 is descriptive only); H2 DiD **+.1474 [.1392,.1557]**
+ > (interpolation control −.0006); H3 **+.8175 [.7968,.8393]**. All three frozen gates were independently recomputed and passed. Code and
+ > checkpoint/prediction/GT/eval SHA256 values and both sets of 2523 windows were verified identical. This result permits drafting the next
+ > protocol only; it does not establish HV zeroing as the cause of missed detections and does not authorize training. The next-round
+ > [visible-fragment supervision design draft](superpowers/specs/2026-10-14-visibility-supervision-design.md)
+ > was prepared for review; the closed research line and unavailable E1 experts remain unchanged.
 
-> **2026-10-11 E1 修订执行（E1-C + E1-M，spec §7）：** 无专家可用，经用户批准改为
-> 检测器共识 + 非专家模型预审。详见下方同日条目；人类评审义务保留，材料包不变。
+ > **2026-10-11 — E1 revised execution (E1-C + E1-M, spec §7):** With no expert available, the user approved replacing that step with
+ > detector consensus + non-expert model prescreening. See the same-day entry below; the human-review obligation remains, and the materials package is unchanged.
 
-> **2026-10-09 audit:** [review and corrections](audits/RESEARCH_AUDIT_2026-10-09.md).
-> Rechecked 108 stage-III endpoint deltas and reproduced the frozen stage-IV verification snapshot.
-> Corrected E0's unequal-chunk mean: from saved throughput, image-weighted two-model/x1 =
-> **6.084468×**, TTA/x1 = **4.663162×** (historical chunk means 6.086869× / 4.666531×).
-> No new GPU measurement; approximately 6.1× and the no-deployment-win conclusion remain.
-> Actual forward precision was bf16 autocast, not the archived fp32 label.
-> Added missing gradient-probe/x2-cost fold guards, respected EF identity in cost replay,
-> and rejected unsupported HoVer-NeXt external TTA; **277 tests passed**.
-> Historical P0–P3 full provenance revalidation is blocked by the old split2_seed2 seed1
-> inventory versus the later seed2 directory; the guard was not bypassed. Frozen results remain intact.
+ > **2026-10-09 audit:** See the [review and corrections](audits/RESEARCH_AUDIT_2026-10-09.md).
+ > Rechecked 108 stage-III endpoint deltas and reproduced the frozen stage-IV verification snapshot.
+ > Corrected E0's unequal-chunk mean. From saved throughput, image-weighted two-model/x1 =
+ > **6.084468×**, TTA/x1 = **4.663162×** (historical chunk means 6.086869× / 4.666531×).
+ > No new GPU measurement; approximately 6.1× and the no-deployment-win conclusion remain.
+ > Actual forward precision was bf16 autocast, not the archived fp32 label.
+ > Added missing gradient-probe/x2-cost fold guards, respected EF identity in cost replay,
+ > and rejected unsupported HoVer-NeXt external TTA; **277 tests passed**.
+ > Historical P0–P3 full-provenance revalidation is blocked by the old split2_seed2 seed1
+ > inventory versus the later seed2 directory; the guard was not bypassed. Frozen results remain intact.
 
-> **2026-10-05 follow-up audit:** the typing-audit, matched-seed and EF-P2 entries below
-> include corrected denominators, rounding and interpretation. These are post-execution
-> documentation corrections, not changes to frozen menus or archived experimental results.
+ > **2026-10-05 follow-up audit:** The typing-audit, matched-seed, and EF-P2 entries below
+ > include corrected denominators, rounding, and interpretation. These are post-execution
+ > documentation corrections, not changes to frozen menus or archived experimental results.
 
-> **2026-10-02 audit correction — supersedes conflicting historical interpretations below.**
-> `lever_postproc.py` used an off-by-one class lookup and included background edges in the
-> final instance's perimeter; existing lever scores describe the historical implementation,
-> not a correctly implemented same-class merge. Pre-merge review additionally found lost
-> shared contacts across directions and lossy validation GT channels. The current P0 v2
-> selection/evaluation fixes both; v1 and older outputs remain archived. The alleged 3×3 seed grid
-> has nine run directories but split2 seeds `{19,1,1}` (launch script and configs agree),
-> and the base has seeds on split1 only (3/1/1 coverage). Do not use directory names as seed
-> provenance or quote the old noise ratios as fully paired evidence. Recomputed seed19
-> means: base strict Dead PQ .132989; du2 .121388; historical du2lev .123754, despite
-> official Dead PQ .176012/.183115/.183190. `mPQ+` remains class-aware; `F_c` is not pure
-> detection recall; `1 - (missed_bg + missed_shape)` is not matched recall because merge/split
-> are separate states. `missed_bg` means max IoU < .1, not necessarily zero overlap.
-> LKCell/HoVer-NeXt released val-selected checkpoints are not own-model final checkpoints.
-> The bPQ "5.3× maximum seed std" claim overlooks baseline split1 std .001548 (versus
-> x2 maximum .001308); this and duplicate-seed coverage must be relabelled/recomputed.
-> Execution: `docs/superpowers/plans/2026-10-02-p0-p3-research.md`. Corrected results and
-> limitations: [P0–P3 report](results/P0_P3_RESULTS_2026-10-02.md).
+ > **2026-10-02 audit correction — supersedes conflicting historical interpretations below.**
+ > `lever_postproc.py` used an off-by-one class lookup and included background edges in the
+ > final instance's perimeter. Existing lever scores describe the historical implementation,
+ > not a correctly implemented same-class merge. Pre-merge review also found lost
+ > shared contacts across directions and lossy validation GT channels. The current P0 v2
+ > selection/evaluation fixes both; v1 and older outputs remain archived. The alleged 3×3 seed grid
+ > has nine run directories but split2 seeds `{19,1,1}` (launch script and configs agree),
+ > and the base has seeds on split1 only (3/1/1 coverage). Do not use directory names as seed
+ > provenance or quote the old noise ratios as fully paired evidence. Recomputed seed19
+ > means: base strict Dead PQ .132989; du2 .121388; historical du2lev .123754, despite
+ > official Dead PQ .176012/.183115/.183190. `mPQ+` remains class-aware; `F_c` is not pure
+ > detection recall; `1 - (missed_bg + missed_shape)` is not matched recall because merge/split
+ > are separate states. `missed_bg` means max IoU < .1, not necessarily zero overlap.
+ > LKCell/HoVer-NeXt released val-selected checkpoints are not our own final checkpoints.
+ > The bPQ “5.3× maximum seed std” claim overlooks baseline split1 std .001548 (versus
+ > x2 maximum .001308); this and duplicate-seed coverage must be relabelled/recomputed.
+ > Execution: `docs/superpowers/plans/2026-10-02-p0-p3-research.md`. Corrected results and
+ > limitations: [P0–P3 report](results/P0_P3_RESULTS_2026-10-02.md).
 
-## 2026-10-14 — E4 修复后全量结果收尾：三门仍通过，旧推理与H1口径被替代
+## 2026-10-14 — E4 corrected full-results closeout: all three gates pass; prior inference and H1 definitions superseded
 
-有效工件 `runs/analysis/visibility_probe_20261014/`，代码 `988c0cd`；
-[完整结果、分母及限制](results/E4_VISIBILITY_PROBE_2026-10-13.md)。
-H1面积标准化 +.1738 [.1060,.2528]；H2 +.1474 [.1392,.1557]（C-int −.0006）；
-H3 +.8175 [.7968,.8393]。旧粗H1 +.2913保留为描述；旧train-mode推理工件保留作失效历史。
-收尾复核输入/代码SHA、192/160窗口与冻结门算术一致；未重复推理、无新训练。
-C2/C3 mPQ/bPQ .4633/.6183与.4518/.5884；统一核级类型正确率 .8477/.8315。
-原图C0 .4835/.6531保持绑定；H3三档miss .8677/.3774/.0502。
-门通过仅允许起草下一轮：[可见片段监督设计草案](superpowers/specs/2026-10-14-visibility-supervision-design.md)。
-该新设计未批准；截断位置/上下文与zoom残余混杂、单检查点、重复dev使用、HV机制未证实等
-边界不变。不再沿用旧文“DiD完全分离放大”或“旧H1即面积控制后差距”的解释。
+The active artifact is `runs/analysis/visibility_probe_20261014/`, code `988c0cd`.
+See [complete results, denominators, and limits](results/E4_VISIBILITY_PROBE_2026-10-13.md).
+H1 area-standardized +.1738 [.1060,.2528]; H2 +.1474 [.1392,.1557] (C-int −.0006);
+H3 +.8175 [.7968,.8393]. Retain the old coarse H1 +.2913 as descriptive only; old train-mode inference artifacts are invalidated history.
+Closeout rechecked input/code SHA, 192/160 windows, and frozen-gate arithmetic; no inference was repeated and no new training ran.
+C2/C3 mPQ/bPQ .4633/.6183 and .4518/.5884; unified nucleus-level type accuracy .8477/.8315.
+Original-image C0 .4835/.6531 remains bound; H3 miss rates for the three bins are .8677/.3774/.0502.
+Passing the gates permits drafting the next round only: [visible-fragment supervision design draft](superpowers/specs/2026-10-14-visibility-supervision-design.md).
+The new design was not approved. Limits remain: truncation position/context and residual zoom confounding, one checkpoint, repeated development-set use, and an unverified HV mechanism.
+Do not reuse the old claims “DiD completely separates amplification” or “the old H1 is the gap after area control.”
 
-## 2026-10-13 — M 合并类度量诊断：{Inf,Conn} 合并增益居 10 类对之首（Δofficial +.0519）；typing-oracle 差距在合并空间缩小 35%
+## 2026-10-13 — M merged-class metric diagnostic: merging {Inf,Conn} ranks first among 10 class pairs (Δofficial +.0519); typing-oracle gap shrinks 35% in the merged space
 
-执行 [spec](superpowers/specs/2026-10-13-merged-class-m-design.md)（用户 2026-10-13 批准；
-[plan](superpowers/plans/2026-10-13-merged-class-m.md)）。工件
-`runs/analysis/merged_class_20261013/`（results.json / tables.md / commands.md，输入 SHA256 与
-代码指纹在 provenance）。GT 与预测**同时**过合并重映射，官方聚合口径同构（类数 4）；
-纯描述性诊断，无门、无方法主张、不改 5 类成绩表。
+Executed the [spec](superpowers/specs/2026-10-13-merged-class-m-design.md) (user-approved 2026-10-13; see
+[plan](superpowers/plans/2026-10-13-merged-class-m.md)). Artifacts are in
+`runs/analysis/merged_class_20261013/` (results.json / tables.md / commands.md; input SHA256 and
+code fingerprint in provenance). GT and predictions were both remapped through the merge, and official aggregation is structurally equivalent (4 classes);
+descriptive diagnostic only: no gate, no method claim, and no change to the 5-class score table.
 
-**修正记录（2026-10-14，评审驱动）**：首轮工件的全部 69 个 bootstrap CI 因分层重采样
-切块与层位置错位（组织交错时混层）而失准——点估计不受影响，全部结论性数字不变；
-`merged_class.bootstrap_delta` 与同病的 `fast_retype.mpq_bootstrap_delta` 已修复
-（TDD 回归测试 `test_bootstrap_delta_stratum_blocks_aligned` ×2），本轮已用修复后代码
-重新生成并核验（66/66 CI 包含各自点估计）。**既往轮次注意**：typing_oracle 2026-10-09
-与 T 轮（2026-10-10）经 `mpq_bootstrap_delta` 记录的 CI 同样失准——两轮的门判定均基于
-点估计（T2 点 +.0002，修正后 CI 仍跨零），无判定翻转；若引用其 CI 数字需按修复后代码
-重算。
+**Correction record (2026-10-14, prompted by review):** All 69 bootstrap CIs in the first artifact were invalid because stratified-resampling
+blocks were misaligned with stratum positions (tissue strata mixed when interleaved). Point estimates were unaffected; all conclusion-driving values remain unchanged.
+`merged_class.bootstrap_delta` and the similarly affected `fast_retype.mpq_bootstrap_delta` were fixed
+(TDD regression test `test_bootstrap_delta_stratum_blocks_aligned` ×2); this round was regenerated and verified
+(66/66 CIs contain their point estimates). **Prior-round note:** typing_oracle 2026-10-09
+and T (2026-10-10) CIs recorded through `mpq_bootstrap_delta` were also invalid. Both rounds' gate decisions used
+point estimates (T2 point +.0002; corrected CI still spans zero), so no decision flips. Recompute CIs with the corrected code
+if citing them.
 
-- **绑定全过**：M0 恒等重评对冻结 eval（split1/2/3 eval_test_*）**mPQ 逐位一致**；
-  逐类 PQ / bPQ ≤1e-12（冻结值出自 pannuke_eval 的矩阵求和顺序，快速路径为 bincount
-  行序累加，逐类存在 1–2 ulp 固有差——typing_oracle 2026-10-09 同样如此，mPQ 恰好逐位）；
-  merge(2,3) 下 Dead 逐类 PQ 逐位不变；bPQ 从 **inst 图**独立重算绑定。
-- **10 类对合并 Δofficial**（3-split mean，配对图像 bootstrap 1000 次组织内分层；
-  (2,3) 逐 split 点/CI：+0.0553 [.0492,.0621] / +0.0524 [.0460,.0581] / +0.0481
-  [.0423,.0538]，CI 下界全部 > +.04）：
-  **(2,3) +.0519 居首**，(1,3) +.0499、(1,2) +.0190 次之，其余 7 对 ≤ +.0099、
-  (4,5) +.0002。strict 口径同构（(2,3) +.0647，逐 split CI 下界 > +.055）。
-- **合并类 PQ .5079 ≫ 原两类均值 .4280**（Inf .4377 / Conn .4184）。
-- **oracle-under-merge(2,3)**：current .5514 → oracle .6575（差距 .1061）vs 5 类空间
-  差距 .1637（typing_oracle 轮）⇒ **合并使 typing-oracle 差距缩小 35.2%**；Inf/Conn-only
-  干预差距 .1146 → .0497（缩小 56.6%）。
+- **All bindings pass:** M0 identity re-evaluation is bitwise identical in mPQ to frozen eval (split1/2/3 eval_test_*);
+  per-class PQ / bPQ differ by ≤1e-12 (frozen values use pannuke_eval matrix-summation order; the fast path accumulates bincount
+  rows and has an inherent 1–2 ulp per-class difference—also seen in typing_oracle 2026-10-09; mPQ happens to be bitwise identical);
+  Dead per-class PQ is bitwise unchanged under merge(2,3); bPQ is independently bound from the **inst map**.
+- **Δofficial for all 10 class-pair merges** (3-split mean, paired-image bootstrap with 1000 tissue-stratified resamples;
+  (2,3) per-split point/CI: +0.0553 [.0492,.0621] / +0.0524 [.0460,.0581] / +0.0481
+  [.0423,.0538], with every CI lower bound > +.04):
+  **(2,3) ranks first at +.0519**; next are (1,3) +.0499 and (1,2) +.0190; the other 7 pairs are ≤ +.0099,
+  including (4,5) +.0002. Strict aggregation agrees ((2,3) +.0647, all per-split CI lower bounds > +.055).
+- **Merged-class PQ .5079 ≫ original two-class mean .4280** (Inf .4377 / Conn .4184).
+- **oracle-under-merge(2,3):** current .5514 → oracle .6575 (gap .1061), versus the 5-class-space
+  gap .1637 (typing_oracle round) ⇒ **merging shrinks the typing-oracle gap by 35.2%**; Inf/Conn-only
+  intervention gap .1146 → .0497 (a 56.6% reduction).
 
-**解读边界（spec §8 预注册）**：(2,3) 居首与 E1-T 检测器共鸣证据**方向一致**，但参照分布
-显示前三位全是"两个大类合并"（机械效应 + 混淆结构），+.0519 不得读作"标签模糊损失"；
-oracle 差距的 35% 缩小是合并类空间下的度量变化（mPQ 非线性），**不做可相加份额分解**。
+**Interpretation limits (spec §8 preregistered):** The first-place result for (2,3) is directionally consistent with E1-T detector-consensus evidence,
+but the reference distribution shows the top three pairs all merge two large classes (mechanical effect + confusion structure). Do not read +.0519 as “loss from ambiguous labels”;
+the 35% oracle-gap reduction is a metric change in merged-class space (mPQ is nonlinear), **not an additive share decomposition**.
 
-**实现注意（复用价值）**：PanNuke `gt_channels` 与 `inst.npy` 在少数像素上不一致（fold3
-173/2722 图；例 img77：Epi 核内 3 个异型像素并入 Inf 通道对象，通道几何 ≠ inst 图几何）。
-官方 bPQ 在 inst 图上匹配、逐类 PQ 在通道上匹配——**bPQ 不可从通道配对表推导**（本轮
-预注册绑定捕获此点；`merged_class.py` 的 bpq_from_pairs 已删，改 `merged_class_diag.py`
-的 inst 图重算）。本轮无训练、无调参、无选择；测试产物只读诊断，不进入方法成绩表。
+**Implementation note (reusable):** PanNuke `gt_channels` and `inst.npy` disagree on a small number of pixels (fold3
+173/2722 images; e.g. img77 has 3 atypical pixels inside an Epi nucleus assigned to the Inf channel object, so channel geometry ≠ inst-map geometry).
+Official bPQ matches on the inst map, while per-class PQ matches on channels—**bPQ cannot be derived from a channel-pair table** (the
+preregistered binding caught this; `bpq_from_pairs` was removed from `merged_class.py`, and `merged_class_diag.py` now recomputes from the inst map).
+No training, tuning, or selection occurred. Test artifacts were read-only diagnostics and are not method-score results.
 
-## 2026-10-12 — E3 候选质量学习 dev 轮：三门皆未过，按预注册规则停线；效用可预测、strict-FP 风险不可预测
+## 2026-10-12 — E3 candidate-quality learning development round: all three arms failed admission; stop under preregistered rules; utility is predictable, strict-FP risk is not
 
-执行 [spec](superpowers/specs/2026-10-11-e3-candidate-quality-design.md)（用户 2026-10-11 批准；A2 语义
-按 spec §8 修订为 (floor,cap) 网格）。工件 `runs/analysis/e3_quality_20261011/`（本地；CPU，
-workers 8）。训练 = fold1 13,332 条 OOF 候选（split2 三种子，标签 IoU>0.5 matched）；应用 =
-split1_seed1 冻结 4,084 fold2 候选；A1 = 冻结 EF-P2（a30d：非 Dead 地板 30、Dead 豁免；
-**A1 重放经 18 行 sweep 与 p2ef 冻结行 ≤1e-12 硬断言**，其中 a30 变体曾 bit-exact 复现 EF 行
-mPQ .48345570337477284，管线正确性由此锚定）。fold3 零读取。
+Executed the [spec](superpowers/specs/2026-10-11-e3-candidate-quality-design.md) (user-approved 2026-10-11; A2 semantics
+revised under spec §8 to a (floor,cap) grid). Artifacts: `runs/analysis/e3_quality_20261011/` (local; CPU,
+8 workers). Training = 13,332 fold1 OOF candidates (three split2 seeds; matched labels IoU>0.5); application =
+4,084 frozen fold2 candidates from split1_seed1; A1 = frozen EF-P2 (a30d: non-Dead floor 30, Dead exempt;
+**A1 replay was hard-asserted within ≤1e-12 across 18 sweep rows and the p2ef frozen row**; the a30 variant once reproduced the EF row bit-exactly at
+mPQ .48345570337477284, anchoring pipeline correctness). No fold3 reads.
 
-- **判定：主门/次门均 false（A2/A3/A4 全部）** ⇒ 按 spec §5 停线：不进确认轮，不加菜单挽救；
-  效用学习线在 dev 层收档为负结果。EF-P2 定位（机制证据/teacher 候选）不变。
-- **失败层级定位**（spec 要求的收档内容）：
-  1. **效用本身可廉价预测**：fold1 GroupKFold CV AUC **.721**（低维 12 特征）/**.737**
-     （+support/sup_frac）；低维臂在 fold2 上可靠性曲线良好（mean .45→rate .49、.65→.62）。
-     E1-C 的"支持度单调"假设在学得模型上成立。
-  2. **选择规则与端点冲突**：逐字沿用的 EF 轮 `select_fusion`（strict Dead ≥ identity .12957
-     且 interior Dead matched > 441 且 mPQ/bPQ ≥ identity−.002）在 A2/A3/A4 的**全部 16 个
-     非恒等行**上被 strict Dead 门槛拒绝（学得行最高 .1245 < .12957）→ 三臂全部回落
-     identity，门值即 identity−A1（ΔDead −.0061、ΔbPQ −.0012、ΔmPQ −.0012，bootstrap CI
-     全部低于或贴零）。**A1 自己是通过该门槛的少数行**（strictD .1345）——冻结规则的
-     strict 轴天然偏向少加候选。
-  3. **描述性对照（不进门）**：a4_p0.5 相对 A1 = ΔmPQ +.0014、ΔbPQ +.0017、ΔDead +.0030、
-     添加 2134（A1 1374）且 unmatched 占比 46.8%（A1 53.3%）；a3_p0.4 = ΔmPQ +.0010、
-     ΔbPQ +.0012、ΔDead +.0014、unmatched 45.8%。即：**在 official 口径上存在便宜的
-     bPQ/Dead 改善，但全部以 strict Dead −.012~−.014 为代价**——缺类图像上的 Dead FP
-     惩罚是候选级特征（面积/形状/置信度/支持度）的盲区；P(match)·E[IoU|match] > q/2 的
-     候选级推导（10-06 §路线B）恰在"忽略 epsilon/缺类惩罚"处失效，与推导自身的警告一致。
-  4. **support 臂的偏移被实测**：+support 校准劣化（fold2 上 .84 置信箱实际率 .58——
-     fold1 6 席 CellViT vs fold2 13 席跨折/跨架构的构成偏移），CV AUC 增益（+.016）未转化
-     为端点。HoVer-Net split2 检查点已在两机磁盘清理中丢失，fold1 jury 无 HN 席（spec 偏差，
-     已披露；重训一席不成比例，用 split1/3 HN 会破坏 fold1 OOF）。
-- **对 10-09 方案 §5 的映射**：E1 支持的"候选质量学习"分支就此收档——简单质量模型
-  （含 jury 支持度）不能在 official+strict 联合口径上替代 EF 规则；后续若重开，需要的是
-  **图像级缺类风险特征**（如该图 Dead 先验/组织条件），而非更复杂的候选级头——这构成
-  新的可检验解释，但不自动立项。
-- 过程记录（三次真实运行失败皆由护栏/断言捕获后修复重跑）：① class 域实为 1..5（合格池
-  已类型化），one-hot 移位；② dist 含 inf 哨兵（图内无 base 实例，17+19 行），按 256² 对角线
-  常数 362 截断（数据无关、两折同变换）；③ 首版 A1 误用 a30+stage-1 行——a30 行 bit-exact
-  复现暴露现任实为 a30d，改从 p2ef selection.json 派生地板/豁免并对其断言。另：mix 计数
-  （records 列 1376）与 fuse 运行时（1374）差 2 行（概率表/重叠运行时差异），A1 端点以
-  fuse 断言为准，mix 仅描述。全量 pytest 332 passed（含本轮 17 个新测试）。
-- **评审后修订（2026-10-12 晚，全分支独立评审后）**：全量 pytest **335 passed**；终版工件
-  重跑再生成（`e3_quality_20261011/`、`e1t_typing_20261011/`；旧版存 `_v1*`），与首版
-  **逐位一致**（E1-T 全部；E3 除 bootstrap mPQ 列外全部）。该列口径已修为官方 NaN 排除
-  （仅平均 GT 在场类）：identity−A1 的 ΔmPQ CI 由 [−.00232, −.00002] 改为
-  **[−.00242, −.00014]**，结论（低于或贴零）不变。provenance 补全（ef_selection、
-  依赖模块指纹、E1-T 的 fold2 GT SHA）；两项回归测试补强（A1 漂移断言失败路径、条件
-  bootstrap 分母判别——旧语义下 lo=0.2≠1.0 必挂）。
+- **Decision: primary/secondary gates both false (A2/A3/A4 all fail)** ⇒ stop under spec §5: no confirmation round and no extra menu to rescue the result;
+  the utility-learning line closes at the development stage as a negative result. EF-P2 remains a mechanism-evidence/teacher candidate.
+- **Failure-layer localization** (required closeout content):
+  1. **Utility itself is cheap to predict:** fold1 GroupKFold CV AUC **.721** (12 low-dimensional features) / **.737**
+     (+support/sup_frac); the low-dimensional arm has a good fold2 reliability curve (mean .45→rate .49, .65→.62).
+     E1-C’s “support is monotonic” assumption holds for the learned model.
+  2. **Selection rule conflicts with the endpoint:** the verbatim EF-round `select_fusion` rule (strict Dead ≥ identity .12957
+     and interior Dead matched > 441 and mPQ/bPQ ≥ identity−.002) rejected **all 16
+     non-identity rows** in A2/A3/A4 on the strict-Dead threshold (best learned row .1245 < .12957); all three arms therefore fell back to
+     identity, so gate deltas equal identity−A1 (ΔDead −.0061, ΔbPQ −.0012, ΔmPQ −.0012; bootstrap CIs
+     all below or touching zero). **A1 itself is among the few rows that pass the gate** (strictD .1345)—the frozen rule’s
+     strict axis naturally favors adding fewer candidates.
+  3. **Descriptive comparison (not part of the gate):** a4_p0.5 versus A1 = ΔmPQ +.0014, ΔbPQ +.0017, ΔDead +.0030,
+     adding 2134 candidates (A1 1374) with unmatched share 46.8% (A1 53.3%); a3_p0.4 = ΔmPQ +.0010,
+     ΔbPQ +.0012, ΔDead +.0014, unmatched 45.8%. Thus **official metrics show inexpensive
+     bPQ/Dead gains, but they all cost strict Dead −.012 to −.014**—the Dead-FP penalty on images lacking that class
+     is invisible to candidate-level features (area/shape/confidence/support). Candidate-level derivation P(match)·E[IoU|match] > q/2
+     (10-06 §Route B) fails exactly where it ignores epsilon/missing-class penalties, matching its own warning.
+  4. **The support-arm shift was measured:** +support calibration degraded (fold2 bins with .84 confidence had actual rate .58—
+     a composition shift from 6 CellViT seats in fold1 to 13 seats across folds/architectures in fold2); the CV AUC gain (+.016) did not transfer
+     to the endpoint. The HoVer-Net split2 checkpoint was lost during cleanup on both disks; the fold1 jury had no HN seat (spec deviation,
+     disclosed; retraining one seat is disproportionate, and using split1/3 HN would break fold1 OOF).
+- **Mapping to the 10-09 plan §5:** Close the “candidate-quality learning” branch supported by E1: a simple quality model
+  (including jury support) cannot replace EF on the joint official+strict endpoint. Reopening would require
+  **image-level missing-class risk features** (e.g. image Dead prior/tissue condition), not a more complex candidate-level head—this is
+  a new testable hypothesis, but does not automatically authorize a project.
+- Run log (three genuine failures were caught by guards/assertions, fixed, and rerun): (first) class domain is 1..5 (the eligible pool
+  was already typed), causing one-hot shift; (second) distance values included inf sentinels (no base instance in image, 17+19 rows), clipped to the 256² diagonal
+  constant 362 for images (data-independent, same transform for both folds); (third) first A1 used a30+stage-1 row—bit-exact reproduction of a30
+  exposed that the current row was a30d; derive floors/exemptions from p2ef selection.json and assert them. Also, mix counts
+  (records column 1376) and fuse runtime (1374) differ by 2 rows (probability-table/runtime-overlap difference); use
+  fuse assertions for A1 endpoint, and treat mix as descriptive. Full pytest: 332 passed (including 17 new tests).
+- **Post-review revision (evening 2026-10-12, after independent branch review):** Full pytest **335 passed**; final artifacts
+  were regenerated (`e3_quality_20261011/`, `e1t_typing_20261011/`; old versions saved under `_v1*`) and were
+  **bitwise identical** to the first version (all E1-T; all E3 except the bootstrap mPQ column). That column now follows official NaN exclusion
+  (average over classes present in GT only): identity−A1 ΔmPQ CI changed from [−.00232,−.00002] to
+  **[−.00242,−.00014]**; the conclusion (below or touching zero) is unchanged. Provenance now includes ef_selection,
+  dependency-module fingerprints, and E1-T fold2 GT SHA; two regression tests were strengthened (A1-drift assertion failure path and conditional
+  bootstrap denominator check—under old semantics lo=0.2≠1.0 must fail).
 
-## 2026-10-12 — E1-T 跨检测器分型共识：基分错实例上 jury 系统性支持基类；Inf/Conn 标签模糊的共鸣证据成立
+## 2026-10-12 — E1-T cross-detector typing consensus: the jury systematically favors the base class on base-misclassified instances; consensus evidence for an Inf/Conn label ambiguity
 
-执行 [spec](superpowers/specs/2026-10-11-e1t-typing-consensus-design.md)（用户 2026-10-11 批准方向，
-"请继续推进"视为 spec 批准）。工件 `runs/analysis/e1t_typing_20261011/`（本地；`*_v1_bad_ci/` 为首轮，
-其 bootstrap 分母口径有 bug 作废，四格点估计两轮一致）。纯缓存重放、CPU-only、只读 fold2
-（split1 val）。基 = split1_seed1 val base identity（x1）；jury = E1-C 13 席 − 基 run = **12 席**
-（CellViT 10 + HoVer-Net 2，跨训练折 {1,3}）。配对 IoU > 0.5（并列歧义单列，本轮 0 个）；
-票 = 成员与该 GT 最大 IoU 实例（IoU ≥ 0.3）的**像素多数票类**（canonical `instance_classes`
-语义，type-0=未类型化合法，真实数据 base 有 164 个 type-0 实例——首版"唯一值"要求即因此中止）；
-多数类须总票 ≥3、严格胜出、最高类收到两个训练折的票（与基/GT 无关地定义，修掉初版在 G0
-退化的"共识反 GT"）。分组核验：G1 6,858 + G0 40,558 + ambiguous 0 + unmatched 12,456 =
-**59,872 = fold2 GT 实例总数** ✓；三图抽查（image 0/1200/2500）分组与逐票输出人工核验一致
-（`scripts/e1t_verify_spot.py`，输出在 tasks 缓存；image 0 GT9 为典型 G1-maj=base 例）。
+Executed the [spec](superpowers/specs/2026-10-11-e1t-typing-consensus-design.md) (user approved the direction on 2026-10-11;
+“please continue” was treated as approval of the spec). Artifacts: `runs/analysis/e1t_typing_20261011/` (local; `*_v1_bad_ci/` is the first run,
+invalidated due to a bootstrap-denominator bug; the four cell point estimates match across runs). Cache replay only, CPU-only, fold2 read-only
+(split1 validation). Base = split1_seed1 validation base identity (x1); jury = E1-C 13 seats minus the base run = **12 seats**
+(10 CellViT + 2 HoVer-Net, trained across folds {1,3}). Paired IoU > 0.5 (ties reported separately; 0 this round);
+vote = member’s pixel-majority class for its maximum-IoU instance (IoU ≥ 0.3) against that GT (**pixel majority class**,
+canonical `instance_classes` semantics; type-0=valid untyped; base data contain 164 type-0 instances, which caused the first run’s “unique value” requirement to abort);
+majority class requires ≥3 total votes, a strict win, and votes from both training folds (defined independently of base/GT; fixes the first run’s
+degenerate “consensus against GT” in G0). Group accounting: G1 6,858 + G0 40,558 + ambiguous 0 + unmatched 12,456 =
+**59,872 = all fold2 GT instances** ✓. Manual checks on three images (image 0/1200/2500) matched grouping and vote-level outputs
+(`scripts/e1t_verify_spot.py`, output in tasks cache; image 0 GT9 is a typical G1-maj=base example).
 
-- **主结果**：G1（基分错的已匹配实例，n=6,858）中 jury 多数类 = 基类 **4,970（72.5%，图像
-  聚类 bootstrap 95% CI [.706, .742]）**，= GT 类仅 1,246（18.2% [.167, .197]，CI 分离）；
-  G0（基分对，n=40,558）的 jury 本征翻票率仅 **1.9% [.017, .021]**。按预注册解读键：
-  **Inf/Conn 标签边界模糊的检测器共鸣证据成立**——跨折训练 + 跨架构的检测器一致偏向基的
-  "错"标，指向标签边界系统模糊而非个别模型噪声（**非生物学断言**；jury 与基同族的相关性
-  如实披露，G0 对照部分约束了"纯回声"解释：若 jury 只回声基，G0 翻票率应≈0 且 G1 应≈100%）。
-- Inf↔Conn 双向为最大格：(2,3)（GT=Inf, 基=Conn）74.8% [.718, .779]；(3,2) 78.5% [.756, .811]；
-  Neo 的 (1,2)/(1,3) 同向（69.8%/66.4%）。**唯一大格例外 (5,1)（GT=Epi, 基=Neo）：GT 占优
-  （51.6% vs 30.1%）**，单列不并入结论。
-- **Dead 单列**（样本小、格内异质，仅描述）：dead 相关格聚合 maj=base [.573, .703] vs
-  maj=GT [.173, .282]，方向同 Inf/Conn 但幅度低；(3,4) 81.4% vs (4,2) 48.9% 不均。
-- **敏感性三套全部同向**：票门槛 IoU 0.5（base 72.0%）；min_votes 5（72.3%）；仅 HoVer-Net
-  2 席子 jury（base 36.0% vs GT 20.2%，no-majority 36.2%，G0 翻票 6.7%）。
-- **结论映射（spec §2 预注册键）**：分型方向以"**Inf/Conn 标签边界模糊（检测器共鸣证据）**"
-  收档——bPQ−mPQ 分型缺口（typing oracle .4995→.6632）中存在**不可由当前标签监督消除的
-  成分**；这与 T0–T3（内部特征事后读出无增量）及 CONCH 负结果相容：读出上限受标签噪声
-  约束。联合训练假设保持后置、不因本结果启动训练。与 E1-C（候选存在性共鸣）合并，分型轴
-  的标签质量证据链闭合；最终报告如实写"非生物学断言"。
-- 过程记录（全部 RED→GREEN 修复后重跑）：type 唯一值要求→多数票语义；条件 bootstrap 两处
-  bug（组外行计 0 而非 NaN；三元先判事件后判组员）——第二处由迷你夹具单测暴露（G0 CI 出
-  现 0.5）。本轮未读测试折；无新推理/训练。
+- **Main result:** In G1 (matched instances misclassified by base, n=6,858), jury majority class = base class **4,970 (72.5%, image-
+  cluster bootstrap 95% CI [.706,.742)**; jury majority = GT class for only 1,246 (18.2% [.167,.197], CIs separate).
+  In G0 (base classified correctly, n=40,558), jury’s intrinsic flip rate was only **1.9% [.017,.021]**. Per preregistered interpretation key:
+  **evidence for an ambiguous Inf/Conn label boundary in detector consensus is supported**—cross-fold, cross-architecture detectors systematically favor the base’s
+  “wrong” label, pointing to a systematically ambiguous label boundary rather than noise from one model (**not a biological claim**; correlation between jury and base family
+  is disclosed. G0 partly constrains a “pure echo” explanation: if the jury only echoed base, G0 flips should be ≈0 and G1 ≈100%).
+- Inf↔Conn is largest in both directions: (2,3) (GT=Inf, base=Conn) 74.8% [.718,.779]; (3,2) 78.5% [.756,.811];
+  Neo (1,2)/(1,3) are also aligned (69.8%/66.4%). **The only large-cell exception is (5,1) (GT=Epi, base=Neo): GT leads
+  (51.6% vs 30.1%)**; report this separately, outside the aggregate conclusion.
+- **Dead separately** (small sample and heterogeneous cells; descriptive only): combined Dead-related cells, maj=base [.573,.703] vs
+  maj=GT [.173,.282], same direction as Inf/Conn but smaller; (3,4) 81.4% versus (4,2) 48.9% is heterogeneous.
+- **All three sensitivity analyses agree in direction:** vote threshold IoU 0.5 (base 72.0%); min_votes 5 (72.3%); HoVer-Net-
+  only 2-seat jury (base 36.0% vs GT 20.2%, no-majority 36.2%, G0 flip rate 6.7%).
+- **Conclusion mapping (spec §2 preregistered key):** Close the typing direction as “**ambiguous Inf/Conn label boundary (detector-consensus evidence)**”—
+  the bPQ−mPQ typing gap (typing oracle .4995→.6632) contains a **component that current label supervision cannot remove**;
+  this is compatible with T0–T3 (no incremental post-hoc readout from internal features) and the negative CONCH result: the readout ceiling is limited by label noise.
+  The joint-training hypothesis remains deferred; this result does not start training. Together with E1-C (candidate-presence consensus), the typing-axis
+  label-quality evidence chain is complete. The final report must state “not a biological claim.”
+- Run log (all RED→GREEN fixes were rerun): type unique-value requirement → majority-vote semantics; two conditional-bootstrap
+  bugs (rows outside a group counted as 0 rather than NaN; evaluate event before member in a three-way condition). The second was exposed by a miniature fixture
+  (G0 CI reached 0.5). No test-fold reads and no new inference/training.
 
 
 
-## 2026-10-11 — E1-C/E1-M（无专家修订执行）：候选的跨检测器共识远超随机基线；模型预审不可用
+## 2026-10-11 — E1-C/E1-M revised execution without experts: candidate cross-detector consensus far exceeds a random baseline; model prescreening is unusable
 
-执行 [spec §7 修订](superpowers/specs/2026-10-10-e1-blind-audit-design.md)（用户 2026-10-10
-批准）。工件 `runs/analysis/e1_consensus_20261010/`（本地）。Jury 13 席：split1/split3 ×
-seed{19,1,2} × {x1,x2} 的 fold2 identity 预测（11 席，来源 run split1_seed1-x2 剔除）+
-HoVer-Net split1/split3 fold2（2 席新推理，val-fold sanity mPQ .4509）。全部成员训练折
-∈{1,3}，fold2 从未参与训练。支持度 = IoU≥0.3 的成员数；候选 = split1_seed1 冻结 4,084。
+Executed the [revised spec §7](superpowers/specs/2026-10-10-e1-blind-audit-design.md) (user-approved 2026-10-10).
+Artifacts: `runs/analysis/e1_consensus_20261010/` (local). Jury: 13 seats: split1/split3 ×
+seed{19,1,2} × {x1,x2} fold2 identity predictions (11 seats; source run split1_seed1-x2 excluded) +
+HoVer-Net split1/split3 fold2 (2 new inference seats, val-fold sanity mPQ .4509). All members trained on folds
+∈{1,3}; fold2 was never used for training. Support = number of members with IoU≥0.3; candidate set = frozen 4,084 from split1_seed1.
 
-- **合成空对照（后补对照，写入任何结论前加入）**：GT 实例膨胀 8px 之外随机放同尺寸
-  blob（面积重采样自"零重叠候选"分布，n=2000）→ 支持度均值 **0.07**，≥3 率 **0.7%**，
-  ≤1 率 99.1%。对照控制的只是"随机位置基线"，不控制检测器家族共享的核状 FP 模式。
-- **观测**（S2 已接受 n=1515 / S3 被拒 n=2569）：mean support 5.47 / 5.04；GT 匹配率随
-  支持度单调上升（支持 0–2：5–12%；≥5：40–60%）。按 GT 关系分层：
-  - 与 GT 零重叠（S2 518 / S3 1146）：mean 4.8/4.4，**≥3 且跨折/跨架构 380/751**（零假设
-    下期望 ~0.7%）——GT 未覆盖位置存在多检测器一致检出的核状对象，为**标签可疑的检测器
-    共鸣证据**；非生物学断言（可能解释含标注单位差异、退化/凋亡对象被跳过、家族共享 FP）。
-  - 有重叠但 IoU<0.5（S2 328 / S3 582）：支持度同样高（mean ~4.6）——轮廓/实例单位不一致
-    子群，与 §4 第二行（几何不格）相容。
-  - 碎屑相容（支持≤1）：S2 151（10.0%）/ S3 398（15.5%）——EF 过滤与该子群同向但区分有限。
-- **工程含义（§4 修订版映射）**：支持度本身是候选质量的强预测子（单调、双源一致）→
-  "低维特征 + jury 支持度标签"的**候选质量学习**现在有对照支持的证据基础，值得原型化；
-  训练内 cross-fit、与冻结 EF-P2/纯面积过滤对照、测试折零读取等前置条件沿用。
-- **E1-M（两轮独立模型盲评，标注非专家）**：passA（analyze_image 通道）对 S1——已知几乎
-  全为真实核的 x1 检出对象——只判 40.9% 为真（系统性"非核"偏置，理由高度模板化）；
-  passB（sonnet 原生视觉）uncertain 率 34–70% 但排序较合理（S1 .915 > S2 .506/S3 .573 >
-  S4 .408）。两轮 kappa −.09～.35、原始一致率 .18–.38。**结论：模型评审连互相一致都
-  达不到，实质信号不可用**——E1-M 仅完成其流程验证目的，并事后印证 spec 将模型评审
-  排除出正式结论的决定。
-- **E1 状态**：人类评审义务保留（材料包不变，可随时执行原协议）；工程分支由 E1-C
-  单独支撑。限制：单对 (split1_seed1)、CellViT 家族占 11/13 席、支持度阈值 0.3 预注册、
-  空对照为合成圆盘（非核状形状）。本轮未读测试折；HoVer-Net fold2 为 val 折推理。
+- **Synthetic null control (added before writing any conclusion):** Place same-size random blobs more than 8 px from GT instances
+  (area resampled from the “zero-overlap candidate” distribution, n=2000) → mean support **0.07**, ≥3 rate **0.7%**,
+  ≤1 rate 99.1%. This control tests only a “random-location baseline”; it does not control for shared nucleus-like false positives across detector families.
+- **Observation** (S2 accepted n=1515 / S3 rejected n=2569): mean support 5.47 / 5.04; GT match rate rises
+  monotonically with support (support 0–2: 5–12%; ≥5: 40–60%). Stratified by relation to GT:
+  - Zero overlap with GT (S2 518 / S3 1146): mean 4.8/4.4; **≥3 and cross-fold/cross-architecture support: 380/751** (expected
+    ~0.7% under the null)—nucleus-like objects detected consistently by multiple detectors where GT has no object, evidence of **questionable-label detector
+    consensus**; not a biological claim (possible explanations include annotation-unit mismatch, omitted degenerate/apoptotic objects, or family-shared FP).
+  - Overlap exists but IoU<0.5 (S2 328 / S3 582): support is similarly high (mean ~4.6)—a contour/instance-unit mismatch
+    subgroup, consistent with the second row of §4 (geometric mismatch).
+  - Debris-compatible (support≤1): S2 151 (10.0%) / S3 398 (15.5%)—EF filtering points in the same direction but has limited discrimination.
+- **Engineering implication (mapping from revised §4):** Support strongly predicts candidate quality (monotonic, consistent across both sources) →
+  “low-dimensional features + jury-support labels” now has controlled evidence supporting candidate-quality learning and merits prototyping;
+  retain prerequisites: training-only cross-fit, comparison with frozen EF-P2/pure area filtering, and no test-fold reads.
+- **E1-M (two independent model blind reviews; annotators were non-experts):** passA (analyze_image channel), on S1—known to be
+  almost entirely true nuclei in x1 detections—called only 40.9% true (systematic “not a nucleus” bias, with highly templated reasons);
+  passB (sonnet native vision) had 34–70% uncertainty but a more reasonable ranking (S1 .915 > S2 .506/S3 .573 >
+  S4 .408). Kappa across rounds −.09–.35; raw agreement .18–.38. **Conclusion: model reviews do not even agree with one another; their signal is unusable**—
+  E1-M served only to validate its workflow and retrospectively supports excluding model review from formal conclusions in the spec’s decision.
+
+- **E1 status:** Human-review obligation remains (the package is unchanged and the original protocol can be run at any time); the engineering branch is supported by E1-C
+  alone. Limits: one pair (split1_seed1), CellViT family occupies 11/13 seats, support threshold 0.3 preregistered,
+  synthetic-disk null control (not nucleus-like shapes). No test-fold reads; HoVer-Net fold2 is validation-fold inference.
 
 ## 2026-10-10 (later) — T/E1 pre-registered specs approved; E1 packet built; typing-probe T0–T3 implemented
 
@@ -2021,17 +2029,17 @@ CONCH re-runs).
 
 # P8 image-normalized center focal loss: formal submission
 
-2026-10-22 America/New_York. **Array 55191961 was submitted once at 2026-10-22T12:21:30.982366Z UTC. Submission is not training completion.** Four fresh130epoch runs C19/I19/C1/I1, concurrency2,1V100/4CPU/32GiB/12h each, gpu-shared/gpu-shared-normal/jhu159,Lustre,no-requeue; maximum48GPU-hours. No automatic expansion.
+2026-10-22 America/New_York. **Array 55191961 was submitted once at 2026-10-22T12:21:30.982366Z UTC. Submission is not training completion.** Four fresh130 epoch runs C19/I19/C1/I1, concurrency2,1V100/4 CPU/32 GiB/12h each, gpu-shared/gpu-shared-normal/jhu159,Lustre,no-requeue; maximum48 GPU-hours. No automatic expansion.
 
-P8 was frozen before reading P7 endpoint scores. [P7 partial review](PROPOSAL_P7_PROGRESS_2026-10-22.md) reports completed seed19 and explicitly leaves seed1 pending. P3-P6 closures and the original admission remain unchanged.
+P8 was frozen before reading P7 endpoint scores. [P7 partial review](results/PROPOSAL_P7_PROGRESS_2026-10-22.md) reports completed seed19 and explicitly leaves seed1 pending. P3-P6 closures and the original admission remain unchanged.
 
 ## Frozen question
 
 Original focal numerator N_i and true instance count n_i. C retains sum_i N_i/max(1,sum_i n_i), preserving microbatch scalar reduction order. I uses mean_i N_i/max(1,n_i), including full empty-image negatives, actual effective tail B and counts from annotations rather than Gaussian peak counts. This changes the objective weighting and gradient scale, not sampling or class/tissue balancing. No inferred causal density mechanism. Same original D4/brightness/contrast; no P7 RGB gains.
 
-Original model, sigma1/radius3 targets, exact fold1 fit2134/audit522, UNI weights, encoder blocks13-24, optimizer/schedule, effective16/micro4,BF16,last checkpoint, decoder and admission are fixed. No fold2/fold3 model evaluation, threshold/checkpoint selection, extra seeds/epochs, masks or automatic PhaseB. Original admission F1=C/T1=I: both seeds Dead>=.60,delta>=.05,original1000draw tissue-stratified paired CI lower>0,precision>=.75 and>=C-.02,overall recall>=C-.02,nondeg>=.95,support>=10images/100objects. Failure/inconclusive closes this exact recipe at its budget.
+Original model, sigma1/radius3 targets, exact fold1 fit 2134/audit 522, UNI weights, encoder blocks13-24, optimizer/schedule, effective16/micro4,BF16,last checkpoint, decoder and admission are fixed. No fold2/fold3 model evaluation, threshold/checkpoint selection, extra seeds/epochs, masks or automatic PhaseB. Original admission F1=C/T1=I: both seeds Dead>=.60,delta>=.05,original1000draw tissue-stratified paired CI lower>0,precision>=.75 and>=C-.02,overall recall>=C-.02,nondeg>=.95,support>=10 images/100 objects. Failure/inconclusive closes this exact recipe at its budget.
 
-Fit-only count summary: 2134images,50968objects,93empty images; count percentiles[0,25,50,75,100]=[0.0, 12.0, 20.0, 31.0, 276.0]. Descriptive only, no changed sampling or tuning. Repeated audit11Dead-positive images/145objects is exploratory development, not independent validation/test/PQ or official three-split performance.
+Fit-only count summary: 2134 images,50968 objects,93empty images; count percentiles[0,25,50,75,100]=[0.0, 12.0, 20.0, 31.0, 276.0]. Descriptive only, no changed sampling or tuning. Repeated audit 11Dead-positive images/145 objects is exploratory development, not independent validation/test/PQ or official three-split performance.
 
 ## Validation evidence
 
@@ -2039,62 +2047,60 @@ LM1 baseline57passed13.66s;18new tests first failed with missing-trainer asserti
 
 Real V100 smoke 55191831 COMPLETED/0:0,stderr empty. Both seeds' initial model states agree. C versus original P3 over two actual effective optimizer steps has bitwise equal all trainable gradients,adapted parameters and complete AdamW states. Both C/I train first256fit images with finite nonzero head/encoder gradients and updates, real BF16 internal operations/FP32 terminal bilinear, equal last/final reload predictions. Reload reconstruction/verification is timed separately, outside training. Preliminary measurements MEASURED; final PASS and strict ready bind all identities and script hashes.
 
-| Arm | Original1.5x safety estimate for130epochs(hours) | Training peak(GiB) | Reload reconstruction/verification(seconds) |
+| Arm | Original1.5x safety estimate for130 epochs(hours) | Training peak(GiB) | Reload reconstruction/verification(seconds) |
 |---|---:|---:|---:|
 |C|6.995|4.059|5.526|
 |I|7.031|4.059|5.594|
 
-Each estimate is below12hours under the unchanged formula; it is not a completion guarantee. Resource checks use actual GPU free memory>=12GiB,scratch>=80GiB,atomic checkpoint20GiB+1.1tensorbytes; project filesystem/group quota rechecked before copying large checkpoints. Existing P7/native13 jobs and connections were preserved.
+Each estimate is below12 hours under the unchanged formula; it is not a completion guarantee. Resource checks use actual GPU free memory>=12 GiB,scratch>=80 GiB,atomic checkpoint20 GiB+1.1tensorbytes; project filesystem/group quota rechecked before copying large checkpoints. Existing P7/native13 jobs and connections were preserved.
 
-This change does not touch metrics/HoVer-Net and uses focused verification per user AGENTS. No new full-suite pass is claimed. Historical P4 full regression588passed/3skipped/5dense_votes failures remains disclosed: `tests/test_dense_votes.py::test_dense_targets_include_every_foreground_pixel_and_singletons`, `tests/test_dense_votes.py::test_foreground_offsets_vote_back_to_predicted_common_point`, `tests/test_dense_votes.py::test_single_pixel_and_empty_foreground_are_supported_without_area_filter`, `tests/test_dense_votes.py::test_dense_vote_decoder_has_no_gt_and_returns_classed_mask`, `tests/test_dense_votes.py::test_empty_gt_losses_and_dense_head_gradients_are_finite`.
+This change does not touch metrics/HoVer-Net and uses focused verification per user AGENTS. No new full-suite pass is claimed. Historical P4 full regression: 588 passed / 3 skipped / 5 dense_votes failures remains disclosed: `tests/test_dense_votes.py::test_dense_targets_include_every_foreground_pixel_and_singletons`, `tests/test_dense_votes.py::test_foreground_offsets_vote_back_to_predicted_common_point`, `tests/test_dense_votes.py::test_single_pixel_and_empty_foreground_are_supported_without_area_filter`, `tests/test_dense_votes.py::test_dense_vote_decoder_has_no_gt_and_returns_classed_mask`, `tests/test_dense_votes.py::test_empty_gt_losses_and_dense_head_gradients_are_finite`.
 
 ## Provenance and recovery
 
-Trainingcommit 0a62bf8d4cc38bbe44e9ce2e992fff8fb20e6dc9; source manifest 795fb49c4ce4d947f5e19c9481ae4d79901c3a4def92a468737812a3574c8864; branch research/proposal-p8. Cohort 55894f3274a1f65338ccd6cb885abc218056be64318405ad5e4d67b895ea5d22. Original data/UNI/pinned p3 runtime reused, no dependency changes or large transfers. Source hashes and strict ready were rechecked before the single formal sbatch; create-only submission.started,job_id.txt and durable receipt exist. Do not rerun once-only scripts or submit another copy.
+Training commit 0a62bf8d4cc38bbe44e9ce2e992fff8fb20e6dc9; source manifest 795fb49c4ce4d947f5e19c9481ae4d79901c3a4def92a468737812a3574c8864; branch research/proposal-p8. Cohort 55894f3274a1f65338ccd6cb885abc218056be64318405ad5e4d67b895ea5d22. Original data/UNI/pinned p3 runtime reused, no dependency changes or large transfers. Source hashes and strict ready were rechecked before the single formal sbatch; create-only submission.started,job_id.txt and durable receipt exist. Do not rerun once-only scripts or submit another copy.
 
 Operational receipts,review,validation logs and collected evidence are in ignored LM1 ops/p8_development_20261022. Project/scratch paths are in its HANDOFF. Query exact job IDs; retain failed/unfinished outputs, inspect unknown outcomes without replay. Checkpoints/results are preserved on project with SHA256 manifests and scratch logs; Lustre is not archival backup.
 
 Current [SDSC Expanse guide](https://www.sdsc.edu/systems/expanse/user_guide.html) was rechecked this round; allocation/partition/QoS/quota were verified live. LM1/LM2 did not receive new GPU workloads. Main checkout/teammate changes remain intact; no shared merge or push.
 
 
-## 2026-10-23 evening P10 final closeout
+## 2026-10-23 evening — P10 final closeout
 
-Four130epoch runs, SLURM0:0,40smallfiles/36payloadpreservationhashesverified. S-C Dead+.027586/-.013793,95%CIs[-.010000,.047297]/[-.055556,.051020],originalgatefalsebothseeds. S overallrecall falls .040408/.040980 and precision .704591/.716963<.75. Close last4recipe. Fitrecall also falls; not evidence of generalizationimprovement. See results/PROPOSAL_P10_RESULTS_2026-10-23.md. Reusedfold1development,notPQ/test. IndependentP11 spatialpositive-massredistribution frozen under currentuser autonomousauthorization.
+All four 130-epoch runs completed with SLURM status 0:0. The 40 small files and 36 payload-preservation hashes were verified. S−C Dead recall changed by +.027586/−.013793, with 95% CIs [−.010000,.047297]/[−.055556,.051020]; the original gate was false for both seeds. S overall recall fell by .040408/.040980, and precision was .704591/.716963, below .75. Close the last-4 recipe. Fit recall also fell; this is not evidence of improved generalization. See [P10 results](results/PROPOSAL_P10_RESULTS_2026-10-23.md). These are reused fold-1 development results, not PQ or test results. The independent P11 spatial positive-mass redistribution recipe was frozen under the user's autonomous authorization.
 
+## 2026-10-23 evening — P11 submitted
 
-## 2026-10-23 evening P11 submitted
+Formal array **55244166** was submitted once at **2026-10-23T20:07:03.418066-04:00 (America/New_York)**. Submission does not mean training completed. Task mapping: 0=C19, 1=G19, 2=C1, 3=G1. The array contains four fresh 130-epoch runs, with concurrency 2. Each requests 1 V100, 4 CPU, 32 GiB, and 12 hours on gpu-shared/gpu-shared-normal/jhu159 using Lustre and no requeue; the formal ceiling is 48 GPU-hours. Existing unrelated jobs were preserved.
 
-Formal array **55244166** was submitted once at **2026-10-23T20:07:03.418066-04:00 (America/New_York)**. Submission does not mean completed training. Task0=C19,1=G19,2=C1,3=G1; four fresh130epoch runs, concurrency2. Each requests1V100/4CPU/32GiB/12hours, gpu-shared/gpu-shared-normal/jhu159, Lustre/no-requeue; formal ceiling48GPUhours. Existing unrelated jobs are preserved.
+Real V100 smoke **55243478 COMPLETED/0:0**, with stderr 0 bytes. Node checks reported 139 passed in 143.82 s (0:02:23). The two seeds' full initial states matched. C/P3's two effective updates had bitwise-equal trainable gradients, adapted parameters, and AdamW states. The independent G GPU loss and analytic gradients agreed; negative gradients outside support were unchanged; augmented positive shoulders and mass conservation were verified. Finite updates, AMP, frozen tensors, optimizer membership, last/final reload, cross-arm rejection, and strict readiness all passed. Safety-adjusted 130-epoch estimates were {'C': 7.197, 'G': 7.021} hours; training peaks were {'C': 4.072, 'G': 4.072} GiB. Estimates do not guarantee completion. The focused LM1 CPU suite reported 139 passed in 12.21 s. No metrics/HoVer-Net edits or current full-suite claim; the historical 5 dense_votes failures remain disclosed.
 
-Real V100 smoke **55243478 COMPLETED/0:0**, stderr0bytes. Node checks: ........................................................................ [ 51%]
-...................................................................      [100%]
-139 passed in 143.82s (0:02:23). Two-seed full initial state equality; C/P3 two effective updates with bitwise equality of all trainable gradients, adapted parameters and AdamW states; independent G GPU loss/analytic-gradient agreement; unchanged negative gradients outside support; real augmented positive shoulders/mass conservation; finite updates/AMP/frozen tensors/optimizer membership/last+final reload/cross-arm rejection and strictready all passed. Safety-adjusted130epoch estimates: {'C': 7.197, 'G': 7.021} hours; training peaks: {'C': 4.072, 'G': 4.072} GiB. Estimates do not guarantee completion. CPU LM1 focused139passed12.21s. No metrics/HV edits or current full-suite claim; historical5dense_votesfailures remain disclosed.
+See [P11 submission](results/PROPOSAL_P11_SUBMISSION_2026-10-23.md). No formal completion or performance claim was made.
 
-See results/PROPOSAL_P11_SUBMISSION_2026-10-23.md. No formal completion or performance claim.
+## 2026-10-24 — P12 closeout
 
-
-P12 closeout (2026-10-24): all four 130-epoch runs completed; original admission failed for both seeds (Dead recall R−C −0.034483 / −0.027586). This fixed decoder-dropout recipe is closed. See `results/PROPOSAL_P12_RESULTS_2026-10-24.md`. Development point metrics only; no test claim.
-
+All four 130-epoch runs completed. Original admission failed for both seeds (Dead recall R−C −0.034483 / −0.027586), so this fixed decoder-dropout recipe is closed. See [P12 results](results/PROPOSAL_P12_RESULTS_2026-10-24.md). These are development point metrics only; no test claim is made.
 
 ## 2026-10-24 evening — P12 independent closeout recheck; P13 submitted
 
-P12 original gate reproduced exactly after40smallfile/36payload hashes and130epoch/cohort/config checks; bothseeds fail, Dead R-C-.034483/-.027586. Fixed dropout remains closed. Independent P13 fixed25%replacement of epoch positions from52fit-only any-Dead images; C/S×seed19/1,fourfresh130epochs,original model/loss/augment/lastcheckpoint/decode/gate. Epoch0 S yields578/573Dead-image exposures and1608/1613unique images at unchanged2134total exposures; duplicate augmentations unchanged. Sampling changes image/background weighting and coverage,not an isolated causal test. CPU195passed14.98s and realV100smoke55262502COMPLETED/0:0,strict two-seed C/P3 gradient/parameter/AdamW/RNG parity and Sorder/AMP/frozen/reload/timing passed. Formal array55262695 single submission2026-10-24T18:41:22.310662-04:00,0-3%2,each1GPU4CPU32GiB12h,max48GPUhours; completion not claimed. [Full protocol/provenance](results/PROPOSAL_P13_SUBMISSION_2026-10-24.md). No fold2/fold3/PhaseB/masks. Reusedfold1development,notPQ/test; no full-suite claim.
+The P12 original gate was reproduced exactly after checking 40 small files, 36 payload hashes, and the 130-epoch/cohort/configuration identities. Both seeds failed; Dead recall R−C was −.034483/−.027586. The fixed dropout recipe remains closed.
 
+The independent P13 intervention replaced 25% of epoch positions with positions drawn from the 52 fit-only images containing any Dead. C/S × seeds 19/1; four fresh 130-epoch runs; original model, loss, augmentation, last checkpoint, decoder, and gate. At epoch 0, S yielded 578/573 Dead-image exposures and 1608/1613 unique images, with total exposures unchanged at 2134; duplicate augmentations were unchanged. Sampling changes image/background weighting and coverage, so this is not an isolated causal test.
 
-## 2026-10-25 P14 closeout and P15 frozen translation hypothesis
+The CPU suite reported 195 passed in 14.98 s. Real V100 smoke 55262502 completed/0:0. Strict two-seed C/P3 gradient/parameter/AdamW/RNG parity and S order, AMP, frozen parameters, reload, and timing checks passed. Formal array 55262695 was submitted once at 2026-10-24T18:41:22.310662-04:00, mapping 0–3%2, with each task requesting 1 GPU, 4 CPU, 32 GiB, and 12 h; maximum 48 GPU-hours. Completion was not claimed. See [P13 submission protocol and provenance](results/PROPOSAL_P13_SUBMISSION_2026-10-24.md). No fold2/fold3 evaluation, Phase B, or masks. Reused fold-1 development data, not PQ/test; no full-suite claim.
 
-P14 array55270432 all4 completed130epochs/0:0;41smallfiles/3,025,326bytes and36preservedpayload SHA/bytes verified, originalconfigs/cohort/data/UNI and finite130epoch histories verified; originaladmission false bothseeds. InternalDeadC/L seed19 .510345/.441379(delta-.068966,CI[-.114583,+.021517]);seed1 .475862/.386207(delta-.089655,CI[-.154545,-.049451]). Lprecision.776569/.786264 butoverallrecall.495102/.475673 vsC.583429/.595755. Candidatecounts10372→7810/10468→7411;fitrecall falls~.978→.663/.631. No capsaturation. DescriptiveColon23/56→10/56,17/56→12/56;Lung39/60→39/60,39/60→33/60. Notcausal,notPQ/test. Fixed1e-6recipeclosed;noLRmenuorextendedepochs. Largecheckpointsnotindependentlyrehashed,Lustrearchiveoutstanding.
+## 2026-10-25 — P14 closeout and P15 frozen translation hypothesis
 
-P15agentchosenhypothesis: missingtranslation underoriginalD4/color may leavegridpositionsensitivity; notestablishedmechanism. OriginalCvsJ addsintegerdx/dy[-16,16],whitefill,beforeoriginalaugmentations;retainshiftedcentersincanvas,rebuildGaussian,nodroppedhalo,duplicatesobjectcount,full-effectivebatchretaineddenominator. Originalmodel/LR1e-5/head3e-4/last12/130epochs/fullpermutation/cohort/lastcheckpoint/decode/admission unchanged. FreshC/J×19/1. REDmissingmodule→GREEN227passed54.97s;freshdesign/codereviewnoblockers. Smoke55278688single submission,pendingvalidation;samePENDINGjobmoveddebug→shared,30min/resources/sourceunchanged. Noformalresultclaimed.
+All 4 tasks in P14 array 55270432 completed with exit status 0:0. The 41 small files (3,025,326 bytes) and 36 preserved-payload SHA/byte records were verified. Original configurations, cohort, data, UNI, and finite 130-epoch histories were verified; original admission was false for both seeds. Internal-Dead recall for C/L was .510345/.441379 (seed 19; delta −.068966, CI [−.114583,+.021517]) and .475862/.386207 (seed 1; delta −.089655, CI [−.154545,−.049451]). L precision was .776569/.786264, but overall recall was .495102/.475673 versus C at .583429/.595755. Candidate counts changed 10372→7810/10468→7411; fit recall fell about .978→.663/.631. No cap saturation. Descriptive Colon counts: 23/56→10/56 and 17/56→12/56; Lung counts: 39/60→39/60 and 39/60→33/60. These results are not causal and are not PQ/test. The fixed 1e-6 recipe is closed; no LR menu or extended epochs. Large checkpoints were not independently rehashed, and the Lustre archive remains outstanding.
 
-See results/PROPOSAL_P14_RESULTS_2026-10-25.md and superpowers/specs/2026-10-25-proposal-p15-design.md. Reusedfold1audit11positiveimages145internalDead,conditionalimagebootstraponly;historicalcontrolsnotpooled. NoPhaseB/masks/fold2/fold3 model evaluations.
+P15's agent-chosen hypothesis was that missing translation under original D4/color augmentation may leave grid-position sensitivity; this is not an established mechanism. Original C versus J adds integer dx/dy in [-16,16] with white fill before the original augmentations; shifted centers are retained in-canvas, the Gaussian is rebuilt, no halo objects are dropped, duplicates count as objects, and the full effective-batch denominator is retained. Original model/LR1e-5/head3e-4/last12/130 epochs/fullpermutation/cohort/lastcheckpoint/decode/admission remain unchanged. Fresh C/J × 19/1, four fresh 130-epoch runs. RED missing-module tests became GREEN with 227 passed in 54.97 s; fresh design/code review found no blockers. Smoke 55278688 was submitted once and was pending validation at that snapshot; the same PENDING job was moved from debug to shared, with 30 min/resources/source unchanged. No formal result was claimed.
 
+See [P14 results](results/PROPOSAL_P14_RESULTS_2026-10-25.md) and [P15 design](superpowers/specs/2026-10-25-proposal-p15-design.md). Reused fold-1 audit support is 11 positive images and 145 internal Dead objects, with conditional image bootstrap only; historical controls were not pooled. No Phase B/masks/fold2/fold3 model evaluation.
 
-P15 formal endpoint 2026-10-25T18:10:57.270105Z: smoke55278688COMPLETED0:0,227 passed in 222.79s (0:03:42),strictreadyPASS; formalarray55278753single submission0-3%2,max48GPUhours. C/J safetyhours{'C': 7.0267, 'J': 7.0429},peakGiB{'C': 4.0709, 'J': 4.0709}; exactsourcecf9777be1914884f48d2d8cb142a9b09d7408fc6/manifest5654147fa8ba972d012e0bee07c1ff3dfc6d1013c4dfcefe17f27dfcd06995a5. See results/PROPOSAL_P15_SUBMISSION_2026-10-25.md. Training completion notclaimed.
+P15 smoke 55278688 completed/0:0 at the formal endpoint timestamp 2026-10-25T18:10:57.270105Z. The smoke passed 227 checks in 222.79 s (0:03:42), and strict readiness passed. Formal array 55278753 was submitted once with mapping 0-3%2 and a maximum of 48 GPU-hours. C/J safety estimates were {'C': 7.0267, 'J': 7.0429} hours; peak memory was {'C': 4.0709, 'J': 4.0709} GiB. Source commit cf9777be1914884f48d2d8cb142a9b09d7408fc6 and manifest 5654147fa8ba972d012e0bee07c1ff3dfc6d1013c4dfcefe17f27dfcd06995a5 identify the submission. See [P15 submission](results/PROPOSAL_P15_SUBMISSION_2026-10-25.md). The smoke and submission record did not establish training completion.
 
+## 2026-10-26 — P15 closeout; P16 objective-control submission
 
-## 2026-10-26 — P15 closeout, P16 objective control
+All four P15 arm/seed runs completed for 130 epochs with exit status 0:0. Small-file preservation, input/cohort/config/source identities, and all 520 translation records were verified. Original admission was false for both seeds: Dead J−C was −.193103 [−.292453,−.124138] / −.089655 [−.200000,−.021739]. Precision was .8654/.8629, but overall recall was .3884/.3802 and fit all-class recall was about .470. Close the fixed translation recipe; this negative result does not rule out all spatial augmentation. See [P15 results](results/PROPOSAL_P15_RESULTS_2026-10-26.md) and [synthesis](results/PROPOSAL_PROGRESS_2026-10-26.md).
 
-P15fourseed/armrunscompleted130epochs0:0,allsmallpreservation/input/cohort/config/sourceidentitiesand520translationrecordsverified. Originaladmissionfalsebothseeds: DeadJ-C-.193103[-.292453,-.124138]/-.089655[-.200000,-.021739];precision.8654/.8629butoverallrecall.3884/.3802andfitallrecall~.470. Closefixedtranslation;negativeisnotallspatialaugmentation. [Details](results/PROPOSAL_P15_RESULTS_2026-10-26.md), [synthesis](results/PROPOSAL_PROGRESS_2026-10-26.md).
-
-P16independentfixedGaussianMSEobjectiveC/R×19/1preservesoriginalarchitecture/data/optimizer/130epochs/decoding/admission,noP15translation. LM1focused258passedafterRED/GREENandreviewgapfix;V100smoke55287339COMPLETED0:0,258nodechecks,realbothseedallstateC/P3parity,Rindependentloss/derivativeandmeasuredparameterupdates,allfrozen/AMP/reload/time/strictreadyPASS. Formalarray55287551submittedonce2026-10-26T05:29:54.529735Z,0-3%2,max48GPUhours; not completedtraining. [Exactprotocol/validation/submission](results/PROPOSAL_P16_SUBMISSION_2026-10-26.md). Reusedfold1developmentpointmetrics,notPQ/test; noautomaticPhaseB/masks/fold2/fold3/menus. Originalrecipesremainclosed;externalLustrearchivepending.
+P16 is an independent fixed-Gaussian MSE-objective control, C/R × 19/1, preserving the original architecture/data/optimizer/130 epochs/decoding/admission, with no P15 translation. The focused LM1 suite reported 258 passed after RED/GREEN and a review-gap fix. V100 smoke 55287339 completed/0:0; 258 node checks passed. Checks covered real both-seed all-state C/P3 parity, the independent R loss/derivative and measured parameter updates, frozen parameters, AMP, reload, timing, and strict readiness. Formal array 55287551 was submitted once at 2026-10-26T05:29:54.529735Z, mapping 0-3%2, with a maximum of 48 GPU-hours. The submitted array had no completion result in the timestamped evidence used here; current completion has not been revalidated. See [P16 protocol, validation, and submission](results/PROPOSAL_P16_SUBMISSION_2026-10-26.md). Reused fold-1 development point metrics are not PQ/test; no automatic Phase B/masks/fold2/fold3/menus. Original recipes remain closed; external Lustre archive pending.

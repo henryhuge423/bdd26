@@ -15,6 +15,6 @@ fit为196实例/76Dead，audit为253实例/19Dead。预注册继续条件要求�
 
 GPU exit0，42.45秒，PyTorch峰值reserved1.4102GiB，LM2GPU5。无LM1GPU、新SSH、依赖升级、Git提交/发布。历史完成控制PID908484、startticks1066282564，仅供溯源。主分支`research/set-mask-e6`/`fd98c5f0a7618ed2e1cd454bfbc4dda36a336a3b`；隔离实现源`research/set-mask-e7-schedule`/`c6d9b58ff080a3686ea760c05c533a2f62f51ac8`。
 
-结果SHA256=`837d04404cc07465b494ee7b168bb3b37ab87243a37d2d47f93950aedcc9a06d`，driver=`cf8cb1802c9dbf464d778782bef4e1e71249a27284f8cf836474a2354f6c6448`，设计=`1cc303c9222dcb68c0ef4f7d1a876545b41170a4860b243f3e1ae0c5e90552fd`。LM2原始`/data6/jinxinhao/bdd26/ops/e15_point_20261017`，LM1回收同名ops目录。配套：[数据](results.json)、[独立核算](independent_verification.json)。
+结果SHA256=`837d04404cc07465b494ee7b168bb3b37ab87243a37d2d47f93950aedcc9a06d`，driver=`cf8cb1802c9dbf464d778782bef4e1e71249a27284f8cf836474a2354f6c6448`，设计=`1cc303c9222dcb68c0ef4f7d1a876545b41170a4860b243f3e1ae0c5e90552fd`。LM2原始`/data6/jinxinhao/bdd26/ops/e15_point_20261017`，LM1回收同名ops目录。配套：数据 (`results.json`, local-only artifact)、独立核算 (`independent_verification.json`, local-only artifact)。
 
 方法动机参考 [Objects as Points](https://arxiv.org/abs/1904.07850) 与 [CondInst](https://arxiv.org/abs/2003.05664)，本原型不是其完整复现。

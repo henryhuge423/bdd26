@@ -30,4 +30,4 @@ GPU exit0，248.82秒，PyTorch峰值reserved2.0215GiB；LM2GPU5启动前74,491M
 
 结果SHA256=`b6ea472912048b4b5c6686e887c51e3863539ff3d1ff5c739e57fc4f86778347`；driver=`d0f74968eac6b6f910aa815eee9003d5322c5a399a9af781c1275c4adcbdebe8`；设计=`8846cce1301a1c597125ce0e21bcd437b78e73518a0daeb1137c3278e320b534`。
 
-主分支`research/set-mask-e6`/`fd98c5f0a7618ed2e1cd454bfbc4dda36a336a3b`；隔离实现`research/set-mask-e7-schedule`/`c6d9b58ff080a3686ea760c05c533a2f62f51ac8`。LM2原始`/data6/jinxinhao/bdd26/ops/e14_native_20261017`；LM1回收同名ops目录。历史完成控制PID878594、startticks1066241029，仅供溯源。配套：[原始结果](results.json)、[独立核算](independent_verification.json)。
+主分支`research/set-mask-e6`/`fd98c5f0a7618ed2e1cd454bfbc4dda36a336a3b`；隔离实现`research/set-mask-e7-schedule`/`c6d9b58ff080a3686ea760c05c533a2f62f51ac8`。LM2原始`/data6/jinxinhao/bdd26/ops/e14_native_20261017`；LM1回收同名ops目录。历史完成控制PID878594、startticks1066241029，仅供溯源。配套：原始结果 (`results.json`, local-only artifact)、独立核算 (`independent_verification.json`, local-only artifact)。

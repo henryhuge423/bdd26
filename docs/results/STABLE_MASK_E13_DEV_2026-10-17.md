@@ -32,4 +32,4 @@ GPU任务exit0，205.24秒，PyTorch峰值reserved2.0215GiB。LM2GPU5，启动�
 
 主分支`research/set-mask-e6`/`fd98c5f0a7618ed2e1cd454bfbc4dda36a336a3b`；隔离实现`research/set-mask-e7-schedule`/`c6d9b58ff080a3686ea760c05c533a2f62f51ac8`。新工作树文件为`scripts/probe_stable_projection.py`、`tests/test_stable_projection.py`、`docs/superpowers/specs/2026-10-17-e13-design.md`，保留未提交状态。
 
-LM2产物`/data6/jinxinhao/bdd26/ops/e13_stable_20261017`；LM1回收与日志`/data7/jinxinhao/bdd26/ops/e13_stable_20261017`。历史完成控制PID844920、startticks1066206559，仅供溯源。配套：[原始结果](results.json)、[独立核算](independent_verification.json)。
+LM2产物`/data6/jinxinhao/bdd26/ops/e13_stable_20261017`；LM1回收与日志`/data7/jinxinhao/bdd26/ops/e13_stable_20261017`。历史完成控制PID844920、startticks1066206559，仅供溯源。配套：原始结果 (`results.json`, local-only artifact)、独立核算 (`independent_verification.json`, local-only artifact)。

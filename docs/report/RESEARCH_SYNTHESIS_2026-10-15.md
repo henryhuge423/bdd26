@@ -1,5 +1,9 @@
 # Research synthesis and next decisions — 2026-10-15
 
+> Historical synthesis with completion corrections below. For the latest experiments, see
+> [P3–P15 synthesis](../results/PROPOSAL_PROGRESS_2026-10-26.md) and
+> [current results](../results/README.md). The October 26 prose correction does not add experiments.
+
 > **2026-10-16 E6 closeout:** All four final-checkpoint fold2 runs and frozen analysis complete; Q fails every quality gate (mean interior-Dead matching change -.507422, 95%CI[-.563164,-.451449]) while passing latency. The train-only learning-rate restoration probe supports allocating a separate E7 gamma.99 schedule control, not a generalization or causal claim. [Results and next decisions](../results/SET_MASK_E6_DEV_2026-10-16.md).
 
 > **Latest E5 closeout:** [Fusion dev](../results/FUSION_GATING_DEV_2026-10-15.md) fails its frozen internal-Dead-matching gate (mean−.003374, CI[−.014273,+.007486]), despite official/strict Dead PQ increases. Do not advance to C or confirmation. Earlier suggested gated fusion is no longer a default justified component. [Train-only point-grid audit](../results/PMNET_POINT_GRID_AUDIT_2026-10-15.md) adds legal-target/collision constraints. Next architecture remains a hypothesis: isolate instance representation, preserve recipe controls, freeze design and resource/cost criteria before training. Earlier unexecuted-C2 wording below is historical; that study is closed as described above.
@@ -21,7 +25,7 @@ The project has a reproducible baseline and a sequence of falsifiable mechanism 
 | Is a specialist branch justified by gradient conflict? | DSB Gate B finds no negative composite gradients in its measured batches | Close the preregistered specialist route; this is not a universal architecture theorem |
 | Are labels certain? | E1-C/E1-T detector resonance, M metric response, unavailable experts | Retain annotation uncertainty; neither agreement nor merged-label gains prove biological ground truth |
 | Does selective visible-fragment HV improve original-image results? | Eight runs complete; A2−A1 official and strict Dead decrease in both seeds | No incremental performance support on these endpoints; original-image admission fails |
-| Was the C2 mechanism tested after training? | Fixed-window endpoints and paired bootstrap unexecuted | Leave the mechanism open; do not claim C2 passed or failed |
+| Was the C2 mechanism tested after training? | All eight fixed-C2 evaluations completed; selective-HV mean miss improvement −.008621 [−.040918,+.017699] | The frozen mechanism clause fails; see the linked closeout, which supersedes the earlier unexecuted status |
 
 Older evidence is synthesized from existing stage reports, not newly reproduced here. The latest original-image arithmetic was recomputed from eight stored summaries and bound to SHA256 values in the linked result record.
 
@@ -42,6 +46,6 @@ The proposal remains a hypothesis, with minimum/target/stretch scope. Preserve t
 
 ## Deliverables and outstanding work
 
-The updated progress deck and proposal include the full eight-run status. The negative dev result can now enter the final report. C2 remains unexecuted descriptive work; expert review remains unavailable; team proposal contributions remain TODO. No test-fold access, extra seeds, confirmation training, worker connection or publishing is performed in this update.
+The updated progress deck and proposal include the full eight-run status. The negative dev result can now enter the final report. C2 is complete and fails its frozen mechanism criterion; expert review remains unavailable; team proposal contributions remain TODO. No test-fold access, extra seeds, confirmation training, worker connection or publishing is performed in this update.
 
 Sources: [latest dev results](../results/VISIBILITY_SUPERVISION_DEV_2026-10-15.md), [stage V](stage_report_5/README.md), [stage IV](stage_report_4/README.md), [stage III](stage_report_3/README.md), [frozen visibility spec](../superpowers/specs/2026-10-14-visibility-supervision-design.md), [PM-Net concept](../proposals/RESEARCH_NEXT_2026-10-14-new-model-route.md).

@@ -88,7 +88,7 @@ E9 通过只允许提出完整 train/val 对照设计。它不等同于方法质
 
 **当前源码最终完整回归：501 passed、3 skipped、19,073 warnings，333.71秒，退出0。** 前一轮499passed/3skipped记录保留；新增空图修复与两项测试后重新执行全量测试。未修改指标或HoVer-Net、未升级依赖。有效GPU运行及逐图复核均完成；图已渲染并目视核验。
 
-执行中已发现并保留两项运行问题：LM2 完整回归在 `test_lkcell.py` 收集阶段缺少 `monai`（退出2），故改在 LM1 现有 monai1.3.2 环境完成；未安装或升级任何包。首个 E9 GPU 尝试在 A0 只读评估的空标注图上，因 NumPy 空数组默认浮点类型发生 TypeError（退出1），尚未进入优化循环。新增两项空图/边界统计回归，经历2RED→全部7GREEN，LM1/LM2均已核验。修正版只显式指定布尔类型，使用新的 `corrected/` 输出目录和来源哈希，不改变科学设计；见 [运行修正](../../ops/e9_local_20261017/corrected/code/RUNTIME_AMENDMENT.md)。这些运行错误不构成科学阴性。
+执行中已发现并保留两项运行问题：LM2 完整回归在 `test_lkcell.py` 收集阶段缺少 `monai`（退出2），故改在 LM1 现有 monai1.3.2 环境完成；未安装或升级任何包。首个 E9 GPU 尝试在 A0 只读评估的空标注图上，因 NumPy 空数组默认浮点类型发生 TypeError（退出1），尚未进入优化循环。新增两项空图/边界统计回归，经历2RED→全部7GREEN，LM1/LM2均已核验。修正版只显式指定布尔类型，使用新的 `corrected/` 输出目录和来源哈希，不改变科学设计；见 `ops/e9_local_20261017/corrected/code/RUNTIME_AMENDMENT.md` (local-only runtime amendment)。这些运行错误不构成科学阴性。
 
 ## 结果驱动的后续分岔
 

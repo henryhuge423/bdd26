@@ -1,72 +1,42 @@
-# 阶段报告五
+# Stage report V
 
-**分型缺口的可学习性检验与候选标签质量证据**
+**Learnability of the typing gap and evidence about candidate label quality**
 
-实验范围为 2026 年 10 月 9–12 日：分类上限诊断、T0–T3 分型探针（预注册未达到预注册条件）、
-E1 无专家修订执行（E1-C 检测器共识 + E1-M 模型预审）、E1-T 分型共识审计
-（Inf/Conn 标签模糊的检测器一致性证据）、E3 候选质量学习 dev 轮（按预注册规则停止该方向的实验）。
+Experiments cover October 9–12, 2026: the typing-oracle diagnostic; T0–T3 probes that fail preregistered admission; the E1 no-expert amendment (E1-C detector consensus and E1-M model review); E1-T typing consensus; and E3 candidate-quality development, closed by its stop rule.
 
-## 阅读入口
+## Reading guide
 
-- [中文正式版](stage_report_5_zh.pdf) · [TeX](stage_report_5_zh.tex)
-- [中文导读](summary_plain_zh.pdf)（面向零背景读者）· [TeX](summary_plain_zh.tex)
-- [English report](stage_report_5.pdf) · [TeX](stage_report_5.tex)
-- [独立核验快照](verified_numbers.json)：verify_report5.py 的重算结果
-  （oracle 与官方评测核对、重新计算通过条件的布尔值、E1-C 直方图/匹配率联表重算、
-  E1-M 一致率与 kappa 重算、E1-T 核对分组总数，检查区间是否包含点估计、E3 选择规则全行重放）
-- 逐表数字快照：`runs/analysis/report5_numbers.txt`（本地 `runs/`，不随 Git 分发）
-- 上游文档：[研究计划](../../RESEARCH_PLAN.md)、[10-09 建议稿](../../proposals/RESEARCH_NEXT_2026-10-09.md)、
-  [结构导读](../../background/STRUCTURE_AND_STRATEGY_2026-10-09.md)、
-  [本阶段预注册规格](../../superpowers/specs/)（T / E1 / E1-T / E3 四份）
+- [English report](stage_report_5.pdf) · [TeX](stage_report_5.tex).
+- [Chinese report](stage_report_5_zh.pdf) · [TeX](stage_report_5_zh.tex).
+- [Plain-language Chinese digest](summary_plain_zh.pdf) for readers new to the project · [TeX](summary_plain_zh.tex).
+- [Independent numerical verification](verified_numbers.json): `verify_report5.py` recomputation of oracle/evaluator agreement, admission booleans, E1-C histogram/matching joins, E1-M agreement/kappa, E1-T group counts and interval containment, and complete E3 selection replay.
+- Table-value snapshot: `runs/analysis/report5_numbers.txt` (local, not distributed with Git).
+- Related documents: [research plan](../../RESEARCH_PLAN.md), [October 9 proposal](../../proposals/RESEARCH_NEXT_2026-10-09.md), [model structure guide](../../background/STRUCTURE_AND_STRATEGY_2026-10-09.md), and [preregistered specifications](../../superpowers/specs/) for T / E1 / E1-T / E3.
 
-## 主要结论
+## Main conclusions
 
-- **上限诊断（10-09，只读审计）：** 固定实例几何、把 IoU>0.5 已匹配对象改成真值类别，
-  三划分 mPQ .4995→**.6632**；真值为 Inf/Conn 的子集 →**.6141**，约占全部增益七成
-  （选择按真值类别，非可加混淆分解）。该诊断读了历史测试预测，仅用于提出假设。
-- **T0–T3（10-10，预注册）：** 未达到通过条件。T2 最优 +.0002（CI 跨零）、T3 −.0017；
-  未加权线性头 Dead PQ −.0053 超出预设的容许幅度。真值区域诊断准确率 85.3% ≈ T2 匹配分型
-  85.8% ≈ 多数票 85.6%——线性读出与 TP 头用的是同一信息。冻结特征事后重分型
-  与此前 CONCH 负结果一并记录，该方向的实验结束。
-- **E1 转向（10-11）：** 缺少人类专家评审资源，评审路径因资源不足而未执行（材料包与义务保留）。
-  **E1-C**：13 席跨折评审团，合成空对照 ≥3 率 0.75%，而与 GT 零重叠候选
-  66–73% 获 ≥3 且跨折/跨架构支持（380/751 对 518/1146）——提示标注可能需要核查的
-  检测器一致性证据（不作生物学判断）；匹配率随支持度单调上升（0–2 票 5–12%，≥5 票 40–60%）。
-  **E1-M**：两轮模型盲评 kappa −.09～.35，不可用，仅流程验证。
-- **E1-T（10-12，预注册）：** 基模型分错的 6,858 个已匹配实例上，12 席评审团多数类
-  =基类 **72.5%** [.706,.742]，=真值类 18.2% [.167,.197]（区间分离）；分对实例上
-  对基模型正确分类实例的改判率 1.9%。Inf↔Conn 双向主要混淆组 74.8%/78.5%；GT=Epi/基=Neo 为真值占优的
-  例外；Dead 单列。**Inf/Conn 标签边界模糊的检测器一致性证据按预注册判读规则成立**。
-- **E3（10-12，预注册）：** 候选匹配概率可预测（CV AUC .721/.737），但 EF 选择规则的
-  strict Dead 门槛拒绝全部 16 个候选配置（最高 .1245 < .12957；A1 .1345），
-  三组方案退回 identity（不添加候选），两项条件均未通过——部分配置的官方指标改善伴随 strict Dead 下降
-  （a4_p0.5 strict Dead −.0130）。按预注册停止规则结束实验；若重开需图像级缺类风险特征。
+- **Oracle (October 9, read-only audit):** With instance geometry fixed, replacing types of IoU>0.5 matched objects by GT types raises three-split mPQ .4995 → **.6632**. Restricting correction to objects whose GT class is Inf/Conn gives **.6141**, about seven tenths of the total gain. Selection is by GT class, not an additive confusion decomposition. This diagnostic reads historical test predictions and motivates hypotheses only.
+- **T0–T3 (October 10, preregistered):** Admission fails. The best T2 gain is +.0002 with a CI crossing zero; T3 changes −.0017. The unweighted linear head lowers Dead PQ by −.0053, beyond the guard. GT-region accuracy 85.3% is close to T2 matched typing 85.8% and majority-vote typing 85.6%; the simple linear readout adds no useful information over the TP head. Frozen-feature post-hoc typing closes alongside the earlier CONCH negatives.
+- **E1 amendment (October 11):** Human expert resources are unavailable. Human review closes unexecuted, with the packet and obligation retained. **E1-C:** a 13-seat cross-fold jury gives synthetic null candidates ≥3 support at 0.75%, whereas 66–73% of zero-GT-overlap candidates have ≥3 support across folds/architectures (380/751 versus 518/1146). This is detector-consensus evidence motivating label review, not a biological judgment. Matching increases with support: 5–12% at 0–2 votes and 40–60% at ≥5 votes. **E1-M:** two model-review rounds yield kappa −.09 to .35; model review is unusable and establishes process validation only.
+- **E1-T (October 12, preregistered):** Among 6,858 matched objects mistyped by the base model, the 12-seat jury's majority agrees with the base type in **72.5%** [.706,.742], versus the GT type in 18.2% [.167,.197]; intervals are separated. The reversal rate among objects correctly typed by the base model is 1.9%. The main Inf↔Conn groups show 74.8%/78.5%; GT=Epi/base=Neo is an exception favouring GT. Dead is reported separately. The preregistered interpretation supports detector-consensus evidence of an Inf/Conn label-boundary ambiguity; it does not establish biological truth.
+- **E3 (October 12, preregistered):** Candidate matching is predictable (CV AUC .721/.737), but the EF strict-Dead guard rejects all 16 candidate configurations: maximum .1245 < .12957, versus A1 .1345. All three arms fall back to identity, adding no candidates, and both gates fail. Some official-metric improvements accompany lower strict Dead (a4_p0.5: −.0130). The line closes under its stop rule. A reopened proposal would need image-level class-absence-risk features.
 
-数据边界：T/E1-C/E1-M/E1-T/E3 未读测试折；仅拟合线性分类器和逻辑回归，未新增分割模型训练；E1-C 含两席 HoVer-Net
-验证折推理；上限诊断为只读的历史测试产物访问。本阶段没有新的三划分测试成绩。
+Data boundaries: T/E1-C/E1-M/E1-T/E3 do not read test folds. They fit linear classifiers/logistic regressions without new segmentation-model training. E1-C includes validation-fold inference by two HoVer-Net jury seats. The oracle alone accesses historical test artifacts read-only. This stage adds no new three-split test performance.
 
-## 数字如何核验
+## Numerical verification
 
-- `python scripts/report5_numbers.py`：五份冻结产物逐表导出（含零重叠分层的联表重导，
-  该计数在 consensus.json 中只有聚合值）。
-- `python scripts/verify_report5.py`：从最底层产物独立重算——oracle 当前值与官方
-  基线评测逐位一致；T 判定条件的布尔值由存储值重推；T0（现行多数票）匹配分型准确率
-  85.6% 由冻结预测按官方配对重算（results.json 只存 T1/T2 两值）；E1-C 直方图/匹配率由
-  `per_candidate.npz` × 冻结候选记录重算；E1-M 一致率/kappa 由两轮 CSV 重算；
-  E1-T 分组总数守恒且区间括住点估计、基模型输入 SHA 与磁盘一致；E3 选择规则
-  在全部行上重放并与冻结选择一致——不一致即报错退出。
-- `python scripts/make_report_figures5.py`：三张图（E1-C 支持度、E1-T 归属、
-  E3 严格指标）中英双版 + 冻结 CSV。
-- `python -m pytest -q`：**335 passed**（本阶段净增 58；2026-10-13 本机复跑确认）。
-- E1-T/E3 终版产物在独立评审后重跑，与首版逐位一致（E3 除 bootstrap mPQ 列
-  口径修正为官方 NaN 排除外）；文档-产物审计 56 项通过。
-- bootstrap 区间沿用冻结结果，未重新抽样。
+- `python scripts/report5_numbers.py`: extracts tables from five frozen artifact sets, including joined zero-overlap strata whose counts are only aggregated in `consensus.json`.
+- `python scripts/verify_report5.py`: independently recomputes from the lowest-level artifacts. Oracle values match the official baseline evaluation exactly; T admission booleans are recomputed from stored quantities; T0 majority-vote accuracy 85.6% is recalculated using official pairing because `results.json` stores only T1/T2. E1-C histograms/matching use `per_candidate.npz` joined to frozen candidate records. E1-M agreement/kappa use both CSV rounds. E1-T group totals, interval containment and input SHA are checked. E3 selection is replayed on every row against the frozen choice; discrepancies cause failure.
+- `python scripts/make_report_figures5.py`: produces three English/Chinese figures (E1-C support, E1-T label agreement, E3 strict metrics) and frozen CSVs.
+- Historical `python -m pytest -q`: **335 passed**, a net increase of 58 tests, rerun locally on 2026-10-13.
+- Final E1-T/E3 artifacts were rerun after independent review and match the initial artifacts exactly, except that E3 bootstrap mPQ was corrected to official NaN exclusion. All 56 document/artifact audit checks passed.
+- Bootstrap intervals reuse frozen results without new resampling.
 
-图表与 CSV 在 `figs/`：`e1c_support.csv`、`e1t_pairs.csv`、`e3_strict.csv`。
+Figures and CSVs are in `figs/`: `e1c_support.csv`, `e1t_pairs.csv`, `e3_strict.csv`.
 
-## 复现与构建
+## Reproduction and builds
 
-在仓库根目录、项目固定依赖环境（Python 3.10、torch 2.5.1+cu124、numpy 1.23.5）执行：
+Run from the repository root in the pinned environment (Python 3.10, torch 2.5.1+cu124, numpy 1.23.5):
 
 ```bash
 python scripts/report5_numbers.py
@@ -75,6 +45,4 @@ python scripts/make_report_figures5.py
 python -m pytest -q
 ```
 
-`figs/` 自含，PDF 由带 ctex/Fandol/xeCJK 的 TeX Live 编译（EN 两遍 pdflatex，
-ZH 两遍 xelatex）；构建记录在本目录 `build_verification.json`，机器与操作细节
-仅存本地 `ops/`。
+`figs/` is self-contained. PDFs use TeX Live with ctex/Fandol/xeCJK: two `pdflatex` passes for English and two `xelatex` passes for Chinese. Historical builds are recorded in `build_verification.json`; machine details remain in ignored `ops/`. The 2026-10-26 Markdown translation does not rebuild or alter the PDFs, TeX sources, figures or verification snapshots. Historical test counts are not fresh results for this edit. See the [current results index](../../results/README.md) for later experiments.

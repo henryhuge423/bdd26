@@ -1,587 +1,384 @@
-> **2026-10-26 P15 closed / P16 submitted:** P15allfour130epochsCOMPLETED0:0;45files40payloads,all395deployedsourcehashes and520translationrecords verified. Bothoriginalgatesfail: internalDead-.193103/-.089655,precisionrisesbutfit/auditcoveragefalls. [P15 result](results/PROPOSAL_P15_RESULTS_2026-10-26.md), [P3–P15 synthesis](results/PROPOSAL_PROGRESS_2026-10-26.md). P16directGaussianregression C/R×19/1,originalcohort/model/LR/130epochs/decode/gate; V100smoke55287339COMPLETED0:0,258nodechecks and strictreadyPASS. Formalarray55287551submittedonce2026-10-26T05:29:54.529735Z,concurrency2,max48GPUhours; submissionisnottrainingcompletion. [Protocol](results/PROPOSAL_P16_SUBMISSION_2026-10-26.md). Reusedfold1developmentpointmetrics,notPQ/test. NoautomaticPhaseB/masks/menus. Prior dated entries below are historical.
+# Research plan: PanNuke Nuclei Instance Segmentation and Verifiable Failure Mechanisms
 
-> **2026-10-25 P15 submitted:** fixedtrainingtranslationC/J×19/1,fourfresh130epochs; V100smoke55278688COMPLETED/0:0,strictready and realcontrol/geometry/AMP/reload/frozen/time checksPASS. Formalarray55278753single submission,concurrency2,max48GPUhours; submission isnotcompletedtraining. [Protocol](results/PROPOSAL_P15_SUBMISSION_2026-10-25.md). P14 closedbothgates; priorrecipesremainclosed. Reusedfold1developmentpointmetrics,notPQ/test.
+For the latest evidence and Git branch map, see the [October 26 audit](audits/DOCUMENTATION_RESULTS_GIT_AUDIT_2026-10-26.md)
+and [results index](results/README.md). Current P16 completion was not queried in this documentation audit.
+Dated execution statements retain their original historical scope.
 
-> **2026-10-25 P14 closed / P15 validation:** P14 array55270432 all four130epoch runs COMPLETED/0:0; original gate fails BOTH seeds. EncoderLR1e-6 raises precision but internalDead falls -.068966/-.089655 and overall recall falls -.088327/-.120082. Close exact low-LR recipe. [Detailed result](results/PROPOSAL_P14_RESULTS_2026-10-25.md). P15 independently freezes training translation +/-16 with white fill and retained-object target/count, original encoderLR1e-5/model/loss/decode/admission, freshC/J×19/1. LM1focused227passed; V100smoke55278688 validation pending. Reusedfold1 point development, notPQ/test; no automaticPhaseB/masks/extra menus. Prior dated statuses below are historical.
+> **2026-10-26 P15 closed / P16 submitted:** All four P15 runs completed 130 epochs with exit status 0:0. The 45 files and 40 payloads were checked; all 395 deployed source hashes and 520 translation records were verified. Both original gates failed: internal-Dead changes were −0.193103/−0.089655. Precision rose, while fit and audit coverage fell. See [P15 results](results/PROPOSAL_P15_RESULTS_2026-10-26.md) and the [P3–P15 synthesis](results/PROPOSAL_PROGRESS_2026-10-26.md). P16 is direct Gaussian regression, C/R × seeds 19/1, with the original cohort, model, learning rate, 130 epochs, decoding, and admission gate. V100 smoke job 55287339 completed with exit status 0:0; 258 node checks and strict readiness passed. Formal array 55287551 was submitted once at 2026-10-26T05:29:54.529735Z, with concurrency 2 and a 48 GPU-hour maximum. Submission does not mean training is complete. See the [P16 protocol](results/PROPOSAL_P16_SUBMISSION_2026-10-26.md). These are development point metrics on reused fold-1 data, not PQ or test results. No automatic Phase B, masks, or parameter menus are authorized. All dated entries below are historical snapshots.
 
-> **2026-10-25 P14 submitted:** fixedencoderLR1e-6 vsoriginal1e-5,C/L×19/1,fourfresh130epochs; V100smoke55270073COMPLETED/0:0,214nodechecks,exactcontrolparity/actualLR/AMP/reload/frozen/time/strictready PASS. Formalarray55270432submittedonce2026-10-25T04:16:21.488338-04:00,concurrency2,max48GPUhours. Submissionisnotcompletedtraining. [Protocol](results/PROPOSAL_P14_SUBMISSION_2026-10-25.md), [P3–P13 synthesis](results/PROPOSAL_PROGRESS_2026-10-25.md). Reusedfold1development,notPQ/test.
+> **2026-10-25 P15 submitted:** Fixed training translation C/J × seeds 19/1, four fresh 130-epoch runs. V100 smoke 55278688 completed with exit status 0:0; strict readiness and real-control, geometry, AMP, reload, frozen-tensor, and timing checks passed. Formal array 55278753 was submitted once, with concurrency 2 and a 48 GPU-hour maximum. Submission does not mean training is complete. See the [protocol](results/PROPOSAL_P15_SUBMISSION_2026-10-25.md). P14 failed both gates; prior recipes remain closed. These are development point metrics on reused fold-1 data, not PQ or test results.
 
-> **2026-10-25 P13 closed:** all four130epoch runs COMPLETED/0:0; fixed25%rare-positive replacement worsens audit Dead recall by .137931/.048276 despite fit recall .998476/1; both original gates fail. [Final result](results/PROPOSAL_P13_RESULTS_2026-10-25.md). P14 independently freezes encoderLR1e-6 vs original1e-5 with same last12 blocks; validation/submission pending. Reusedfold1development,notPQ/test.
+> **2026-10-25 P14 closed / P15 validation:** All four P14 array 55270432 runs completed 130 epochs with exit status 0:0; the original gate failed for both seeds. Encoder learning rate 1e-6 increased precision, while internal-Dead fell by −0.068966/−0.089655 and overall recall fell by −0.088327/−0.120082. Close this exact low-learning-rate recipe. See the [detailed results](results/PROPOSAL_P14_RESULTS_2026-10-25.md). P15 independently freezes training translation ±16 with white fill and retained-object targets/counts, while preserving the original encoder learning rate 1e-5, model, loss, decoding, and admission gate. Fresh C/J × seeds 19/1. LM1 focused checks: 227 passed; V100 smoke 55278688 validation was pending at this historical checkpoint. Reused fold-1 development data only; not PQ or test results. No automatic Phase B, masks, or extra parameter menus. Earlier dated status entries are historical.
 
-> **2026-10-24 evening P12 closed; P13 submitted:** P12 four130epoch runs completed and both original gates failed (Dead -.034483/-.027586); fixed dropout recipe closed. P13 fixed25%position replacement from rare-positive fit images C/S×seeds19/1 passed real V100 smoke55262502; array55262695 submitted once2026-10-24T18:41:22.310662-04:00,concurrency2,max48GPUhours. Submission is not completedtraining. Originalcohort/loss/model/lastcheckpoint/decode/admission unchanged. Reusedfold1development,notPQ/test. [P12 final result](results/PROPOSAL_P12_RESULTS_2026-10-24.md), [P13 protocol and submission](results/PROPOSAL_P13_SUBMISSION_2026-10-24.md).
+> **2026-10-25 P14 submitted:** Fixed encoder learning rate 1e-6 versus the original 1e-5, C/L × seeds 19/1, four fresh 130-epoch runs. V100 smoke 55270073 completed with exit status 0:0; 214 node checks, exact-control parity, actual learning rate, AMP, reload, frozen-tensor, timing, and strict-readiness checks passed. Formal array 55270432 was submitted once at 2026-10-25T04:16:21.488338-04:00, with concurrency 2 and a 48 GPU-hour maximum. Submission does not mean training is complete. See the [protocol](results/PROPOSAL_P14_SUBMISSION_2026-10-25.md) and [P3–P13 synthesis](results/PROPOSAL_PROGRESS_2026-10-25.md). Reused fold-1 development data; not PQ or test results.
 
-> **2026-10-23 evening P11 submitted:** fixed positive focal mass redistribution C/G x seeds19/1, four fresh130epoch runs; array55244166,concurrency2,max48GPUhours. V100smoke55243478COMPLETED/0:0,139focusedchecks,originalC parity/G analytic gradients/AMP/reload/frozen tensors/timing/strictready verified. Submission is not completed training. [Protocol and limits](results/PROPOSAL_P11_SUBMISSION_2026-10-23.md). P10 closed by original gate. Reusedfold1development,notPQ/test.
+> **2026-10-25 P13 closed:** All four 130-epoch runs completed with exit status 0:0. Fixed 25% rare-positive replacement worsened audit Dead recall by 0.137931/0.048276 despite fit recall of 0.998476/1; both original gates failed. See the [final results](results/PROPOSAL_P13_RESULTS_2026-10-25.md). P14 independently freezes encoder learning rate 1e-6 versus the original 1e-5 with the same last 12 blocks; validation/submission was pending at that historical checkpoint. Reused fold-1 development data; not PQ or test results.
 
-> **2026-10-23 evening P10 closed:** four130epoch runs completed and preservation hashes verified. Originaladmission=false bothseeds; S(last4)−C(last12) internalDead+.027586/−.013793, both95%CIs span0, overallrecall falls~.041. Close last4 recipe; no expansion. [Finalresults](results/PROPOSAL_P10_RESULTS_2026-10-23.md). Reusedfold1development,notPQ/test.
+> **2026-10-24 evening P12 closed; P13 submitted:** All four P12 130-epoch runs completed and both original gates failed (Dead −0.034483/−0.027586); the fixed dropout recipe is closed. P13 fixed 25% position replacement from rare-positive fit images, C/S × seeds 19/1, passed real V100 smoke 55262502. Array 55262695 was submitted once at 2026-10-24T18:41:22.310662-04:00, with concurrency 2 and a 48 GPU-hour maximum. Submission does not mean training is complete. The original cohort, loss, model, last checkpoint, decoding, and admission gate are unchanged. Reused fold-1 development data; not PQ or test results. See [P12 final results](results/PROPOSAL_P12_RESULTS_2026-10-24.md) and the [P13 protocol and submission](results/PROPOSAL_P13_SUBMISSION_2026-10-24.md).
 
-> **2026-10-23 P10 submitted:** restrictedencoderadaptation C(last12)/S(last4),seeds19/1,fourfresh130epochs,formalarray55227144,concurrency2. V100smoke55226781COMPLETED/0:0,119focusedtests/parity/frozenparameter/reload/AMP/timingandstrictreadyverified. Submissionisnotcompletedtraining. [Submissionandprotocol](results/PROPOSAL_P10_SUBMISSION_2026-10-23.md). P9closedbyoriginalgate;reusedfold1development,notPQ/test.
+> **2026-10-23 evening P11 submitted:** Fixed positive focal-mass redistribution, C/G × seeds 19/1, four fresh 130-epoch runs; array 55244166, concurrency 2, maximum 48 GPU-hours. V100 smoke 55243478 completed with exit status 0:0; 139 focused checks verified original-C parity, G analytic gradients, AMP, reload, frozen tensors, timing, and strict readiness. Submission does not mean training is complete. See the [protocol and limits](results/PROPOSAL_P11_SUBMISSION_2026-10-23.md). P10 was closed by the original gate. Reused fold-1 development data; not PQ or test results.
 
-> **2026-10-23 P9 closed:** all four130epoch runs completed; originaladmission=false inbothseeds. Dead-positiveweight4 changes+.006897/+.048276 butfailsabsoluteDead/precisionandCIgates. [Auditedresults](results/PROPOSAL_P9_RESULTS_2026-10-23.md). P10restrictedencoderadaptation independentlyfrozen andsubmitted;see latestentry. Reusedfold1development,notPQ/test.
+> **2026-10-23 evening P10 closed:** All four 130-epoch runs completed and preservation hashes were verified. The original admission gate was false for both seeds. S(last 4) − C(last 12) internal-Dead changes were +0.027586/−0.013793; both 95% confidence intervals span zero, and overall recall falls by about 0.041. Close the last-4 recipe; do not expand it. See the [final results](results/PROPOSAL_P10_RESULTS_2026-10-23.md). Reused fold-1 development data; not PQ or test results.
 
-> **2026-10-22 evening:** P7/P8 eight130epoch runs completed and both original two-seed gates failed. [Final results](results/PROPOSAL_P7_P8_RESULTS_2026-10-22.md). P9 fixedDead-center positiveweight4 control passed98focusedchecks and realV100 smoke55208331; formal array **55208619** submitted once19:55:04 EDT,fourfresh130epoch runs. [Submission and limits](results/PROPOSAL_P9_SUBMISSION_2026-10-22.md). Training completion is not claimed; no automaticPhaseB/masks/confirmation.
+> **2026-10-23 P10 submitted:** Restricted encoder adaptation, C(last 12)/S(last 4), seeds 19/1, four fresh 130-epoch runs, formal array 55227144, concurrency 2. V100 smoke 55226781 completed with exit status 0:0; 119 focused checks verified parity, frozen parameters, reload, AMP, timing, and strict readiness. Submission does not mean training is complete. See the [submission and protocol](results/PROPOSAL_P10_SUBMISSION_2026-10-23.md). P9 was closed by the original gate. Reused fold-1 development data; not PQ or test results.
 
-> **2026-10-22 P7 partial / P8 submitted:** P7 seed19 C/J completed130epochs; J-C internalDead+.034483,CI[+.005435,+.079646],but Dead.524138,precision.714244 and gain remain below original gates. Seed1 remains running; full closeout pending. Independently frozen P8 image/object loss normalization C/I x seeds19/1 passed real V100 smoke55191831; formal array55191961 submitted once,concurrency2,max48GPU-hours. Submission is not completion. No PhaseB,masks or fold2/fold3 model evaluation. [P7 partial results](results/PROPOSAL_P7_PROGRESS_2026-10-22.md), [P8 submission](results/PROPOSAL_P8_SUBMISSION_2026-10-22.md).
+> **2026-10-23 P9 closed:** All four 130-epoch runs completed; the original admission gate was false for both seeds. Dead-positive-weight 4 changed results by +0.006897/+0.048276, but failed the absolute Dead, precision, and confidence-interval gates. See the [audited results](results/PROPOSAL_P9_RESULTS_2026-10-23.md). P10's restricted encoder adaptation was independently frozen and submitted; see its latest entry. Reused fold-1 development data; not PQ or test results.
 
-> **2026-10-21 P6 closed / P7 submitted:** All four P6 130-epoch runs completed; original bandwidth admission failed in both seeds (Dead +.02069 each, absolute .48966 and precision .66035/.67345). Independent P7 training-only RGB gains, C/J × seeds19/1, preserve the original cohort, targets, model, decode and gate. V100 smoke 55175430 passed; formal array 55176183 was submitted once: four tasks, concurrency2, maximum48 GPU-hours. Submission is not completion. No Phase B, masks or fold2/fold3 model evaluation. [P6 results](results/PROPOSAL_P6_RESULTS_2026-10-21.md), [P7 submission](results/PROPOSAL_P7_SUBMISSION_2026-10-21.md).
+> **2026-10-22 evening:** The eight P7/P8 130-epoch runs completed, and both original two-seed gates failed. See the [final results](results/PROPOSAL_P7_P8_RESULTS_2026-10-22.md). P9's fixed Dead-center positive weight 4 control passed 98 focused checks and real V100 smoke 55208331. Formal array 55208619 was submitted once at 19:55:04 EDT for four fresh 130-epoch runs. Training completion is not claimed. No automatic Phase B, masks, or confirmation round. See the [P9 submission and limits](results/PROPOSAL_P9_SUBMISSION_2026-10-22.md).
 
-> **2026-10-21 P5 closeout:** all four130epoch L/R x seeds19/1 completed. Original admission=false in both seeds: R-L internalDead recall0.000000/-.006897, paired95%CI[-.032680,+.053846]/[-.031579,+.013514]; R unique precision.685397/.691238. Fit recall>.98/precision>.998 does not transfer. Close this matched-capacity native-grid refinement recipe. See [P5 results](results/PROPOSAL_P5_RESULTS_2026-10-21.md). Independent P6 center-target bandwidth control passed real V100 smoke55148203 and was submitted once as array55148533 at09:56:52EDT, C/W x seeds19/1, four130epoch runs/concurrency2; initialPENDING, results pending. No PhaseB/fold2/fold3 model evaluation.
+> **2026-10-22 P7 partial / P8 submitted:** P7 seed 19 C/J completed 130 epochs; J−C internal-Dead change was +0.034483, CI [+0.005435,+0.079646], but Dead 0.524138, precision 0.714244, and the gain remained below the original gates. Seed 1 was still running; full closeout was pending. See [P7 partial results](results/PROPOSAL_P7_PROGRESS_2026-10-22.md). Independently frozen P8 image/object loss normalization C/I × seeds 19/1 passed real V100 smoke 55191831; formal array 55191961 was submitted once, concurrency 2, maximum 48 GPU-hours. Submission is not completion. No Phase B, masks, or fold2/fold3 model evaluation. See the [P8 submission](results/PROPOSAL_P8_SUBMISSION_2026-10-22.md).
 
-> **2026-10-20 P5 submitted:** array55128210, L/R x seeds19/1, fresh130epochs, fold1-only, unchanged original admission; no automatic PhaseB. Initial allPENDING. V100 smoke55128179 COMPLETED/0:0,40focused tests, real gradients/reloads/precision/cohort/source bindings verified; runtime safety estimates7.31/8.43h below12h. P4 foreground-BCE recipe remains closed (both seeds fail). [P4 results](results/PROPOSAL_P4_PHASE_A_2026-10-20.md), [P5 submission and operational limits](results/PROPOSAL_P5_SUBMISSION_2026-10-20.md).
+> **2026-10-21 P6 closed / P7 submitted:** All four P6 130-epoch runs completed; the original bandwidth admission gate failed for both seeds (Dead +0.02069 each, absolute 0.48966, and precision 0.66035/0.67345). See the [P6 results](results/PROPOSAL_P6_RESULTS_2026-10-21.md). Independent P7 training-only RGB gains, C/J × seeds 19/1, preserve the original cohort, targets, model, decoding, and gate. V100 smoke 55175430 passed; formal array 55176183 was submitted once for four tasks, concurrency 2, maximum 48 GPU-hours. Submission is not completion. No Phase B, masks, or fold2/fold3 model evaluation. See the [P7 submission](results/PROPOSAL_P7_SUBMISSION_2026-10-21.md).
 
-> **2026-10-18 E19 closed (dev, negative):** adding a high-resolution CNN adapter to the finest decoder skip of the CellViT-UNI baseline (`skip0(x) + hires(x)`, zero-init) did not improve internal-Dead recall. Four matched runs (B0/H x seeds 19/1, fold1->fold2, last checkpoint, no TTA) on LM2: interior-Dead max-IoU>.5 matched change mean -0.0081 (per seed -0.0229/+0.0067; 95% CI [-0.0226, +0.0074]), official Dead PQ change mean -0.0018 (both seeds lower), and strict mPQ fell -0.00242 in seed 19 (below the -0.002 floor). Clause-4 cost passed (forward-only ratio 0.76). Verdict `dev_admission=false`; per the frozen rule the recipe closes. Secondary: merge rate fell slightly (mean -0.0011) and strict Dead PQ rose (mean +0.0081). Result `docs/results/HIRES_ADAPTER_E19_DEV_2026-10-18.md`. fold3 never read; LM1 GPU2 unused.
+> **2026-10-21 P5 closeout:** All four 130-epoch L/R × seeds 19/1 runs completed. The original admission gate was false for both seeds: R−L internal-Dead recall 0.000000/−0.006897, paired 95% CIs [−0.032680,+0.053846]/[−0.031579,+0.013514]; R unique precision 0.685397/0.691238. Fit recall >0.98 and precision >0.998 did not transfer. Close this matched-capacity native-grid refinement recipe. See the [P5 results](results/PROPOSAL_P5_RESULTS_2026-10-21.md). Independent P6 center-target bandwidth control passed real V100 smoke 55148203 and was submitted once as array 55148533 at 09:56:52 EDT, C/W × seeds 19/1, four 130-epoch runs, concurrency 2; initially PENDING. No Phase B or fold2/fold3 model evaluation.
 
-# 研究计划：PanNuke 细胞核实例分割与可验证的失败机制
+> **2026-10-20 P5 submitted:** Array 55128210, L/R × seeds 19/1, fresh 130 epochs, fold1 only, unchanged original admission gate; no automatic Phase B. Initially all PENDING. V100 smoke 55128179 completed with exit status 0:0; 40 focused tests verified real gradients/reloads, precision, cohort, and source bindings. Runtime safety estimates were 7.31/8.43 hours, below 12 hours. P4 foreground-BCE recipe remains closed (both seeds failed). See [P4 results](results/PROPOSAL_P4_PHASE_A_2026-10-20.md) and [P5 submission and operational limits](results/PROPOSAL_P5_SUBMISSION_2026-10-20.md).
 
-2026-10-17 E17/E18 closeout: the sparse point detector emitted zero proposals; the dense voting detector emitted thousands with only 3.5–4.3% fit and 3.5–3.7% audit precision. Both fail the new-cohort allocation/A0 gates. GT-point readout fitting is diagnostic only. No large training or E18 validation/test. [E7–E18 synthesis](results/QUERY_POINT_CLOSEOUT_E7_E18_2026-10-17.md), [E17](results/PREDICTED_POINTS_E17_DIAGNOSTIC_2026-10-17.md), [E18](results/DENSE_VOTES_E18_DIAGNOSTIC_2026-10-17.md).
+> **2026-10-18 E19 closed (development, negative):** Adding a high-resolution CNN adapter to the finest decoder skip of the CellViT-UNI baseline (`skip0(x) + hires(x)`, zero-initialized) did not improve internal-Dead recall. Four matched runs (B0/H × seeds 19/1, fold1→fold2, last checkpoint, no TTA) on LM2: interior-Dead max-IoU >0.5 matched change mean −0.0081 (per seed −0.0229/+0.0067; 95% CI [−0.0226,+0.0074]); official Dead PQ change mean −0.0018 (both seeds lower); strict mPQ fell −0.00242 in seed 19 (below the −0.002 floor). Clause-4 cost passed (forward-only ratio 0.76). Verdict: `dev_admission=false`; under the frozen rule, the recipe closes. Secondary results: merge rate fell slightly (mean −0.0011), and strict Dead PQ rose (mean +0.0081). See `docs/results/HIRES_ADAPTER_E19_DEV_2026-10-18.md`. Fold3 was never read; LM1 GPU2 was unused.
 
-2026-10-17 E12/E13: GT-assisted fixed-feature fitting witness passes (Dead86.32/87.37%), not method admission; freezing mask projection fails both quality gates. E14 exact-native matching was completed later; exact matching did not pass the allocation or A0 guard. No large training. [E12](results/FREE_MASK_E12_DIAGNOSTIC_2026-10-17.md), [E13](results/STABLE_MASK_E13_DEV_2026-10-17.md).
+## Research progress and historical plan
 
-E11 (2026-10-17): four-stage auxiliary supervision failed both original allocation and A0 guards (two seeds,300steps). Full CPU:512passed/3skipped. No large training. [Results](results/AUX_QUERY_E11_DEV_2026-10-17.md).
+2026-10-17 E17/E18 closeout: the sparse point detector emitted zero proposals; the dense voting detector emitted thousands, with fit precision of 3.5–4.3% and audit precision of 3.5–3.7%. Both failed the new-cohort allocation/A0 gates. Ground-truth point-readout fitting is diagnostic only. No large training or E18 validation/test was run. See [E7–E18 synthesis](results/QUERY_POINT_CLOSEOUT_E7_E18_2026-10-17.md), [E17](results/PREDICTED_POINTS_E17_DIAGNOSTIC_2026-10-17.md), and [E18](results/DENSE_VOTES_E18_DIAGNOSTIC_2026-10-17.md).
 
-> **2026-10-17 E10:** Predicted-mask constrained attention fails both train-only allocation gates and the separate A0 guard. Audit Dead recall M-G changes -.067511/+.008439; overall recall -.095944/-.056694. A0 reproduced exactly in both seeds before reusing E9 G. Stop this300-step recipe; no expanded training. Full regression507passed/3skipped. [E10 results and mechanism limits](results/MASKED_QUERY_E10_DEV_2026-10-17.md).
+2026-10-17 E12/E13: the ground-truth-assisted fixed-feature fitting witness passed (Dead 86.32/87.37%); this is not method admission. Freezing the mask projection failed both quality gates. E14 exact-native matching was completed later; exact matching did not pass the allocation or A0 guard. No large training. See [E12](results/FREE_MASK_E12_DIAGNOSTIC_2026-10-17.md) and [E13](results/STABLE_MASK_E13_DEV_2026-10-17.md).
 
-> **2026-10-17 E9:** Local-content initialization fails the frozen train-only allocation gate in both seeds. L-G audit Dead recall gains are +.004219/+.018987, with precision losses -.027199/-.023349; fit recall .134321/.168889. Both adapted arms also underperform frozen A0 on audit geometry. Stop this recipe; no full train/val or large training. Current-source regression501passed/3skipped. [Full E9 review](results/LOCAL_QUERY_E9_DEV_2026-10-17.md).
+E11 (2026-10-17): four-stage auxiliary supervision failed both original allocation and A0 guards (two seeds, 300 steps). Full CPU suite: 512 passed/3 skipped. No large training. See [results](results/AUX_QUERY_E11_DEV_2026-10-17.md).
 
-> **2026-10-17 E8a/E8b:** The frozen classifier-only probe fails allocation: fit foreground accuracy95.17%/97.58%, audit foreground changes-7.69/-6.87pp and final geometric recall gains+2.20/+2.47pp. Stop this balanced-head recipe. Separate original-model audit of all65Dead-positive fold1 images/967objects finds raw-mask matches35.57%/36.40%, final typed matches2.79%/12.20%. These are train-only diagnostics, not validation/test performance. [Full mechanism review](results/QUERY_MECHANISM_2026-10-17.md).
+> **2026-10-17 E10:** Predicted-mask-constrained attention failed both train-only allocation gates and the separate A0 guard. Audit Dead recall M−G changes: −0.067511/+0.008439; overall recall: −0.095944/−0.056694. A0 was reproduced exactly for both seeds before reusing E9 G. Stop this 300-step recipe; no expanded training. Full regression: 507 passed/3 skipped. See [E10 results and mechanism limits](results/MASKED_QUERY_E10_DEV_2026-10-17.md).
 
+> **2026-10-17 E9:** Local-content initialization failed the frozen train-only allocation gate for both seeds. L−G audit Dead recall gains were +0.004219/+0.018987, with precision losses of −0.027199/−0.023349; fit recall was 0.134321/0.168889. Both adapted arms also underperformed frozen A0 on audit geometry. Stop this recipe; no full train/validation or large training. Current-source regression: 501 passed/3 skipped. See the [full E9 review](results/LOCAL_QUERY_E9_DEV_2026-10-17.md).
 
-> **2026-10-17 E7 review:** All four 130-epoch runs and final-checkpoint fold2 evaluations are complete. Slower decay does not rescue Q (two-seed mPQ .087958 vs matched B .472939). A new fixed-train-batch audit localizes substantial loss between assigned raw masks and query retention/overlap resolution; this is diagnostic, not method performance. The independent clean-GPU closeout is complete (exit0): all quality gates fail, interior-Dead matching change -.528340 [95%CI -.589426,-.468664]; cost passes (Q/B .738576/.764427). Preserve the failed recipe; no expansion. [Detailed E7 review](results/SET_MASK_E7_DEV_2026-10-17.md).
+> **2026-10-17 E8a/E8b:** The frozen classifier-only probe failed allocation: fit foreground accuracy was 95.17%/97.58%, audit foreground changes were −7.69/−6.87 percentage points, and final geometric recall gains were +2.20/+2.47 percentage points. Stop this balanced-head recipe. A separate original-model audit of all 65 Dead-positive fold1 images/967 objects found raw-mask matches of 35.57%/36.40% and final typed matches of 2.79%/12.20%. These are train-only diagnostics, not validation/test performance. See the [full mechanism review](results/QUERY_MECHANISM_2026-10-17.md).
 
+> **2026-10-17 E7 review:** All four 130-epoch runs and final-checkpoint fold2 evaluations are complete. Slower decay did not rescue Q (two-seed mPQ 0.087958 vs matched B 0.472939). A new fixed-train-batch audit localizes substantial loss between assigned raw masks and query retention/overlap resolution; this is diagnostic, not method performance. The independent clean-GPU closeout completed (exit 0): all quality gates failed, interior-Dead matching change −0.528340 [95% CI −0.589426 to −0.468664]; cost passed (Q/B 0.738576/0.764427). Preserve the failed recipe; do not expand it. See the [detailed E7 review](results/SET_MASK_E7_DEV_2026-10-17.md).
 
-> **2026-10-16 E6 closeout:** All four final-checkpoint fold2 runs and frozen analysis complete; Q fails every quality gate (mean interior-Dead matching change -.507422, 95%CI[-.563164,-.451449]) while passing latency. The train-only learning-rate restoration probe supports allocating a separate E7 gamma.99 schedule control, not a generalization or causal claim. [Results and next decisions](results/SET_MASK_E6_DEV_2026-10-16.md).
+> **2026-10-16 E6 closeout:** All four final-checkpoint fold2 runs and frozen analysis are complete. Q failed every quality gate (mean interior-Dead matching change −0.507422, 95% CI [−0.563164,−0.451449]) while passing latency. The train-only learning-rate restoration probe supports allocating a separate E7 gamma 0.99 schedule control; it does not support a generalization or causal claim. See [results and next decisions](results/SET_MASK_E6_DEV_2026-10-16.md).
 
-> **2026-10-15 实例表示前置实验：**
+> **2026-10-15 instance-representation prerequisite experiments:**
 
-> 已完成 fold1 全量训练标签的点邻域与掩码表示 CPU 审计。stride4 硬块掩码上界涉及29/801内部Dead，stride8涉及373/801；该上界不适用于双线性logits或原生细化，也不能解释为现有模型漏检原因。已区分HV30训练门与推理面积过滤。下一步建议先冻结“基本集合查询+高分辨率掩码”的最小对照，点初始化等后置；当前无新训练。[完整结果](results/POINT_MASK_FEASIBILITY_2026-10-15.md)与[待审阅草案](proposals/RESEARCH_NEXT_2026-10-15-instance-representation.md)。
+> A CPU audit of point neighborhoods and mask representations on all fold1 training labels is complete. The stride-4 hard-block mask upper bound concerns 29/801 interior Dead objects; stride 8 concerns 373/801. These bounds do not apply to bilinear logits or native refinement and do not explain misses by the current model. The HV30 training gate has been distinguished from inference area filtering. The next recommendation was to freeze a minimal control combining basic set queries with high-resolution masks, with point initialization deferred; no new training was underway at that historical date. See [full results](results/POINT_MASK_FEASIBILITY_2026-10-15.md) and the [draft for review](proposals/RESEARCH_NEXT_2026-10-15-instance-representation.md).
 
+> **2026-10-15 E5 results and next steps:** Gated training/validation for two seeds was complete. Internal-Dead matching changes were −0.032389/+0.025641 (mean −0.003374, 95% CI [−0.014273,+0.007486]); the primary gate failed. Mean Dead PQ rose +0.017897 and the quality gate passed, which does not change the stop decision. Do not start capacity controls, extra seeds, or a confirmation round. See the [full analysis](results/FUSION_GATING_DEV_2026-10-15.md). A [training point-grid feasibility audit](results/PMNET_POINT_GRID_AUDIT_2026-10-15.md) was added: the stride-4 single-slot grid has a total excess of 1 object; stride 8 has 45. This describes training labels only; no new training. The next proposal focuses on instance representation and must first have a frozen design. PM-Net had not been trained.
 
-> **2026-10-15 E5结果与推进：** 门控两种子训练/验证完成；内部Dead匹配率变化−.032389/+.025641，均值−.003374，95%CI [−.014273,+.007486]，主门失败。Dead PQ均值+.017897及质量门通过，不改变停止结论；不启动容量对照、加种子或确认轮。[完整分析](results/FUSION_GATING_DEV_2026-10-15.md)。已补[训练点网格可行性审计](results/PMNET_POINT_GRID_AUDIT_2026-10-15.md)：stride4单槽超额1对象，stride8超额45对象；仅训练标签描述，无新训练。下一方案聚焦实例表示并先冻结设计，PM-Net尚未训练。
-
-> **2026-10-15 组织与类别分析：** [已完成审计](results/TISSUE_CLASS_AUDIT_2026-10-15.md)复用九个固定 split/seed 对，发现 Lung、Skin、Colon 在三个 split 种子均值中均位于倒数五名，同类比较仍有差距。Dead 检测短板成立，但标签集中且七组织无该类标注。研究定位为可验证的检测/实例质量失败与跨组织类别可靠性，不将未见组织迁移认定为已证实主瓶颈。PM-Net 仍为待验证提案，既定质量/成本门槛与已关闭路线不变。本轮无训练、无新推理；历史测试复用仅作描述性分析，未来方法选择限 train/val。
-
+> **2026-10-15 tissue and class analysis:** The [completed audit](results/TISSUE_CLASS_AUDIT_2026-10-15.md) reused nine fixed split/seed pairs. Lung, Skin, and Colon ranked in the bottom five in each of the three split-level seed means; within-class differences were also present. The Dead detection shortfall is supported, but labels are concentrated and seven tissues have no Dead annotations. The research is framed around verifiable detection/instance-quality failures and cross-tissue class reliability; transfer to unseen tissues is not established as the main bottleneck. PM-Net remains an unvalidated proposal; existing quality/cost gates and closed approaches remain unchanged. No training or new inference was run in that round. Reuse of historical test outputs was descriptive only; future method selection is limited to train/validation data.
 
 [Mechanism closeout](results/VISIBILITY_SUPERVISION_MECHANISM_2026-10-15.md).
 
-> **2026-10-15 update (America/New_York):** All eight visibility-supervision runs and original-image fold2 evaluations are complete. Frozen dev admission fails on original-image clauses 2 and 3: A2−A0 mPQ/bPQ losses exceed .002 in both seeds; seed1 strict Dead falls .004372; mean A2−A1 strict Dead falls .009781. All eight fixed-C2 mechanism evaluations are now complete. A1−A2 mean miss-rate improvement is −.008621 (95% CI [−.040918,+.017699]); the frozen mechanism clause also fails. No added seeds or confirmation. No additional seeds or three-split confirmation; PM-Net remains a proposal. See [full results](results/VISIBILITY_SUPERVISION_DEV_2026-10-15.md). Earlier dated execution statements below are historical snapshots.
+> **2026-10-15 update (America/New_York):** All eight visibility-supervision runs and original-image fold2 evaluations are complete. Frozen development admission failed original-image clauses 2 and 3: A2−A0 mPQ/bPQ losses exceeded 0.002 for both seeds; seed 1 strict Dead fell 0.004372; mean A2−A1 strict Dead fell 0.009781. All eight fixed-C2 mechanism evaluations are complete. Mean A1−A2 miss-rate improvement was −0.008621 (95% CI [−0.040918,+0.017699]); the frozen mechanism clause also failed. No extra seeds or confirmation. No three-split confirmation; PM-Net remains a proposal. See the [full results](results/VISIBILITY_SUPERVISION_DEV_2026-10-15.md). Earlier dated execution statements below are historical snapshots.
 
+> **2026-10-14 authorization and execution (historical):** The user explicitly authorized implementation and training for visible-fragment supervision. The [frozen specification](superpowers/specs/2026-10-14-visibility-supervision-design.md) and [implementation plan](superpowers/plans/2026-10-14-visibility-supervision.md) covered four arms × seeds 19/1, split 1 fold1 training/fold2 validation, 130 epochs, x1, last checkpoint, no TTA or test-fold access. Implementation and independent review were complete. The A3 validation HV-metric issue was fixed through 2 RED → 55 GREEN; the final full regression (403 passed) and real-GPU smoke passed. A formal serial queue for four arms/two seeds had started: as of 2026-10-14 Eastern Time, A0–A3 seed 19 and A0 seed 1 had completed training and fold2 evaluation; A1 seed 1 was training; two runs (A2/A3 seed 1) were queued. Earlier “unauthorized/draft” entries retain their historical state and are superseded by this entry. Development only; no three-split confirmation. Closed research lines and E1 expert unavailability were unchanged.
 
-> **2026-10-14 当前授权与执行：** 用户已明确批准可见片段监督 dev 实现和启动训练。
-> [冻结规格](superpowers/specs/2026-10-14-visibility-supervision-design.md)与
-> [实施计划](superpowers/plans/2026-10-14-visibility-supervision.md)覆盖四臂×seed19/1，
-> split1 fold1训练/fold2验证，130epochs、x1、最后checkpoint，无TTA或测试折读取。
-> 实现与独立审查已完成；A3验证HV口径问题已按2RED→55GREEN修复，最终全量回归403 passed与真实GPU
-> smoke均通过，正式四臂双种子串行队列已启动：截至2026-10-14美东时间，A0–A3 seed19与A0 seed1已完成训练与fold2评估，A1 seed1训练中，余2次排队（A2/A3 seed1）。以下较早日期的“未授权/草案”保留历史状态，不覆盖本次授权。
-> 当前仅dev，不启动三split确认；关闭路线和E1专家不可得状态不变。
+Historical closeout checklist and synthesis-report outline: [research status dated 2026-10-14](audits/RESEARCH_STATUS_2026-10-14.md).
 
-当前收尾清单与综合报告框架：[2026-10-14 研究进度](audits/RESEARCH_STATUS_2026-10-14.md)。
+> **2026-10-09 research recommendation update:** The latest [next-step plan](proposals/RESEARCH_NEXT_2026-10-09.md) recommended a lightweight classifier experiment on fixed instance contours and an independent blinded review of E1 candidates. Candidate-utility learning, crop supervision, and new architectures were deferred until supported by evidence and had not started. The classifier oracle gain from 0.4995 to 0.6632 used ground-truth assistance; about 70% came from correcting the set of all matched objects whose true class was Inf/Conn. Do not describe the gain as arising only from confusion between those two classes. See the revised [structural overview](background/STRUCTURE_AND_STRATEGY_2026-10-09.md). The 108 stage-three differences and stage-four frozen snapshot were rechecked; the full test run reported **277 passed, 64 warnings**. The Chinese stage-four report and overview were polished without changing experiment values, figures, or selection rules. Entries below retain their historical state. New mechanism experiments use train/validation data only; this does not mean historical audits of test artifacts avoided test data.
 
-> **2026-10-09 研究建议更新：** 最新[下一步计划](proposals/RESEARCH_NEXT_2026-10-09.md)建议先做固定实例轮廓的轻量分类实验，同时推进 E1 独立候选盲审；候选效用学习、裁剪监督和新架构均按证据后置，尚未启动。分类 oracle 的 .4995→.6632 是真值辅助诊断；其中约 70% 的增益来自修正“真值属于 Inf/Conn 的全部已匹配对象”，不能写成仅由两类互相错分造成。详见修订后的[结构导读](background/STRUCTURE_AND_STRATEGY_2026-10-09.md)。本次阶段三 108 项差值和阶段四冻结快照重新核验通过，完整测试 **277 passed、64 warnings**；中文阶段四报告与导读已润色，既有实验数字、图表和选择规则不变。以下日期条目保留各自历史状态；新机制实验仅用 train/val，不代表历史测试产物审计没有访问 test 数据。
+> **Status as of 2026-10-13 — Stage Report 5 completed:** Five experiments from 10-09/12 (ceiling diagnostic, T0–T3, E1-C/E1-M, E1-T, E3) are summarized in the [Chinese formal report](report/stage_report_5/stage_report_5_zh.pdf), [Chinese plain-language summary](report/stage_report_5/summary_plain_zh.pdf), [English report](report/stage_report_5/stage_report_5.pdf), and [source/reproduction notes](report/stage_report_5/README.md).
 >
-> **当前进度（2026-10-13）— 阶段报告五已出：** 10-09/12 的五项实验（上限诊断、T0–T3、
-> E1-C/E1-M、E1-T、E3）汇总见
-> [中文正式版](report/stage_report_5/stage_report_5_zh.pdf)、
-> [中文导读](report/stage_report_5/summary_plain_zh.pdf)、
-> [英文版](report/stage_report_5/stage_report_5.pdf)及
-> [来源与复现说明](report/stage_report_5/README.md)。
-> 要点：T0–T3 预注册门失败（最优 +.0002、Dead −.0053 触发护栏）——冻结特征事后
-> 重分型收档；E1-T 按预注册键成立 **Inf/Conn 标签边界模糊的检测器共鸣证据**
-> （基分错实例 jury 支持基类 72.5% [.706,.742] vs 真值类 18.2%，G0 本征翻票 1.9%）；
-> E1-C 存在性轴共鸣（零重叠候选 66–73% 获 ≥3 跨折/跨架构支持，空对照 0.75%）；
-> E3 效用可学（AUC .721/.737）但三臂两门皆负、按停线规则收档，缺的是图像级缺类风险
-> 特征。下一步：把标签模糊写进最终报告分析框架；图像级风险特征若立项先出规格；
-> 联合训练保持后置；E1 人类评审义务保留。本轮无新训练、除上限诊断（只读审计）
-> 外未读测试折；全量测试 335 passed。
+> Key results: T0–T3 failed the preregistered gates (best +0.0002; Dead −0.0053 triggered the guardrail), so post-hoc retyping of frozen features was closed. E1-T met its preregistered criterion for detector-consensus evidence of an ambiguous Inf/Conn label boundary (jury supported the base class for 72.5% [0.706,0.742] of base-model misclassified instances versus 18.2% for the true class; reversal rate among objects correctly typed by the base model (G0) 1.9%). E1-C found existence-axis consensus: 66–73% of zero-overlap candidates received support from at least 3 detectors across folds/architectures, versus 0.75% for the empty control. E3 utility was learnable (AUC 0.721/0.737), but all three arms failed both gates and were closed under the stop rule; the missing feature was image-level absent-class risk. Next steps were to include label ambiguity in the final report framework, write a specification before launching any image-level risk-feature work, defer joint training, and retain the E1 human-review obligation. No new training occurred. Apart from the ceiling diagnostic (read-only audit), no test folds were read. Full test suite: 335 passed.
+
+> **2026-10-14 E4 verified after correction; documentation closeout:** The valid artifact is `runs/analysis/visibility_probe_20261014/`, bound to code `988c0cd`. The older 10-13 artifact included train-mode inference and an H1 result without area stratification; retain it as invalidated history and do not cite it as a formal result. H1 area-stratified Dead difference **+0.1738 [0.1060,0.2528]** (the crude +0.2913 is descriptive only); H2 DiD **+0.1474 [0.1392,0.1557]** (interpolation control −0.0006); H3 **+0.8175 [0.7968,0.8393]**. All three frozen gates passed independent recomputation. Code, checkpoint/prediction/GT/eval SHA256 values, and 2,523 windows in each of two groups matched. This result only permits drafting the next specification; it does not prove that zeroing HV explains misses and does not authorize training. A [visible-fragment supervision design draft](superpowers/specs/2026-10-14-visibility-supervision-design.md) was prepared and awaited review at that historical point; closed research lines and E1 expert unavailability remained in effect.
+
+> **2026-10-13/14 M (executed; descriptive):** Merging {Inf,Conn} increased official Δ by +0.0519, the largest of 10 class pairs; merged-class PQ was 0.5079 versus the original two-class mean of 0.4280. The oracle gap shrank by 35.2% in the merged space. M did not change five-class method scores; the mechanical merge effect must not be interpreted as an additive estimate of label ambiguity loss. A prior bootstrap CI boundary issue was fixed; see findings. M read historical test artifacts; E4 used fold2 only. Neither round included training.
+
+> **2026-10-12 E1 positioning finalized; E3/E1-T launched:** The user confirmed (starting 2026-10-11) that qualified human expert review was unavailable for the foreseeable future due to lack of resources. The E1 human-review path therefore remained unexecuted, with the obligation recorded and the materials unchanged; the original protocol could still be used if review becomes available. E1 evidence was frozen as E1-C detector consensus plus E1-M workflow validation; the biological interpretation remained unresolved, not disproven. Two preregistered experiments were approved (spec/plan in `docs/superpowers/specs|plans/2026-10-11-*`): an E3 candidate-quality-learning development round (13,332 fold1 OOF training candidates; replay A0–A4 five arms on 4,084 frozen fold2 candidates; decision gates frozen) and an E1-T cross-detector typing-consensus audit (12-seat jury classifies base-model errors to test the Inf/Conn label-ambiguity hypothesis). During execution, the HoVer-Net split2 checkpoint had been lost during disk cleanup on both machines. The E3 fold1 jury therefore used six CellViT seats, with no HoVer-Net seats; the support-distribution shift was disclosed. No test folds were read in this round.
+
+> **2026-10-11 E1 revised execution without experts (E1-C/E1-M):** No qualified experts were available; with approval, the process was revised to detector consensus plus non-expert model pre-review (spec §7). A 13-seat jury (split1/split3 × 3 seeds × {x1,x2}, plus HoVer-Net ×2; none trained on fold2) assessed frozen candidates. The synthetic empty-control support rate ≥3 was 0.7%, versus 66–73% for candidates with zero GT overlap (S2: 380 / S3: 751, across folds/architectures). This is evidence of detector consensus for nucleus-like objects in locations not covered by GT labels; it is not a biological claim. Support was monotonic with GT matching rate (5–12% with 0–2 votes; 40–60% with ≥5 votes), providing a basis for controlled candidate-quality learning. Agreement between two rounds of blinded model review was poor (kappa −0.09 to 0.35), with systematic bias toward S1 in one round; model review was unusable, so only workflow validation was completed. Human review remains an outstanding obligation. See the 2026-10-11 findings entry.
+
+> **2026-10-10 T experiment and E1 review package:** The T experiment (fixed-geometry typing probes T0–T3; see `docs/superpowers/specs|plans/2026-10-10-*`) completed on split1 train/validation. The preregistered decision failed: T1 −0.0003 / T2 +0.0002 (CI crosses zero) / T3 −0.0017; the unweighted linear head's Dead PQ −0.0053 triggered the guardrail. Ground-truth-region diagnostic accuracy was 85.3%, approximately the current TP head's 85.8%, indicating no added information from simple readout. Together with the negative CONCH result, close post-hoc retyping of frozen features; do not scale up the classifier (see same-day findings). The E1 blinded-review package (200 windows, 50 from each of four sources, two-stage blind review) was generated and the analysis script frozen. It awaited two qualified reviewers to be supplied by the user; E1 was not complete before that. No test fold was read.
+
+> **2026-10-09 review:** See the [audit and corrections](audits/RESEARCH_AUDIT_2026-10-09.md). The 108 stage-three endpoint differences and stage-four frozen snapshot passed review. DSB had closed and its code was merged into master. E0's historical 6.08687× came from an unweighted mean of chunk means. Recomputing an image-weighted mean from saved total throughput and reselecting the highest-throughput repetition gives **6.08447× (about 6.1×)**; this was not a new GPU measurement, and the conclusion is unchanged. The historical “fp32” label was inaccurate; the actual forward pass used bf16 autocast. A gradient probe and a test-fold guard for the x2 cost input were added. Historical P0–P3 full reproduction was rejected because an old manifest conflicted with later same-named directories/seeds; do not claim that all historical artifacts were revalidated.
+
+> **Reduced E0 cost round (2026-10-08, complete):** Inference cost for the EF-P2 two-model system versus one x1 model was measured under a fixed protocol (shared A100, bf16 autocast forward pass, batch 32, 16 workers, unchanged `predict_fold` chunk timing; CPU replay followed the frozen split2_seed19 EF-P2 deployment path, with exactly 1,542 replayed additions matching the frozen selection). **Two-model system = 6.09× one x1 model; x1-TTA = 4.67×** (ratios were stable at 6.1–6.3 / 3.3–4.7 under load variation; absolute milliseconds were affected by same-machine load, as quantified in the ledger). Under the preregistered E0 rule, there was **no performance–cost advantage**; EF-P2 was positioned as mechanism evidence/a teacher candidate, not a deployment gain. Artifacts: `runs/analysis/inference_cost_20261008/` (local); see the 2026-10-08 cost-round findings entry.
+
+> **DSB implementation line (2026-10-07/08, stopped and closed under the preregistered rule):** The Dead-detection specialist branch ([spec](superpowers/specs/2026-10-07-dead-specialist-branch-design.md) | [plan](superpowers/plans/2026-10-07-dead-specialist-branch.md)) completed all CPU-side work with task-by-task TDD commits (model/data/loss/TTA/CLI/merged selection/montage/four-gate script; full local CPU suite rerun 2026-10-08: **254 passed / 3 CUDA-skipped**). Branch `research/dead-specialist-branch` was merged into master after closure; retaining tools does not mean specialist training was started. Final four-gate decision (ledger and independent review; gate values recomputed bit-exactly from artifacts): **A** proceed/base x1_hv30 (9.59% < 50% base-switch threshold); **C** proceed (peak decision-decoupling dDead +0.0021 < +0.005 stop threshold); **D** pass (internal-miss Dead oracle ceiling ΔDead **+0.156** ≫ +0.010); **B** first run VOID (sequential sampling included only one Dead-positive batch), then, with user approval, preregistered rerun (Dead-stratified sampling covered all 65 positive images; denominator used effective L_dead batches; per-layer significance clause added) → **failed after measurement**: mean composite-gradient cosine across 64/64 effective batches **+0.749**, minimum batch +0.594, **0/64 negative** (conflict fraction 0 ≪ 0.30; all per-layer t>0 and no Holm-significant negative group). On completed training checkpoints, Dead and common-class gradients aligned rather than conflicted; H1 was unsupported. **Stop under spec §10: close the DSB line**—no GPU smoke/development/confirmation training; preserve four-gate mechanism evidence (Dead shortfall is a detection-recall problem: reweighting ✗, threshold decoupling ✗, specialist-architecture decoupling premise ✗, oracle ceiling high). No test fold was read in this round. Ledger: `runs/analysis/dsb_gates_20261007/` (local; `gate_b_v2.json` is authoritative; retain the VOID first-run artifact).
+
+> **HV-threshold controls completed (2026-10-07):** E2a, four arms × two seeds, 8/8 complete with hash-bound audit reruns (audit−original was zero throughout). Full values and mechanism analysis are in the [results document](results/HV_CONTROLS_RESULTS_2026-10-07.md) and [findings dated 2026-10-07](findings.md). Summary: lowering the x1 threshold (HV30→HV8) gave no stable benefit (ΔDead reversed sign across seeds); lowering the threshold within x2 raised official Dead for both seeds (+0.0098), but the CI crossed zero and strict Dead was inconsistent. After matching native support, x2−x1 retained the full bPQ cost (CI entirely below zero) and most Dead gain; **strict Dead was negative for all four x2−x1 seed pairs**. At object level, the change in internal Dead matching from 61.3% to 71.0% was explained by scale; the threshold barely changed internal matches within x2 (526→526.5). Decision: keep default `hv_min_size=30`. DSB gate A arithmetic (9.59% < 50% base-switch threshold and <90% downgrade threshold) keeps x1_hv30 as the base and does not downgrade the architecture line; this substitutes the preregistered arithmetic and is not a mediation/causal estimate. This records Gate A as of 10-07; B/C/D later completed, and DSB closed under its stop rule without specialist training. E2a did not read test folds.
+
+> **Research-route retrospective (2026-10-06):** The [evidence audit, literature update, and next-stage recommendations](proposals/RESEARCH_NEXT_2026-10-06.md) are complete. The main session recomputed 108 endpoint differences from frozen source summaries and candidate records; all matched. No new training or test results were added. Recommendations: complete the cost comparison and independent object-level blind review; first isolate **working scale × HV target-area threshold**. This round's CPU probe confirmed that a fixed 30-working-pixel HV threshold creates different nonzero geometric supervision for small instances at x1 versus x2. Then, if warranted, examine training schedule, crop-consistent visible-instance learning, and new instance-set utility. Compute requests were tiered as small mechanism experiments, 4×H100 confirmation, and conditional 8×H100 cross-modal expansion. **These routes remained proposals; implementation was not approved and no preregistration was frozen.**
+
+> **Conceptual and historical wording correction:** In the PanNuke source paper, Dead includes apoptotic and necrotic nuclei; it is not synonymous with apoptosis. Early entries below saying “cannot be repaired on the data side,” “cannot apply detection pressure under fixed labels,” or “detection-first architecture is ineffective” apply only to recipes tested at that time, not the entire method family. The old “0.51 ceiling” was also only a summary of the literature search then available. See the new recommendation draft for specific boundaries and primary sources.
+
+> **Status as of 2026-10-08:** E2a four-arm control, DSB four-gate stop, E0 measured cost round, and full repository audit are complete. Stage Report 4 is available as the [Chinese formal report](report/stage_report_4/stage_report_4_zh.pdf), [Chinese plain-language summary](report/stage_report_4/summary_plain_zh.pdf), and [source/reproduction notes](report/stage_report_4/README.md).
 >
-> **2026-10-14 修复后 E4 已核验、文档收尾：** 当前有效工件为
-> `runs/analysis/visibility_probe_20261014/`，绑定代码 `988c0cd`；旧 10-13 工件含 train-mode
-> 推理及未面积分层的 H1，保留作失效历史，不再引用为正式结果。H1 面积分层 Dead 差
-> **+.1738 [.1060,.2528]**（粗差 +.2913 仅描述）；H2 DiD **+.1474 [.1392,.1557]**
-> （插值对照 −.0006）；H3 **+.8175 [.7968,.8393]**。三冻结门独立复算全过，代码与
-> 检查点/预测/GT/eval SHA256、两组各2523个窗口均核验一致。该结果仅准许起草下一轮
-> 规格，不证明 HV 清零是漏检原因，也不授权训练。下一轮
-> [可见片段监督设计草案](superpowers/specs/2026-10-14-visibility-supervision-design.md)
-> 已形成，待审阅；已关闭研究线和 E1 专家不可得状态维持。
+> Key findings: lowering the x1 HV threshold recovered only 9.59% of the x2 Dead gain; after matching support, scale retained the entire bPQ cost (strict Dead was negative for all four seed pairs). DSB gate B rerun showed Dead and common-class gradients aligned (mean composite cosine +0.749 across 64 batches; 0/64 negative); the whole line closed under the preregistered stop rule, with no GPU training. The two-model system cost 6.09× x1 inference; EF-P2 is mechanism evidence/a teacher candidate.
 >
-> **2026-10-13/14 M（已执行、描述性）**：{Inf,Conn} 合并Δofficial +.0519居10类对之首，
-> 合并类PQ .5079 vs原两类均值 .4280；oracle差距在合并空间缩小35.2%。M不改变五类方法
-> 成绩，合并机械效应不得解释为标签模糊的可相加损失；已修复bootstrap的既往CI边界见findings。
-> M只读历史测试产物，E4仅fold2；两轮均无训练。
->
-> **2026-10-12 E1 定位落定 + E3/E1-T 启动：** 用户确认（2026-10-11 起）**人类专家评审在可预见
-> 未来不可得（无资源）**——E1 的人类评审路径就此**未执行收案**（义务记录在案，材料包不变，
-> 未来若获评审仍可执行原协议），E1 的证据记录定格为 E1-C 检测器共识 + E1-M 流程验证，
-> 生物学分支保持悬置而非否证。经批准启动两个预注册实验（spec/plan 见
-> `docs/superpowers/specs|plans/2026-10-11-*`）：**E3 候选质量学习 dev 轮**（fold1 13,332 条
-> OOF 训练、fold2 4,084 冻结候选上重放 A0–A4 五臂、判定门冻结）与 **E1-T 跨检测器分型
-> 共识审计**（12 席 jury 对基模型分错实例的类型投票，检验 Inf/Conn 标签模糊解释）。执行中
-> 裁定：HoVer-Net split2 检查点已在两机磁盘清理中丢失，E3 的 fold1 jury 以 6 席 CellViT
-> 运行（无 HN 席，support 分布偏移如实披露）。本轮未读测试折。
->
-> **2026-10-11 E1 无专家修订执行（E1-C/E1-M）：** 无可用专家，经批准改为检测器共识 +
-> 非专家模型预审（spec §7）。13 席 jury（split1/split3 × 3 种子 × {x1,x2} + HoVer-Net×2，
-> 全部未训过 fold2）对冻结候选的支持度：**合成空对照支持度≥3 率 0.7%，而与 GT 零重叠
-> 的候选 ≥3 率 66–73%（S2 380 / S3 751 个，跨折/跨架构）**——GT 未覆盖位置存在多检测器
-> 一致检出的核状对象（标签可疑的检测器共鸣证据，非生物学断言）；支持度对 GT 匹配率
-> 单调（0–2 支持：5–12%；≥5：40–60%）→ 候选质量学习获得对照支持的证据基础。模型盲评
-> 两轮互相一致性差（kappa −.09～.35）且一轮对 S1 有系统性偏置 → 模型评审不可用，
-> 仅完成流程验证。人类评审义务保留。详见 findings 2026-10-11 条目。
->
-> **2026-10-10 T 实验 + E1 材料包：** T 实验（固定几何分型探针 T0–T3，spec/plan 见
-> `docs/superpowers/specs|plans/2026-10-10-*`）已在 split1 train/val 完成：**预注册判定
-> 未通过**——T1 −.0003 / T2 +.0002（CI 跨零）/ T3 −.0017，且未加权线性头 Dead PQ −.0053
-> 触发护栏；GT 区域诊断准确率 85.3% ≈ 现行 TP 头的 85.8%，说明简单读出无增量信息。
-> 与 CONCH 负结果合并：冻结特征的后处理重分型路线收档，不再加大分类器（见 findings
-> 同日条目）。E1 盲审材料包（200 窗口、四源各 50、两阶段盲评）已生成并冻结分析脚本，
-> **等两名合格评审**（用户提供）后进行；在此之前 E1 不算完成。本轮未读测试折。
+> No test folds were read in this stage. The previous milestone (matched-seed validation and EF-P2, 2026-10-05) is documented in [Stage Report 3](report/stage_report_3/README.md): ΔDead PQ +0.00699, ΔbPQ −0.000009, passing the preregistered rule; limitations remain that overall metric intervals span zero, strict mPQ fell slightly, and test folds had been reused across multiple rounds. Next, prioritize E1 candidate blind review, then consider route B utility learning based on its result; do not keep expanding the threshold menu on existing test images. The October 2 notes and daily entries below are historical; “pending matched-seed validation” was superseded by the 10-05 results.
 
-> **2026-10-09 复核：** 见[本次审计与修正](audits/RESEARCH_AUDIT_2026-10-09.md)。阶段三 108 项端点差值和阶段四冻结快照复核通过；DSB 已关闭且代码已合入 master。E0 的历史 6.08687× 来自分块均值等权平均；按已保存总吞吐恢复图像加权平均并重新选择最高吞吐 rep 后为 **6.08447×（约 6.1×）**，不是新 GPU 测量，结论不变。历史“fp32”标签不准确，实际前向为 bf16 autocast。补上梯度探针和成本 x2 输入的测试折防护；历史 P0–P3 全量复现因旧清单与后续同名目录种子冲突而拒绝继续，不能声称全部历史产物重新验证成功。
+> **2026-10-02 pre-merge review update (v2):** The affected CPU stages of [P0–P3](superpowers/plans/2026-10-02-p0-p3-research.md) were rerun. In addition to class-index/perimeter fixes, shared-boundary accumulation across directions and the official GT channel were corrected; P0 selection/evaluation, P1, P2, and bootstrap were rerun. Keep v1 as the superseded historical version. The original nine x2 results do not form a complete grid of three distinct seeds (split2 was `{19,1,1}`, while base covered 3/1/1). Corrected base+M/S was 0.4998 mPQ / 0.6656 bPQ; validation-gated candidate addition was 0.4999/0.6652; Dead PQ 0.1767→0.1835 and strict Dead PQ 0.1340→0.1371, only a candidate pending multi-seed validation. The [full results, confidence intervals, and provenance](results/P0_P3_RESULTS_2026-10-02.md) take precedence over the historical interpretation below. P3 is a scale crossover on 128 split1 validation images and must not be mixed with full-test means. Failed synthetic approaches do not establish that all data-driven methods fail; current CF ranking failure does not establish that fixed labels cannot induce detection pressure. No new training or GPU inference occurred; original predictions were reused, and v2 reran only CPU stages without adding training seeds.
 
-> **缩减版 E0 成本轮（2026-10-08，完成）：** EF-P2 两模型系统 vs 单模型 x1 的推理成本已按固定协议实测（共享 A100、bf16 autocast 前向、batch 32、workers 16、未改动 predict_fold 分块计时；CPU 侧按冻结 split2_seed19 EF-P2 部署路径逐图重放，重放添加数与冻结选择 1542 精确一致）。**两模型系统 = 6.09× 单模型 x1;x1-TTA = 4.67×**（负载波动下比值稳定在 6.1–6.3 / 3.3–4.7;绝对毫秒受同机负载污染已在台账量化）。按 E0 预注册规则：**无性能—成本优势 ⇒ EF-P2 定位为机制证据/teacher 候选，不包装为部署增益**。材料：`runs/analysis/inference_cost_20261008/`（本地）；详见 findings 2026-10-08 成本轮条目。
+> **Original research plan, dated 2026-09-24:** The literature review used four parallel searches (WebSearch was rate-limited; primary materials and tables were mainly obtained through arXiv / HF / GitHub APIs). Entries marked **[unverified]** require confirmation before citation; most 2026 arXiv preprints may not yet have a formal venue.
 
-> **DSB 实现线（2026-10-07/08，已按预注册止损关闭）：** 死亡检测专家分支（[spec](superpowers/specs/2026-10-07-dead-specialist-branch-design.md) | [plan](superpowers/plans/2026-10-07-dead-specialist-branch.md)）CPU 侧全部完成并逐任务 TDD 提交（模型/数据/损失/TTA/CLI/合并选择/蒙太奇/四闸门脚本；本机全量 CPU 套件 2026-10-08 复跑 **254 passed / 3 CUDA-skipped**），分支 `research/dead-specialist-branch` 已在关闭后合入 master，仅保留工具，不表示启动专家训练。四闸门终局（台账+独立复核，闸门数字对 artifacts bit-exact 复算通过）：**A** proceed/基座 x1_hv30（9.59%<50% 换基座线）；**C** proceed（决策解耦峰值 dDead +.0021 < +.005 关闭线）；**D** pass（内部漏检 Dead oracle 上限 ΔDead **+.156**≫+.010）；**B** 首跑 VOID（顺序取样仅 1 个 Dead 阳性批）后，经用户同意执行预注册修正重跑（Dead 分层取样 65 张阳性图全覆盖、按 L_dead 有效批计分母、补齐逐层显著性条款）→ **真实测量后 fail**：64/64 有效批 decoder 复合梯度余弦均值 **+0.749**、批最小 +0.594、**0/64 为负**（冲突比例 0≪0.30；逐层全部 t>0、无 Holm 显著负组）⇒ 训练完成检查点上 Dead 与常见类梯度**同向而非冲突**，H1 不成立。**按 spec §10 止损：DSB 线关闭**——不启动 smoke/dev/确认轮 GPU 训练，仅保留四闸门机制证据（Dead 短缺是检测召回问题：重加权✗、阈值解耦✗、专家架构解耦前提✗、oracle 天花板高）。本轮未读取测试折。台账：`runs/analysis/dsb_gates_20261007/`（本地，gate_b_v2.json 为准，VOID 首跑工件保留）。
+## 0. Original positioning (historical)
 
-> **HV门槛对照已完成（2026-10-07）：** E2a四臂×双种子8/8完成并通过哈希绑定审计重推（audit−original全部为0），完整数字与机制分析见[结果文档](results/HV_CONTROLS_RESULTS_2026-10-07.md)与[findings 2026-10-07](findings.md)。要点：x1降门槛（hv30→hv8）无稳定收益（ΔDead种子间反号）；x2内降门槛官方Dead双种子均升（+.0098）但CI跨零、strict Dead不一致；匹配原生支持后x2−x1仍保留全部bPQ代价（CI整体低于零）与大部分Dead增益，且**strict Dead在四个x2−x1种子对全部为负**。对象级：内部Dead匹配率61.3%→71.0%由尺度解释，门槛在x2内几乎不改变内部匹配数（526→526.5）。决策：默认`hv_min_size=30`不变；DSB闸门A按预注册算术（9.59%<50%换基座线、<90%降级线）判定**基座维持x1_hv30、架构线不降级**——这是规则代入不是中介因果估计。此处为 10-07 时点的 Gate A 结果；后续 B/C/D 已完成，DSB 已止损关闭并合入 master，未启动专家训练。E2a 实验未读取测试折。
+The original method, resource estimates, timeline and risk mitigations below are retained
+as the initial plan, not current instructions or authorization. Later frozen specifications,
+closed-recipe decisions and machine restrictions take precedence; in particular, old L4
+training estimates do not authorize training on the ugrad machines.
 
-> **研究路线复盘（2026-10-06）：** 新的[证据审计、文献更新与下一阶段建议](proposals/RESEARCH_NEXT_2026-10-06.md)已完成。主会话从冻结原始汇总和候选记录重算，108项端点差值全部核对通过；没有新训练或新增测试成绩。建议先做完整成本对照、独立对象盲审，并优先隔离**工作尺度×HV目标面积门槛**：本轮CPU探针确认固定30个工作像素的HV门槛使x1/x2的小实例非零几何监督不同。再按需检验训练日程、“裁剪一致的可见实例学习”和“新增实例集合效用”；算力申请分为小型机制实验、4×H100确认、条件性8×H100跨模态扩展。**新路线仍是提案，尚未批准实现或冻结预注册。**
->
-> **概念与历史口径修正：** PanNuke原文的Dead包括apoptotic和necrotic，不等同于凋亡。以下早期日志中“数据侧无法修复”“固定标签构造上不能施加检测压力”“检测优先架构无效”等概括均仅适用于当时所测配方，不是当前对整个方法家族的结论；旧“.51天花板”也只是历史检索范围的概括。具体边界与一手来源见新建议稿。
+**Working title:** *Language-Anchored, Generation-Stress-Tested Nuclei Segmentation: Fixing Touching and Rare Nuclei on PanNuke*
 
-> **当前进度（2026-10-08）：** E2a 四臂对照、DSB 四闸门止损、E0 成本实测与全仓审计完成，阶段报告四见
-> [中文正式版](report/stage_report_4/stage_report_4_zh.pdf)、
-> [中文导读](report/stage_report_4/summary_plain_zh.pdf)及
-> [来源与复现说明](report/stage_report_4/README.md)。
-> 要点：x1 降 HV 门槛仅复现 x2 Dead 增益的 9.59%，匹配支持后尺度仍保留全部 bPQ 代价
-> （strict Dead 四种子对皆负）；DSB 闸门 B 重跑显示 Dead 与常见类梯度同向
-> （64 批复合余弦均值 +0.749、0/64 为负），整线按预注册止损关闭、无 GPU 训练；
-> 两模型系统推理成本 6.09× x1，EF-P2 定位为机制证据/教师候选。
-> 本阶段未读取测试折。上一里程碑（匹配种子验证与 EF-P2，2026-10-05）见
-> [阶段报告三](report/stage_report_3/README.md)：ΔDead PQ +.00699、ΔbPQ −.000009，通过预注册规则；
-> 整体指标区间跨零、strict mPQ 略降、测试折多轮复用的限制不变。
-> 下一步优先 E1 候选盲审，再视结果启动路线 B 的效用学习；不继续在现有测试图上扩阈值菜单。
-> 以下 10 月 2 日说明及逐日条目保留历史时点；“待匹配种子验证”已由 10-05 结果更新。
+**Core argument:** On PanNuke, changing backbones shifts mPQ by only 1–2 points (CellViT-HIPT 0.485 → SAM-H 0.498 → SOTA ~0.51). The main shortcomings are: (1) **rare classes**: Dead PQ is generally only 0.14–0.19 (the lowest overall), while Inflammatory/Connective are also about 0.42; and (2) **touching nuclei**: merge/split errors.
 
-> **2026-10-02 合并前复核更新（v2）：** [P0–P3](superpowers/plans/2026-10-02-p0-p3-research.md) 已重新执行受影响的 CPU 阶段。
-> 在类别索引/周长修复之外，补上共享边界跨方向累加与官方 GT 通道修正，重跑 P0 验证选择/评测、P1、P2 和 bootstrap；原 v1 保留为被取代的历史版本。
-> 原九份 x2 结果不构成完整三不同种子网格（split2 实为 `{19,1,1}`，base 覆盖 3/1/1）。
-> 修正版 base+M/S 为 .4998 mPQ / .6656 bPQ；验证门控候选添加为 .4999/.6652，
-> Dead PQ .1767→.1835、strict Dead PQ .1340→.1371，仅属待多种子验证的候选。
-> [完整结果、置信区间与来源](results/P0_P3_RESULTS_2026-10-02.md) 优先于下面的历史解释。
-> P3 仅为 split1 的 128 张验证图尺度交叉，不与完整测试均值混列。
-> 已尝试的合成方案无效不等于所有数据方法无效；当前 CF 排序失败不等于固定标签测试无法施加检测压力。
-> 本轮没有新训练或 GPU 推理；复用原始预测，v2 只重跑 CPU 阶段，没有补训种子。
+The initial plan proposed two new paradigms to address these shortcomings and a third for evaluation:
 
-> 制定日期 2026-09-24。文献调研由 4 路并行检索完成（WebSearch 被限流，主要通过 arXiv / HF / GitHub API 获取原文与表格）。标 **[未核实]** 的条目需要你在引用前自行确认；2026 年的 arXiv 预印本大多尚无正式 venue。
-
----
-
-## 0. 一句话定位
-
-**题目（暂定）**：*Language-Anchored, Generation-Stress-Tested Nuclei Segmentation: Fixing Touching and Rare Nuclei on PanNuke*
-
-**核心论点**：PanNuke 上 backbone 换来换去只差 1–2 个 mPQ 点（CellViT-HIPT 0.485 → SAM-H 0.498 → SOTA ~0.51），真正的短板有两个：
-1. **稀有类**：Dead 类 PQ 普遍只有 0.14–0.19（全场最差），Inflammatory/Connective 也只有 ~0.42；
-2. **粘连核**：merge/split 错误。
-
-我们用两种"新范式"各打一个短板，并用第三种做评测：
-
-| 支柱 | 范式 | 针对的问题 | 风险 |
+| Pillar | Paradigm | Target problem | Risk |
 |---|---|---|---|
-| **A. 语言锚定的类型头** (主方法) | 多模态 / 病理 VLM (CONCH 文本空间 + LLM 生成的形态学描述) | 稀有类 (Dead)、类间混淆 | 低 |
-| **B. 失败驱动的反事实合成** | 生成式"组织世界模型"（掩码/实例条件扩散，作为可干预的模拟器） | 粘连核 merge/split + 稀有类样本 | 中 |
-| **C. 反事实压力测试 + 真实跨域** | 同一生成模型作为评测用模拟器 | 跨组织/染色鲁棒性 | 低 |
+| **A. Language-anchored type head** (primary method) | Multimodal/pathology VLM (CONCH text space + LLM-generated morphological descriptions) | Rare classes (Dead), inter-class confusion | Low |
+| **B. Failure-driven counterfactual synthesis** | Generative “tissue world model” (mask/instance-conditioned diffusion as an intervention simulator) | Touching-nuclei merge/split errors + rare-class examples | Medium |
+| **C. Counterfactual stress tests + real domain shift** | Use the same generator as an evaluation simulator | Robustness across tissues/stains | Low |
 
-课程要求对应：(a) HoVer-Net 可复现基线 ✔；(b) 按 tissue × class 用 PQ/AJI 评测 ✔；(c) merge/split/miss 分析 + 针对难组织/稀有类的改进 ✔（A、B 两个改进，至少一个必成）。
+Course requirements: (a) reproducible HoVer-Net baseline ✔; (b) PQ/AJI evaluation by tissue × class ✔; (c) merge/split/miss analysis and improvements for hard tissues/rare classes ✔ (two proposed improvements, A and B, with at least one required to succeed).
 
-> **关于"世界模型"的诚实说明**：调研中没有找到任何组织病理学的真正世界模型（动作条件的动力学模型只在放射/手术视频里出现：CheXWorld、Cosmos-H-Surgical 等）。本计划采用可辩护的定义：**可控生成模型 = 组织外观的模拟器**，可以对"布局 / 类别 / 染色 / 组织上下文"做干预并观察分割器的反应（训练用于增强，评测用于反事实压力测试）。写报告时建议用 "generative tissue simulator / counterfactual" 措辞，避免过度宣称。
+> **Careful use of “world model”:** The review found no true action-conditioned world model for tissue pathology; such dynamics models appeared only for radiology/surgical video (e.g., CheXWorld, Cosmos-H-Surgical). This plan uses a defensible definition: **a controllable generative model is a simulator of tissue appearance**, allowing interventions on layout/class/stain/tissue context and observation of the segmenter's response (for training augmentation and counterfactual evaluation). Prefer “generative tissue simulator” or “counterfactual” in reports to avoid overclaiming.
 
 ---
 
-## 进展记录（详细数据见 [docs/findings.md](findings.md)）
+## Progress log (details in [docs/findings.md](findings.md))
 
-> 2026-10-05 后续复核已纠正近期条目的统计口径；未改变预注册菜单或历史结果。
-> EF identity 测试回退及存在性审计边界分箱错误已修复，现有九组 EF 分数不受影响。
-> 旧存在性审计的 `added_by_border` 全零表无效，不能引用；已从冻结验证预测重建 v2 表。
-> 贴边候选匹配率 52.86%（5273/9975），内部候选 26.15%（1931/7384）；这是描述性分组，
-> 不据此追加过滤规则。37,915 个候选的边界标记均经原预测图四边独立核验，详情见 findings。
+> A follow-up review on 2026-10-05 corrected statistical conventions in recent entries without changing preregistered menus or historical results. The EF identity-test fallback and existence-audit boundary-bin error were fixed; the nine existing EF scores are unaffected. The old existence-audit `added_by_border` all-zero table is invalid and must not be cited; v2 was rebuilt from frozen validation predictions. Border-adjacent candidates had a 52.86% match rate (5,273/9,975), versus 26.15% for internal candidates (1,931/7,384). This is descriptive stratification and does not justify adding a filter. Boundary labels for all 37,915 candidates were independently checked against all four sides of the original prediction maps; see findings for details.
+
 
 **2026-09-25**
-- 基线：HoVer-Net（官方 fast 模式，全 patch 监督）3 折训练中；**CellViT-UNI 复现**（`scripts/train_cellvit.py`，
-  CellViT 论文配方）split 1 测试折 3：mPQ **0.4951** / bPQ 0.6676（TTA 0.5013 / 0.6728），与 CellViT++ 报告的
-  CellViT-UNI 0.492 一致；split 2/3 训练中。
-- 支柱 A 可行性（CONCH）：紧裁剪零样本≈随机；**单次前向 + 半径受限注意力池化**（R=32px）零样本平衡准确率
-  0.695（描述 > 类名 8–11 个点；组织条件化反而下降），Dead 召回 0.88，但自然分布下 Dead 精度仅 ~0.10。
-- 文本锚定分类头只在极少样本（~25 核/类）时优于随机初始化；全量标注时无差别、强锚定有害。
-- **负结果**：在 CellViT-UNI 上做 CONCH 实例重分类（零样本融合 / 线性头融合 / 偏置校准，全部在验证折调参）
-  测试 mPQ 无提升（0.4951 → ≤0.4953）。
-- **关键诊断**：Dead 的损失主要在**检测**而非分类——38.5% 的 Dead GT 核完全漏检（其它类 8–15%），
-  匹配到的 Dead 有 69% 分类正确；漏检的 Dead 核内 NP 概率均值仅 0.16，而 TP 分支给出 P(Dead)≈0.26。
-  漏检的 Inflammatory 核约一半 NP 已激活 → 在后处理中丢失。
+- Baseline: three-fold HoVer-Net training (official fast mode, full-patch supervision) was underway. **CellViT-UNI reproduction** (`scripts/train_cellvit.py`, following the CellViT paper recipe), split 1 test fold 3: mPQ **0.4951** / bPQ 0.6676 (TTA 0.5013 / 0.6728), consistent with the CellViT++ report of 0.492 for CellViT-UNI; split 2/3 training was underway.
+- Pillar A feasibility (CONCH): tight-crop zero-shot was approximately random. **Single forward pass + radius-limited attention pooling** (R=32px) reached zero-shot balanced accuracy 0.695 (descriptions beat class names by 8–11 points; tissue conditioning reduced performance); Dead recall was 0.88, but natural-distribution Dead precision was only ~0.10.
+- The text-anchored classification head beat random initialization only with very few examples (~25 nuclei/class); it made no difference with full labels, and strong anchoring was harmful.
+- **Negative result:** CONCH instance retyping on CellViT-UNI (zero-shot fusion / linear-head fusion / bias calibration, all tuned on validation) did not improve test mPQ (0.4951 → ≤0.4953).
+- **Key diagnosis:** Dead errors were mainly a **detection** problem, not classification: 38.5% of Dead GT nuclei were completely missed (8–15% for other classes); among matched Dead nuclei, 69% were classified correctly. Mean NP probability inside missed Dead nuclei was only 0.16, while the TP branch gave P(Dead)≈0.26. About half of missed Inflammatory nuclei had activated NP and were lost in post-processing.
 
-**2026-09-25（晚）— 基线与支柱 A 第一轮全部结束**
-- **两个基线的官方 3 折全部完成**：HoVer-Net mPQ .4564 / bPQ .6613（TTA .4666/.6714，论文 .463/.660）；
-  CellViT-UNI .4995 / .6653（TTA .5047/.6706，CellViT++ 报告 .492）。课程要求 (a) 完成。
-- 免训练找回漏检核（L4 上 96 配置扫描 × 3 splits）：**负结果**，最好的找回方案与只调阈值的对照无差别
-  （逐折打平；相对 official 最大回落 -.0012 test mPQ）→ 检测缺陷必须训练时解决。
-- 训练侧三个消融（split 1）：M1 Dead 像素加权 ×11 ✗；C1 完全平衡采样 ✗；**M2 小核（<100px）加权 ×6
-  是唯一候选**（test mPQ +.0042，CI 不含 0；val 无退化）但 ~2× 种子噪声，未确认。
-- **种子噪声（3 seeds）**：mPQ ±.0021，Dead PQ ±.0074；Dead 的检验噪声（图像 bootstrap）±.02-.03。
-  ⇒ 单种子 Dead 提升 <.01 不可信；Dead 结论必须多种子 × 3 折。
-- 下一步：M2 补 2 个种子验证（~2×2h A100）；支柱 B（PixCell 合成，目标改为小核/Dead 检测）为主攻方向。
+**2026-09-25 (evening) — Baselines and first Pillar A round complete**
+- **Official three-fold evaluation of both baselines completed:** HoVer-Net mPQ .4564 / bPQ .6613 (TTA .4666/.6714; paper .463/.660); CellViT-UNI .4995 / .6653 (TTA .5047/.6706; CellViT++ report .492). Course requirement (a) was complete.
+- Training-free recovery of missed nuclei (96-configuration scan × 3 splits on L4) was a **negative result**: the best recovery recipe matched the threshold-only control (tied per fold; at most −.0012 test mPQ versus official) → detection defects must be addressed during training.
+- Three training ablations (split 1): M1 Dead pixel weighting ×11 ✗; C1 fully balanced sampling ✗; **M2 small-nucleus (<100px) weighting ×6 was the only candidate** (test mPQ +.0042, CI excludes zero; no validation decline), but the gain was about 2× seed noise and was unconfirmed.
+- **Seed noise (3 seeds):** mPQ ±.0021, Dead PQ ±.0074; Dead inferential noise (image bootstrap) ±.02–.03. ⇒ A single-seed Dead gain <.01 is not reliable; Dead conclusions require multiple seeds × 3 folds.
+- Next: validate M2 with two additional seeds (~2×2h A100); make Pillar B (PixCell synthesis, refocused on small-nucleus/Dead detection) the primary direction.
 
-**2026-09-26（凌晨）— M2 三种子判定：负结果；支柱 A 第一轮关闭，转攻支柱 B**
-- M2（小核 <100px 前景加权 ×5）补齐种子 20/21：test ΔmPQ **-.0010** [-.0043,+.0022]——单种子的 +.0042
-  是种子运气；ΔbPQ **-.0024** [-.0048,-.0002] 显著小幅下降；ΔDead **+.0108** [-.0021,+.0238] 方向一致
-  （3/3 种子高于 baseline 均值）但不显著。⇒ M2 不作为贡献（用 bPQ 换不显著的 Dead）。
-- **支柱 A 第一轮全部负结果**（重分类 ✗、免训练找回 ✗、M1 ✗、C1 ✗、M2 ✗）；收获 = Dead 瓶颈在检测的
-  诊断 + 种子噪声量化规则（已验证）。检测缺陷必须靠数据（支柱 B）或架构，不是损失重加权/后处理。
-- 支柱 B 启动（PixCell-256 + Cell-ControlNet 权重已就绪）：第一步 (1) **失败挖掘**——用 split2 模型对
-  fold1 做 out-of-fold 预测（fold1 在 split2 中是 val，从未参与训练），统计漏检/merge 的局部布局
-  （接触邻居数、类别对、核大小）；(2) **PixCell 条件采样 smoke test**——真实 fold1 掩码 → 生成图，
-  检查 20× 模型在 40× PanNuke 上的外观差距（决定 LoRA 适配 40× 还是降采样对比）。
-  **两项均已完成**：失败挖掘结论（孤立小核 + 同类簇，见 §2.2 修订与 findings.md）；PixCell 冒烟测试
-  440 对象定量评估——**放置忠实（可用作标签）但外观差距结构性**（平色块染色质、粉→紫偏移、高频
-  -24%、大掩码欠渲染 322px vs 137px）⇒ **决策：LoRA 适配 40×（训练折）**，适配目标含核内纹理与
-  边界真实感；合成时按大小分层 + fill-rate 过滤。下一步：LoRA 训练管线（fold1 图+掩码对）；
-  扩量定量（几百 patch，Dead/大核分层）；并行做 copy-paste 对照。
+**2026-09-26 (early morning) — M2 three-seed decision: negative; first Pillar A round closed, shift to Pillar B**
+- M2 (small-nucleus <100px foreground weighting ×5), completed with seeds 20/21: test ΔmPQ **−.0010** [−.0043,+.0022]—the single-seed +.0042 was seed luck. ΔbPQ **−.0024** [−.0048,−.0002], a significant small decline; ΔDead **+.0108** [−.0021,+.0238] was directionally consistent (3/3 seeds above the baseline mean) but not significant. ⇒ M2 is not a contribution (trade bPQ for an insignificant Dead gain).
+- **All first-round Pillar A results were negative** (retyping ✗, training-free recovery ✗, M1 ✗, C1 ✗, M2 ✗). The useful outcome was a validated diagnosis that Dead is a detection bottleneck and a quantified seed-noise rule. Detection defects require data (Pillar B) or architecture, not loss reweighting/post-processing.
+- Pillar B began (PixCell-256 + Cell-ControlNet weights were ready). First steps: (1) **failure mining**—use the split2 model to generate out-of-fold predictions on fold1 (fold1 is validation in split2 and was never used for training) and count local layouts of misses/merges (contact-neighbor count, class pair, nucleus size); (2) **PixCell conditional-sampling smoke test**—render real fold1 masks and inspect the appearance gap between the 20× model and 40× PanNuke (to decide between 40× LoRA adaptation and downsampling).
+- **Both tasks were completed:** failure mining found isolated small nuclei plus same-class clusters (see the §2.2 revision and findings.md). Quantitative PixCell smoke evaluation of 440 objects found **faithful placement (labels were usable), but a structural appearance gap** (flat-block chromatin, pink-to-purple shift, high frequency −24%, large-mask under-rendering 322px vs 137px). ⇒ **Decision: adapt with LoRA to 40× on training folds**, targeting intranuclear texture and boundary realism; stratify synthesis by size and filter by fill rate. Next: LoRA training pipeline on fold1 image/mask pairs, larger quantitative sample (hundreds of patches, stratified by Dead/large nuclei), and a parallel copy-paste control.
 
-**2026-09-26（上午）— 支柱 B 第一轮并行推进：CP1 对照训练 + PixCell LoRA 管线**
-- **CP1 失败驱动 copy-paste**（`src/nucseg/augment/copy_paste.py`，对照实验也是假设检验：Dead 检测
-  缺陷是否"数据可修"）：donor 取自训练折（50-400px，Dead 权重 0.4），插入空基质、8px 间距（对应
-  "漏检 Dead 均为孤立核"），prob 0.5 × Poisson(3)；**在几何/色彩增强之前**粘贴使粘贴核同步增强。
-  视觉审查（sonnet 子代理）抓到单测漏掉的真 bug：v1 有边界裁剪碎片、增强顺序漏洞（粘贴核未增强=
-  可学习捷径）、与未标注核碰撞、色调失配；v2 已修（边界 donor 剔除、基质色偏移、Otsu 暗区防护、
-  先粘贴后增强）。run `split1_cp1`（seed 19）已启动训练。
-- **PixCell LoRA 管线**（`scripts/train_pixcell_lora.py` + `nucseg.pixcell`）：DiT attention LoRA
-  8.3M 参数，ControlNet/VAE 冻结，条件协议与推理完全一致（CFG dropout=0.1，dropped rows 零贡献，
-  加性注入已核实）；fold1 条件缓存；5000 步约 40 分钟。定量评估器 `scripts/pixcell_eval.py`
-  （200 分层 patch、OOF split2 检测器评渲染率、Laplacian/OD/UNI2-h cos）。LoRA 前基线在跑
-  （`runs/pixcell/eval_base`）。
-- 待办：CP1 结果（多种子判定规则同前）；LoRA before/after；布局采样扩量合成 → 合成训练对照 copy-paste。
+**2026-09-26 (morning) — First parallel Pillar B work: CP1 control training + PixCell LoRA pipeline**
+- **CP1 failure-driven copy-paste** (`src/nucseg/augment/copy_paste.py`; the control also tested the hypothesis “can data intervention fix Dead detection?”): donors came from training folds (50–400px, Dead weight 0.4), were inserted into blank background with 8px spacing (reflecting the hypothesis that missed Dead nuclei were isolated), with probability 0.5 × Poisson(3). **Pasting occurred before geometric/color augmentation** so pasted nuclei received the same transforms. Visual review by a Sonnet subagent caught real bugs missed by unit tests: v1 had edge-cropped fragments, an augmentation-order flaw (pasted nuclei were not augmented, creating a learnable shortcut), collisions with unlabeled nuclei, and color mismatch. v2 fixed these with edge-donor exclusion, background color shift, Otsu dark-area protection, and paste-before-augmentation. Training run `split1_cp1` (seed 19) had started.
+- **PixCell LoRA pipeline** (`scripts/train_pixcell_lora.py` + `nucseg.pixcell`): 8.3M DiT attention-LoRA parameters; ControlNet/VAE frozen; conditioning matched inference (CFG dropout=0.1, dropped rows contributed zero, additive injection verified); fold1 condition cache; about 40 minutes for 5,000 steps. Quantitative evaluator `scripts/pixcell_eval.py` (200 stratified patches, OOF split2 detector renderability, Laplacian/OD/UNI2-h cosine). Pre-LoRA baseline was running (`runs/pixcell/eval_base`).
+- Pending then: CP1 results (same multi-seed decision rule), LoRA before/after, scale-up of layout-sampled synthesis, and a synthesis-training comparison against copy-paste.
 
-**2026-09-26（下午）— CP1 判定（负结果）；LoRA 放弃，改 Reinhard 后处理**
-- **CP1（copy-paste 对照）被拒绝**：val ΔmPQ +.0048（CI 恰不含 0）但 test ΔmPQ +.0009（不显著）、
-  **test ΔDead -.031 [-.058,-.010]**（TTA 一致，>4x 种子噪声）。损伤主要在**类型边界**而非检测
-  （匹配 Dead 类型正确率 .690→.609、精度 .512→.484；混淆双向增多）。val/test 的 Dead 方向相反
-  （+.024 vs -.031）再次验证单种子单折 Dead 不可信。⇒ 真实外观移植扰乱类型边界；数据侧干预只剩
-  **完整合成**（外观在上下文中生成）一条路。
-- **LoRA 第二轮（r8/5e-5 快照扫描）所有检查点均差于基座**（od_mean_l1 .60-1.10 vs .116）→ 路线
-  放弃；改用 **Reinhard LAB 后处理**（od_mean_l1 .072→.009，饱和度与真实对齐）。合成配方锁定：
-  基座模型 + 配对上下文 + Reinhard（`synth_pannuke.py` 默认值）。
-- SYN-v2 冒烟（32 图）：keep rate .901、0 整图丢弃、2.69 插入/图；颜色与配对真实对齐（中位 RGB
-  差 ~3/255、饱和度 68.5 vs 69.6）；Laplacian 比值 .70（基座纹理上限，接受）。视觉审查通过后
-  扩量 3000 图 → SYN1 训练（--synth-frac 0.25/0.5，对照仍为 3 种子基线）。
+**2026-09-26 (afternoon) — CP1 decision (negative); abandon LoRA and switch to Reinhard post-processing**
+- **CP1 (copy-paste control) was rejected:** validation ΔmPQ +.0048 (CI just excluded zero), but test ΔmPQ +.0009 (not significant) and **test ΔDead −.031 [−.058,−.010]** (same direction with TTA, >4× seed noise). Damage was mainly at **class boundaries**, not detection (matched Dead typing accuracy .690→.609, precision .512→.484; confusion increased in both directions). Dead moved in opposite directions on validation/test (+.024 vs −.031), again showing that single-seed/single-fold Dead results are unreliable. ⇒ Real-appearance transfer disrupted class boundaries; the remaining data-side option was **full synthesis** (generate appearance within context).
+- **All checkpoints in LoRA round 2 (r8/5e-5 snapshot scan) underperformed the base model** (od_mean_l1 .60–1.10 vs .116), so abandon that route and use **Reinhard LAB post-processing** (od_mean_l1 .072→.009, saturation aligned with real images). Freeze the synthesis recipe: base model + paired context + Reinhard (`synth_pannuke.py` defaults).
+- SYN-v2 smoke (32 images): keep rate .901, zero whole-image drops, 2.69 insertions/image; color aligned with paired real images (median RGB difference ~3/255, saturation 68.5 vs 69.6); Laplacian ratio .70 (accepted as the base-model texture ceiling). After visual review passed, scale to 3,000 images → SYN1 training (`--synth-frac 0.25/0.5`, compared against the three-seed baseline).
 
-**2026-09-26（夜）— SYN1 判定（无效）；支柱 B 关闭，转支柱 C**
-- SYN1 视觉审查通过（外观缺陷全部修复）但发现**结构性阻断**：ControlNet 条件是二值掩码、
-  上下文 embedding 不含类别信息 ⇒ 生成器无法按类控制外观，729 个保留对象中 Dead 类型为 0
-  （教师 P(Dead)≤.005，非混淆模式）。改用**类别无关标签**（教师自洽类型）后启动 SYN1。
-- **SYN1 = split1 基线配方（seed 19）+ 1146 合成（synth-frac .5，keep-rate .886）**：test mPQ
-  .4900 / TTA .4956——落在 3 种子基线区间（.4910-.4951）底部，无效偏负；Dead .1521（TTA .1570）
-  高于全部 3 个种子抽样但 ~+1pt 处于噪声边缘，且分解显示增益来自类型配对而非分割
-  （PQ+/DQ+/SQ+ 全平）；Inflammatory -1.0~-1.6pt。**按预注册规则判定：无效，支柱 B 关闭。**
-- 结论：Dead/小核检测缺陷**不可由数据侧干预修复**（真实外观移植 CP1 有害、上下文内合成 SYN1
-  无效）；三个支柱中唯一还有正向信号的手臂是损失重加权 npwce_small5（Dead 方向 3/3 种子一致
-  但不显著、以 bPQ -.0024 为代价）。
-- 下一步（支柱 C，计划 §2.3）：跨域零样本（CoNIC/Lizard 剔除 PanNuke 重叠、MoNuSAC、PUMA，
-  类别映射 + bPQ/AJI/PQ）+ PanNuke-CF 反事实渲染（复用已锁定配方：基座+配对上下文+Reinhard），
-  验证 CF 排序与真实跨域排序的一致性（Spearman）。
+**2026-09-26 (night) — SYN1 decision (ineffective); close Pillar B and move to Pillar C**
+- Visual review of SYN1 passed after appearance defects were fixed, but found a **structural blocker**: ControlNet conditioning was a binary mask and context embeddings carried no class information, so the generator could not control appearance by class. None of the 729 retained objects were typed as Dead (teacher P(Dead)≤.005; this was not a confusion mode). SYN1 then started using **class-agnostic labels** (teacher-consistent typing).
+- **SYN1 = split1 baseline recipe (seed 19) + 1,146 synthetic images (synth-frac .5, keep-rate .886):** test mPQ .4900 / TTA .4956—at the bottom of the three-seed baseline range (.4910–.4951), ineffective and slightly negative. Dead .1521 (TTA .1570) exceeded all three sampled seeds but was only ~1 point above them, at the edge of noise. Decomposition showed gains came from typing matches, not segmentation (PQ+/DQ+/SQ+ all flat); Inflammatory changed by −1.0 to −1.6 points. **Under the preregistered rule: ineffective; close Pillar B.**
+- Conclusion: Dead/small-nucleus detection defects were **not repaired by these data-side interventions** (real-appearance transfer CP1 was harmful; contextual synthesis SYN1 was ineffective). The only arm with a positive signal among the three pillars was loss reweighting `npwce_small5` (Dead direction consistent across 3/3 seeds but not significant, at a bPQ cost of −.0024).
+- Next (Pillar C, plan §2.3): zero-shot cross-domain evaluation (CoNIC/Lizard with PanNuke overlap removed, MoNuSAC, PUMA; class mapping + bPQ/AJI/PQ) and PanNuke-CF counterfactual rendering (reuse the frozen base+paired-context+Reinhard recipe) to test whether CF ranking agrees with real cross-domain ranking (Spearman).
 
-**2026-09-26（深夜）— 支柱 C 启动：跨域数据转换完成并审查通过；PanNuke-CF 渲染器验证通过**
-- CoNIC（剔除 112 张 PanNuke 重叠、20×→2×上采样、四分裂 256）= 19,476 tiles；MoNuSAC test
-  （RGBA→RGB、Ambiguous 剔除、256 tiling）= 443 tiles；存于 `data/external/`。Sonnet 拼接图
-  审查：无转换 bug（亚像素对齐、尺寸方向正确、插值平滑）。
-- 评测管线打通（evaluate 可选 tissue_names；external.py 镜像 PanNukeFold、惰性 gt_channels；
-  predict_external / collect_external）。修复静默仓库 bug：.gitignore 的 `data/` 吞掉了
-  `src/nucseg/data/`（pannuke.py/prepare.py 从未被跟踪）。
-- PanNuke-CF：固定 fold3 GT 标签，context {配对,换组织} × Reinhard {自身, donor} 因子设计
-  （control/stain/ctx/tissue 四臂 + real 参照 + control 3 种子重复）。冒烟（8 patch）：control
-  比真实还容易（bPQ .71→.80）但 strict 掉（外观-类型不一致）；tissue 臂强压力信号（.28）。
-  审查修复：空白 patch 剔除（context 是内容通道）、donor 亮度护栏。全量 500/臂渲染中。
-- 在跑：CellViT-UNI 3 splits × {conic, monusac} × {plain, TTA}；HoVer-Net 随后。
+**2026-09-26 (late night) — Start Pillar C: cross-domain conversion reviewed and passed; PanNuke-CF renderer validated**
+- CoNIC (remove 112 PanNuke-overlap images, 20×→2× upsample, four-way 256 tiling) = 19,476 tiles; MoNuSAC test (RGBA→RGB, remove Ambiguous, 256 tiling) = 443 tiles; stored in `data/external/`. Sonnet review of stitched images found no conversion bugs (subpixel alignment, correct dimension orientation, smooth interpolation).
+- Evaluation pipeline connected (optional `tissue_names` in evaluate; `external.py` mirrors PanNukeFold with lazy `gt_channels`; `predict_external` / `collect_external`). Fixed a silent repository bug: `.gitignore`'s `data/` pattern swallowed `src/nucseg/data/` (`pannuke.py`/`prepare.py` had never been tracked).
+- PanNuke-CF: fixed fold3 GT labels; factorial design context {paired, change tissue} × Reinhard {self, donor} (four arms: control/stain/ctx/tissue, plus real reference and three-seed control repeats). Smoke (8 patches): control was easier than real images (bPQ .71→.80) but strict score fell (appearance/class mismatch); tissue arm showed a strong stress signal (.28). Review fixes: remove blank patches (context is a content channel), add donor brightness guard. Rendering 500 per arm was underway.
+- Running then: CellViT-UNI, 3 splits × {conic, monusac} × {plain, TTA}; HoVer-Net to follow.
 
-**2026-09-27 — 外部零样本表 + CF 首轮分析 + 第三评估器就绪**（详见 findings.md）
-- 外部零样本（3-split mean mPQ）：CoNIC CellViT .335 / HoVer-Net .261；MoNuSAC .250 / .037
-  （HoVer-Net 检测崩溃 F_d .37）；PUMA（新增黑色素瘤集，apoptotic→Dead）CellViT .452 / HoVer-Net .320。
-- CF 分析（2 架构）：噪声地板 .004-.006 << 压力效应；stain -.02~-.07、ctx -.14~-.19、tissue 最强；
-  但 rank agreement 在架构层面反向 → 需第三评估器定论。
-- HoVer-NeXt-T 端口修复（瓶颈在 decode 不在模型）：val 调阈值 flat 解码 3 折 **mPQ .4579**
-  （介于 HoVer-Net .4564 与 CellViT .4995 之间），可用作第三评估器；错误模式与二者不同
-  （2026-09-28 审计更正：flat 解码 merge 率约为分水岭解码的 2 倍，.10 vs .044/.049，
-  missed_bg 高于 CellViT）。
+**2026-09-27 — External zero-shot table, first CF analysis, and third evaluator ready** (see findings.md)
+- External zero-shot results (three-split mean mPQ): CoNIC CellViT .335 / HoVer-Net .261; MoNuSAC .250 / .037 (HoVer-Net detection collapsed, F_d .37); PUMA (new melanoma set, apoptotic→Dead) CellViT .452 / HoVer-Net .320.
+- CF analysis (two architectures): noise floor .004–.006 was far below stress effects; stain −.02 to −.07, context −.14 to −.19, with tissue as the strongest condition. However, architecture-level ranking agreement was reversed, so a third evaluator was needed to decide.
+- HoVer-NeXt-T port fixed (the bottleneck was decoding, not the model): after threshold tuning on validation, flat decoding achieved three-fold **mPQ .4579** (between HoVer-Net .4564 and CellViT .4995), making it usable as a third evaluator; its error pattern differed from both. (2026-09-28 audit correction: flat-decoding merge rate was about 2× watershed decoding, .10 vs .044/.049, and missed_bg was higher than CellViT.)
 
-**2026-09-28 — 支柱 C 终判关闭（详见 findings.md 同日条目）**
-- 第三评估器 HoVer-NeXt-T 补齐全部外部集（CoNIC .279 / MoNuSAC .112 / PUMA .381 mPQ）与 CF 两臂；
-  真实跨域排序三架构一致：CellViT .154 < HoVer-NeXt-T .199 < HoVer-Net .246（domain drop）。
-- **CF-vs-真实 rank agreement 在 mPQ 轴反向**（6 点 rho -.89 perm p .033；架构均值 -1.00）。
-  轴分解给出机理：真实架构间差异几乎全在**检测轴**（HoVer-Net F_d 掉 .15-.18 = MoNuSAC 崩溃，
-  CellViT 仅 .007），而标签固定的 CF 渲染对检测轴施加的压力三架构齐平（.08-.10）——构造上不可施压；
-  在 CF 能施压的**分型轴**上排序与真实一致（typing rho +1.00 架构均值）。
-- 结论：PanNuke-CF = 分型压力测试，**不是**跨域迁移代理。三个支柱全部关闭；
-  剩余工作 = 最终报告与图表（组织×类热力图、错误分解、合成/CF 样例、主表）。
-- **阶段报告一已出**：`docs/report/stage_report_1/stage_report_1.tex`（英文 LaTeX，12 页，6 表 4 图，
-  TeXLive 2026 编译，PDF 入库；中文平行版 `stage_report_1_zh.tex`，11 页；报告一所有文件
-  （含 figs/）集中在 `docs/report/stage_report_1/`，后续报告各占一个子目录）。覆盖三支柱
-  全部结论；最终报告还需补组织×类热力图、错误分解图、以及可选的 MoNuSeg/NuInsSeg 外部集。
+**2026-09-28 — Final decision: close Pillar C** (see same-day findings entry)
+- The third evaluator, HoVer-NeXt-T, completed all external sets (CoNIC .279 / MoNuSAC .112 / PUMA .381 mPQ) and both CF arms. Real cross-domain ranking agreed across the three architectures: CellViT .154 < HoVer-NeXt-T .199 < HoVer-Net .246 (domain drop).
+- **CF-versus-real ranking agreement was reversed on the mPQ axis** (6 points, rho −.89, permutation p .033; architecture means −1.00). Axis decomposition explained why: real architecture differences were almost entirely on the **detection axis** (HoVer-Net F_d dropped .15–.18, i.e. MoNuSAC collapse; CellViT only .007), whereas label-fixed CF rendering applied nearly equal detection pressure to all three architectures (.08–.10) and could not induce that distinction by construction. On the **typing axis**, which CF could stress, ranking matched the real-domain ranking (typing rho +1.00 on architecture means).
+- Conclusion: PanNuke-CF is a typing stress test, **not** a proxy for cross-domain transfer. All three pillars are closed. Remaining work was the final report and figures (tissue×class heatmap, error decomposition, synthesis/CF examples, main table).
+- **Stage Report 1 completed:** `docs/report/stage_report_1/stage_report_1.tex` (English LaTeX, 12 pages, 6 tables, 4 figures; compiled with TeXLive 2026 and PDF checked in); Chinese companion `stage_report_1_zh.tex` (11 pages). All report-one files, including `figs/`, are in `docs/report/stage_report_1/`; later reports each have their own subdirectory. It covers all three pillars. The final report still needed the tissue×class heatmap, error-decomposition figure, and optionally the MoNuSeg/NuInsSeg external set.
 
-**据此对 §2.1（支柱 A）的修订**：原"语言锚定类型头"针对分类，而瓶颈在检测，故改为以**检测**为目标——
-(1) 类别感知前景：利用 TP 分支/CONCH 稠密先验召回 NP 漏检的核（先做免训练的后处理验证，在验证折调参，
-单独报告）；(2) 训练侧：对小核/Dead 的前景损失加权或类别条件的前景监督；(3) CONCH 半径受限池化保留为
-少样本/跨数据集（新类别）场景的方法与分析工具。支柱 B（合成）的首要目标相应改为"难检测的小核/Dead"。
-所有改进仍须与"同等重加权/后处理调参"的对照比较。
+**Revision to §2.1 (Pillar A) based on these results:** The original “language-anchored type head” targeted classification, but the bottleneck was detection, so the target shifted to **detection**: (1) class-aware foreground, using TP-branch/CONCH dense priors to recover nuclei missed by NP (first validate as training-free post-processing, tune on validation, report separately); (2) during training, weight foreground loss for small nuclei/Dead or use class-conditioned foreground supervision; (3) retain CONCH radius-limited pooling as a method/analysis tool for few-shot or cross-dataset (new-class) settings. Pillar B (synthesis) was correspondingly refocused on “hard-to-detect small nuclei/Dead.” Compare all improvements with controls using equivalent reweighting/post-processing tuning.
 
-**2026-09-28 → 10-01 — 第二阶段（Dead 检测瓶颈的两个假设检验：分辨率 vs 检测优先架构）**
-- **A 线（KongNet，检测优先 CenterNet 式）负结果收案**：按折权重 + 仅在验证折调解码阈值，
-  3 折 test mPQ .346 / bPQ .471 / Dead PQ .053——比最弱稠密解码器还低 11 分；融合率 .12-.18
-  （稠密 .044-.049），内部 Dead 漏检 .496（CellViT .354）。论文 Dead F_c .59 在严格协议下不复现。
-  ⇒ Dead 缺陷跨解码器家族共有，"检测优先"架构不解决问题；karyorrhexis 碎片群的失败是实例分离问题。
-- **LKCell-L 严格复评（A1 外部池首条，2026-10-01）**：发布按折权重（HF `xiazhi/LKCell-L`）经共享
-  管线复评——比论文均匀低 ~.015（mPQ .4923 vs .508；协议转换而非管线问题）。同等条件（无 TTA、
-  last ckpt）下 mPQ -.0072 / Dead PQ -.0218 逊于 CellViT-UNI 基线，但 bPQ +.0076 / mPQ+ +.0057：
-  **分割更好、分型更差**——Dead F_c .382 > .359（找得到 Dead）但检测到的 Dead 无法通过类型配对
-  转化为 Dead PQ。与 KongNet 判定同向：架构整体优势在匹配协议下不转化为 Dead/分型增益。
-  Pillar-C rank pool 扩至 4 架构。
-- **B 线（B1，2× 工作分辨率 512）**：split1 全部预注册 Dead 端点正向（内部 Dead 漏检 .35→.25，
-  Uterus 剔除 Dead PQ +.02）但 bPQ -.026 全面税。深挖（含视觉审查）定位机制：**解码器像素单位
-  常数在 512 下放松**（min_size 10、Sobel ksize 21 不随分辨率缩放）→ 大核碎裂 + 微碎片洪泛。
-  预注册修复 `--decode-u 2`（du2）：bPQ 税收回 61-70%，mPQ+ 差距收回 76-88%，Dead 增益保留放大。
-- **杠杆 M/S（同类合并 + 边缘细条丢弃）**：仅验证折选择 (frac .25, a_min 40)，四个扩展验证折
-  扫描独立同选；**test 判定 PASS**：mPQ +.0014~+.0020、bPQ +.0021~+.0030（全部 bootstrap CI>0），
-  Dead 不动。B1 终局（3 折均值）：mPQ .4910 / bPQ .6608（vs 基线 .4995/.6653）换 Dead F_c +.034、
-  Dead DQ+ +.026、内部 Dead 漏检 -.070——**按预注册联合端点 x2 不是默认胜利，是明码标价的权衡**；
-  mPQ+ 已打平（.5171 vs .5178）。mk2（marker-open 核缩放）验证折更差，未采纳。
-- 3×3 种子网格（x2+du2）**9/9 收齐**（split3_seed2 10-01 14:38 落地；canonical 中心复算与 watcher
-  位相同，第三链验证；lever PASS 9/9）。**预注册种子噪声判定**：代价稳健——dmPQ -.0098、
-  dbPQ -.0069 为最大分裂种子 std（.0021/.0013）的 4.7×/5.3×，逐 run 同号；Dead 增益脆弱——
-  +.0049 仅为单种子 Dead std（.0068-.0112）的 0.4-0.7×，成对种子 4/5 胜（split3 s19 翻负 -.0032），
-  分裂级种子均值 +.0111（split1，3/3 种子）/ -.0015（split2 翻负）/ +.0051（split3，2/3）。
-  3 分裂均值（9 run）：du2 mPQ .4889 bPQ .6579 Dead .1799，du2lev .4905/.6603/.1801；较 seed19-only
-  表几乎不动（du2lev vs base mPQ -.0083、bPQ -.0045、Dead +.0051、内部 Dead 漏检 -.069）。
-- 推理内存优化不改变评测语义：输出预分配、避免不必要拷贝，并将推理与评测拆为独立进程；
-  batch 2 vs 32 结果不变性已验证（<=2.8e-05），见 findings.md 同日条目。
+**2026-09-28 → 10-01 — Stage 2 (two hypotheses about the Dead detection bottleneck: resolution vs detection-first architecture)**
+- **Track A (KongNet, CenterNet-like detection-first) closed as a negative result:** fold-specific weights, with decoding thresholds tuned only on validation; three-fold test mPQ .346 / bPQ .471 / Dead PQ .053—11 points below even the weakest dense decoder. Merge rate .12–.18 (dense .044–.049); internal Dead miss rate .496 (CellViT .354). The paper's Dead F_c .59 was not reproduced under the strict protocol. ⇒ The Dead defect appeared across decoder families; a “detection-first” architecture did not solve it. Failures on karyorrhexis fragment groups were instance-separation failures.
+- **Strict LKCell-L reevaluation (first entry in external pool A1, 2026-10-01):** published fold-specific weights (HF `xiazhi/LKCell-L`) reevaluated through the shared pipeline, uniformly ~.015 below the paper (mPQ .4923 vs .508; attributed to protocol conversion, not a pipeline issue). Under matched conditions (no TTA, last checkpoint), it trailed CellViT-UNI by mPQ −.0072 / Dead PQ −.0218, but exceeded it in bPQ +.0076 / mPQ+ +.0057: **better segmentation, worse typing**—Dead F_c .382 > .359 (Dead instances were found), but detected Dead instances did not become Dead PQ through class matching. This agreed with the KongNet result: overall architecture advantages did not become Dead/typing gains under matched evaluation. Pillar-C ranking pool expanded to four architectures.
+- **Track B (B1, 2× working resolution 512):** all preregistered Dead endpoints were positive on split1 (internal Dead misses .35→.25, Dead PQ +.02 after excluding Uterus), but bPQ paid a broad −.026 cost. Deep review, including visual inspection, identified the mechanism: **decoder pixel-unit constants relaxed at 512** (`min_size` 10 and Sobel `ksize` 21 did not scale with resolution), causing large nuclei to fragment and microfragments to flood predictions. Preregistered fix `--decode-u 2` (du2) recovered 61–70% of the bPQ cost and 76–88% of the mPQ+ gap while preserving/increasing the Dead gain.
+- **M/S lever (merge same-class instances + discard thin edge strips):** selected only on validation (frac .25, a_min 40); four expanded validation-fold scans selected the same setting independently. **Test decision PASS:** mPQ +.0014–+.0020, bPQ +.0021–+.0030 (all bootstrap CIs >0), Dead unchanged. B1 final three-fold means: mPQ .4910 / bPQ .6608 (baseline .4995/.6653), exchanging for Dead F_c +.034, Dead DQ+ +.026, and internal Dead misses −.070—**under the preregistered joint endpoints, x2 is not an automatic win but a priced trade-off**. mPQ+ was nearly tied (.5171 vs .5178). mk2 (marker-open nucleus scaling) was worse on validation and not adopted.
+- The 3×3 x2+du2 seed grid was **9/9 complete** (split3_seed2 landed 10-01 14:38; canonical center recomputation matched the watcher; third-chain validation; lever PASS 9/9). **Preregistered seed-noise decision:** costs were robust—dmPQ −.0098 and dbPQ −.0069 were 4.7×/5.3× the maximum split seed SD (.0021/.0013), same sign in every run. Dead gain was fragile: +.0049 was only 0.4–0.7× single-seed Dead SD (.0068–.0112); paired seeds won 4/5 times (split3 seed19 reversed to −.0032); split-level seed means +.0111 (split1, 3/3 seeds) / −.0015 (split2, reversed) / +.0051 (split3, 2/3). Three-split means (9 runs): du2 mPQ .4889, bPQ .6579, Dead .1799; du2lev .4905/.6603/.1801. This barely changed the seed19-only table (du2lev vs base mPQ −.0083, bPQ −.0045, Dead +.0051, internal Dead misses −.069).
+- Inference-memory optimization preserved evaluation semantics: preallocate outputs, avoid unnecessary copies, and run inference and evaluation as separate processes. Results were invariant between batch 2 and 32 (≤2.8e-05); see same-day findings.
 
-**2026-10-01（晚）— 阶段报告二已出**
-- `docs/report/stage_report_2/`：英文版 `stage_report_2.tex`（12 页，7 表 5 图）、中文平行版
-  `stage_report_2_zh.tex`（10 页）、面向零背景读者的导读 `summary_plain_zh.tex`（4 页，标题
-  《把图像放大一倍，AI 就能看见将死的细胞了吗？》）；TeXLive 2026 编译（pdflatex/xelatex
-  各两遍，0 错误 0 overfull），PDF 已入库。figs/ 自含（6 张图表 EN+ZH 双版 + 3 张 montage 复制）。
-- 全部表格数字于写前从 artifacts 重新导出核验（`scripts/report2_numbers.py` →
-  `runs/analysis/report2_numbers.txt`）：架构总表（KongNet/HoVer-Net/LKCell/base/x2 手臂）、
-  du2 回收、杠杆 CI、3×3 网格、B1 初始 Dead 端点电池、尺寸分箱机制、误差构成、npred、
-  Uterus Dead PQ——与 findings 条目一致，仅两处以 artifact 为准修正了笔记笔误
-  （npred TTA 25.5→28.4 而非"24→27"；du2 回收 noTTA bPQ 71%）。split2/3 `eval_test_fold*_x2{,_tta}`
-  与 du2-TTA evals 已汇总到 runs 树。
-- 新增图表脚本 `scripts/make_report_figures2.py`（dataviz 调色板同报告一；尺寸分箱/du2 回收/
-  种子网格，中英双版）。
+**2026-10-01 (evening) — Stage Report 2 completed**
+- `docs/report/stage_report_2/`: English `stage_report_2.tex` (12 pages, 7 tables, 5 figures), Chinese companion `stage_report_2_zh.tex` (10 pages), and a no-background-needed guide `summary_plain_zh.tex` (4 pages, titled “If We Double the Image Size, Can AI See Dying Cells?”). Compiled with TeXLive 2026 (pdflatex/xelatex, two passes each, zero errors and zero overfull boxes); PDFs checked in. `figs/` is self-contained (6 figures/tables in EN+ZH pairs plus 3 copied montage images).
+- Before writing, all table values were re-exported from artifacts and checked (`scripts/report2_numbers.py` → `runs/analysis/report2_numbers.txt`): architecture summary (KongNet/HoVer-Net/LKCell/base/x2 arms), du2 recovery, lever CIs, 3×3 grid, initial B1 Dead endpoint battery, size-bin mechanism, error composition, `npred`, and Uterus Dead PQ. These agree with findings; only two note typos were corrected against artifacts (`npred` TTA 25.5→28.4, not “24→27”; no-TTA bPQ recovery with du2 was 71%). Split2/3 `eval_test_fold*_x2{,_tta}` and du2-TTA evaluations were summarized in the runs tree.
+- Added figure script `scripts/make_report_figures2.py` (same dataviz palette as Report 1; size bins/du2 recovery/seed grid, English and Chinese versions).
 
-**2026-10-03 — 类别置信度与分型一致性审计（P0-P3 §7 建议的第一步，描述性、无阈值选择）**
-- 消费 P0-P3 v2 缓存预测 + ugradx 重推的 3 个 x1 test 概率表（L4 顺序 batch2/无 TTA，共约
-  8 GPU 分钟；重推与缓存图 0.05-0.09% 实例在 IoU>0 的贪心配对后未配对；已配对者中
-  95.8-96.0% 的 IoU>0.5，IoU>0.9 配对的类型一致率为 99.96-99.98%，不据此宣称分布等价）。
-  冻结 P2 规则重放精确复现验证折添加数（split2 1713 / split3 2604）。
-- 核心结论：**置信度门控的是分型而非存在性**——P2 添加候选 test 匹配率仅 .39-.43（57-61%
-  纯 FP），但匹配者分型正确率 .86-.88；被拒候选 .75-.77、Dead .4375-.4444（仅测试折；.60 来自验证折），置信度确实排序
-  分型风险（Dead 最陡）。split2 的 p≥0.9 添加 Dead 分型 val .850 → test .667 未迁移；
-  split3 p≥0.7 保持 .821。
-- **du2 对已匹配 Dead 的分型反而更好**（test .5788 vs x1 .5539；val .6144 vs .5735）；P1
-  类型交换优势不在 Dead 分型也不在稳定配对分歧群（base 对 1101 vs x2 对 1038，均为逐 split 计数的均值，近对称）。
-  像素多数票 vs 概率表 argmax 不一致（测试三 split 均值：x1 1.23%、x2 1.55%）时，
-  匹配且类型正确的比例为 .16-.20（分母包含未匹配预测），可作为待验证的风险信号。
-- 匹配种子轮候选（仅记录未测试）：存在性侧过滤、map-vs-row 一致性弃权、按类 Dead 阈值。
-  代码/产物：`src/nucseg/postproc/typing_audit.py`、`scripts/analyze_typing_confidence.py`、
-  `scripts/typing_audit_numbers.py`、`runs/analysis/typing_audit_20261003/`（含 commands.md）。
+**2026-10-03 — Class-confidence and typing-consistency audit (first P0–P3 §7 recommendation; descriptive, no threshold selection)**
+- Used cached P0–P3 v2 predictions plus three x1 test probability tables rerun on ugradx (L4, sequential batch 2, no TTA; about 8 GPU minutes). After greedy pairing at IoU>0, 0.05–0.09% of instances differed between reruns and cache. Among paired instances, 95.8–96.0% had IoU>0.5; type agreement for IoU>0.9 pairs was 99.96–99.98%. This does not establish distributional equivalence. Replay of the frozen P2 rule exactly reproduced validation additions (split2 1,713 / split3 2,604).
+- Main finding: **confidence gates typing, not existence**. P2 added-candidate test match rate was only .39–.43 (57–61% pure FP), but typing accuracy among matched candidates was .86–.88; rejected candidates were .75–.77, with Dead .4375–.4444 (test only; .60 was from validation). Confidence did rank typing risk, most steeply for Dead. In split2, added Dead typing at p≥0.9 did not transfer from validation .850 to test .667; split3 p≥0.7 retained .821.
+- **du2 typed already-matched Dead better** (test .5788 vs x1 .5539; validation .6144 vs .5735). P1's typing-swap advantage was neither in Dead typing nor a stable paired-disagreement group (mean per-split counts: 1,101 base pairs vs 1,038 x2, nearly symmetric). When pixel majority vote and probability-table argmax disagreed (three-split test means: x1 1.23%, x2 1.55%), the fraction both matched and correctly typed was .16–.20 (denominator includes unmatched predictions), a signal for future validation.
+- Candidates for a matched-seed round (recorded, not tested): existence-side filtering, map-vs-row consistency abstention, and class-specific Dead thresholds. Code/artifacts: `src/nucseg/postproc/typing_audit.py`, `scripts/analyze_typing_confidence.py`, `scripts/typing_audit_numbers.py`, `runs/analysis/typing_audit_20261003/` (including commands.md).
 
-**2026-10-05 — 匹配种子验证判定（预注册）；存在性审计与 EF-P2 预注册轮启动**
-- 9 个 (split, seed) 匹配对全部执行完毕：18/18 val 选择在读任何测试折前冻结；
-  **判定 robust_improvement = false** —— Dead 两臂通过（种子均值 +.00742 ≥ 1× 最大种子
-  std .00312；9/9 对 ≥0）但 ΔbPQ −.00087 < −.00064 护栏失败。门控添加把原种子脆弱的
-  Dead 增益变成稳健（raw du2 仅 4/5 对），但不能去除 bPQ 税（split3 Dead +.0163 与
-  bPQ −.0018 的 bootstrap CI 均不含 0）——**Dead-for-bPQ 交易而非免费胜利**。M/S 次要
-  端点 mPQ/bPQ/Dead PQ 的总均值为正，各有 7/9 对非负，并非逐对或逐 split 都改善。过程修复：seed19 硬校验 bug（da3b934）、bootstrap 索引 bug
-  （447fd88，含非常量装置回归测试）。全程 142 CPU 测试通过。详见 findings.md 同日条目。
-- **存在性审计（仅 val 折，`runs/analysis/existence_audit_20261005`）**：17,359 个冻结 P2
-  val 添加，7204 个匹配（41.50%）。面积揭示低精度的小候选子集（<30px 匹配率 20%、n=2294；30–60px 44%）；
-  到 base 的有限距离分箱匹配率为 39–44%，不支持仅按距离筛选，不能排除所有碎片机制；
-  圆度和填充率也有边际差异，尚未证明独立预测价值；
-  添加从不重复 base 已检测的 GT（0/17359）。val 上所选配置 ΔbPQ≈0（−.0007~+.0020），
-  测试侧 −.00087 的税属边际量。
-- **EF-P2 预注册轮**（[计划](superpowers/plans/2026-10-05-existence-filter-p2.md)，菜单
-  冻结于任何 sweep 之前）：在冻结的 P2 添加上加面积下限菜单 {identity, off, a30, a30d,
-  a60}，选择规则与判定规则逐字沿用 P2/匹配种子轮；CPU-only，第三次预注册读这些测试折
-  （多样性限制如实报告）。
-- **EF-P2 判定（同日完成）：robust_improvement = TRUE** —— 30px 面积下限把 bPQ 税
-  的均值损失从 −.00087 减小到 −.000009，同时保留 94% 的 Dead 增益（+.00742→+.00699，8 对正增益、1 对 identity 为零，
-  约 2.1× 最大 split 内配对差值总体标准差），mPQ 还小升 +.0007。val 选择 7×a30/1×a30d/1×identity；off 行在
-  9 对上与冻结 stage-1 逐位一致。EF-P2 取代 P2 成为报告的候选手臂；多样性限制（第三次
-  读测试折）与边际性（mPQ/bPQ CI 跨零）如实记录于 findings.md。
-  通过规则不等于统计学非劣性证明；两套模型预测的部署代价未测，strict mPQ 仍略降。
+**2026-10-05 — Matched-seed validation decision (preregistered); start existence audit and preregistered EF-P2 round**
+- All nine matched (split, seed) pairs completed; all 18/18 validation selections were frozen before any test fold was read. **Decision: `robust_improvement = false`**—both Dead arms passed (seed mean +.00742 ≥ 1× maximum seed SD .00312; 9/9 pairs ≥0), but ΔbPQ −.00087 < −.00064 failed the guardrail. Gated additions made the originally seed-fragile Dead gain robust (raw du2 won only 4/5 pairs) but did not remove the bPQ cost (split3 Dead +.0163 and bPQ −.0018 bootstrap CIs both excluded zero)—**a Dead-for-bPQ trade, not a free win**. Overall mean secondary M/S endpoints mPQ/bPQ/Dead PQ were positive and each was nonnegative in 7/9 pairs; this did not mean every pair or split improved. Process fixes: seed19 hard-check bug (da3b934), bootstrap-index bug (447fd88, with a nonconstant-fixture regression test). All 142 CPU tests passed. See same-day findings.
+- **Existence audit (validation only, `runs/analysis/existence_audit_20261005`):** 17,359 frozen P2 validation additions, 7,204 matched (41.50%). Area showed a low-precision small-candidate subgroup (<30px match rate 20%, n=2,294; 30–60px 44%). Finite distance bins to the base had match rates of 39–44%, not supporting distance-only filtering and not excluding all fragment mechanisms. Circularity and fill ratio also differed marginally; independent predictive value was not established. No addition duplicated a GT already detected by the base (0/17,359). The validation-selected configuration had ΔbPQ≈0 (−.0007 to +.0020); the test-side −.00087 cost was marginal.
+- **Preregistered EF-P2 round** (see [plan](superpowers/plans/2026-10-05-existence-filter-p2.md); menu frozen before any sweep): add area-floor menu {identity, off, a30, a30d, a60} to frozen P2 additions; apply P2/matched-seed selection and decision rules verbatim. CPU-only; this constituted a third preregistered read of these test folds (diversity limitation reported explicitly).
+- **EF-P2 decision (completed the same day): `robust_improvement = TRUE`**—a 30px area floor reduced mean bPQ loss from −.00087 to −.000009 while retaining 94% of Dead gain (+.00742→+.00699; 8 pairs positive and 1 identity pair at zero; about 2.1× the maximum within-split paired-difference overall SD); mPQ also rose slightly by +.0007. Validation selected 7×a30/1×a30d/1×identity; `off` matched frozen stage 1 bit-for-bit across all nine pairs. EF-P2 replaced P2 as the report's candidate arm. The diversity limitation (third test-fold read) and marginality (mPQ/bPQ CIs cross zero) are documented in findings.md. Passing the rule is not proof of statistical noninferiority; deployment cost of the two-model predictions was not measured, and strict mPQ still declined slightly.
 
 ---
 
-## 1. 调研结论要点
+## 1. Literature-review findings (historical, not current verification)
 
-### 1.1 PanNuke 官方 3-fold 排行（均为论文自报，协议：train/val/test = 1/2/3, 2/1/3, 3/2/1）
+### 1.1 Official PanNuke three-fold rankings (all self-reported in papers; protocol: train/val/test = 1/2/3, 2/1/3, 3/2/1)
 
-| 方法 | mPQ | bPQ | Dead PQ | 代码 / 按折权重 |
+| Method | mPQ | bPQ | Dead PQ | Code / fold-specific weights |
 |---|---|---|---|---|
-| HoVer-Net | 0.463 | 0.660 | 0.139 | vqdang/hover_net；公开权重**用了全量数据，不能用于测试** |
-| HoVer-NeXt-T (MIDL'24) | 0.477 | 0.656 | 0.154 | ✔ Zenodo 10635618 **按折权重** |
-| CPP-Net | 0.48 | 0.68 | 0.131 | ✔ 代码 |
-| CellViT-256 / SAM-H (MedIA'24) | 0.485 / 0.498 | 0.670 / 0.679 | 0.149 | ✔ 代码；公开权重用 90% 全折数据（泄漏） |
+| HoVer-Net | 0.463 | 0.660 | 0.139 | vqdang/hover_net; public weights **used all data and cannot be used for testing** |
+| HoVer-NeXt-T (MIDL'24) | 0.477 | 0.656 | 0.154 | ✔ Zenodo 10635618 **fold-specific weights** |
+| CPP-Net | 0.48 | 0.68 | 0.131 | ✔ code |
+| CellViT-256 / SAM-H (MedIA'24) | 0.485 / 0.498 | 0.670 / 0.679 | 0.149 | ✔ code; public weights used 90% of all folds (leakage) |
 | CellViT-UNI / Virchow2 (CellViT++) | 0.492 / 0.493 | 0.664 / 0.665 | 0.154 | ✔ |
-| LKCell-L | 0.508 | 0.685 | 0.172 | ✔ (基于 CellViT) |
-| CellVTA (UNI + CNN adapter) | 0.506 | 0.668 | **0.185** | ✔ 按折权重 |
-| **PromptNucSeg-H (ECCV'24)** | **0.512** | 0.692 | 0.161 | ✔ **按折权重**，3090 可训 |
-| CFR-SAM-H (2026 预印本) | 0.512 | 0.696 | 0.153 | ✗ |
+| LKCell-L | 0.508 | 0.685 | 0.172 | ✔ (based on CellViT) |
+| CellVTA (UNI + CNN adapter) | 0.506 | 0.668 | **0.185** | ✔ fold-specific weights |
+| **PromptNucSeg-H (ECCV'24)** | **0.512** | 0.692 | 0.161 | ✔ **fold-specific weights**, trainable on a 3090 |
+| CFR-SAM-H (2026 preprint) | 0.512 | 0.696 | 0.153 | ✗ |
 
-- 可验证 SOTA 天花板 ≈ **mPQ 0.51 / bPQ 0.69–0.70**，前几名差距 < 跨折标准差。拼 SOTA 不现实也没必要；**讲清楚 Dead / 粘连 / 跨组织**才是贡献点。
-- 他人复现普遍低于原文（HoVer-Net 复现常见 0.42–0.44）。**所有对比基线必须自己在同一 pipeline 下重跑**。
+- In the literature located for the 2026-09-24 review, the reported SOTA ceiling was about **mPQ 0.51 / bPQ 0.69–0.70**, and differences among the leaders were smaller than the across-fold standard deviation. This is a historical literature summary, not a current ranking verification. Chasing SOTA was considered neither realistic nor necessary; **the contribution should explain Dead, touching nuclei, and cross-tissue behavior**.
+- Reproductions by others are generally below the original papers (HoVer-Net reproductions commonly 0.42–0.44). **Rerun all comparison baselines under the same pipeline.**
 
-### 1.2 多模态（支柱 A 的依据）
-- 冻结病理 FM 不一定赢 ImageNet CNN（*Mind the Gap*, 2502.02471：Swin-V2 0.503 > UNI2 0.476 mPQ+）；**浅层特征 + CNN adapter** 是关键（CellVTA）。
-- **CONCH（病理 VLM）在稠密任务上与纯视觉 FM 持平**（PFM-DenseBench 2602.03887：LoRA mIoU 0.518 vs 最好 0.539），意味着我们几乎"免费"获得一个对齐的病理文本空间。
-- **纯文本提示路线失败**：SAM3 用类名/LLM 改写提示在 PanNuke 上 mIoU < 10%（2604.18225）。⇒ 语言应作为**训练模型内部的先验/正则**，而非提示接口。
-- 最近邻工作：**PromptNu**（TMI'25，通用 OpenAI CLIP + GPT-4V 描述，repo 无 PanNuke 配置）、**MONCH**（2412.02978，CLIP，PanNuke 仅语义分割 + F1，其消融显示 Dead 类对文本模块最敏感）。
-- **空白**：尚未找到"病理 VLM 文本空间 + 实例分割模型 + PanNuke 官方 mPQ"的工作（受检索限制，表述为"未找到"）。
+### 1.2 Multimodal methods (rationale for Pillar A)
+- A frozen pathology foundation model does not necessarily beat an ImageNet CNN (*Mind the Gap*, 2502.02471: Swin-V2 0.503 > UNI2 0.476 mPQ+); **shallow features + CNN adapter** are important (CellVTA).
+- **CONCH (pathology VLM) matches visual-only foundation models on dense tasks** (PFM-DenseBench 2602.03887: LoRA mIoU 0.518 vs best 0.539), potentially providing an aligned pathology text space at little extra cost.
+- **Pure text-prompt approaches failed:** SAM3 class names/LLM-rewritten prompts achieved PanNuke mIoU <10% (2604.18225). ⇒ Use language as an **internal prior/regularizer in a trained model**, not as a prompt interface.
+- Nearby work: **PromptNu** (TMI'25, general OpenAI CLIP + GPT-4V descriptions; repository lacks PanNuke configuration) and **MONCH** (2412.02978, CLIP; PanNuke semantic segmentation + F1 only; its ablation shows the Dead class is most sensitive to the text module).
+- **Gap:** no work was found combining “pathology VLM text space + instance segmentation model + official PanNuke mPQ.” Given search limits, phrase this as “not found.”
 
-### 1.3 生成模型（支柱 B/C 的依据）
-- **没有任何工作在官方 3-fold 协议上报告合成数据对 PanNuke mPQ 的提升** —— 现有 PanNuke 合成工作（Oh&Jeong MICCAI'24、Co-synthesis ECCV'24、PathDiff ICCV'25）都用非标准 80/20 划分，只报 Dice/AJI/F1。
-- 全数据场景下合成增益小（PQ +0.01–0.02），但**稀有类 F1 增益大**（DiffMix CoNSeP misc F1 0.20→0.36；HistoSmith CoNIC 中性粒 PQ 22→29；NucleiMix +0.06）。
-- 可用生成底座：**PixCell-256 + Cell-ControlNet**（2506.05127，HF 权重，ControlNet 单卡 A5000 可训；但 20×、仅二值掩码、依赖 UNI2-h 门控）；NucleiMix（有代码，稀有类插入 + 扩散 inpainting）。
-- 2608.03990：合成数据的**多样性**比保真度更能预测下游 AJI+ —— 支持"失败驱动采样"而非"随机采样"。
-- 反事实压力测试（2605.10894）只在胸片/钼靶做过；**细胞核实例分割尚无**。
-
----
-
-## 2. 方法设计
-
-### 2.0 统一骨架（所有实验共享）
-- **框架**：TIO-IKIM/CellViT 代码库（PanNuke 预处理、按组织/类别 mPQ、组织×细胞加权采样、可换 backbone 都现成；LKCell/CellVTA/NuLite 都是它的 fork，对比公平）。
-- **主 backbone**：UNI（ViT-L/16）或 CONCH-ViT-B/16 **+ CellVTA 式 CNN 高分辨率 adapter**（解决 16×16 token 对小核太粗的问题）。
-- **后处理**：HoVer 式 NP/HV/TP 三头 + watershed（与 HoVer-Net 基线同构，便于归因）。
-
-### 2.1 支柱 A：语言锚定类型头（Text-Anchored Type Head, TATH）
-1. **类别原型**：对 5 类 × 19 组织，用 LLM（本地 Qwen / MedGemma-4B 或 API）生成 K≈8 条形态学描述，例如 Dead: "apoptotic body; pyknotic, karyorrhectic nucleus; hypereosinophilic cytoplasm; shrunken dense chromatin"。用**冻结的 CONCH 文本编码器**编码 → 组织条件化的类原型 `t_{c,tissue}`。
-2. **类型头**：把 TP 分支的线性分类器换成 `logit = τ · cos(W·f_pixel, t_c) + b_c`，外加 CoOp 式可学习上下文 token；DenseCLIP 式 pixel-text 对比损失 + **logit adjustment**（按类频率）。
-3. **实例级聚合**：在 watershed 得到的实例内做 mask pooling，再与原型做一次实例级对比（per-nucleus 而非 per-pixel，降低边界噪声）。
-4. **组织条件**：PanNuke 提供 tissue 标签；训练时用真值，测试时用模型自带的 tissue 分类头预测（CellViT 已有），避免测试泄漏。
-
-**必须的消融**（证明是"语言"而非"重加权"带来的增益）：
-- 线性头 + 同等 logit adjustment / focal / 过采样（**最关键的对照**）
-- 文本空间：OpenAI CLIP vs PLIP vs QuiltNet vs CONCH vs KEEP
-- 原型：仅类名 vs LLM 描述 vs 组织条件描述 vs 随机向量（同维度）
-- 冻结 vs 可学习上下文
-
-**预期**：Dead PQ / F1 与 Inflammatory↔Connective 混淆改善；整体 mPQ +0.5–1.5 点（推测）。
-
-### 2.2 支柱 B：失败驱动的反事实合成（Failure-Targeted Counterfactual Synthesis, FTCS）
-1. **生成器**：在 **训练折** 上把 PixCell-256 Cell-ControlNet 扩展为**实例+类型条件**（条件输入 = 类型图 one-hot + 实例边界图 + HV 图），LoRA 适配到 40×。
-   - 备选 A：NucleiMix 代码（稀有类插入 + inpainting），无需 UNI2-h。
-   - 备选 B：自训小型 LDM（SD-VAE + 小 UNet，~1 天 A100）。
-2. **失败挖掘**：用基线模型在训练折上做 out-of-fold 预测，统计 merge/split/miss 发生的**局部布局**（接触核对数、核间距、核大小、类别对）。
-   **已做（2026-09-26，fold1 OOF + fold3 test 双折一致）**：漏检 Dead 几乎全是**孤立**小核
-   （0 接触邻居的 Dead miss 率 .39-.42，missed Dead 与任何核接触的 <5%）；merge 集中在**同类簇**
-   （merged Dead 的 73-82% 与 Dead 接触 = karyorrhexis 碎片群）；PanNuke 40× 上跨类接触本身罕见。
-   ⇒ 布局采样器优先级改为：(1) 孤立小核/Dead 插入空隙基质；(2) 同类密簇（Dead 链、Connective 场）
-   训练分离；(3) 跨类接触降优先（原"Dead 紧贴 Neoplastic"假设不成立）。详见 findings.md。
-3. **布局采样器**：从真实实例掩码出发做可控扰动 —— 平移使核接触、复制稀有类核（Dead）插入、形变 —— 按失败分布加权采样，生成 ~10–20k 图像-标签对。
-4. **标签忠实性过滤**：用一个强分割器（在训练折训的 PromptNucSeg/CellViT）预测合成图，与条件掩码 PQ < 阈值的丢弃（避免"图不对题"）。
-5. **训练**：真实 : 合成 = 1 : r（r ∈ {0.25, 0.5, 1}），合成样本仅在前若干 epoch 或以课程方式加入。
-
-**必须的对照**（等样本量）：简单 copy-paste（GradMix 式）、组织×类过采样、随机布局合成（非失败驱动）。**合成方法若不能打过 copy-paste，就不算贡献** —— 这点要在报告中正面回答。
-
-### 2.3 支柱 C：评测 —— 真实跨域 + 反事实压力测试
-- **真实跨域**（零样本，类别映射到 PanNuke）：
-  - Lizard/CoNIC（HF `MedOtter/CoNIC2022`，**剔除 112 张来自 PanNuke 的 patch**，20×→上采样 2×）
-  - MoNuSAC（HF `RationAI/MoNuSAC`）、PUMA（黑色素瘤，含 apoptotic→Dead，Zenodo 15050523 取 0.65GB ROI 包；注意其标签由 HoVer-Net 初始化）
-  - MoNuSeg、NuInsSeg（仅 bPQ/AJI）
-- **PanNuke-CF**：固定测试集实例掩码，用生成器重新渲染外观（换组织条件 / 换染色 / 换中心 embedding），得到"标签不变、外观变化"的反事实测试集。验证其有效性：CF 上的性能排序是否与真实跨域排序一致（Spearman）。
+### 1.3 Generative models (rationale for Pillars B/C)
+- **No study reports synthetic-data improvement on PanNuke mPQ under the official three-fold protocol.** Existing PanNuke synthesis papers (Oh & Jeong MICCAI'24, Co-synthesis ECCV'24, PathDiff ICCV'25) use nonstandard 80/20 splits and report only Dice/AJI/F1.
+- With all data, synthesis gains are small (PQ +0.01–0.02), but **rare-class F1 gains can be large** (DiffMix CoNSeP misc F1 0.20→0.36; HistoSmith CoNIC neutrophil PQ 22→29; NucleiMix +0.06).
+- Available generative bases: **PixCell-256 + Cell-ControlNet** (2506.05127, HF weights, ControlNet trainable on one A5000; however, it is 20×, uses only binary masks, and depends on UNI2-h gating); NucleiMix (code available, rare-class insertion + diffusion inpainting).
+- 2608.03990: synthetic-data **diversity** predicts downstream AJI+ better than fidelity, supporting “failure-driven sampling” rather than “random sampling.”
+- Counterfactual stress testing (2605.10894) has been studied only for chest radiographs/mammograms; **not for nuclei instance segmentation**.
 
 ---
 
-## 3. 评测协议（统一、严格）
-- 官方 3-fold 协议；每折 **last checkpoint**（不做测试集早停）；报告 3 折 mean ± std。
-- 官方 `PanNuke-metrics/run.py`：**tissue-averaged mPQ / bPQ**（注意其 `class_stats.csv` 把 conn 写进了 inflam 位置，以终端输出为准）。
-- 每类 PQ（Dead 单列）、每组织 mPQ/bPQ 热力图、AJI/AJI+、检测 F_d 与分类 F_c（HoVer-Net 定义，12px 质心匹配）。
-- **Strict mPQ**：额外报告一个对"图中不存在的类的 FP"也计罚的版本（官方 mPQ 对此置 NaN，偏乐观，尤其 Dead）。
-- **错误分解**（IoU 0.5）：matched / merge（1 pred 覆盖 ≥2 GT 各 ≥50%）/ split / missed（再分 no-overlap 与 poor-shape）/ FP / 类别混淆矩阵，全部按组织拆分；可复用 deepcell-toolbox `metrics.py`（单文件）。
-- TTA（8 个二面体变换，**HV 通道需按变换重映射符号/交换**）与 watershed 调参结果**单独**报告。
-- 显著性：按图像 bootstrap（组织内分层）给出 Δ 的 95% CI。
+## 2. Method design
+
+### 2.0 Shared foundation (all experiments)
+- **Framework:** TIO-IKIM/CellViT codebase (PanNuke preprocessing, tissue/class mPQ, tissue×cell weighted sampling, and backbone swaps are available; LKCell/CellVTA/NuLite are forks, allowing fair comparison).
+- **Main backbone:** UNI (ViT-L/16) or CONCH-ViT-B/16 **+ a CellVTA-style high-resolution CNN adapter** (to address the coarse 16×16 tokens for small nuclei).
+- **Post-processing:** HoVer-style NP/HV/TP heads + watershed (same structure as the HoVer-Net baseline, aiding attribution).
+
+### 2.1 Pillar A: Text-Anchored Type Head (TATH)
+1. **Class prototypes:** For 5 classes × 19 tissues, use an LLM (local Qwen / MedGemma-4B or an API) to generate K≈8 morphological descriptions, e.g. Dead: “apoptotic body; pyknotic, karyorrhectic nucleus; hypereosinophilic cytoplasm; shrunken dense chromatin.” Encode them with the **frozen CONCH text encoder** to obtain tissue-conditioned class prototypes `t_{c,tissue}`.
+2. **Typing head:** Replace the TP-branch linear classifier with `logit = τ · cos(W·f_pixel, t_c) + b_c`, plus CoOp-style learnable context tokens; add DenseCLIP-style pixel–text contrastive loss and **logit adjustment** (by class frequency).
+3. **Instance-level aggregation:** Within each watershed instance, perform mask pooling and compare against the prototypes at instance level (per nucleus rather than per pixel, reducing boundary noise).
+4. **Tissue conditioning:** PanNuke provides tissue labels. Use ground truth during training and the model's own tissue classifier at test time (already available in CellViT) to avoid test leakage.
+
+**Required ablations** (to show that gains come from “language,” not “reweighting”):
+- Linear head + equivalent logit adjustment / focal loss / oversampling (**most important control**)
+- Text spaces: OpenAI CLIP vs PLIP vs QuiltNet vs CONCH vs KEEP
+- Prototypes: class names only vs LLM descriptions vs tissue-conditioned descriptions vs random vectors (same dimension)
+- Frozen vs learnable context
+
+**Expected:** improve Dead PQ/F1 and Inflammatory↔Connective confusion; overall mPQ +0.5–1.5 points (hypothesis).
+
+### 2.2 Pillar B: Failure-Targeted Counterfactual Synthesis (FTCS)
+1. **Generator:** On **training folds**, extend PixCell-256 Cell-ControlNet to **instance + type conditioning** (conditioning input = one-hot type map + instance-boundary map + HV map), and adapt to 40× with LoRA.
+   - Alternative A: NucleiMix code (rare-class insertion + inpainting), no UNI2-h required.
+   - Alternative B: train a small LDM (SD-VAE + small UNet, ~1 day on A100).
+2. **Failure mining:** Use the baseline model for out-of-fold predictions on training folds and count **local layouts** associated with merges/splits/misses (number of touching nuclei, inter-nucleus distance, nucleus size, class pair).
+   **Completed (2026-09-26; fold1 OOF and fold3 test were consistent):** Missed Dead nuclei were nearly all **isolated** small nuclei (Dead miss rate .39–.42 with 0 touching neighbors; <5% of missed Dead touched any nucleus). Merges clustered in **same-class groups** (73–82% of merged Dead touched other Dead = karyorrhexis fragments); cross-class contact itself was rare at PanNuke 40×.
+   ⇒ Prioritize the layout sampler as follows: (1) insert isolated small/Dead nuclei into open background; (2) train to separate dense same-class clusters (Dead chains, Connective fields); (3) lower priority for cross-class contact (the original “Dead pressed against Neoplastic” hypothesis was unsupported). See findings.md.
+3. **Layout sampler:** Start with real instance masks and apply controlled perturbations—translate nuclei into contact, insert copies of rare-class nuclei (Dead), deform—then sample according to failure frequencies to create ~10–20k image/label pairs.
+4. **Label-fidelity filter:** Predict synthetic images with a strong segmenter (PromptNucSeg/CellViT trained on training folds) and discard images whose prediction has PQ below a threshold against the conditioning mask (avoid mismatched image/label pairs).
+5. **Training:** real : synthetic = 1 : r (r ∈ {0.25, 0.5, 1}); add synthetic samples only in early epochs or through a curriculum.
+
+**Required controls** (matched sample count): simple copy-paste (GradMix-style), tissue×class oversampling, and random-layout synthesis (not failure-driven). **If synthesis cannot beat copy-paste, it is not a contribution**—address this directly in the report.
+
+### 2.3 Pillar C: Evaluation — real domain shift + counterfactual stress testing
+- **Real domain shift** (zero-shot, map classes to PanNuke):
+  - Lizard/CoNIC (HF `MedOtter/CoNIC2022`; **exclude 112 patches originating from PanNuke**; 20×→2× upsampling)
+  - MoNuSAC (HF `RationAI/MoNuSAC`), PUMA (melanoma, apoptotic→Dead; obtain 0.65GB ROI package from Zenodo 15050523; note its labels were initialized by HoVer-Net)
+  - MoNuSeg, NuInsSeg (bPQ/AJI only)
+- **PanNuke-CF:** Keep test-set instance masks fixed and use a generator to rerender appearance (change tissue conditioning / stain / center embedding), producing a counterfactual test set with “labels fixed, appearance changed.” Evaluate validity by checking whether performance ranking on CF agrees with real cross-domain ranking (Spearman).
 
 ---
 
-## 4. 复现资源与存储
+## 3. Evaluation protocol (consistent and strict)
+- Official three-fold protocol; use the **last checkpoint** for each fold (no early stopping on test); report three-fold mean ± SD.
+- Official `PanNuke-metrics/run.py`: **tissue-averaged mPQ / bPQ** (its `class_stats.csv` puts conn in the inflam position; use terminal output).
+- Report PQ by class (Dead separately), mPQ/bPQ heatmaps by tissue, AJI/AJI+, detection F_d, and classification F_c (HoVer-Net definition, 12px centroid matching).
+- **Strict mPQ:** additionally report a version that penalizes FPs for classes absent from an image (official mPQ sets these to NaN and is optimistic, especially for Dead).
+- **Error decomposition** (IoU 0.5): matched / merge (one prediction covers ≥2 GT instances by ≥50% each) / split / missed (subdivide into no-overlap and poor-shape) / FP / class-confusion matrix; stratify all by tissue. The single-file `metrics.py` in `deepcell-toolbox` can be reused.
+- Report TTA (8 dihedral transforms; **remap/swap HV-channel signs according to each transform**) and watershed tuning results **separately**.
+- Significance: image-level bootstrap, stratified within tissue, for 95% CIs of Δ.
 
-机器清单、资源分配和同步方式不属于项目协议；具体部署记录仅在本地维护。
-训练需要足够的 GPU 显存，推理与 CPU 评测可分开运行；根据可用资源设置 batch size，
-改变批大小后核对结果不变性，不改变训练/验证/测试划分。
+---
 
-**存储红线**：PanNuke 官方 npy 为 float64，完整解压约 37GB。**不要解压到磁盘**；
-使用 `scripts/prepare_pannuke.py` 从 zip 流式转换为 uint8 图像与 uint16 掩码（约 2–3GB）。
-数据默认放在 `data/pannuke/`，可通过 `PANNUKE_ROOT` 指定其它位置。
+## 4. Reproduction resources and storage
 
-**GPU 预算估计**（推测，按 A100 计；L4 约慢 2–3×）：
+Machine inventories, resource allocation, and synchronization are not part of the project protocol; maintain deployment records locally only.
+Training requires sufficient GPU memory. Inference and CPU evaluation can run separately; set batch size to available resources and verify result invariance after changing batch size. Do not change train/validation/test splits.
 
-| 项目 | GPU·h |
+**Storage limit:** Official PanNuke npy files are float64; full extraction is about 37GB. **Do not unpack them to disk.** Use `scripts/prepare_pannuke.py` to stream-convert from zip into uint8 images and uint16 masks (~2–3GB). Default data path is `data/pannuke/`; set `PANNUKE_ROOT` to use another location.
+
+**GPU budget estimate** (projected, A100-equivalent; L4 about 2–3× slower):
+
+| Item | GPU·h |
 |---|---|
-| HoVer-Net 3 折（L4 上） | 20–30 (L4) |
-| CellViT-UNI+adapter 基线 3 折 | 20–30 |
-| 支柱 A 消融（fold-1 上 ~8 配置）+ 最终 3 折 | 60–90 |
-| 支柱 B：生成器微调 + 采样 20k + 3 个 r 值重训 | 80–120 |
-| 支柱 C：CF 渲染 + 跨域推理 | 10–20 |
-| **合计** | **~200–300 A100·h**（与调研中的可行性估计一致） |
+| HoVer-Net three folds (on L4) | 20–30 (L4) |
+| CellViT-UNI+adapter baseline, three folds | 20–30 |
+| Pillar A ablations (~8 fold-1 configurations) + final three folds | 60–90 |
+| Pillar B: generator fine-tuning + 20k samples + retraining at 3 r values | 80–120 |
+| Pillar C: CF rendering + cross-domain inference | 10–20 |
+| **Total** | **~200–300 A100·h** (consistent with feasibility estimate in review) |
 
-策略：**所有消融只在 fold-1 跑，最终配置再跑 3 折**；AMP + 冻结 backbone 前 25 epoch（CellViT 设置）省显存，适配 20–50G 的碎片显存。
+Strategy: **run all ablations on fold-1 only, then run the final configuration on all 3 folds**; AMP + freezing the backbone for the first 25 epochs (CellViT setting) saves memory and supports fragmented 20–50GB GPU memory.
 
 ---
 
-## 5. 时间线（按 10 周规划；截止日期未知，可等比压缩）
+## 5. Timeline (10-week plan; deadline unknown and can be scaled proportionally)
 
-| 周 | 里程碑 | 交付 / Go-No-Go |
+| Week | Milestone | Deliverable / Go-No-Go |
 |---|---|---|
-| **W0（立即）** | 申请门控权重：CONCH、UNI、UNI2-h（Mahmood Lab，需机构邮箱）、PixCell；下载并流式转换 PanNuke | 权限到位 |
-| **W1** | 数据管线 + 官方评测脚本跑通；用 HoVer-NeXt / PromptNucSeg **按折权重**直接评测，验证评测管线（应复现其论文数字 ±0.01） | 评测数字对得上 → Go |
-| **W2–3** | **HoVer-Net 基线**（vqdang 官方，fast 模式，Py3.9 + torch2 + numpy 1.23.5，输入反射填充到 348，自写 PanNuke loader）3 折；CellViT-UNI+adapter 3 折；错误分解分析 | 目标 HoVer-Net mPQ ≈ 0.44–0.46；**课程 (a) 部分完成** |
-| **W4–5** | 支柱 A 实现 + fold-1 消融 | 相对"线性头+同等重加权"Dead PQ 有提升 → Go；否则转为以 B 为主 |
-| **W5–7** | 支柱 B：生成器条件扩展与微调（并行）、失败挖掘、布局采样、过滤、重训 | 合成 > copy-paste（fold-1）→ Go |
-| **W8** | 最终配置 3 折；A+B 组合 | 主表 |
-| **W9** | 支柱 C：跨域零样本 + PanNuke-CF | 鲁棒性表 |
-| **W10** | 报告、图（组织×类 PQ 热力图、错误分解条形图、合成样例、CF 样例） | 终稿 |
+| **W0 (immediate)** | Request gated weights: CONCH, UNI, UNI2-h (Mahmood Lab; institutional email required), PixCell; download and stream-convert PanNuke | Access granted |
+| **W1** | Bring up data pipeline + official evaluation script; directly evaluate HoVer-NeXt / PromptNucSeg with **fold-specific weights** to validate the pipeline (should reproduce paper values ±0.01) | Values match → Go |
+| **W2–3** | **HoVer-Net baseline** (official vqdang, fast mode, Py3.9 + torch2 + numpy 1.23.5, reflect-pad inputs to 348, custom PanNuke loader), three folds; CellViT-UNI+adapter, three folds; error decomposition | Target HoVer-Net mPQ ≈ 0.44–0.46; **course requirement (a) partly complete** |
+| **W4–5** | Implement Pillar A + fold-1 ablations | Dead PQ improves over “linear head + equivalent reweighting” → Go; otherwise make B the primary track |
+| **W5–7** | Pillar B: extend/fine-tune generator (in parallel), mine failures, sample layouts, filter, retrain | Synthesis > copy-paste (fold-1) → Go |
+| **W8** | Final configuration, three folds; combine A+B | Main table |
+| **W9** | Pillar C: zero-shot cross-domain + PanNuke-CF | Robustness table |
+| **W10** | Report and figures (tissue×class PQ heatmap, error-decomposition bars, synthesis/CF examples) | Final draft |
 
-**最小可交付（保底）**：HoVer-Net 基线 + 完整评测/错误分解 + 支柱 A。支柱 B/C 是加分项。
+**Minimum deliverable (fallback):** HoVer-Net baseline + full evaluation/error decomposition + Pillar A. Pillars B/C are stretch goals.
 
 ---
 
-## 6. 风险与对策
+## 6. Risks and mitigations
 
-| 风险 | 对策 |
+| Risk | Mitigation |
 |---|---|
-| 门控权重（UNI2-h/CONCH）审批慢 | 许可宽松替代：KEEP（MIT，ViT-L + 文本塔）、QuiltNet（MIT）、H-optimus-0（Apache-2.0）、Hibou-L；生成器用 NucleiMix / 自训 LDM |
-| CONCH v1.5 **未公开文本塔** | 文本用 CONCH v1（0.8GB，含文本编码器） |
-| PixCell 为 20×、二值掩码 | LoRA 适配 40× + 重训 ControlNet 条件分支；或下采样 PanNuke 生成后上采样（需对比） |
-| 权重泄漏 | 不在 PanNuke 测试折上评测任何"全量训练"的公开权重（HoVer-Net 官方、CellViT、NuLite、BiomedParse v1）；生成器只在训练折微调 |
-| 增益 < 跨折方差 | bootstrap CI；重点报告 Dead/稀有类与 merge/split 计数等"针对性指标"，而不只看 mPQ |
-| 共享 GPU 抢占 | 训练脚本支持断点续训；消融限 fold-1；L4 跑基线与评测 |
-| 旧代码环境（hover_net 锁 torch1.6/Py3.6，A100 不支持） | Py3.9 + 新 torch + `numpy<1.24`（imgaug 依赖）；或替换 imgaug 为 albumentations |
+| Slow approval for gated weights (UNI2-h/CONCH) | Use permissively licensed alternatives: KEEP (MIT, ViT-L + text tower), QuiltNet (MIT), H-optimus-0 (Apache-2.0), Hibou-L; use NucleiMix or a self-trained LDM for the generator |
+| CONCH v1.5 **does not expose a text tower** | Use CONCH v1 for text (0.8GB, includes text encoder) |
+| PixCell is 20× and uses binary masks | LoRA-adapt to 40× + retrain ControlNet conditioning branch, or downsample PanNuke during generation and then upsample (compare both) |
+| Weight leakage | Do not evaluate any public “trained on all data” weights on PanNuke test folds (official HoVer-Net, CellViT, NuLite, BiomedParse v1); fine-tune generators only on training folds |
+| Gains smaller than across-fold variance | Bootstrap CIs; emphasize “targeted metrics” such as Dead/rare classes and merge/split counts rather than mPQ alone |
+| Shared-GPU preemption | Support checkpoint resume in training scripts; restrict ablations to fold-1; use L4 for baselines/evaluation |
+| Legacy code environment (hover_net pins torch1.6/Py3.6, incompatible with A100) | Py3.9 + newer torch + `numpy<1.24` (imgaug requirement), or replace imgaug with albumentations |
 
 ---
 
-## 7. 立即可做的事（下一步）
+## 7. Immediate next steps
 
-> 2026-09-24 制定时的原始清单，三项均已完成；当前状态与下一步见顶部进展记录。
+> Original checklist from 2026-09-24; all three items are complete. See the progress entries at the top for current status and next steps.
 
-1. 提交 CONCH / UNI / UNI2-h / PixCell 的 HF 访问申请。
-2. 下载 PanNuke 三折 zip → 用 `scripts/prepare_pannuke.py` 流式转为 uint8/uint16。
-3. clone `TIO-IKIM/CellViT`、`vqdang/hover_net`、`TissueImageAnalytics/PanNuke-metrics`、`windygoo/PromptNucSeg`、`digitalpathologybern/hover_next_train`；下载 HoVer-NeXt / PromptNucSeg 的按折权重做评测管线校验。
-   - HoVer-Net PanNuke 全量权重**仅可作 sanity check**，不能用于测试结论。
+1. Request HF access to CONCH / UNI / UNI2-h / PixCell.
+2. Download the three PanNuke fold zips → stream-convert to uint8/uint16 with `scripts/prepare_pannuke.py`.
+3. Clone `TIO-IKIM/CellViT`, `vqdang/hover_net`, `TissueImageAnalytics/PanNuke-metrics`, `windygoo/PromptNucSeg`, and `digitalpathologybern/hover_next_train`; download fold-specific HoVer-NeXt / PromptNucSeg weights to validate the evaluation pipeline.
+   - Full-data HoVer-Net PanNuke weights are **for sanity checks only** and cannot support test conclusions.
 
 ---
 
-## 附录：关键文献（arXiv ID）
-- 分割：HoVer-Net (MedIA'19)；CellViT 2306.15350；CellViT++ 2501.05269；HoVer-NeXt (MIDL'24)；PromptNucSeg 2311.15939；LKCell 2407.18054；CellVTA 2504.00784；NuLite 2408.01797；CPP-Net 2102.06867；KongNet 2510.23559；Mind the Gap 2502.02471
-- 多模态：CONCH 2307.12914；UNI 2308.15474；Virchow2 2408.00738；KEEP 2412.13126；QuiltNet 2306.11207；PromptNu (TMI'25, doi 10.1109/TMI.2025.3579214)；MONCH 2412.02978；SAM3-pathology 2604.18225；PFM-DenseBench 2602.03887；DenseCLIP；CLIP-Driven Universal Model (ICCV'23)
-- 生成：PixCell 2506.05127；NucleiMix 2410.16671；DiffMix 2306.14132；HistoSmith 2502.08754；PathDiff 2506.23440；Co-synthesis 2407.14434；NuDiff 2310.14197；合成多样性 2608.03990；StainFuser 2403.09302；反事实压力测试 2605.10894
-- 评测批评：Foucart et al. Sci Rep 2023 (doi 10.1038/s41598-023-35605-7)
-- 可选扩展（分子监督）：GigaTIME-Flash 2607.18218（虚拟 mIF，Apache-2.0）；CytoFormer 2608.16718；STHELAR（Xenium，CC-BY-4.0）
+## Appendix: Key references (arXiv IDs)
+- Segmentation: HoVer-Net (MedIA'19); CellViT 2306.15350; CellViT++ 2501.05269; HoVer-NeXt (MIDL'24); PromptNucSeg 2311.15939; LKCell 2407.18054; CellVTA 2504.00784; NuLite 2408.01797; CPP-Net 2102.06867; KongNet 2510.23559; Mind the Gap 2502.02471
+- Multimodal: CONCH 2307.12914; UNI 2308.15474; Virchow2 2408.00738; KEEP 2412.13126; QuiltNet 2306.11207; PromptNu (TMI'25, doi 10.1109/TMI.2025.3579214); MONCH 2412.02978; SAM3-pathology 2604.18225; PFM-DenseBench 2602.03887; DenseCLIP; CLIP-Driven Universal Model (ICCV'23)
+- Generation: PixCell 2506.05127; NucleiMix 2410.16671; DiffMix 2306.14132; HistoSmith 2502.08754; PathDiff 2506.23440; Co-synthesis 2407.14434; NuDiff 2310.14197; synthetic-data diversity 2608.03990; StainFuser 2403.09302; counterfactual stress testing 2605.10894
+- Evaluation critique: Foucart et al. Sci Rep 2023 (doi 10.1038/s41598-023-35605-7)
+- Optional extension (molecular supervision): GigaTIME-Flash 2607.18218 (virtual mIF, Apache-2.0); CytoFormer 2608.16718; STHELAR (Xenium, CC-BY-4.0)
 
 ## 2026-10-15 synthesis
 

@@ -1,5 +1,38 @@
 # Experiment results
 
+## Latest evidence: October 26, 2026
+
+The P-series studies use a repeatedly reused **fold1 development point-detection audit**.
+These are not PQ scores, held-out test results, independent validation or official
+three-split performance. Both original seed-specific gates must pass; an isolated gain
+does not override a failed gate. The audit includes 522 images, with 11 positive images
+and 145 internal Dead objects. See the [P3–P15 synthesis](PROPOSAL_PROGRESS_2026-10-26.md).
+
+| Study | Tested change | Recorded outcome | Evidence |
+|---|---|---|---|
+| P3 | Encoder adaptation with augmentation | Original admission failed | [Result](PROPOSAL_P3_PHASE_A_2026-10-20.md) |
+| P4 | Foreground BCE | Both seed gates failed; recipe closed | [Result](PROPOSAL_P4_PHASE_A_2026-10-20.md) |
+| P5 | Native-grid refinement | Both seed gates failed; recipe closed | [Result](PROPOSAL_P5_RESULTS_2026-10-21.md) |
+| P6 | Target bandwidth | Both seed gates failed; recipe closed | [Result](PROPOSAL_P6_RESULTS_2026-10-21.md) |
+| P7 / P8 | RGB gains / image-level loss normalization | Both recipes failed their original two-seed gates | [Results](PROPOSAL_P7_P8_RESULTS_2026-10-22.md) |
+| P9 | Dead-center positive weight | Both seed gates failed; recipe closed | [Result](PROPOSAL_P9_RESULTS_2026-10-23.md) |
+| P10 | Last-four-block encoder adaptation | Both seed gates failed; recipe closed | [Result](PROPOSAL_P10_RESULTS_2026-10-23.md) |
+| P11 | Positive focal-mass redistribution | Both seed gates failed; recipe closed | [Result](PROPOSAL_P11_RESULTS_2026-10-24.md) |
+| P12 | Decoder channel dropout | Both seed gates failed; recipe closed | [Result](PROPOSAL_P12_RESULTS_2026-10-24.md) |
+| P13 | Rare-positive replacement sampling | Both seed gates failed; recipe closed | [Result](PROPOSAL_P13_RESULTS_2026-10-25.md) |
+| P14 | Lower encoder learning rate | Both seed gates failed; recipe closed | [Result](PROPOSAL_P14_RESULTS_2026-10-25.md) |
+| P15 | Training translation | Both seed gates failed; recipe closed | [Result](PROPOSAL_P15_RESULTS_2026-10-26.md) |
+| P16 | Direct Gaussian regression | Submission verified; training completion and final admission not revalidated in this documentation audit | [Submission](PROPOSAL_P16_SUBMISSION_2026-10-26.md) |
+
+P16 array 55287551 was submitted once at `2026-10-26T05:29:54.529735Z`.
+The stored `2026-10-26T05:30:48.240388+00:00` snapshot shows four pending tasks;
+it is historical evidence, not a live scheduler query. Do not resubmit from this page.
+The [documentation audit](../audits/DOCUMENTATION_RESULTS_GIT_AUDIT_2026-10-26.md)
+records the evidence scope and branch map.
+
+## Earlier segmentation and mechanism results
+
+
 ## 2026-10-18 high-resolution adapter dev (E19)
 
 - [E19 result: dev negative](HIRES_ADAPTER_E19_DEV_2026-10-18.md) -- a high-resolution CNN adapter on the finest decoder skip of the CellViT-UNI baseline does not improve internal-Dead recall; `dev_admission=false` (clauses 1/2/3 fail, cost clause passes).
@@ -11,10 +44,10 @@
 - [E18 dense foreground-to-point voting](DENSE_VOTES_E18_DIAGNOSTIC_2026-10-17.md)
 
 
-> **2026-10-17 E8a/E8b:** The frozen classifier-only probe fails allocation: fit foreground accuracy95.17%/97.58%, audit foreground changes-7.69/-6.87pp and final geometric recall gains+2.20/+2.47pp. Stop this balanced-head recipe. Separate original-model audit of all65Dead-positive fold1 images/967objects finds raw-mask matches35.57%/36.40%, final typed matches2.79%/12.20%. These are train-only diagnostics, not validation/test performance. [Full mechanism review](QUERY_MECHANISM_2026-10-17.md).
+> **2026-10-17 E8a/E8b:** The frozen classifier-only probe fails allocation: fit foreground accuracy 95.17%/97.58%, audit foreground changes −7.69/−6.87 pp and final geometric recall gains +2.20/+2.47 pp. Stop this balanced-head recipe. Separate original-model audit of all 65 Dead-positive fold1 images / 967 objects finds raw-mask matches 35.57%/36.40%, final typed matches 2.79%/12.20%. These are train-only diagnostics, not validation/test performance. [Full mechanism review](QUERY_MECHANISM_2026-10-17.md).
 
 
-> **2026-10-17 E7 review:** All four 130-epoch runs and final-checkpoint fold2 evaluations are complete. Slower decay does not rescue Q (two-seed mPQ .087958 vs matched B .472939). A new fixed-train-batch audit localizes substantial loss between assigned raw masks and query retention/overlap resolution; this is diagnostic, not method performance. The independent clean-GPU closeout is complete (exit0): all quality gates fail, interior-Dead matching change -.528340 [95%CI -.589426,-.468664]; cost passes (Q/B .738576/.764427). Preserve the failed recipe; no expansion. [Detailed E7 review](SET_MASK_E7_DEV_2026-10-17.md).
+> **2026-10-17 E7 review:** All four 130-epoch runs and final-checkpoint fold2 evaluations are complete. Slower decay does not rescue Q (two-seed mPQ .087958 vs matched B .472939). A new fixed-train-batch audit localizes substantial loss between assigned raw masks and query retention/overlap resolution; this is diagnostic, not method performance. The independent clean-GPU closeout is complete (exit 0): all quality gates fail, interior-Dead matching change -.528340 [95% CI  -.589426,-.468664]; cost passes (Q/B .738576/.764427). Preserve the failed recipe; no expansion. [Detailed E7 review](SET_MASK_E7_DEV_2026-10-17.md).
 
 
 ## 2026-10-15 point/mask representation feasibility

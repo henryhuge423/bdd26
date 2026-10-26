@@ -40,6 +40,6 @@ TDD 实际经历 5 RED → 5 GREEN，LM1/LM2 定向检查各 5 项通过。LM1 �
 - LM1 回收、CPU 日志及交接：`/data7/jinxinhao/bdd26/ops/e11_aux_20261017`。
 - 全程复用既有 broker，无新 SSH；本实验仅使用 LM2 GPU7。未使用 LM1 GPU，GPU2 禁用约束继续有效。
 
-本地配套文件：[原始结果](results.json)、[独立核算](independent_verification.json)、[矩阵审计](mask_basis_audit.json)、[完整回归日志](full_cpu.log)、[GPU 日志](probe.log)、[交接记录](HANDOFF.json)。
+本地配套文件：原始结果 (`results.json`, local-only artifact)、独立核算 (`independent_verification.json`, local-only artifact)、矩阵审计 (`mask_basis_audit.json`, local-only artifact)、完整回归日志 (`full_cpu.log`, local-only artifact)、GPU 日志 (`probe.log`, local-only artifact)、交接记录 (`HANDOFF.json`, local-only artifact)。
 
 设计动机参考 [Mask2Former 官方多阶段预测实现](https://github.com/facebookresearch/Mask2Former/blob/main/mask2former/modeling/transformer_decoder/mask2former_transformer_decoder.py)；本实验不是完整复现。

@@ -1,8 +1,9 @@
 # Research documentation
 
-Start with the [research status and closeout checklist](audits/RESEARCH_STATUS_2026-10-14.md),
-then the [research protocol and dated progress](RESEARCH_PLAN.md) and
-[experiment journal](findings.md). Dates in older documents describe their own historical
+Start with the [October 26 documentation and evidence audit](audits/DOCUMENTATION_RESULTS_GIT_AUDIT_2026-10-26.md),
+the [latest experiment results](results/README.md), then the
+[research protocol and dated progress](RESEARCH_PLAN.md) and [experiment journal](findings.md).
+The [October 14 closeout checklist](audits/RESEARCH_STATUS_2026-10-14.md) is a historical milestone. Dates in older documents describe their own historical
 state; a proposal or diagnostic gate is not a training result or continuing authorization.
 The current experiment's approved spec and plan govern execution.
 
@@ -25,6 +26,10 @@ The current experiment's approved spec and plan govern execution.
 - Put new dated results, audits and proposals in their corresponding folder. Keep existing
   filename dates and append dated corrections or a superseding-result notice; preserve the
   original evidence and explain which version is valid.
+- Use English for the main README, research plan, findings journal, navigation pages and new scientific results.
+  Explicitly labelled Chinese reports/digests and historical source documents may remain Chinese.
+  Preserve experiment identifiers, hashes, timestamps, signs, units and links when editing prose.
+  Flag corrupted text for source verification; do not guess missing scientific content.
 - Keep the journal chronological and the navigation concise. Update current status in the
   status document and project README when an experiment changes state; do not rewrite an
   old dated proposal as though it already knew a later outcome.

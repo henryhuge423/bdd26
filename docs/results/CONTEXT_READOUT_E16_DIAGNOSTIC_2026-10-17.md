@@ -29,4 +29,4 @@ GPU exit0，47.53秒，PyTorch峰值reserved1.4102GiB。LM2GPU5，启动前73,30
 
 结果SHA256=`9b70fb76c535d8028c03f3f1bfa6e15164fdd4d814d48254befb654b8ae93c3a`，driver=`250fd5bb14b929f864c758a1293064c9e488ff783457a75c2c19996f62622b5d`，设计=`f6ad2cca9300ae9d1bfd4a2e999b370239773e562e8f540aa3a576bef3383a1f`。
 
-LM2原始`/data6/jinxinhao/bdd26/ops/e16_context_20261017`；LM1回收同名ops目录。主分支`research/set-mask-e6`/`fd98c5f0a7618ed2e1cd454bfbc4dda36a336a3b`；隔离源`research/set-mask-e7-schedule`/`c6d9b58ff080a3686ea760c05c533a2f62f51ac8`。配套：[原始数据](results.json)、[独立核算](independent_verification.json)。
+LM2原始`/data6/jinxinhao/bdd26/ops/e16_context_20261017`；LM1回收同名ops目录。主分支`research/set-mask-e6`/`fd98c5f0a7618ed2e1cd454bfbc4dda36a336a3b`；隔离源`research/set-mask-e7-schedule`/`c6d9b58ff080a3686ea760c05c533a2f62f51ac8`。配套：原始数据 (`results.json`, local-only artifact)、独立核算 (`independent_verification.json`, local-only artifact)。

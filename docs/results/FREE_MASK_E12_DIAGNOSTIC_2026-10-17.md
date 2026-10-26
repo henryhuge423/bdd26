@@ -30,4 +30,4 @@ TDD：4项缺失功能测试失败后4项通过；LM2同样4项通过。未修�
 
 LM2原始产物：`/data6/jinxinhao/bdd26/ops/e12_free_20261017/`；LM1回收：`/data7/jinxinhao/bdd26/ops/e12_free_20261017/recovered/`。主分支`research/set-mask-e6`/`fd98c5f0a7618ed2e1cd454bfbc4dda36a336a3b`，实现源`research/set-mask-e7-schedule`/`c6d9b58ff080a3686ea760c05c533a2f62f51ac8`。无Git提交或发布。
 
-配套：[原始对象数据](results.json)、[独立验证](independent_verification.json)、[启动身份](launch.json)。历史完成控制PID817497、startticks1066176941，仅供溯源，不能据此终止进程。
+配套：原始对象数据 (`results.json`, local-only artifact)、独立验证 (`independent_verification.json`, local-only artifact)、启动身份 (`launch.json`, local-only artifact)。历史完成控制PID817497、startticks1066176941，仅供溯源，不能据此终止进程。

@@ -1,4 +1,4 @@
-# P7/P8 final development closeout ¡ª 2026-10-22
+# P7/P8 final development closeout [undecodable fragment: A1 AA] 2026-10-22
 
 P7 RGB gain and P8 image-normalized focal loss both fail the original admission rule in both seeds. All eight fresh runs completed130epochs and SLURM COMPLETED/0:0 with empty stderr. Each experiment returned40smallfiles,36payloads checked against preservation SHA256/bytes; exact configurations,fit2134/audit522,cohort/input/UNI identity and finite130epoch logs match. No checkpoint/model inference was rerun for this analysis.
 
