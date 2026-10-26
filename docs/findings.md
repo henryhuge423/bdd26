@@ -2091,3 +2091,10 @@ See results/PROPOSAL_P14_RESULTS_2026-10-25.md and superpowers/specs/2026-10-25-
 
 
 P15 formal endpoint 2026-10-25T18:10:57.270105Z: smoke55278688COMPLETED0:0,227 passed in 222.79s (0:03:42),strictreadyPASS; formalarray55278753single submission0-3%2,max48GPUhours. C/J safetyhours{'C': 7.0267, 'J': 7.0429},peakGiB{'C': 4.0709, 'J': 4.0709}; exactsourcecf9777be1914884f48d2d8cb142a9b09d7408fc6/manifest5654147fa8ba972d012e0bee07c1ff3dfc6d1013c4dfcefe17f27dfcd06995a5. See results/PROPOSAL_P15_SUBMISSION_2026-10-25.md. Training completion notclaimed.
+
+
+## 2026-10-26 — P15 closeout, P16 objective control
+
+P15fourseed/armrunscompleted130epochs0:0,allsmallpreservation/input/cohort/config/sourceidentitiesand520translationrecordsverified. Originaladmissionfalsebothseeds: DeadJ-C-.193103[-.292453,-.124138]/-.089655[-.200000,-.021739];precision.8654/.8629butoverallrecall.3884/.3802andfitallrecall~.470. Closefixedtranslation;negativeisnotallspatialaugmentation. [Details](results/PROPOSAL_P15_RESULTS_2026-10-26.md), [synthesis](results/PROPOSAL_PROGRESS_2026-10-26.md).
+
+P16independentfixedGaussianMSEobjectiveC/R×19/1preservesoriginalarchitecture/data/optimizer/130epochs/decoding/admission,noP15translation. LM1focused258passedafterRED/GREENandreviewgapfix;V100smoke55287339COMPLETED0:0,258nodechecks,realbothseedallstateC/P3parity,Rindependentloss/derivativeandmeasuredparameterupdates,allfrozen/AMP/reload/time/strictreadyPASS. Formalarray55287551submittedonce2026-10-26T05:29:54.529735Z,0-3%2,max48GPUhours; not completedtraining. [Exactprotocol/validation/submission](results/PROPOSAL_P16_SUBMISSION_2026-10-26.md). Reusedfold1developmentpointmetrics,notPQ/test; noautomaticPhaseB/masks/fold2/fold3/menus. Originalrecipesremainclosed;externalLustrearchivepending.
