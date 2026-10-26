@@ -98,7 +98,12 @@ def test_fold_and_ckpt_guards(tmp_path, monkeypatch):
         pv.main(["--run", str(run), "--fold", "2", "--out", str(tmp_path / "o")])
 
 
-def test_refuses_overwrite(tmp_path):
+def test_refuses_overwrite(tmp_path, monkeypatch):
+    run = tmp_path / "run"
+    run.mkdir()
+    (run / "config.json").write_text(json.dumps({"split": 1}))
+    monkeypatch.setattr(pv, "ALLOWED_RUN", run.resolve())
     out = tmp_path / "already"; out.mkdir(); (out / "probe.json").write_text("{}")
-    with pytest.raises(SystemExit):
-        main(["--run", "runs/cellvit_uni/split1", "--fold", "2", "--out", str(out)])
+    with pytest.raises(SystemExit, match="refusing to overwrite"):
+        main(["--run", str(run), "--fold", "2", "--out", str(out)])
+    assert (out / "probe.json").read_text() == "{}"
