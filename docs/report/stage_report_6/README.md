@@ -18,4 +18,12 @@ On Windows with XeLaTeX on PATH, run `powershell -NoProfile -File build.ps1`. El
 
 The experimental snapshot is **26 October 2026, 09:27 EDT**. P16 seed19 completed; C1/R1 reached epochs85/73. P17 array55297061 was submitted09:08:19EDT and was pending at the snapshot. The report is a dated stage record. This editorial revision does not alter training configurations or the original admission rules.
 
-Numerical evidence is in [verified_numbers.json](verified_numbers.json); compilation, PDF metadata and hashes are in [build_verification.json](build_verification.json). All35pages were rendered and visually inspected. Relevant result records: [P16](../../results/PROPOSAL_P16_PROGRESS_2026-10-26.md), [P17](../../results/PROPOSAL_P17_SUBMISSION_2026-10-26.md).
+Numerical evidence is in verified_numbers.json (archived verification record); compilation, PDF metadata and hashes are in build_verification.json (archived verification record). All35pages were rendered and visually inspected. Relevant result records: [P16](../../results/PROPOSAL_P16_PROGRESS_2026-10-26.md), [P17](../../results/PROPOSAL_P17_SUBMISSION_2026-10-26.md).
+
+## Delivery layout (2026-10-26)
+
+This directory contains the report PDFs, LaTeX sources and every referenced figure/input, plus build instructions. Verification JSON, figure CSVs, unused raster previews and montage source tiles were moved to the project owner's ignored operations archive; historical verification descriptions above refer to those archived records. The report PDFs and TeX content are unchanged by this cleanup. Research evidence and current outcomes are indexed in [the project results](../../results/README.md).
+
+Build the English source with `pdflatex` and Chinese sources with `xelatex`, twice from this directory, unless the supplied build script specifies otherwise. Keep temporary compiler output in a separate build directory. No datasets or checkpoints are required to compile these reports.
+
+Later progress: the report remains frozen at its stated 09:27 EDT cutoff. The [11:29 EDT P16 closeout](../../results/PROPOSAL_P16_RESULTS_2026-10-26.md) supersedes its partial experiment status; it does not revise the historical report PDFs.

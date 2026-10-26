@@ -9,9 +9,9 @@ Experiments cover October 6–8, 2026. The Chinese report and digest were revise
 - [English report](stage_report_4.pdf), 12 pages; historical version, subject to the corrections below · [TeX](stage_report_4.tex).
 - [Chinese report](stage_report_4_zh.pdf), 11 pages · [TeX](stage_report_4_zh.tex).
 - [Plain-language Chinese digest](summary_plain_zh.pdf), 3 pages · [TeX](summary_plain_zh.tex).
-- [Language revision and build verification](language_revision_verification.json): source/PDF hashes, fresh log checks, table comparisons and regression results.
-- [Original numerical verification snapshot](verified_numbers.json): frozen October 8 values and historical cost aggregation.
-- [Historical build record](build_verification.json): earlier English/Chinese report builds, not the revised Chinese PDF hashes/page counts.
+- Language revision and build verification (archived verification record): source/PDF hashes, fresh log checks, table comparisons and regression results.
+- Original numerical verification snapshot (archived verification record): frozen October 8 values and historical cost aggregation.
+- Historical build record (archived verification record): earlier English/Chinese report builds, not the revised Chinese PDF hashes/page counts.
 - [October 9 research proposal](../../proposals/RESEARCH_NEXT_2026-10-09.md): historical proposal for fixed-geometry typing probes and independent candidate review. Consult [current results](../../results/README.md) for later outcomes.
 
 The full report explains settings, rules and evidence limits; the digest introduces the work to new readers. Earlier report bodies were not rewritten in that revision, and the English PDF was not recompiled.
@@ -46,7 +46,7 @@ The journal is not a substitute for original artifacts. The recorded revision re
 - All 7 numerical tables match the earlier report item by item. Corrected values added to the Chinese text match the cost audit. Bootstrap intervals reuse frozen results without resampling.
 - `python -m pytest -q`: **277 passed, 64 warnings** in that historical run. Warnings chiefly concern dependency deprecations and existing tensor conversions; dependencies were not upgraded to suppress them.
 
-Historical `verify_report4.py` intentionally reproduces the old cost snapshot. Passing it does not validate the old weighting method; image-weighted results are reported separately. Figure CSVs remain in `figs/`: `e2a_contrasts.csv`, `gate_b_cosines.csv`, `e0_cost.csv`.
+Historical `verify_report4.py` intentionally reproduces the old cost snapshot. Passing it does not validate the old weighting method; image-weighted results are reported separately. Figure CSVs were archived outside this delivery: `e2a_contrasts.csv`, `gate_b_cosines.csv`, `e0_cost.csv`.
 
 ## Reproduction and builds
 
@@ -70,3 +70,9 @@ xelatex -interaction=nonstopmode -halt-on-error summary_plain_zh.tex
 ```
 
 The recorded Chinese PDF builds had no TeX errors, missing glyphs, undefined references or overflowing text boxes in fresh logs. Source hashes, extracted text and key values were checked, with spot checks of titles, digest pagination and the report appendix. No independent page-by-page visual review was claimed. `figs/` is self-contained; machine configuration and operational records remain in ignored `ops/`. The 2026-10-26 Markdown translation does not rebuild or alter the PDFs, TeX sources, figures or historical verification snapshots; historical test counts are not fresh results for this edit.
+
+## Delivery layout (2026-10-26)
+
+This directory contains the report PDFs, LaTeX sources and every referenced figure/input, plus build instructions. Verification JSON, figure CSVs, unused raster previews and montage source tiles were moved to the project owner's ignored operations archive; historical verification descriptions above refer to those archived records. The report PDFs and TeX content are unchanged by this cleanup. Research evidence and current outcomes are indexed in [the project results](../../results/README.md).
+
+Build the English source with `pdflatex` and Chinese sources with `xelatex`, twice from this directory, unless the supplied build script specifies otherwise. Keep temporary compiler output in a separate build directory. No datasets or checkpoints are required to compile these reports.

@@ -8,9 +8,9 @@ Revised 2026-10-06; experiments cover the October 2–5 code audits, paired vali
 - [English report](stage_report_3.pdf) · [TeX source](stage_report_3.tex)
 - [Chinese report](stage_report_3_zh.pdf) · [TeX source](stage_report_3_zh.tex)
 - [Plain-language Chinese digest](summary_plain_zh.pdf) · [TeX source](summary_plain_zh.tex)
-- [Verified numerical snapshot](verified_numbers.json)
-- [Historical build and test verification](build_verification.json): Chinese report 11 pages, English report 12 pages, digest 3 pages; includes file hashes.
-- Figure data: [nine paired differences](figs/paired_deltas.csv), [split-level intervals](figs/split_intervals.csv).
+- Verified numerical snapshot (archived verification record)
+- Historical build and test verification (archived verification record): Chinese report 11 pages, English report 12 pages, digest 3 pages; includes file hashes.
+- Figure data: nine paired differences (archived verification record), split-level intervals (archived verification record).
 
 The report explains methods, controls, corrections and statistical limits. The digest introduces the work to readers unfamiliar with the project. Earlier report bodies remain historical records. This report describes the October 2–5 milestone; consult the [current results index](../../results/README.md) for later work.
 
@@ -45,7 +45,7 @@ The journal is not used as the final numerical source. Main-table values were re
 5. Check all five selection quantities in each of the nine EF `off` rows against the frozen P2 rows.
 6. Recalculate area and border groups from `existence_audit_20261005_v2/records.npz` and compare with the v2 summary.
 
-These paths are relative to `runs/analysis/`. Local run artifacts are not distributed with Git. `verified_numbers.json` is a portable numerical snapshot without machine configuration; it retains SHA-256 hashes of statistical files.
+These paths are relative to `runs/analysis/`. Local run artifacts are not distributed with Git. The archived `verified_numbers.json` is a numerical snapshot without machine configuration; it retains SHA-256 hashes of statistical files.
 
 Historical seed19 P0–P3 controls come from `p0p3_20261002_v2/results_verified.json`; typing audits come from `typing_audit_20261003/`; split-level intervals come from each round's `stats/bootstrap_split*.json`. Intervals condition on the three trained seeds and resample images only; they do not represent all training uncertainty. This revision reran numerical verification, figure generation and tests, without training, inference or threshold search.
 
@@ -91,3 +91,9 @@ xelatex -interaction=nonstopmode -halt-on-error summary_plain_zh.tex
 ```
 
 `figs/` is self-contained. Inspect fresh build logs for errors, missing figures/glyphs and overflow; old logs cannot verify a new build. Machine addresses, remote build commands and operational records belong only in ignored `ops/`. The 2026-10-26 Markdown translation does not rebuild or alter the report PDFs, TeX sources, figures or historical verification snapshots.
+
+## Delivery layout (2026-10-26)
+
+This directory contains the report PDFs, LaTeX sources and every referenced figure/input, plus build instructions. Verification JSON, figure CSVs, unused raster previews and montage source tiles were moved to the project owner's ignored operations archive; historical verification descriptions above refer to those archived records. The report PDFs and TeX content are unchanged by this cleanup. Research evidence and current outcomes are indexed in [the project results](../../results/README.md).
+
+Build the English source with `pdflatex` and Chinese sources with `xelatex`, twice from this directory, unless the supplied build script specifies otherwise. Keep temporary compiler output in a separate build directory. No datasets or checkpoints are required to compile these reports.

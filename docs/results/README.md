@@ -1,3 +1,5 @@
+Latest closeout (2026-10-26, 11:29 EDT): [P16 completed, original admission false for both seeds](PROPOSAL_P16_RESULTS_2026-10-26.md); P17 production training remains in progress.
+
 # Experiment results
 
 ## Latest evidence: October 26, 2026

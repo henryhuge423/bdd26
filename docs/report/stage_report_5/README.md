@@ -9,7 +9,7 @@ Experiments cover October 9–12, 2026: the typing-oracle diagnostic; T0–T3 pr
 - [English report](stage_report_5.pdf) · [TeX](stage_report_5.tex).
 - [Chinese report](stage_report_5_zh.pdf) · [TeX](stage_report_5_zh.tex).
 - [Plain-language Chinese digest](summary_plain_zh.pdf) for readers new to the project · [TeX](summary_plain_zh.tex).
-- [Independent numerical verification](verified_numbers.json): `verify_report5.py` recomputation of oracle/evaluator agreement, admission booleans, E1-C histogram/matching joins, E1-M agreement/kappa, E1-T group counts and interval containment, and complete E3 selection replay.
+- Independent numerical verification (archived verification record): `verify_report5.py` recomputation of oracle/evaluator agreement, admission booleans, E1-C histogram/matching joins, E1-M agreement/kappa, E1-T group counts and interval containment, and complete E3 selection replay.
 - Table-value snapshot: `runs/analysis/report5_numbers.txt` (local, not distributed with Git).
 - Related documents: [research plan](../../RESEARCH_PLAN.md), [October 9 proposal](../../proposals/RESEARCH_NEXT_2026-10-09.md), [model structure guide](../../background/STRUCTURE_AND_STRATEGY_2026-10-09.md), and [preregistered specifications](../../superpowers/specs/) for T / E1 / E1-T / E3.
 
@@ -32,7 +32,7 @@ Data boundaries: T/E1-C/E1-M/E1-T/E3 do not read test folds. They fit linear cla
 - Final E1-T/E3 artifacts were rerun after independent review and match the initial artifacts exactly, except that E3 bootstrap mPQ was corrected to official NaN exclusion. All 56 document/artifact audit checks passed.
 - Bootstrap intervals reuse frozen results without new resampling.
 
-Figures and CSVs are in `figs/`: `e1c_support.csv`, `e1t_pairs.csv`, `e3_strict.csv`.
+Compiled figure PDFs remain in `figs/`; the following CSVs were archived: `e1c_support.csv`, `e1t_pairs.csv`, `e3_strict.csv`.
 
 ## Reproduction and builds
 
@@ -46,3 +46,9 @@ python -m pytest -q
 ```
 
 `figs/` is self-contained. PDFs use TeX Live with ctex/Fandol/xeCJK: two `pdflatex` passes for English and two `xelatex` passes for Chinese. Historical builds are recorded in `build_verification.json`; machine details remain in ignored `ops/`. The 2026-10-26 Markdown translation does not rebuild or alter the PDFs, TeX sources, figures or verification snapshots. Historical test counts are not fresh results for this edit. See the [current results index](../../results/README.md) for later experiments.
+
+## Delivery layout (2026-10-26)
+
+This directory contains the report PDFs, LaTeX sources and every referenced figure/input, plus build instructions. Verification JSON, figure CSVs, unused raster previews and montage source tiles were moved to the project owner's ignored operations archive; historical verification descriptions above refer to those archived records. The report PDFs and TeX content are unchanged by this cleanup. Research evidence and current outcomes are indexed in [the project results](../../results/README.md).
+
+Build the English source with `pdflatex` and Chinese sources with `xelatex`, twice from this directory, unless the supplied build script specifies otherwise. Keep temporary compiler output in a separate build directory. No datasets or checkpoints are required to compile these reports.

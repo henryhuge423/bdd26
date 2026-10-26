@@ -1,3 +1,5 @@
+> **2026-10-26, 11:29 EDT — P16 completed; P17 running:** All four P16 runs completed 130 epochs with exit 0:0. Original admission failed in both seeds: internal Dead recall gains +.034483/+.062069 did not satisfy the full recall/precision conjunction. Close the fixed Gaussian-regression recipe. P17 C19/K19 reached epochs 44/59; C1/K1 remained pending. These are reused fold-1 development point metrics, not PQ or test results. See [verified P16 closeout](docs/results/PROPOSAL_P16_RESULTS_2026-10-26.md). Earlier dated entries retain their historical scope.
+
 > **Stage report 6, completed bilingual edition (2026-10-26):** [Detailed English report](docs/report/stage_report_6/stage_report_6_en.pdf), [详细中文报告](docs/report/stage_report_6/stage_report_6_zh.pdf), and [中文导读](docs/report/stage_report_6/summary_plain_zh.pdf). All three are compiled from LaTeX; charts and illustrations are drawn with TikZ/PGFPlots. Sources and build instructions are included.
 
 # bdd26 — PanNuke Nuclei Instance Segmentation (course project 5)
