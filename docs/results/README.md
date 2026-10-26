@@ -1,3 +1,5 @@
+> **2026-10-26 evening — P17 closed; P18 submitted:** Four P17 130-epoch runs completed/0:0; original admission failed in both seeds. The fixed scratch CNN has low fit/audit coverage despite high precision. Independently frozen RGB residual P18 passed V100 smoke 55310632 and formal array 55311007 was submitted once (C/H x19/1,concurrency2,max48GPUh). Submission is not completion. Reused fold1 point metrics are not PQ/test evidence; no automatic masks/PhaseB/menu. [P17 results](PROPOSAL_P17_RESULTS_2026-10-26.md), [P18 protocol](PROPOSAL_P18_SUBMISSION_2026-10-26.md), [中文分析](RESEARCH_REVIEW_2026-10-26_EVENING_ZH.md), [中文导读](RESEARCH_READER_2026-10-26_EVENING_ZH.md).
+
 Latest closeout (2026-10-26, 11:29 EDT): [P16 completed, original admission false for both seeds](PROPOSAL_P16_RESULTS_2026-10-26.md); P17 production training remains in progress.
 
 # Experiment results

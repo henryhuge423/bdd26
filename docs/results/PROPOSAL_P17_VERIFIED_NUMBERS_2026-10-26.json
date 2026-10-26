@@ -1,0 +1,889 @@
+{
+  "verified_small_payloads": 36,
+  "experiment": "P17",
+  "source_manifest_sha256": "dd4649a13035c303c7596ba32eede4c00f9228c18dcf4c1fe285ae6a42c9c885",
+  "runs": {
+    "C_19": {
+      "audit": {
+        "recall": 0.5946938775510204,
+        "precision": 0.6844231491920331,
+        "dead_recall": 0.41379310344827586,
+        "dead_images": 11,
+        "dead_objects": 145,
+        "nondeg": 1.0
+      },
+      "fit": {
+        "recall": 0.9789279547951656,
+        "precision": 0.9980995819080197,
+        "dead_recall": 0.9679878048780488,
+        "dead_images": 46,
+        "dead_objects": 656,
+        "nondeg": 1.0
+      },
+      "audit_counts": {
+        "matched": 7285,
+        "total": 12250,
+        "candidates": 10644,
+        "dead_hit": 60,
+        "dead_total": 145,
+        "inside": 9480,
+        "saturated_512": 0
+      },
+      "fit_counts": {
+        "matched": 49894,
+        "total": 50968,
+        "candidates": 49989,
+        "dead_hit": 635,
+        "dead_total": 656
+      },
+      "timing": {
+        "train_seconds": 14414.374095770298,
+        "checkpoint_seconds": 342.987682341598,
+        "elapsed": 14801.953648749972
+      },
+      "tissues": {
+        "Adrenal_gland": {
+          "recall": 0.6748878923766816,
+          "precision": 0.7639593908629442,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Bile-duct": {
+          "recall": 0.6856649395509499,
+          "precision": 0.7257769652650823,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Bladder": {
+          "recall": 0.75,
+          "precision": 0.8135593220338984,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Breast": {
+          "recall": 0.5873673310898265,
+          "precision": 0.660360884749709,
+          "dead_recall": 0.0,
+          "dead_images": 1,
+          "dead_objects": 1,
+          "nondeg": 1.0
+        },
+        "Cervix": {
+          "recall": 0.660300136425648,
+          "precision": 0.7378048780487805,
+          "dead_recall": 0.3333333333333333,
+          "dead_images": 1,
+          "dead_objects": 15,
+          "nondeg": 1.0
+        },
+        "Colon": {
+          "recall": 0.4978849407783418,
+          "precision": 0.6321160042964554,
+          "dead_recall": 0.23214285714285715,
+          "dead_images": 2,
+          "dead_objects": 56,
+          "nondeg": 1.0
+        },
+        "Esophagus": {
+          "recall": 0.56884561891516,
+          "precision": 0.6850921273031826,
+          "dead_recall": 0.625,
+          "dead_images": 1,
+          "dead_objects": 8,
+          "nondeg": 1.0
+        },
+        "HeadNeck": {
+          "recall": 0.65625,
+          "precision": 0.72,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Kidney": {
+          "recall": 0.504950495049505,
+          "precision": 0.7183098591549296,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Liver": {
+          "recall": 0.7676056338028169,
+          "precision": 0.7676056338028169,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Lung": {
+          "recall": 0.5706713780918727,
+          "precision": 0.6632443531827515,
+          "dead_recall": 0.6,
+          "dead_images": 3,
+          "dead_objects": 60,
+          "nondeg": 1.0
+        },
+        "Ovarian": {
+          "recall": 0.5341365461847389,
+          "precision": 0.6186046511627907,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Pancreatic": {
+          "recall": 0.6260504201680672,
+          "precision": 0.6962616822429907,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Prostate": {
+          "recall": 0.6144927536231884,
+          "precision": 0.6883116883116883,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Skin": {
+          "recall": 0.6184971098265896,
+          "precision": 0.7379310344827587,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Stomach": {
+          "recall": 0.7634730538922155,
+          "precision": 0.794392523364486,
+          "dead_recall": 0.0,
+          "dead_images": 2,
+          "dead_objects": 4,
+          "nondeg": 1.0
+        },
+        "Testis": {
+          "recall": 0.6129032258064516,
+          "precision": 0.7256944444444444,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Thyroid": {
+          "recall": 0.7018181818181818,
+          "precision": 0.7148148148148148,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Uterus": {
+          "recall": 0.6,
+          "precision": 0.6666666666666666,
+          "dead_recall": 1.0,
+          "dead_images": 1,
+          "dead_objects": 1,
+          "nondeg": 1.0
+        }
+      }
+    },
+    "K_19": {
+      "audit": {
+        "recall": 0.13951020408163264,
+        "precision": 0.9520891364902507,
+        "dead_recall": 0.20689655172413793,
+        "dead_images": 11,
+        "dead_objects": 145,
+        "nondeg": 1.0
+      },
+      "fit": {
+        "recall": 0.1440511693611678,
+        "precision": 0.9674528923441824,
+        "dead_recall": 0.2301829268292683,
+        "dead_images": 46,
+        "dead_objects": 656,
+        "nondeg": 0.9347826086956522
+      },
+      "audit_counts": {
+        "matched": 1709,
+        "total": 12250,
+        "candidates": 1795,
+        "dead_hit": 30,
+        "dead_total": 145,
+        "inside": 1741,
+        "saturated_512": 0
+      },
+      "fit_counts": {
+        "matched": 7342,
+        "total": 50968,
+        "candidates": 7589,
+        "dead_hit": 151,
+        "dead_total": 656
+      },
+      "timing": {
+        "train_seconds": 9318.777632523328,
+        "checkpoint_seconds": 26.981263138586655,
+        "elapsed": 9404.403063476086
+      },
+      "tissues": {
+        "Adrenal_gland": {
+          "recall": 0.226457399103139,
+          "precision": 0.9805825242718447,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Bile-duct": {
+          "recall": 0.22107081174438686,
+          "precision": 0.9624060150375939,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Bladder": {
+          "recall": 0.28125,
+          "precision": 1.0,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Breast": {
+          "recall": 0.07558892052808698,
+          "precision": 0.9389067524115756,
+          "dead_recall": 0.0,
+          "dead_images": 1,
+          "dead_objects": 1,
+          "nondeg": 1.0
+        },
+        "Cervix": {
+          "recall": 0.20327421555252387,
+          "precision": 0.9197530864197531,
+          "dead_recall": 0.4666666666666667,
+          "dead_images": 1,
+          "dead_objects": 15,
+          "nondeg": 1.0
+        },
+        "Colon": {
+          "recall": 0.10067681895093063,
+          "precision": 0.9635627530364372,
+          "dead_recall": 0.07142857142857142,
+          "dead_images": 2,
+          "dead_objects": 56,
+          "nondeg": 1.0
+        },
+        "Esophagus": {
+          "recall": 0.08762169680111266,
+          "precision": 0.9264705882352942,
+          "dead_recall": 0.125,
+          "dead_images": 1,
+          "dead_objects": 8,
+          "nondeg": 1.0
+        },
+        "HeadNeck": {
+          "recall": 0.20833333333333334,
+          "precision": 0.8888888888888888,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Kidney": {
+          "recall": 0.18316831683168316,
+          "precision": 0.9736842105263158,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Liver": {
+          "recall": 0.2852112676056338,
+          "precision": 0.9529411764705882,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Lung": {
+          "recall": 0.1978798586572438,
+          "precision": 0.9491525423728814,
+          "dead_recall": 0.3,
+          "dead_images": 3,
+          "dead_objects": 60,
+          "nondeg": 1.0
+        },
+        "Ovarian": {
+          "recall": 0.11646586345381527,
+          "precision": 0.90625,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Pancreatic": {
+          "recall": 0.18487394957983194,
+          "precision": 0.9777777777777777,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Prostate": {
+          "recall": 0.16521739130434782,
+          "precision": 1.0,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Skin": {
+          "recall": 0.23410404624277456,
+          "precision": 0.9878048780487805,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Stomach": {
+          "recall": 0.27844311377245506,
+          "precision": 0.9393939393939394,
+          "dead_recall": 0.0,
+          "dead_images": 2,
+          "dead_objects": 4,
+          "nondeg": 1.0
+        },
+        "Testis": {
+          "recall": 0.187683284457478,
+          "precision": 1.0,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Thyroid": {
+          "recall": 0.2545454545454545,
+          "precision": 0.958904109589041,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Uterus": {
+          "recall": 0.10909090909090909,
+          "precision": 0.8,
+          "dead_recall": 0.0,
+          "dead_images": 1,
+          "dead_objects": 1,
+          "nondeg": 1.0
+        }
+      }
+    },
+    "C_1": {
+      "audit": {
+        "recall": 0.5948571428571429,
+        "precision": 0.6946615824594852,
+        "dead_recall": 0.46206896551724136,
+        "dead_images": 11,
+        "dead_objects": 145,
+        "nondeg": 1.0
+      },
+      "fit": {
+        "recall": 0.976946319259143,
+        "precision": 0.9980757281164184,
+        "dead_recall": 0.948170731707317,
+        "dead_images": 46,
+        "dead_objects": 656,
+        "nondeg": 1.0
+      },
+      "audit_counts": {
+        "matched": 7287,
+        "total": 12250,
+        "candidates": 10490,
+        "dead_hit": 67,
+        "dead_total": 145,
+        "inside": 9420,
+        "saturated_512": 0
+      },
+      "fit_counts": {
+        "matched": 49793,
+        "total": 50968,
+        "candidates": 49889,
+        "dead_hit": 622,
+        "dead_total": 656
+      },
+      "timing": {
+        "train_seconds": 14457.965547997504,
+        "checkpoint_seconds": 305.16541537223384,
+        "elapsed": 14934.77838718798
+      },
+      "tissues": {
+        "Adrenal_gland": {
+          "recall": 0.6838565022421524,
+          "precision": 0.7682619647355163,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Bile-duct": {
+          "recall": 0.6856649395509499,
+          "precision": 0.7448405253283302,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Bladder": {
+          "recall": 0.765625,
+          "precision": 0.8032786885245902,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Breast": {
+          "recall": 0.5808956769350246,
+          "precision": 0.6609720176730486,
+          "dead_recall": 0.0,
+          "dead_images": 1,
+          "dead_objects": 1,
+          "nondeg": 1.0
+        },
+        "Cervix": {
+          "recall": 0.6712141882673943,
+          "precision": 0.754601226993865,
+          "dead_recall": 0.4,
+          "dead_images": 1,
+          "dead_objects": 15,
+          "nondeg": 1.0
+        },
+        "Colon": {
+          "recall": 0.4970389170896785,
+          "precision": 0.6477398015435502,
+          "dead_recall": 0.26785714285714285,
+          "dead_images": 2,
+          "dead_objects": 56,
+          "nondeg": 1.0
+        },
+        "Esophagus": {
+          "recall": 0.5716272600834492,
+          "precision": 0.6838602329450915,
+          "dead_recall": 0.5,
+          "dead_images": 1,
+          "dead_objects": 8,
+          "nondeg": 1.0
+        },
+        "HeadNeck": {
+          "recall": 0.6354166666666666,
+          "precision": 0.7052023121387283,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Kidney": {
+          "recall": 0.5148514851485149,
+          "precision": 0.7375886524822695,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Liver": {
+          "recall": 0.778169014084507,
+          "precision": 0.7517006802721088,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Lung": {
+          "recall": 0.5901060070671378,
+          "precision": 0.697286012526096,
+          "dead_recall": 0.6666666666666666,
+          "dead_images": 3,
+          "dead_objects": 60,
+          "nondeg": 1.0
+        },
+        "Ovarian": {
+          "recall": 0.5381526104417671,
+          "precision": 0.6442307692307693,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Pancreatic": {
+          "recall": 0.6008403361344538,
+          "precision": 0.697560975609756,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Prostate": {
+          "recall": 0.6231884057971014,
+          "precision": 0.7288135593220338,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Skin": {
+          "recall": 0.6040462427745664,
+          "precision": 0.7282229965156795,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Stomach": {
+          "recall": 0.7574850299401198,
+          "precision": 0.8031746031746032,
+          "dead_recall": 0.25,
+          "dead_images": 2,
+          "dead_objects": 4,
+          "nondeg": 1.0
+        },
+        "Testis": {
+          "recall": 0.6451612903225806,
+          "precision": 0.7534246575342466,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Thyroid": {
+          "recall": 0.72,
+          "precision": 0.7615384615384615,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Uterus": {
+          "recall": 0.5545454545454546,
+          "precision": 0.6931818181818182,
+          "dead_recall": 1.0,
+          "dead_images": 1,
+          "dead_objects": 1,
+          "nondeg": 1.0
+        }
+      }
+    },
+    "K_1": {
+      "audit": {
+        "recall": 0.11893877551020408,
+        "precision": 0.949185667752443,
+        "dead_recall": 0.21379310344827587,
+        "dead_images": 11,
+        "dead_objects": 145,
+        "nondeg": 0.9090909090909091
+      },
+      "fit": {
+        "recall": 0.11921205462250824,
+        "precision": 0.967670011148272,
+        "dead_recall": 0.21189024390243902,
+        "dead_images": 46,
+        "dead_objects": 656,
+        "nondeg": 0.8913043478260869
+      },
+      "audit_counts": {
+        "matched": 1457,
+        "total": 12250,
+        "candidates": 1535,
+        "dead_hit": 31,
+        "dead_total": 145,
+        "inside": 1492,
+        "saturated_512": 0
+      },
+      "fit_counts": {
+        "matched": 6076,
+        "total": 50968,
+        "candidates": 6279,
+        "dead_hit": 139,
+        "dead_total": 656
+      },
+      "timing": {
+        "train_seconds": 9433.315060402267,
+        "checkpoint_seconds": 135.37356972298585,
+        "elapsed": 9612.723743353039
+      },
+      "tissues": {
+        "Adrenal_gland": {
+          "recall": 0.22869955156950672,
+          "precision": 0.9532710280373832,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Bile-duct": {
+          "recall": 0.18652849740932642,
+          "precision": 0.9473684210526315,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Bladder": {
+          "recall": 0.25,
+          "precision": 0.9411764705882353,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Breast": {
+          "recall": 0.060574682888946414,
+          "precision": 0.9397590361445783,
+          "dead_recall": 0.0,
+          "dead_images": 1,
+          "dead_objects": 1,
+          "nondeg": 0.0
+        },
+        "Cervix": {
+          "recall": 0.15688949522510232,
+          "precision": 0.9583333333333334,
+          "dead_recall": 0.4666666666666667,
+          "dead_images": 1,
+          "dead_objects": 15,
+          "nondeg": 1.0
+        },
+        "Colon": {
+          "recall": 0.08417935702199661,
+          "precision": 0.9342723004694836,
+          "dead_recall": 0.05357142857142857,
+          "dead_images": 2,
+          "dead_objects": 56,
+          "nondeg": 1.0
+        },
+        "Esophagus": {
+          "recall": 0.0737134909596662,
+          "precision": 0.9298245614035088,
+          "dead_recall": 0.125,
+          "dead_images": 1,
+          "dead_objects": 8,
+          "nondeg": 1.0
+        },
+        "HeadNeck": {
+          "recall": 0.19270833333333334,
+          "precision": 0.8809523809523809,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Kidney": {
+          "recall": 0.15346534653465346,
+          "precision": 0.9117647058823529,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Liver": {
+          "recall": 0.2605633802816901,
+          "precision": 0.961038961038961,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Lung": {
+          "recall": 0.17667844522968199,
+          "precision": 0.970873786407767,
+          "dead_recall": 0.3333333333333333,
+          "dead_images": 3,
+          "dead_objects": 60,
+          "nondeg": 1.0
+        },
+        "Ovarian": {
+          "recall": 0.12048192771084337,
+          "precision": 0.9090909090909091,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Pancreatic": {
+          "recall": 0.15126050420168066,
+          "precision": 1.0,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Prostate": {
+          "recall": 0.1391304347826087,
+          "precision": 0.9411764705882353,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Skin": {
+          "recall": 0.18786127167630057,
+          "precision": 0.9848484848484849,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Stomach": {
+          "recall": 0.23053892215568864,
+          "precision": 0.9625,
+          "dead_recall": 0.0,
+          "dead_images": 2,
+          "dead_objects": 4,
+          "nondeg": 1.0
+        },
+        "Testis": {
+          "recall": 0.18181818181818182,
+          "precision": 1.0,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Thyroid": {
+          "recall": 0.22545454545454546,
+          "precision": 0.9538461538461539,
+          "dead_recall": null,
+          "dead_images": 0,
+          "dead_objects": 0,
+          "nondeg": null
+        },
+        "Uterus": {
+          "recall": 0.07272727272727272,
+          "precision": 0.8888888888888888,
+          "dead_recall": 0.0,
+          "dead_images": 1,
+          "dead_objects": 1,
+          "nondeg": 1.0
+        }
+      }
+    }
+  },
+  "admission": {
+    "pass": false,
+    "details": {
+      "19": {
+        "pass_seed": false,
+        "support": true,
+        "baseline": {
+          "recall": 0.5946938775510204,
+          "precision": 0.6844231491920331,
+          "dead_recall": 0.41379310344827586,
+          "dead_images": 11,
+          "dead_objects": 145,
+          "nondeg": 1.0
+        },
+        "trainable": {
+          "recall": 0.13951020408163264,
+          "precision": 0.9520891364902507,
+          "dead_recall": 0.20689655172413793,
+          "dead_images": 11,
+          "dead_objects": 145,
+          "nondeg": 1.0
+        },
+        "delta": -0.20689655172413793,
+        "ci95": [
+          -0.28703703703703703,
+          -0.15760869565217392
+        ]
+      },
+      "1": {
+        "pass_seed": false,
+        "support": true,
+        "baseline": {
+          "recall": 0.5948571428571429,
+          "precision": 0.6946615824594852,
+          "dead_recall": 0.46206896551724136,
+          "dead_images": 11,
+          "dead_objects": 145,
+          "nondeg": 1.0
+        },
+        "trainable": {
+          "recall": 0.11893877551020408,
+          "precision": 0.949185667752443,
+          "dead_recall": 0.21379310344827587,
+          "dead_images": 11,
+          "dead_objects": 145,
+          "nondeg": 0.9090909090909091
+        },
+        "delta": -0.24827586206896549,
+        "ci95": [
+          -0.336283185840708,
+          -0.19021739130434784
+        ]
+      }
+    }
+  },
+  "identities": {
+    "weights_sha256": "56ef09b44a25dc5c7eedc55551b3d47bcd17659a7a33837cf9abc9ec4e2ffb40",
+    "input_sha256": {
+      "fold1/images.npy": "b4f24c4d117a44fa930120d33b52175dc8189afdceb89a2cdf91d2682293105b",
+      "fold1/inst.npy": "59fb7dc60354e54e642f41072595ee3a4bec700c0b36bd2c94075ae030e5de7e",
+      "fold1/type.npy": "cda88107c0860fd3be6c58d9dafde7623b9709ee639649246e67c4844ae593c0",
+      "fold1/tissue.npy": "64746d127bc28e88be6fdc4639af4f21a91fb1fda00e68869ea5fe61a574f615"
+    },
+    "cohort_sha256": "55894f3274a1f65338ccd6cb885abc218056be64318405ad5e4d67b895ea5d22"
+  },
+  "complete_pairs": [
+    "1",
+    "19"
+  ],
+  "large_checkpoints_independently_rehashed": false,
+  "supplement": {
+    "C_19": {
+      "small_hits": 7,
+      "small_total": 32,
+      "zero_images": 22,
+      "candidate_median": 17.0,
+      "max_candidates": 120
+    },
+    "K_19": {
+      "small_hits": 2,
+      "small_total": 32,
+      "zero_images": 198,
+      "candidate_median": 1.0,
+      "max_candidates": 41
+    },
+    "C_1": {
+      "small_hits": 9,
+      "small_total": 32,
+      "zero_images": 21,
+      "candidate_median": 17.0,
+      "max_candidates": 119
+    },
+    "K_1": {
+      "small_hits": 3,
+      "small_total": 32,
+      "zero_images": 212,
+      "candidate_median": 1.0,
+      "max_candidates": 43
+    }
+  },
+  "independent_ci": {
+    "19": [
+      -0.28703703703703703,
+      -0.15760869565217392
+    ],
+    "1": [
+      -0.336283185840708,
+      -0.19021739130434784
+    ]
+  }
+}
