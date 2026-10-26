@@ -2,6 +2,8 @@
 
 ## Latest evidence: October 26, 2026
 
+[Stage report6: Chinese report and plain-language digest](../report/stage_report_6/README.md). Current09:16EDT P16/P17 status is recorded in the new partial/submission documents; the older pending snapshot below is historical.
+
 The P-series studies use a repeatedly reused **fold1 development point-detection audit**.
 These are not PQ scores, held-out test results, independent validation or official
 three-split performance. Both original seed-specific gates must pass; an isolated gain
@@ -22,7 +24,8 @@ and 145 internal Dead objects. See the [P3–P15 synthesis](PROPOSAL_PROGRESS_20
 | P13 | Rare-positive replacement sampling | Both seed gates failed; recipe closed | [Result](PROPOSAL_P13_RESULTS_2026-10-25.md) |
 | P14 | Lower encoder learning rate | Both seed gates failed; recipe closed | [Result](PROPOSAL_P14_RESULTS_2026-10-25.md) |
 | P15 | Training translation | Both seed gates failed; recipe closed | [Result](PROPOSAL_P15_RESULTS_2026-10-26.md) |
-| P16 | Direct Gaussian regression | Submission verified; training completion and final admission not revalidated in this documentation audit | [Submission](PROPOSAL_P16_SUBMISSION_2026-10-26.md) |
+| P16 | Direct Gaussian regression | Seed19 complete/original condition failed; seed1 running | [Partial results](PROPOSAL_P16_PROGRESS_2026-10-26.md) |
+| P17 | From-scratch convolutional representation | Formal55297061 submitted09:08EDT after V100 validation; completion pending | [Submission](PROPOSAL_P17_SUBMISSION_2026-10-26.md) |
 
 P16 array 55287551 was submitted once at `2026-10-26T05:29:54.529735Z`.
 The stored `2026-10-26T05:30:48.240388+00:00` snapshot shows four pending tasks;

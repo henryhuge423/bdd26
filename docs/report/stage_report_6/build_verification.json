@@ -1,0 +1,57 @@
+{
+  "pdf_pages": {
+    "stage_report_6_zh.pdf": 15,
+    "summary_plain_zh.pdf": 4
+  },
+  "output_files": {
+    "stage_report_6_zh.pdf": {
+      "bytes": 299611,
+      "sha256": "78740f997bbb9143818c0115a730973cdf2fabbf8ebbff7a679a19d5a10c9d7d"
+    },
+    "summary_plain_zh.pdf": {
+      "bytes": 139909,
+      "sha256": "3f74d092fabde5ecb319e5fd916bca36d2ecdde1c270eb34552beeca94dd2e20"
+    },
+    "stage_report_6_zh.tex": {
+      "bytes": 31161,
+      "sha256": "461aa7296553f46981edc89a2b19080744aecef9a2e2645a712e88fa671b4941"
+    },
+    "summary_plain_zh.tex": {
+      "bytes": 8717,
+      "sha256": "30842468551a1b5d2af9470000f1afc3c1a18f252beb080dba2973b58e1d6ea1"
+    },
+    "status.tex": {
+      "bytes": 351,
+      "sha256": "bb9310fa91dbea10c56d3e837b527ef59416702a28efae60e1504a705c11a678"
+    },
+    "p17_receipt.tex": {
+      "bytes": 1070,
+      "sha256": "3144552bcf7f18d5adbf1efc7be45fdc3ba5a88d5cda8361b13e0042e00e49e7"
+    },
+    "p17_receipt_plain.tex": {
+      "bytes": 391,
+      "sha256": "48e23bad8caa3dd6fcdcc5379083b5cc1c4a68778f4e3149986acd9d7e94c1fd"
+    },
+    "verified_numbers.json": {
+      "bytes": 37251,
+      "sha256": "2c2d3245d70798fe58af62336df7382af273c306c11ae8d90160696934052968"
+    },
+    "figs/proposal_deltas.pdf": {
+      "bytes": 20175,
+      "sha256": "da32149bb56518d9309fae3809cb0c52207db0d4445d6295cfeb8703158df95c"
+    },
+    "figs/query_attrition.pdf": {
+      "bytes": 24016,
+      "sha256": "46c8d511bee7d8145f915e8898b24f093b4747ef8da0927b72b464ee577ce96c"
+    }
+  },
+  "visual_review": "All15formal and4digest pages rendered and inspected; final changed pages re-rendered; no clipping,overlap,missingglyphs or overfull boxes.",
+  "independent_review": "P17 design+implementation and report scientific-boundary reviews; important findings fixed.",
+  "final_cpu": {
+    "passed": 861,
+    "skipped": 3,
+    "warnings": 19073,
+    "exit_code": 0
+  },
+  "training_commit": "5a7e85ba7e876109449aab85767bc66942952daf"
+}

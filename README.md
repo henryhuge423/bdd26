@@ -1,8 +1,10 @@
 # bdd26 — PanNuke Nuclei Instance Segmentation (course project 5)
 
+> **2026-10-26 — P16 partial results, P17 submitted, stage report 6:** P16 seed 19 C/R completed 130 epochs and passed preservation/source checks. Dead matches changed from 70/145 to 75/145, with original CI [-.034091,+.131144]; this seed failed admission. Seed 1 remains running. Independent P17 passed V100 smoke 55297045, 291 node checks and strict readiness. Formal array 55297061 was submitted once at 09:08:19 EDT: four 130-epoch tasks, concurrency 2, maximum 48 GPU-hours. Submission is not completion or admission. These are reused fold-1 point metrics, not PQ/test results. No automatic Phase B, masks or menus. See [P16 partial results](docs/results/PROPOSAL_P16_PROGRESS_2026-10-26.md), [P17 submission](docs/results/PROPOSAL_P17_SUBMISSION_2026-10-26.md), and [Chinese stage report 6](docs/report/stage_report_6/README.md).
+
 Start with the [documentation and evidence audit](docs/audits/DOCUMENTATION_RESULTS_GIT_AUDIT_2026-10-26.md)
 and [current results index](docs/results/README.md). The dated entries below preserve historical
-execution states; P16 submission is verified, but its current completion status was not queried in this audit.
+execution states. The newer P16 partial result and P17 submission above supersede the documentation-only audit snapshot.
 
 > **2026-10-26 — P15 closed; P16 submitted:** All four P15 runs completed 130 epochs (SLURM `COMPLETED/0:0`). We verified 45 files, 40 payloads, all 395 deployed-source hashes, and 520 translation records. Both original gates failed: internal Dead recall changed by −.193103/−.089655; precision rose while fit/audit coverage fell. See [P15 results](docs/results/PROPOSAL_P15_RESULTS_2026-10-26.md) and the [P3–P15 synthesis](docs/results/PROPOSAL_PROGRESS_2026-10-26.md). P16 tests direct Gaussian regression with C/R × seeds 19/1, preserving the original cohort, model, learning rate, 130 epochs, decoding, and admission gate. V100 smoke job 55287339 completed/0:0; all 258 node checks and strict readiness passed. Formal array 55287551 was submitted once at 2026-10-26T05:29:54.529735Z, with concurrency 2 and a 48 GPU-hour maximum. Submission does not mean training is complete. See the [submission protocol](docs/results/PROPOSAL_P16_SUBMISSION_2026-10-26.md). Reused fold-1 development point metrics are not PQ or test results. No automatic Phase B, masks, or menus. Earlier dated entries are historical.
 
@@ -345,7 +347,8 @@ Full methods, uncertainty and provenance: [P0–P3 results](docs/results/P0_P3_R
 
 ### Reports
 
-- `docs/report/stage_report_5/` — latest stage V (EN, ZH and plain-language ZH):
+- `docs/report/stage_report_6/` — latest Chinese stage VI and plain-language digest: visibility, query/point diagnostics, E19 and P3–P17 progress.
+- `docs/report/stage_report_5/` — prior stage V (EN, ZH and plain-language ZH):
   typing-oracle ceiling, T0–T3 probe closure, E1 no-expert revision (E1-C/E1-M),
   E1-T label-ambiguity resonance, E3 utility-learning stop; verified numbers included.
 - `docs/report/stage_report_4/` — stage IV (EN, ZH and plain-language ZH),
