@@ -49,3 +49,8 @@ def test_numeric_acceptance_rejects_nonfinite_and_wrong_gradient():
     for b in (-a,torch.full_like(a,float('nan')),a*2):
         assert not m.numeric_comparison(1.,1.,a,b)['passed']
     assert not m.numeric_comparison(1.,float('nan'),a,a)['passed']
+
+def test_identical_zero_gradient_is_valid_but_missing_signal_is_not():
+    m=module();z=torch.zeros(7)
+    assert m.numeric_comparison(1.,1.,z,z)['passed']
+    assert not m.numeric_comparison(1.,1.,z,torch.ones(7))['passed']

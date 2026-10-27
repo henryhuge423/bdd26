@@ -59,7 +59,8 @@ def numeric_comparison(loss_ref,loss_test,grad_ref,grad_test):
     a=grad_ref.detach().double().cpu();b=grad_test.detach().double().cpu()
     finite=bool(torch.isfinite(a).all() and torch.isfinite(b).all() and math.isfinite(loss_ref) and math.isfinite(loss_test))
     relative=float((a-b).norm()/a.norm().clamp_min(1e-20)) if finite else float('inf')
-    cosine=float(torch.dot(a,b)/(a.norm()*b.norm()).clamp_min(1e-20)) if finite else -1.
+    both_zero=finite and bool(a.norm()==0 and b.norm()==0)
+    cosine=(1. if both_zero else float(torch.dot(a,b)/(a.norm()*b.norm()).clamp_min(1e-20))) if finite else -1.
     loss_relative=abs(loss_test-loss_ref)/max(abs(loss_ref),1e-20) if finite else float('inf')
     return dict(passed=finite and relative<=.05 and cosine>=.999 and loss_relative<=.01,
         relative_gradient_l2=relative,gradient_cosine=cosine,relative_loss=loss_relative)
