@@ -78,6 +78,11 @@ def run_config(arm,seed,microbatch=4):
         input_interpolation='none' if arm=='C' else 'bilinear_align_corners_false')
 
 
+def run_budget_hours(arm):
+    if arm not in ('C','U'):raise ValueError('invalid P20 resource arm')
+    return 12 if arm=='C' else 36
+
+
 def validate_config(saved,expected):
     if saved!=expected:raise ValueError('checkpoint P20 configuration mismatch')
 
@@ -140,7 +145,7 @@ def main():
             handles.append(module.register_forward_hook(lambda m,a,o,key=key:precision.update({key:str(o.dtype)})))
     else:epochs=130
     for epoch in range(epochs):
-        if time.monotonic()-started>24*3600:raise TimeoutError('P20 run budget exhausted')
+        if time.monotonic()-started>run_budget_hours(args.arm)*3600:raise TimeoutError('P20 run budget exhausted')
         if shutil.disk_usage(out).free<20<<30:raise RuntimeError('disk floor')
         model.train();factor=.1+.9*(1+math.cos(math.pi*epoch/129))/2
         for g in opt.param_groups:g['lr']=g['initial_lr']*factor
@@ -204,7 +209,7 @@ def main():
         except ValueError:report['cross_arm_config_rejected']=True
         else:raise AssertionError('wrong arm config accepted')
         dump(out/'smoke_measurements.json',report)
-        assert estimate*1.5<86400,estimate
+        assert estimate*1.5<run_budget_hours(args.arm)*3600,estimate
         report['status']='PASS';dump(out/'smoke.json',report);return
     dump(out/'fit.json',evaluate(model,fold,fit))
     rows=evaluate(model,fold,audit)
