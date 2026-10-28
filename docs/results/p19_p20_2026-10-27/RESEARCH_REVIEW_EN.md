@@ -1,3 +1,5 @@
+> **Resource amendment/status update:** Original per-task24h readiness failed in smoke55343640 (U safety25.76h). Before another allocation, resource-only commit04d187e changed C12/U36h, retaining96GPUh and all scientific conditions. Third validation55357273 passed after55356965 TIMEOUT and the separately frozen1GPUhour validation allowance; C/U arrays55357457,55357476 submitted. Historical24h readiness text below describes the initial freeze and is superseded for resources by [the full validation/receipt](P20_SUBMISSION.md). Submission is not completion.
+
 # P19 closeout and the independently frozen P20 study
 
 27 October 2026, America/New_York. This is an experiment record; the earlier Stage6 PDFs retain their dated snapshots.

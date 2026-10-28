@@ -1,0 +1,90 @@
+{
+  "array_job_id": "55357457",
+  "array_job_ids": {
+    "C": "55357457",
+    "U": "55357476"
+  },
+  "arms": {
+    "C": {
+      "array_job_id": "55357457",
+      "arm": "C",
+      "indices": [
+        0,
+        2
+      ],
+      "seeds": [
+        19,
+        1
+      ],
+      "submitted_utc": "2026-10-28T15:12:43.237442Z",
+      "source_commit": "08ae279dbfd8f4fba71404d5f5af7872f25f5b64",
+      "source_manifest_sha256": "1bd6e680e1b4c008f11b97ee50c165c21c4776209f718a915aca101333228e58",
+      "smoke_job_id": "55357273",
+      "resources_per_task": {
+        "gpus": 1,
+        "cpus": 4,
+        "memory": "32G",
+        "hours": 12
+      },
+      "concurrency": 1,
+      "scratch": "/expanse/lustre/scratch/xjin10/temp_project/bdd26/p20_20261028_03",
+      "project": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p20_20261028_03",
+      "original_smoke": "55343640",
+      "second_smoke": "55356965",
+      "total_smoke_seconds": 2260
+    },
+    "U": {
+      "array_job_id": "55357476",
+      "arm": "U",
+      "indices": [
+        1,
+        3
+      ],
+      "seeds": [
+        19,
+        1
+      ],
+      "submitted_utc": "2026-10-28T15:14:17.622329Z",
+      "source_commit": "08ae279dbfd8f4fba71404d5f5af7872f25f5b64",
+      "source_manifest_sha256": "1bd6e680e1b4c008f11b97ee50c165c21c4776209f718a915aca101333228e58",
+      "smoke_job_id": "55357273",
+      "resources_per_task": {
+        "gpus": 1,
+        "cpus": 4,
+        "memory": "32G",
+        "hours": 36
+      },
+      "concurrency": 1,
+      "scratch": "/expanse/lustre/scratch/xjin10/temp_project/bdd26/p20_20261028_03",
+      "project": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p20_20261028_03",
+      "original_smoke": "55343640",
+      "second_smoke": "55356965",
+      "total_smoke_seconds": 2260
+    }
+  },
+  "all_jobs": "55357457,55357476",
+  "submitted_utc": "2026-10-28T15:14:17.622329Z",
+  "source_commit": "08ae279dbfd8f4fba71404d5f5af7872f25f5b64",
+  "source_manifest_sha256": "1bd6e680e1b4c008f11b97ee50c165c21c4776209f718a915aca101333228e58",
+  "smoke_job_id": "55357273",
+  "resources_per_task": {
+    "C": {
+      "gpus": 1,
+      "cpus": 4,
+      "memory": "32G",
+      "hours": 12
+    },
+    "U": {
+      "gpus": 1,
+      "cpus": 4,
+      "memory": "32G",
+      "hours": 36
+    }
+  },
+  "max_gpu_hours": 96,
+  "concurrency": 2,
+  "automatic_phase_B": false,
+  "scratch": "/expanse/lustre/scratch/xjin10/temp_project/bdd26/p20_20261028_03",
+  "project": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p20_20261028_03",
+  "total_smoke_seconds": 2260
+}
