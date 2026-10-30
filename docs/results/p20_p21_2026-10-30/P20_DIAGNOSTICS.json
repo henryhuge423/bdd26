@@ -1,0 +1,176 @@
+{
+  "19": {
+    "leave_one_image_out": [
+      {
+        "image": 178,
+        "tissue": "Breast",
+        "excluded_net": 0,
+        "remaining_dead": 144,
+        "delta": 0.09027777777777778
+      },
+      {
+        "image": 776,
+        "tissue": "Colon",
+        "excluded_net": 0,
+        "remaining_dead": 138,
+        "delta": 0.09420289855072464
+      },
+      {
+        "image": 1025,
+        "tissue": "Lung",
+        "excluded_net": 4,
+        "remaining_dead": 120,
+        "delta": 0.075
+      },
+      {
+        "image": 1037,
+        "tissue": "Lung",
+        "excluded_net": 3,
+        "remaining_dead": 125,
+        "delta": 0.08
+      },
+      {
+        "image": 1038,
+        "tissue": "Lung",
+        "excluded_net": 3,
+        "remaining_dead": 130,
+        "delta": 0.07692307692307693
+      },
+      {
+        "image": 1482,
+        "tissue": "Colon",
+        "excluded_net": 5,
+        "remaining_dead": 96,
+        "delta": 0.08333333333333333
+      },
+      {
+        "image": 1756,
+        "tissue": "Cervix",
+        "excluded_net": -2,
+        "remaining_dead": 130,
+        "delta": 0.11538461538461539
+      },
+      {
+        "image": 2076,
+        "tissue": "Esophagus",
+        "excluded_net": 0,
+        "remaining_dead": 137,
+        "delta": 0.0948905109489051
+      },
+      {
+        "image": 2482,
+        "tissue": "Stomach",
+        "excluded_net": 0,
+        "remaining_dead": 142,
+        "delta": 0.09154929577464789
+      },
+      {
+        "image": 2485,
+        "tissue": "Stomach",
+        "excluded_net": 0,
+        "remaining_dead": 144,
+        "delta": 0.09027777777777778
+      },
+      {
+        "image": 2587,
+        "tissue": "Uterus",
+        "excluded_net": 0,
+        "remaining_dead": 144,
+        "delta": 0.09027777777777778
+      }
+    ],
+    "min_delta": 0.075,
+    "max_delta": 0.11538461538461539,
+    "control_false_positives": 3238,
+    "treatment_false_positives": 2936,
+    "matched_change": 3,
+    "interpretation": "descriptive influence, not a replacement gate or independent confirmation"
+  },
+  "1": {
+    "leave_one_image_out": [
+      {
+        "image": 178,
+        "tissue": "Breast",
+        "excluded_net": 1,
+        "remaining_dead": 144,
+        "delta": 0.034722222222222224
+      },
+      {
+        "image": 776,
+        "tissue": "Colon",
+        "excluded_net": -2,
+        "remaining_dead": 138,
+        "delta": 0.057971014492753624
+      },
+      {
+        "image": 1025,
+        "tissue": "Lung",
+        "excluded_net": 1,
+        "remaining_dead": 120,
+        "delta": 0.041666666666666664
+      },
+      {
+        "image": 1037,
+        "tissue": "Lung",
+        "excluded_net": 5,
+        "remaining_dead": 125,
+        "delta": 0.008
+      },
+      {
+        "image": 1038,
+        "tissue": "Lung",
+        "excluded_net": -2,
+        "remaining_dead": 130,
+        "delta": 0.06153846153846154
+      },
+      {
+        "image": 1482,
+        "tissue": "Colon",
+        "excluded_net": 1,
+        "remaining_dead": 96,
+        "delta": 0.052083333333333336
+      },
+      {
+        "image": 1756,
+        "tissue": "Cervix",
+        "excluded_net": 5,
+        "remaining_dead": 130,
+        "delta": 0.007692307692307693
+      },
+      {
+        "image": 2076,
+        "tissue": "Esophagus",
+        "excluded_net": -3,
+        "remaining_dead": 137,
+        "delta": 0.06569343065693431
+      },
+      {
+        "image": 2482,
+        "tissue": "Stomach",
+        "excluded_net": 0,
+        "remaining_dead": 142,
+        "delta": 0.04225352112676056
+      },
+      {
+        "image": 2485,
+        "tissue": "Stomach",
+        "excluded_net": 0,
+        "remaining_dead": 144,
+        "delta": 0.041666666666666664
+      },
+      {
+        "image": 2587,
+        "tissue": "Uterus",
+        "excluded_net": 0,
+        "remaining_dead": 144,
+        "delta": 0.041666666666666664
+      }
+    ],
+    "min_delta": 0.007692307692307693,
+    "max_delta": 0.06569343065693431,
+    "control_false_positives": 3178,
+    "treatment_false_positives": 2681,
+    "matched_change": -244,
+    "interpretation": "descriptive influence, not a replacement gate or independent confirmation"
+  }
+}

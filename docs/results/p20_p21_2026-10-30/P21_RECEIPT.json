@@ -1,0 +1,24 @@
+{
+  "array_job_id": "55416129",
+  "submitted_utc": "2026-10-30T07:44:30.665848Z",
+  "source_commit": "911a3718c157ceb51b2924feb18c50a3165a1a73",
+  "source_manifest_sha256": "c750d7d059d8837e7dea17d9a37794e6c3f526c7d3aa13d17d5f220de2fe53a3",
+  "smoke_job_id": "55416052",
+  "smoke_elapsed_seconds": 746,
+  "array": "0-3%2",
+  "mapping": [
+    "C19",
+    "A19",
+    "C1",
+    "A1"
+  ],
+  "resources": {
+    "gpu": 1,
+    "cpu": 4,
+    "memory_GiB": 32,
+    "hours_per_task": 12,
+    "total_GPU_hours": 48,
+    "concurrency": 2
+  },
+  "readiness": "PASS"
+}

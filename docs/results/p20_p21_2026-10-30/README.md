@@ -7,3 +7,9 @@
 - [Frozen P21 design](../../superpowers/specs/2026-10-30-proposal-p21-design.md)
 
 P20 failed both original gates. P21 is an adaptive exploratory follow-up; its validation/submission is recorded when verified. These are reused fold1 point-development results,notPQ/test. Deterministic point examples are produced by the P21runner at smoke/final checkpoints.
+
+- [P21 actual validation and submission](P21_SUBMISSION.md)
+- [P21 receipt](P21_RECEIPT.json)
+- [Descriptive influence/count decomposition](P20_DIAGNOSTICS.json)
+
+Formalarray55416129submittedonce; no130-epoch completion claimed.

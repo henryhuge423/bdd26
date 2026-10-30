@@ -1,3 +1,5 @@
+> **2026-10-30:** [P20 closeout and bilingual reader](p20_p21_2026-10-30/README.md); [P21 validation and formal submission](p20_p21_2026-10-30/P21_SUBMISSION.md). Submission is not completion.
+
 > **2026-10-28:** [P19 closeout and bilingual reader](p19_p20_2026-10-27/README.md); [P20 amended validation and two formal arrays](p19_p20_2026-10-27/P20_SUBMISSION.md). Submission is not completion.
 
 > **2026-10-27 — P18 closed; larger-batch P19 submitted:** All four P18 130-epoch runs completed; both original gates failed (Dead H−C −.006897/+.020690). Fitting coverage improved without qualified rare-class transfer. V100 validation55326654 passed; fitting-only microbatch16 improved measured throughput12.27% over4. Formal effective16/32 ×seeds19/1 array55326699 submitted once, concurrency2, max48GPUh; submission is not completion. [Detailed EN/ZH/Chinese reader](p18_p19_2026-10-27/README.md), [P19 protocol](p18_p19_2026-10-27/P19_SUBMISSION.md). Reused fold1 point metrics, not PQ/test; no automatic PhaseB/masks/menu.
