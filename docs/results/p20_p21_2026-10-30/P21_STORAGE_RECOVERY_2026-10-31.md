@@ -51,3 +51,13 @@ The GPU dependency has cleared: array **55450368** is now **PENDING/Priority**, 
 问题有两个层次：Lustre 目标连接反复恢复，导致 quota ioctl 时延波动甚至返回不完整结果；原检查只等45秒，把部分最终能够成功的慢查询判为失败。我们修复了可控制的检查时限与诊断，并用不占GPU的CPU作业先验收。真实查询47.741秒成功，用户/组空间充足，三项quota和fsync回读均通过；这不是把容量不足的错误忽略掉，也不能据此声称集群存储服务已经修好。
 
 三个失败任务已改为每项10小时、16GiB主存、串行，占用至多1张V100；A19继续原进程。32GiB主存偏宽松，但显存与主存不同，一张GPU仍是最小GPU申请单位。当前单GPU主导计费，缩小主存不会把GPU费用减半。80/100GiB是最低剩余空间门槛，并非向调度器申请磁盘。A19按实测速度还需约3–4小时，12小时是截止上限，不代表必然运行或计费12小时。若存储继续阻塞，预计时间会延后。总GPU上限按实际调度时限与失败消耗修正为42.266944小时，低于原48小时。
+
+## Progress and scheduling update, 2026-10-31 18:15 EDT
+
+The user restored the Expanse master after a monitoring-channel outage; no new authentication was attempted by this task. Live accounting now confirms A19 **55440148_1 COMPLETED/0:0, 130 epochs, 7h26m54**, and C19 **55450368_0 COMPLETED/0:0, 130 epochs, 4h26m47**. Both completed final evaluation and project preservation. For each result, all **23 small payloads** matched preservation-manifest SHA256 and byte counts, including **12 fixed point PNGs** and coordinate JSON. Each full manifest contains 25 payloads; the two large checkpoints were not independently rehashed in this quick check.
+
+C1 **55450368_2** is RUNNING, with 10 epochs complete and epoch11 in progress at the first check; no trainer error was observed. A1 **55450368_3** was PENDING/JobArrayTaskLimit because recovery concurrency was one. With A19 finished, the existing array throttle was restored to **2**, preserving the original maximum of two simultaneous P21 GPUs, all task IDs, source, resources and 10-hour caps. No cancellation, resubmission, new training run or increased GPU-hour envelope was needed. The update command returned an unsupported-operation message for expanded array elements, but subsequent read-only inspection explicitly showed **ArrayTaskThrottle=2** on both remaining tasks; the mutation was not replayed.
+
+A1's reason then changed to nodes DOWN/DRAINED or reserved for higher-priority partitions. The artificial serial gate has cleared; scheduler placement remains pending. Do not remove the Lustre constraint, alter cluster nodes or restart completed runs to address a queue wait.
+
+Seed19 descriptive point-audit values: C dead recall **64/145=.441379**, A **65/145=.448276**, difference **+1/145=.006897**; overall recall C/A **.595918/.582204**, precision **.692140/.699284**. This is a partial single-seed development comparison, not final two-seed admission, PQ or test performance. Wait for C1/A1 and verify all four artifacts before final analysis. Current result examples are formal final-checkpoint examples, distinct from the earlier one-epoch fit-only previews.
