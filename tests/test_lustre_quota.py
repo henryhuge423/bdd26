@@ -84,3 +84,32 @@ def test_unlimited_inode_quota_is_allowed(tmp_path):
     r, calls = run_guard(tmp_path, [[0, HEADER + '100 0 1048576 - 10 0 0 -\n']])
     assert r.returncode == 0, r.stderr
     assert calls == 1
+
+
+def test_slow_query_budget_and_timing_are_supported(tmp_path):
+    fake = tmp_path / 'lfs'
+    fake.write_text('#!' + sys.executable + '\nimport time\ntime.sleep(.1)\nprint(' + repr(VALID) + ')\n')
+    fake.chmod(0o700)
+    env = dict(os.environ, PATH=str(tmp_path) + ':' + os.environ['PATH'])
+    r = subprocess.run([sys.executable, str(SCRIPT), '--filesystem', str(tmp_path),
+        '--scope', 'user', '--identity', 'example', '--min-free-gib', '0',
+        '--timeout-seconds', '180', '--attempts', '1'], env=env, text=True, capture_output=True)
+    assert r.returncode == 0, r.stderr
+    d = json.loads(r.stdout)
+    assert d['elapsed_seconds'] >= .1
+    assert d['started_utc'].endswith('+00:00')
+
+
+def test_timeout_keeps_partial_diagnostics_and_elapsed_time(tmp_path):
+    fake = tmp_path / 'lfs'
+    fake.write_text('#!' + sys.executable + "\nimport time\nprint('query-started',flush=True)\ntime.sleep(2)\n")
+    fake.chmod(0o700)
+    env = dict(os.environ, PATH=str(tmp_path) + ':' + os.environ['PATH'])
+    r = subprocess.run([sys.executable, str(SCRIPT), '--filesystem', str(tmp_path),
+        '--scope', 'user', '--identity', 'example', '--min-free-gib', '0',
+        '--timeout-seconds', '.2', '--attempts', '1'], env=env, text=True, capture_output=True)
+    assert r.returncode == 1
+    d = json.loads(r.stdout)
+    assert d['status'] == 'QUERY_FAILED'
+    assert 'query-started' in d['stdout']
+    assert d['elapsed_seconds'] >= .2

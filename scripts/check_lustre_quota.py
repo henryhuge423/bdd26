@@ -6,6 +6,7 @@ retried; verified insufficient quota is a terminal failure. No files are removed
 or written on the queried filesystem. Diagnostics are JSON lines on stdout.
 """
 import argparse
+import datetime
 import json
 import math
 import shutil
@@ -45,16 +46,18 @@ def main(argv=None):
     parser.add_argument('--min-free-files', type=int, default=1000)
     parser.add_argument('--attempts', type=int, default=3)
     parser.add_argument('--delay-seconds', type=float, default=10)
-    parser.add_argument('--timeout-seconds', type=float, default=45)
+    parser.add_argument('--timeout-seconds', type=float, default=180)
     args = parser.parse_args(argv)
     if (not 1 <= args.attempts <= 3 or not 0 <= args.delay_seconds <= 30 or
-            not 0 < args.timeout_seconds <= 60 or not math.isfinite(args.min_free_gib) or
+            not 0 < args.timeout_seconds <= 300 or not math.isfinite(args.min_free_gib) or
             args.min_free_gib < 0 or args.min_free_files < 0):
         parser.error('invalid thresholds or retry bounds')
     required = math.ceil(args.min_free_gib * 1024**3)
     command = ['lfs', 'quota', '-u' if args.scope == 'user' else '-g', args.identity, args.filesystem]
     for attempt in range(1, args.attempts + 1):
-        record = dict(attempt=attempt, command=command, status='QUERY_FAILED')
+        started = time.monotonic()
+        record = dict(attempt=attempt, command=command, status='QUERY_FAILED',
+                      started_utc=datetime.datetime.now(datetime.timezone.utc).isoformat())
         try:
             result = subprocess.run(command, text=True, stdout=subprocess.PIPE,
                                     stderr=subprocess.PIPE, timeout=args.timeout_seconds)
@@ -64,6 +67,11 @@ def main(argv=None):
             headroom = parse_quota(result.stdout + '\n' + result.stderr)
         except (ValueError, OSError, subprocess.TimeoutExpired) as error:
             record['error'] = str(error)
+            record['elapsed_seconds'] = time.monotonic() - started
+            if isinstance(error, subprocess.TimeoutExpired):
+                for key in ('stdout', 'stderr'):
+                    value = getattr(error, key) or ''
+                    record[key] = value.decode(errors='replace') if isinstance(value, bytes) else value
             print(json.dumps(record), flush=True)
             if attempt < args.attempts:
                 time.sleep(args.delay_seconds)
@@ -74,13 +82,14 @@ def main(argv=None):
         try:
             filesystem_free = shutil.disk_usage(args.filesystem).free
         except OSError as error:
-            record.update(status='FAIL', error=str(error))
+            record.update(status='FAIL', error=str(error), elapsed_seconds=time.monotonic() - started)
             print(json.dumps(record), flush=True)
             return 1
         passed = (filesystem_free >= required and
                   (headroom['quota_free_bytes'] is None or headroom['quota_free_bytes'] >= required) and
                   (headroom['quota_free_files'] is None or headroom['quota_free_files'] >= args.min_free_files))
-        record.update(headroom, filesystem_free_bytes=filesystem_free,
+        record.update(headroom, elapsed_seconds=time.monotonic() - started,
+                      filesystem_free_bytes=filesystem_free,
                       required_bytes=required, required_files=args.min_free_files,
                       status='PASS' if passed else 'FAIL')
         print(json.dumps(record), flush=True)
