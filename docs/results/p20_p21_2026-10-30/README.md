@@ -1,3 +1,5 @@
+Latest operations: [2026-10-31 Lustre investigation and recovery](P21_STORAGE_RECOVERY_2026-10-31.md).
+
 > **P21 recovery update:** original startup failed before training; replacement **55440148** submitted. [Incident, checks and unchanged science](P21_RECOVERY_2026-10-30.md).
 
 # P20 closeout / P21 development — 30 October 2026
