@@ -1,0 +1,39 @@
+{
+  "gate_job_id": "55450367",
+  "state": "COMPLETED",
+  "exit_code": "0:0",
+  "elapsed_seconds": 330,
+  "pass_utc": "2026-10-31T12:59:37.431326+00:00",
+  "queries": {
+    "scratch_user": {
+      "status": "PASS",
+      "elapsed_seconds": 47.74103955179453,
+      "quota_free_bytes": 8328054241280,
+      "quota_free_files": 1895526,
+      "required_bytes": 107374182400,
+      "required_files": 1000
+    },
+    "project_user": {
+      "status": "PASS",
+      "elapsed_seconds": 26.238094063475728,
+      "quota_free_bytes": 8328050991104,
+      "quota_free_files": 1895522,
+      "required_bytes": 107374182400,
+      "required_files": 1000
+    },
+    "project_group": {
+      "status": "PASS",
+      "elapsed_seconds": 27.240910556167364,
+      "quota_free_bytes": 52733116357632,
+      "quota_free_files": null,
+      "required_bytes": 107374182400,
+      "required_files": 1000
+    }
+  },
+  "write_fsync_readback": "PASS",
+  "gpu_array_job_id": "55450368",
+  "gpu_state_at_check": "PENDING/Priority",
+  "preserved_a19": "55440148_1 RUNNING",
+  "source_commit": "911a3718c157ceb51b2924feb18c50a3165a1a73",
+  "helper_commit": "cfa0c176dc3d795241a193d99b4bf7bfcb81f950"
+}

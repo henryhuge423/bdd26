@@ -39,3 +39,15 @@ At the initial post-submission check, gate55450367 was RUNNING, array55450368 PE
 A19's original post-training preservation still uses the old 45-second helper. If it fails after `complete.json` records 130 epochs, preserve scratch and recover the completed artifacts through a separate CPU copy with accurate quota admission; do not retrain or alter the checkpoint. External independent checkpoint archival remains outstanding.
 
 Private launchers, traces, gate JSONL, scheduler logs, submission receipts and recovery paths are retained in LM1 ignored `ops/p21_storage_recovery_20261031/`. Future collection must include A19 from the original root and C19/C1/A1 from the fresh recovery root, along with each launch provenance, fixed point PNG/coordinate JSON and recursively verified preservation manifests. No fold2/fold3/test, masks or automatic Phase B was added.
+
+## Verified final admission, 09:00 EDT
+
+CPU gate **55450367 COMPLETED/0:0**, elapsed **330 seconds**, with an exclusive PASS receipt at **2026-10-31T12:59:37.431326Z**. All three checks and all fsync/readback probes passed. Scratch-user query took **47.741s**, project-user **26.238s**, project-group **27.241s**, each on its first attempt. The 47.741-second successful query directly demonstrates why a 45-second cutoff could reject healthy-but-slow responses; the extended timeout has now admitted a real response beyond that old bound. User headroom remained **8.328 TB**, group headroom **52.733 TB**, with **1.895 million** user inodes available. The group inode quota is unlimited. The first helper start timestamp was 12:57:48 UTC, about 3m42 after allocation began; this portion precedes the measured query and must not be labelled ioctl time without further tracing.
+
+The GPU dependency has cleared: array **55450368** is now **PENDING/Priority**, rather than Dependency. A19 remains RUNNING. This proves successful admission on a real CPU node; it does not yet prove the replacement GPU tasks have started or the cluster-wide instability has ended. [Sanitized gate receipt](P21_STORAGE_GATE_2026-10-31.json).
+
+### 中文说明
+
+问题有两个层次：Lustre 目标连接反复恢复，导致 quota ioctl 时延波动甚至返回不完整结果；原检查只等45秒，把部分最终能够成功的慢查询判为失败。我们修复了可控制的检查时限与诊断，并用不占GPU的CPU作业先验收。真实查询47.741秒成功，用户/组空间充足，三项quota和fsync回读均通过；这不是把容量不足的错误忽略掉，也不能据此声称集群存储服务已经修好。
+
+三个失败任务已改为每项10小时、16GiB主存、串行，占用至多1张V100；A19继续原进程。32GiB主存偏宽松，但显存与主存不同，一张GPU仍是最小GPU申请单位。当前单GPU主导计费，缩小主存不会把GPU费用减半。80/100GiB是最低剩余空间门槛，并非向调度器申请磁盘。A19按实测速度还需约3–4小时，12小时是截止上限，不代表必然运行或计费12小时。若存储继续阻塞，预计时间会延后。总GPU上限按实际调度时限与失败消耗修正为42.266944小时，低于原48小时。
