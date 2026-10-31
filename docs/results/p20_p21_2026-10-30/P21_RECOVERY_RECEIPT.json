@@ -1,0 +1,29 @@
+{
+  "array_job_id": "55440148",
+  "submitted_utc": "2026-10-31T00:29:18.705013Z",
+  "supersedes": "55416129",
+  "cancelled_unstarted_tasks": [
+    "55416129_1",
+    "55416129_2",
+    "55416129_3"
+  ],
+  "preserved_failed_task": "55416129_0",
+  "mapping": [
+    "C19",
+    "A19",
+    "C1",
+    "A1"
+  ],
+  "source_manifest_sha256": "c750d7d059d8837e7dea17d9a37794e6c3f526c7d3aa13d17d5f220de2fe53a3",
+  "fix_commit": "fb953e4bb2545537fde3bb69ffbeed98062adad5",
+  "recovery_script_sha256": "9acfdea4bb731320ca4cb8930136e618700171b03047981a7ec1327e2ccd5282",
+  "resources": {
+    "walltime": "11:59:50",
+    "gpus_per_task": 1,
+    "cpus": 4,
+    "memory_GiB": 32,
+    "concurrency": 2,
+    "formal_GPU_seconds_including_failed_startup": 172797
+  },
+  "science_changed": false
+}

@@ -1,3 +1,5 @@
+> **Operational amendment (2026-10-30):** original C19 failed before training; three old pending tasks were replaced by array **55440148**. [Recovery record](P21_RECOVERY_2026-10-30.md). The original submission evidence below is retained.
+
 # P21 validation and formal submission — 30 October 2026
 
 Formal array **55416129** was submitted once at **2026-10-30T07:44:30.665848Z UTC**. Mapping0=C19, 1=A19, 2=C1, 3=A1; four fresh130-epoch runs, maximum concurrency2. Each requests1V100, 4CPU, 32GiB, 12hours in gpu-shared/gpu-shared-normal, jhu159, Lustre, no-requeue:48GPUhours total. Submission is not completed training or method admission. [Machine-readable receipt](P21_RECEIPT.json).
