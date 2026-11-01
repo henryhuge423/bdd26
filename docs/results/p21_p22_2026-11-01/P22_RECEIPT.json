@@ -1,0 +1,61 @@
+{
+  "array_job_id": "55469245",
+  "submitted_utc": "2026-11-01T14:19:48.884174Z",
+  "source_commit": "3af8cac4d025b7d97a1b548e3f3ef93863546bad",
+  "source_manifest_sha256": "2ff1440699a7d23dc77b486087403896998dbeda7e2e55539714ac84cc54c492",
+  "smoke_job_id": "55468892",
+  "smoke_elapsed_seconds": 991,
+  "array": "0-3%2",
+  "mapping": [
+    "C19",
+    "M19",
+    "C1",
+    "M1"
+  ],
+  "resources": {
+    "gpu": 1,
+    "cpu": 4,
+    "memory_GiB": 32,
+    "hours_per_task": 16,
+    "total_GPU_hours": 64,
+    "concurrency": 2,
+    "runner_budget_hours": {
+      "C": 12,
+      "M": 16
+    }
+  },
+  "readiness": "PASS",
+  "resource_evaluation": {
+    "allocation": 1900,
+    "spent": 850,
+    "reserved_full_walltime_SU": 401.0,
+    "additional_requested_GPU_hours": 64
+  },
+  "cpu_full": "1002 passed, 3 skipped, 19073 warnings in 412.12s (0:06:52)",
+  "safety_hours": {
+    "C": 7.066229333425838,
+    "M": 9.63718325904552
+  },
+  "estimated_hours_130": {
+    "C": 4.710819555617225,
+    "M": 6.42478883936368
+  },
+  "peak_training_GiB": {
+    "C": 4.0825886726379395,
+    "M": 6.80344295501709
+  },
+  "checkpoint_bytes": {
+    "C": 1853871572,
+    "M": 3668184086
+  },
+  "trainable_counts": {
+    "19": {
+      "C": 186,
+      "M": 354
+    },
+    "1": {
+      "C": 186,
+      "M": 354
+    }
+  }
+}
