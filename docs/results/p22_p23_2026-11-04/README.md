@@ -11,3 +11,5 @@ P22 full24 improves Dead recall by12.41/13.79percentage points, but fails the or
 - [P23 validation and submission state](P23_SUBMISSION.md)
 
 Verified66small payloads,463source files,48preselected PNGs and independently reproduced the original1000-draw bootstrap. Full raw records and individual images remain in LM1 ignored ops/review_20261104 and the local outputs/review_2026-11-04 delivery. Large checkpoint external archival remains outstanding. Historical Stage6 PDFs are unchanged.
+
+Formal P23 array **55538967** submitted once at2026-11-04T23:31:24.262351Z;[receipt](P23_RECEIPT.json).No completion claimed.

@@ -1,0 +1,78 @@
+{
+  "array_job_id": "55538967",
+  "submitted_utc": "2026-11-04T23:31:24.262351Z",
+  "source_commit": "9f2075b5a14e202c73fe804acf0ab4549aeee2a0",
+  "source_manifest_sha256": "830f3cdd44db1a17387a0e419137124257c0e719ff3a21fd9b037527e4172470",
+  "smoke_job_id": "55536183",
+  "smoke_elapsed_seconds": 1280,
+  "array": "0-1%2",
+  "mapping": [
+    "trajectory19:C/E",
+    "trajectory1:C/E"
+  ],
+  "resources": {
+    "gpu": 1,
+    "cpu": 4,
+    "memory_GiB": 32,
+    "hours_per_task": 12,
+    "total_GPU_hours": 24,
+    "concurrency": 2,
+    "runner_budget_hours": 12
+  },
+  "readiness": "PASS",
+  "cpu_full": "1029 passed, 3 skipped, 19073 warnings in 502.90s (0:08:22)",
+  "storage_focused": "17 passed",
+  "smoke": {
+    "status": "PASS",
+    "smoke_job_id": "55536183",
+    "source_commit": "9f2075b5a14e202c73fe804acf0ab4549aeee2a0",
+    "source_manifest_sha256": "830f3cdd44db1a17387a0e419137124257c0e719ff3a21fd9b037527e4172470",
+    "source_files": 471,
+    "elapsed_seconds": 1280,
+    "actual_gpu_hours": 0.35555555555555557,
+    "accounting": "55536183|COMPLETED|0:0|1280\n",
+    "files_verified": 32,
+    "safety_hours": 7.895068484953687,
+    "budget_hours": 12,
+    "estimated_hours_130": 5.263378989969125,
+    "training_seconds_134": 7.217195140663534,
+    "checkpoint_seconds": 2.84355795616284,
+    "peak_training_GiB": 4.623236656188965,
+    "ema_witness": {
+      "19": {
+        "updates": 2,
+        "analytic_equal": true,
+        "online_unchanged": true,
+        "rng_unchanged": true,
+        "keys_exact": true,
+        "finite": true,
+        "shadow_changed": true,
+        "shadow_differs_online": true
+      },
+      "1": {
+        "updates": 2,
+        "analytic_equal": true,
+        "online_unchanged": true,
+        "rng_unchanged": true,
+        "keys_exact": true,
+        "finite": true,
+        "shadow_changed": true,
+        "shadow_differs_online": true
+      }
+    },
+    "visualization_scope": "fit-only one-epoch preliminary",
+    "ema_updates": 9,
+    "reload_equal": {
+      "C": true,
+      "last_C": true,
+      "E": true,
+      "last_E": true
+    }
+  },
+  "resource_evaluation": {
+    "allocation": 1900,
+    "spent": 932,
+    "reserved_full_walltime_SU": 24.0,
+    "additional_requested_GPU_hours": 24
+  }
+}
