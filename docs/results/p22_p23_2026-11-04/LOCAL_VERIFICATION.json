@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "payloads": 66,
+  "sealed_source_files": 463,
+  "pngs": 48,
+  "independent_bootstrap_equal": true,
+  "numpy_local": "1.26.4",
+  "numpy_server": "1.23.5",
+  "gate_pass": false,
+  "large_checkpoints_rehashed": false,
+  "collection_sha256": "2a3cc2970106d8cbf37079dbbad52fef9e5312df672a9c35accb17beaed378e7"
+}
