@@ -1,0 +1,478 @@
+{
+  "status": "PRELIMINARY_SCRATCH_RESULTS_PENDING_INTEGRITY",
+  "gate": {
+    "pass": false,
+    "details": {
+      "19": {
+        "pass_seed": false,
+        "support": true,
+        "baseline": {
+          "recall": 0.5964897959183674,
+          "precision": 0.6920818336806214,
+          "dead_recall": 0.47586206896551725,
+          "dead_images": 11,
+          "dead_objects": 145,
+          "nondeg": 1.0
+        },
+        "trainable": {
+          "recall": 0.5923265306122449,
+          "precision": 0.6940219990435198,
+          "dead_recall": 0.4827586206896552,
+          "dead_images": 11,
+          "dead_objects": 145,
+          "nondeg": 1.0
+        },
+        "delta": 0.006896551724137945,
+        "ci95": [
+          0.0,
+          0.01875
+        ]
+      },
+      "1": {
+        "pass_seed": false,
+        "support": true,
+        "baseline": {
+          "recall": 0.5876734693877551,
+          "precision": 0.6944149705797241,
+          "dead_recall": 0.41379310344827586,
+          "dead_images": 11,
+          "dead_objects": 145,
+          "nondeg": 1.0
+        },
+        "trainable": {
+          "recall": 0.5947755102040816,
+          "precision": 0.6913369389885189,
+          "dead_recall": 0.43448275862068964,
+          "dead_images": 11,
+          "dead_objects": 145,
+          "nondeg": 1.0
+        },
+        "delta": 0.02068965517241378,
+        "ci95": [
+          0.015228426395939087,
+          0.03227578872740161
+        ]
+      }
+    }
+  },
+  "pairs": {
+    "19": {
+      "delta": 0.006896551724137945,
+      "ci95": [
+        0.0,
+        0.01875
+      ],
+      "net_dead_hits": 1,
+      "checks": {
+        "support": true,
+        "absolute_dead_recall": false,
+        "gain": false,
+        "positive_bootstrap_lower": false,
+        "absolute_precision": false,
+        "precision_noninferiority": true,
+        "overall_recall_noninferiority": true,
+        "nondegeneracy": true
+      },
+      "pass_seed": false,
+      "dead_images": [
+        {
+          "image": 178,
+          "tissue": "Breast",
+          "dead_total": 1,
+          "C_hits": 0,
+          "H_hits": 0,
+          "net": 0
+        },
+        {
+          "image": 776,
+          "tissue": "Colon",
+          "dead_total": 7,
+          "C_hits": 5,
+          "H_hits": 5,
+          "net": 0
+        },
+        {
+          "image": 1025,
+          "tissue": "Lung",
+          "dead_total": 25,
+          "C_hits": 16,
+          "H_hits": 17,
+          "net": 1
+        },
+        {
+          "image": 1037,
+          "tissue": "Lung",
+          "dead_total": 20,
+          "C_hits": 8,
+          "H_hits": 8,
+          "net": 0
+        },
+        {
+          "image": 1038,
+          "tissue": "Lung",
+          "dead_total": 15,
+          "C_hits": 9,
+          "H_hits": 9,
+          "net": 0
+        },
+        {
+          "image": 1482,
+          "tissue": "Colon",
+          "dead_total": 49,
+          "C_hits": 14,
+          "H_hits": 14,
+          "net": 0
+        },
+        {
+          "image": 1756,
+          "tissue": "Cervix",
+          "dead_total": 15,
+          "C_hits": 8,
+          "H_hits": 8,
+          "net": 0
+        },
+        {
+          "image": 2076,
+          "tissue": "Esophagus",
+          "dead_total": 8,
+          "C_hits": 7,
+          "H_hits": 7,
+          "net": 0
+        },
+        {
+          "image": 2482,
+          "tissue": "Stomach",
+          "dead_total": 3,
+          "C_hits": 0,
+          "H_hits": 0,
+          "net": 0
+        },
+        {
+          "image": 2485,
+          "tissue": "Stomach",
+          "dead_total": 1,
+          "C_hits": 1,
+          "H_hits": 1,
+          "net": 0
+        },
+        {
+          "image": 2587,
+          "tissue": "Uterus",
+          "dead_total": 1,
+          "C_hits": 1,
+          "H_hits": 1,
+          "net": 0
+        }
+      ],
+      "dead_tissues": [
+        {
+          "tissue": "Breast",
+          "images": 1,
+          "dead_total": 1,
+          "C_hits": 0,
+          "H_hits": 0,
+          "net": 0
+        },
+        {
+          "tissue": "Cervix",
+          "images": 1,
+          "dead_total": 15,
+          "C_hits": 8,
+          "H_hits": 8,
+          "net": 0
+        },
+        {
+          "tissue": "Colon",
+          "images": 2,
+          "dead_total": 56,
+          "C_hits": 19,
+          "H_hits": 19,
+          "net": 0
+        },
+        {
+          "tissue": "Esophagus",
+          "images": 1,
+          "dead_total": 8,
+          "C_hits": 7,
+          "H_hits": 7,
+          "net": 0
+        },
+        {
+          "tissue": "Lung",
+          "images": 3,
+          "dead_total": 60,
+          "C_hits": 33,
+          "H_hits": 34,
+          "net": 1
+        },
+        {
+          "tissue": "Stomach",
+          "images": 2,
+          "dead_total": 4,
+          "C_hits": 1,
+          "H_hits": 1,
+          "net": 0
+        },
+        {
+          "tissue": "Uterus",
+          "images": 1,
+          "dead_total": 1,
+          "C_hits": 1,
+          "H_hits": 1,
+          "net": 0
+        }
+      ],
+      "positive_net_images": 1,
+      "negative_net_images": 0,
+      "unchanged_images": 10,
+      "recall_delta": -0.004163265306122432,
+      "precision_delta": 0.0019401653628984272
+    },
+    "1": {
+      "delta": 0.02068965517241378,
+      "ci95": [
+        0.015228426395939087,
+        0.03227578872740161
+      ],
+      "net_dead_hits": 3,
+      "checks": {
+        "support": true,
+        "absolute_dead_recall": false,
+        "gain": false,
+        "positive_bootstrap_lower": true,
+        "absolute_precision": false,
+        "precision_noninferiority": true,
+        "overall_recall_noninferiority": true,
+        "nondegeneracy": true
+      },
+      "pass_seed": false,
+      "dead_images": [
+        {
+          "image": 178,
+          "tissue": "Breast",
+          "dead_total": 1,
+          "C_hits": 0,
+          "H_hits": 0,
+          "net": 0
+        },
+        {
+          "image": 776,
+          "tissue": "Colon",
+          "dead_total": 7,
+          "C_hits": 3,
+          "H_hits": 4,
+          "net": 1
+        },
+        {
+          "image": 1025,
+          "tissue": "Lung",
+          "dead_total": 25,
+          "C_hits": 16,
+          "H_hits": 16,
+          "net": 0
+        },
+        {
+          "image": 1037,
+          "tissue": "Lung",
+          "dead_total": 20,
+          "C_hits": 9,
+          "H_hits": 9,
+          "net": 0
+        },
+        {
+          "image": 1038,
+          "tissue": "Lung",
+          "dead_total": 15,
+          "C_hits": 8,
+          "H_hits": 8,
+          "net": 0
+        },
+        {
+          "image": 1482,
+          "tissue": "Colon",
+          "dead_total": 49,
+          "C_hits": 12,
+          "H_hits": 13,
+          "net": 1
+        },
+        {
+          "image": 1756,
+          "tissue": "Cervix",
+          "dead_total": 15,
+          "C_hits": 6,
+          "H_hits": 7,
+          "net": 1
+        },
+        {
+          "image": 2076,
+          "tissue": "Esophagus",
+          "dead_total": 8,
+          "C_hits": 4,
+          "H_hits": 4,
+          "net": 0
+        },
+        {
+          "image": 2482,
+          "tissue": "Stomach",
+          "dead_total": 3,
+          "C_hits": 0,
+          "H_hits": 0,
+          "net": 0
+        },
+        {
+          "image": 2485,
+          "tissue": "Stomach",
+          "dead_total": 1,
+          "C_hits": 1,
+          "H_hits": 1,
+          "net": 0
+        },
+        {
+          "image": 2587,
+          "tissue": "Uterus",
+          "dead_total": 1,
+          "C_hits": 1,
+          "H_hits": 1,
+          "net": 0
+        }
+      ],
+      "dead_tissues": [
+        {
+          "tissue": "Breast",
+          "images": 1,
+          "dead_total": 1,
+          "C_hits": 0,
+          "H_hits": 0,
+          "net": 0
+        },
+        {
+          "tissue": "Cervix",
+          "images": 1,
+          "dead_total": 15,
+          "C_hits": 6,
+          "H_hits": 7,
+          "net": 1
+        },
+        {
+          "tissue": "Colon",
+          "images": 2,
+          "dead_total": 56,
+          "C_hits": 15,
+          "H_hits": 17,
+          "net": 2
+        },
+        {
+          "tissue": "Esophagus",
+          "images": 1,
+          "dead_total": 8,
+          "C_hits": 4,
+          "H_hits": 4,
+          "net": 0
+        },
+        {
+          "tissue": "Lung",
+          "images": 3,
+          "dead_total": 60,
+          "C_hits": 33,
+          "H_hits": 33,
+          "net": 0
+        },
+        {
+          "tissue": "Stomach",
+          "images": 2,
+          "dead_total": 4,
+          "C_hits": 1,
+          "H_hits": 1,
+          "net": 0
+        },
+        {
+          "tissue": "Uterus",
+          "images": 1,
+          "dead_total": 1,
+          "C_hits": 1,
+          "H_hits": 1,
+          "net": 0
+        }
+      ],
+      "positive_net_images": 3,
+      "negative_net_images": 0,
+      "unchanged_images": 8,
+      "recall_delta": 0.0071020408163264825,
+      "precision_delta": -0.0030780315912052325
+    }
+  },
+  "summaries": {
+    "trajectory_s19/C/evaluation.json": {
+      "matched": 7307,
+      "total": 12250,
+      "candidates": 10558,
+      "dead_hit": 69,
+      "dead_total": 145,
+      "small_hit": 6,
+      "small_total": 32,
+      "recall": 0.5964897959183674,
+      "precision": 0.6920818336806214,
+      "dead_recall": 0.47586206896551725,
+      "dead_images": 11,
+      "nondeg": 1.0,
+      "empty_images": 24,
+      "median_candidates": 17.0,
+      "max_candidates": 123,
+      "cap_images": 0
+    },
+    "trajectory_s19/E/evaluation.json": {
+      "matched": 7256,
+      "total": 12250,
+      "candidates": 10455,
+      "dead_hit": 70,
+      "dead_total": 145,
+      "small_hit": 6,
+      "small_total": 32,
+      "recall": 0.5923265306122449,
+      "precision": 0.6940219990435198,
+      "dead_recall": 0.4827586206896552,
+      "dead_images": 11,
+      "nondeg": 1.0,
+      "empty_images": 24,
+      "median_candidates": 17.0,
+      "max_candidates": 121,
+      "cap_images": 0
+    },
+    "trajectory_s1/C/evaluation.json": {
+      "matched": 7199,
+      "total": 12250,
+      "candidates": 10367,
+      "dead_hit": 60,
+      "dead_total": 145,
+      "small_hit": 6,
+      "small_total": 32,
+      "recall": 0.5876734693877551,
+      "precision": 0.6944149705797241,
+      "dead_recall": 0.41379310344827586,
+      "dead_images": 11,
+      "nondeg": 1.0,
+      "empty_images": 24,
+      "median_candidates": 17.0,
+      "max_candidates": 114,
+      "cap_images": 0
+    },
+    "trajectory_s1/E/evaluation.json": {
+      "matched": 7286,
+      "total": 12250,
+      "candidates": 10539,
+      "dead_hit": 63,
+      "dead_total": 145,
+      "small_hit": 6,
+      "small_total": 32,
+      "recall": 0.5947755102040816,
+      "precision": 0.6913369389885189,
+      "dead_recall": 0.43448275862068964,
+      "dead_images": 11,
+      "nondeg": 1.0,
+      "empty_images": 23,
+      "median_candidates": 17.0,
+      "max_candidates": 113,
+      "cap_images": 0
+    }
+  }
+}
