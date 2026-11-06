@@ -27,3 +27,7 @@ One smoke <=30minutes requested, no automatic retry. Formal four tasks,0-3%2,eac
 ## Visual and documentation outputs
 
 Before training select the same8audit+4fit images via the existing deterministic GT-only strata; persist IDs, rule and SHA in manifest. All four runs save the48 images and coordinates at epoch130, using the same image scale, colors, threshold and matched/missed/extra-point overlays. Smoke figures are labeled one-epoch fitting previews. Save useful P23 fixed examples and D24/P22 mechanism plots, EN/ZH analysis plus Chinese reader. No new stage PDF is required; existing stage reports retain their dated scope. Preserve original diagnostics, partial D24 and all unrelated changes/jobs. Ops/credentials remain untracked. Reconcile live Git divergence before normal push.
+
+## Storage-only recovery amendment (6 November,23:31UTC evidence)
+
+Original _01 source copy failed before any sbatch. A current OST18 write probe still stalls; OST43 in both filesystems passes fsync/readback, about20TiB free, all three quotasPASS. Use only new _02 experiment directories with OST43 inheritance and150GiB target reserve, preserving all _01 artifacts. This isolates the observed target failure while retaining every storage/source/resource/hardware gate; it does not declare general Lustre recovery. Recheck admission after source sealing immediately before sbatch. See [operational rationale](../../results/p23_p24_2026-11-06/P24_STORAGE_RECOVERY.md). Scientific design, selection, gate, formal48GPUh and one30minute smoke unchanged.
