@@ -1,0 +1,1007 @@
+{
+  "status": "PASS",
+  "models": [
+    {
+      "tag": "P22_C_19",
+      "experiment": "P22",
+      "seed": 19,
+      "output_arm": "C",
+      "model_arm": "C",
+      "root": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19",
+      "checkpoint": "last.pth",
+      "checkpoint_sha256": "9cb8fd6b30c50ce0d6e71b4ef4661a065163bf95305849811333c98c6252077f",
+      "manifest": "manifest.json",
+      "evaluation": "evaluation.json"
+    },
+    {
+      "tag": "P22_M_19",
+      "experiment": "P22",
+      "seed": 19,
+      "output_arm": "M",
+      "model_arm": "M",
+      "root": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19",
+      "checkpoint": "last.pth",
+      "checkpoint_sha256": "7695ff09dde7127b2376312fbc5cd6139e9a9ec1dcd97f7833824f3f44a70fb0",
+      "manifest": "manifest.json",
+      "evaluation": "evaluation.json"
+    },
+    {
+      "tag": "P22_C_1",
+      "experiment": "P22",
+      "seed": 1,
+      "output_arm": "C",
+      "model_arm": "C",
+      "root": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1",
+      "checkpoint": "last.pth",
+      "checkpoint_sha256": "69b3a964aa37356c4510ba8b1fb3c9eb3c94b7f4753824b47d0b9ac693c3db9f",
+      "manifest": "manifest.json",
+      "evaluation": "evaluation.json"
+    },
+    {
+      "tag": "P22_M_1",
+      "experiment": "P22",
+      "seed": 1,
+      "output_arm": "M",
+      "model_arm": "M",
+      "root": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1",
+      "checkpoint": "last.pth",
+      "checkpoint_sha256": "97726bed37f8a88512d989eb7aac4fe6b7469e9bfa6377867816edb4891f4a57",
+      "manifest": "manifest.json",
+      "evaluation": "evaluation.json"
+    },
+    {
+      "tag": "P23_C_19",
+      "experiment": "P23",
+      "seed": 19,
+      "output_arm": "C",
+      "model_arm": "C",
+      "root": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19",
+      "checkpoint": "C/final.pth",
+      "checkpoint_sha256": "9067080ecfda3948a7efc72e42b6a1ad290faa8eedcda4662ac0a3654df3296e",
+      "manifest": "manifest.json",
+      "evaluation": "C/evaluation.json"
+    },
+    {
+      "tag": "P23_E_19",
+      "experiment": "P23",
+      "seed": 19,
+      "output_arm": "E",
+      "model_arm": "C",
+      "root": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19",
+      "checkpoint": "E/final.pth",
+      "checkpoint_sha256": "037fd64d606172e4ed1282b95627fb7714b243dca2f124756049e815796d6837",
+      "manifest": "manifest.json",
+      "evaluation": "E/evaluation.json"
+    },
+    {
+      "tag": "P23_C_1",
+      "experiment": "P23",
+      "seed": 1,
+      "output_arm": "C",
+      "model_arm": "C",
+      "root": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1",
+      "checkpoint": "C/final.pth",
+      "checkpoint_sha256": "9e0c56218b4dd2c67c68200bf935578630c157a0a9e24e1c8dffcb35ea791435",
+      "manifest": "manifest.json",
+      "evaluation": "C/evaluation.json"
+    },
+    {
+      "tag": "P23_E_1",
+      "experiment": "P23",
+      "seed": 1,
+      "output_arm": "E",
+      "model_arm": "C",
+      "root": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1",
+      "checkpoint": "E/final.pth",
+      "checkpoint_sha256": "add421279213abcb84e4ae581dd8d5635a190e27f22e0df04290a4ddbf3854f7",
+      "manifest": "manifest.json",
+      "evaluation": "E/evaluation.json"
+    }
+  ],
+  "verified": [
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/A_C_s19.launch.json",
+      "bytes": 315,
+      "sha256": "4c7ceed2a1cb646fd5fd595d63a8e58e500a0f780dc9c134bd6b19389f3c80eb"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/A_C_s19.log",
+      "bytes": 57360,
+      "sha256": "fc7b03363d7e546ebbefbbcacdaf575c50d46826726b6b942f1aa18de5763c64"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/complete.json",
+      "bytes": 77,
+      "sha256": "9de8579ce5e66e4b903dcacaaa59081bd382c14eec219a9ca4509c8cdd2cc471"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/evaluation.json",
+      "bytes": 123292,
+      "sha256": "e825fe66184815d46b1d131c2e52d14ad07020cfb11443190a98a72275b4a6c4"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/final.pth",
+      "bytes": 617943554,
+      "sha256": "ddcffef81ea6bc2be806cf609c2250104b70c2390648a6c803ee226ae5891663"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/fit.json",
+      "bytes": 504970,
+      "sha256": "fbcc27f31a00733407848057d37480553832ea3eae46c5b5faa618b59742177d"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/loss.jsonl",
+      "bytes": 42638,
+      "sha256": "cf0db45e79bb6ac773cc881d38ea47f436692890ffeb61475c6cd21e1c3c2b7b"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/manifest.json",
+      "bytes": 32755,
+      "sha256": "a3d100e2c0f3f07d87c8a80e1230f0f99bea9015a6a394d492f436f0ad920aa0"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/point_examples_audit/audit_final130_0001.png",
+      "bytes": 105297,
+      "sha256": "fa9a699e822c528370c3a75b704d58ca896a51cf6ad81cf5c78256db58a8189c"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/point_examples_audit/audit_final130_0007.png",
+      "bytes": 102789,
+      "sha256": "327a2bd5cda698c78117254ab6b329d7b7106cbb3fb4d1847a66917b59b877f9"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/point_examples_audit/audit_final130_0178.png",
+      "bytes": 125465,
+      "sha256": "238dba3b222ddf7c5e4d72fc7a4e67c32820725fc6415243d50cd1c53c8352fa"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/point_examples_audit/audit_final130_0584.png",
+      "bytes": 67158,
+      "sha256": "c19c0d882bc58a555117aefbc13ff8266c25e22b706e33c10300681ce1d295cc"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/point_examples_audit/audit_final130_0776.png",
+      "bytes": 133843,
+      "sha256": "bf8c235281b567114bb84dbb40ca82054e17bdd991e4a16f46978ee2722a9a56"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/point_examples_audit/audit_final130_0812.png",
+      "bytes": 55321,
+      "sha256": "0c8fcbeb31fd19906488b910f48ea877f476f2c76046cb7cdf6a4bb96ea772ab"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/point_examples_audit/audit_final130_1025.png",
+      "bytes": 152126,
+      "sha256": "a2c5f5954cf0daa08dd39bc5f05a3fc79247bfee9fd1d646b0ef5b3d47a1ad5a"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/point_examples_audit/audit_final130_1037.png",
+      "bytes": 170858,
+      "sha256": "e235dc97c7f744b0ef97da19f1b9daf84e5580f7112b82af9174892ffb61c1c7"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/point_examples_audit/coordinates.json",
+      "bytes": 40937,
+      "sha256": "80f6d889ee22593503d52f780c1be14fe8f491b980d24987d374f224bcce226c"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/point_examples_fit/coordinates.json",
+      "bytes": 20184,
+      "sha256": "0435c2ce037bcb6202cc8aad31d4b3e71c1f526bad6cd46483d7a514ba7ba292"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/point_examples_fit/fit_final130_0000.png",
+      "bytes": 110062,
+      "sha256": "71a103fada92dacbf197e4c177014cf003c05b9ee2441e04c6a0564a0a3f25de"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/point_examples_fit/fit_final130_0586.png",
+      "bytes": 59720,
+      "sha256": "8e17c32193572960cde81a94f44e4b256301a5b963ea9734eeff6ee88bd6643b"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/point_examples_fit/fit_final130_0782.png",
+      "bytes": 138456,
+      "sha256": "71a96fde2c69cea0ea2abed38e7a587fc4295b4a47fba2ada617fc8bf3aac157"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/point_examples_fit/fit_final130_0784.png",
+      "bytes": 136357,
+      "sha256": "d3bbbb3b89bfaf7e37a1fa146eeb2a3f296b2d1feb8a67c5e2403f8994d8d23d"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/status.json",
+      "bytes": 353,
+      "sha256": "b84149c98de864c9e3317f29dbff6c5fd7baffd10a778f52ec1c20b63f650594"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s19/summary.json",
+      "bytes": 168,
+      "sha256": "0d05e568a32efad3728d7ff116485d433b0e419c83b58c7937f6e6b9f3f90528"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/A_M_s19.launch.json",
+      "bytes": 315,
+      "sha256": "8fea619def5c0bc55167aab98068c4c983c72f54a3ea16c3529ee9fb6572e192"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/A_M_s19.log",
+      "bytes": 57340,
+      "sha256": "8803417bf8b59987bf30280e59f415d15c22eec552893c7a8c8482bd5a7c649e"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/complete.json",
+      "bytes": 78,
+      "sha256": "74c3074cd12c64875e40840c07d14161567d6824b97bc3e2b86b92f766e7b261"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/evaluation.json",
+      "bytes": 123337,
+      "sha256": "bc39faa7304686e228d95e6fbca4217257e0f7246ed965511a7ea39996afa631"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/final.pth",
+      "bytes": 1222703266,
+      "sha256": "649c223584230474d5f915f22399b3cb151de569dafaa6cbc97e1a9d7255bf31"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/fit.json",
+      "bytes": 504973,
+      "sha256": "cc4cab8013d487263c4b65d2e90f70c22f1eb239f3defae60cbc41a2a6cc5e9c"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/loss.jsonl",
+      "bytes": 42584,
+      "sha256": "e63a810f41a7e0c4e268e7d3a8958720a00b726f04de6e0bb63e2bf0c53b1882"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/manifest.json",
+      "bytes": 37890,
+      "sha256": "6d1370e40eff062ef70f87390905b58a9df228593e8f81f0961926a20e385fdd"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/point_examples_audit/audit_final130_0001.png",
+      "bytes": 106476,
+      "sha256": "5541da2fadffdbbb9b0fe104386fa76797f3d39a74a6145b0a1016a576d0a172"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/point_examples_audit/audit_final130_0007.png",
+      "bytes": 103504,
+      "sha256": "b3f524f61c53e8a3940abf71ef8eddbc4afdd034d3f4602c6c517c6a55dc8c02"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/point_examples_audit/audit_final130_0178.png",
+      "bytes": 126082,
+      "sha256": "d020b9d4d2146172fd2a32594ccd71636aa1bbe74dcf500be565a6e2b73d57e7"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/point_examples_audit/audit_final130_0584.png",
+      "bytes": 67162,
+      "sha256": "870a7688578d6672352788b60442a448de8ca8c8183d89f59d077a6fc9da9eea"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/point_examples_audit/audit_final130_0776.png",
+      "bytes": 134074,
+      "sha256": "5ff8643a502dedb665a5b535fdd5675250159b122d095d054b66b9360652b8c4"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/point_examples_audit/audit_final130_0812.png",
+      "bytes": 55353,
+      "sha256": "f96a0ec2c70d9852d8bfc50582628a68b6a1f4010df9e386931d67cc56992ffb"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/point_examples_audit/audit_final130_1025.png",
+      "bytes": 152392,
+      "sha256": "d5ed96c2c76fc7d5b9d193b530f7b7da806e310989dc56b693613bb185de27a1"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/point_examples_audit/audit_final130_1037.png",
+      "bytes": 169635,
+      "sha256": "9bbc0ec4adb37b295f4d310b05586ca1ca83836fe3c6468aeffb67a7ea00557d"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/point_examples_audit/coordinates.json",
+      "bytes": 42095,
+      "sha256": "4c0a27a770c262392ab3559dea1631dd28f7ab07d530736e0bb7464abd1bd6cb"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/point_examples_fit/coordinates.json",
+      "bytes": 20620,
+      "sha256": "2cd74466d515888975ff5164ce51b5e6ef0770f0b95990f9a00b2c7fe1b39ca2"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/point_examples_fit/fit_final130_0000.png",
+      "bytes": 110080,
+      "sha256": "c2ffad1850ed22ecc4b4530a8d6a656f3900203ab98b08d3d8448a97b8d5dab5"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/point_examples_fit/fit_final130_0586.png",
+      "bytes": 59731,
+      "sha256": "323e8dc5843d22b3bfe47c4a00e7e7ae0e34ac669a4b9bdf2553a21424d6cea1"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/point_examples_fit/fit_final130_0782.png",
+      "bytes": 137962,
+      "sha256": "27914612253090638a1f8e9feb0f0bb7c08db944d92f1008fe687b52beb6b93c"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/point_examples_fit/fit_final130_0784.png",
+      "bytes": 136232,
+      "sha256": "70892f3f20cd9937718dc763cff118d91e034bf5dd475c7d4dc3338918970c6e"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/status.json",
+      "bytes": 352,
+      "sha256": "935cb2b7591945e950c7f993acd48f0371954d6acff6a193629f889e91c3ba45"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s19/summary.json",
+      "bytes": 167,
+      "sha256": "77726a25d7213da60c0b95d2c502d9eef7b09eca8525a325b0fcedfce35b1fa1"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/A_C_s1.launch.json",
+      "bytes": 315,
+      "sha256": "511ab2680b3623e24a5c3f80ce94c69190f7ff0080022b797591c2a49364dfc1"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/A_C_s1.log",
+      "bytes": 57413,
+      "sha256": "c6804ce017d507380ca42791a5fe2b30e7694ebfa03c0cf032f4bde107f80bd6"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/complete.json",
+      "bytes": 78,
+      "sha256": "0c368adfeab3cf196c44cbd32b3ca7a1d60d2fb4eddbd17f5e2266e84eb64c88"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/evaluation.json",
+      "bytes": 123278,
+      "sha256": "00842a9ed30796853eb8515d4efb59a720453fdf9ed4d59a21d55b04330bdccf"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/final.pth",
+      "bytes": 617943554,
+      "sha256": "1ce1e152ee331d8f3f51f464f90da0c6f11c79b0a265f49c024a1ea63db22515"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/fit.json",
+      "bytes": 504969,
+      "sha256": "e7b0876e6f6c45f2a09ecce0b96c37d2559fc1772584fd8b80ff3953acf1b598"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/loss.jsonl",
+      "bytes": 42666,
+      "sha256": "01128713cf6211f3af6b40a8c51a856203460e8aa84036b14793d4c8e7f1810f"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/manifest.json",
+      "bytes": 32752,
+      "sha256": "eff5e511b701a17b11deb56b8b104bc70b82c458a764c98530258de7abe7f7f2"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/point_examples_audit/audit_final130_0001.png",
+      "bytes": 105953,
+      "sha256": "eff9c59bd7128dd710ab00836988e063ac85ee5ed6afbaf08393e6f1087db2fc"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/point_examples_audit/audit_final130_0007.png",
+      "bytes": 103051,
+      "sha256": "5dfa7ec8e23f151e6889818b3746148effcda6f07678258cdac0c5d468bd1dd2"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/point_examples_audit/audit_final130_0178.png",
+      "bytes": 125880,
+      "sha256": "f51cdcd79ef12f6323cffb0337c5ad6a65d93e0a0e87358937c96a602aeb42de"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/point_examples_audit/audit_final130_0584.png",
+      "bytes": 67158,
+      "sha256": "c19c0d882bc58a555117aefbc13ff8266c25e22b706e33c10300681ce1d295cc"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/point_examples_audit/audit_final130_0776.png",
+      "bytes": 134479,
+      "sha256": "9e03c52de3b0de8e16762cb5f910317015b55ea261880b9050583a94a1aac09f"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/point_examples_audit/audit_final130_0812.png",
+      "bytes": 55321,
+      "sha256": "0c8fcbeb31fd19906488b910f48ea877f476f2c76046cb7cdf6a4bb96ea772ab"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/point_examples_audit/audit_final130_1025.png",
+      "bytes": 152055,
+      "sha256": "ba43cfff2c7f24286d822ca936aa79b26f485d585c6c61aab8565c2ff82a1851"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/point_examples_audit/audit_final130_1037.png",
+      "bytes": 169823,
+      "sha256": "1f0ad068a2dfe16fe3155c71cae2763d87dcb5c5a725295d45367000cf072fef"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/point_examples_audit/coordinates.json",
+      "bytes": 40368,
+      "sha256": "77950eb489ecab622dc769fcb137ec001aded7769a57f9202e7bde6b42b9f4f1"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/point_examples_fit/coordinates.json",
+      "bytes": 20086,
+      "sha256": "59ff1dec65019ee3c6d1bde0e8ce9331ac78cd109192054a55472b1c3ba0f4e2"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/point_examples_fit/fit_final130_0000.png",
+      "bytes": 110062,
+      "sha256": "71a103fada92dacbf197e4c177014cf003c05b9ee2441e04c6a0564a0a3f25de"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/point_examples_fit/fit_final130_0586.png",
+      "bytes": 59720,
+      "sha256": "8e17c32193572960cde81a94f44e4b256301a5b963ea9734eeff6ee88bd6643b"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/point_examples_fit/fit_final130_0782.png",
+      "bytes": 138633,
+      "sha256": "e406637b9577e17dd1a9e0f677e12245f916a85bf4951d1f1e8925878f71ebb4"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/point_examples_fit/fit_final130_0784.png",
+      "bytes": 136396,
+      "sha256": "1debeae8cf86f05340b1d33b3711cf62be71c5e454300497ec9e9e4c45155211"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/status.json",
+      "bytes": 353,
+      "sha256": "6c424bb9d719e909d892d70a358b09c799ab47721e0fea81062bc86cff8a95fd"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_C_s1/summary.json",
+      "bytes": 167,
+      "sha256": "ac9456ec0b7a88b504325a1629d950868bddfc8975484107a62d7e87d1f1208b"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/A_M_s1.launch.json",
+      "bytes": 315,
+      "sha256": "20f381c74d53a26dae5852cac8b36c8ee509cc0d91ed2f38e8458a32a8d7e538"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/A_M_s1.log",
+      "bytes": 57332,
+      "sha256": "65285fd332089d09082922b15e49c1548262668c9160491b5e59b311f4a793e8"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/complete.json",
+      "bytes": 77,
+      "sha256": "26eb7bb147e67cf59239213c7f1ac266de2133de33819841ea2748e481429879"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/evaluation.json",
+      "bytes": 123313,
+      "sha256": "e3b77d88b7bdb99bfee34c9b4f49a4b16ffcb0694e9a2cd68cd37a41ae373e39"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/final.pth",
+      "bytes": 1222703266,
+      "sha256": "5110404313f52dea3b5eb35e21a1ca5887e7ed39561c969345fbd8705869eb26"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/fit.json",
+      "bytes": 504975,
+      "sha256": "6935467d01cb1c87acf5450d808e9f8288f5c67e2794aef5e2b2bc271c372c60"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/loss.jsonl",
+      "bytes": 42600,
+      "sha256": "5fbeb2160238e462aa75f4e3073f326d80d5fa5b81fa3ef6f75ed480c5416df1"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/manifest.json",
+      "bytes": 37887,
+      "sha256": "30894e4e032d853d49e718326b6b382504f3e7e94730bd46fa71da510c1897b9"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/point_examples_audit/audit_final130_0001.png",
+      "bytes": 106050,
+      "sha256": "a49170dceec1709dfd318e963862988217a21998e3d99e4c7ae5c37792876123"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/point_examples_audit/audit_final130_0007.png",
+      "bytes": 103193,
+      "sha256": "47fc199d953592b369a8fd6a34f9a606f6856eb7961ee5dc6549d0fa895b5221"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/point_examples_audit/audit_final130_0178.png",
+      "bytes": 124371,
+      "sha256": "e6633f69ecaeae71f878c7713f67465396f6191d5d1ae14d05aeaf646b332359"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/point_examples_audit/audit_final130_0584.png",
+      "bytes": 67162,
+      "sha256": "870a7688578d6672352788b60442a448de8ca8c8183d89f59d077a6fc9da9eea"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/point_examples_audit/audit_final130_0776.png",
+      "bytes": 134121,
+      "sha256": "f9897ca44e35b6fc1dcf06ebd8272edc07c0220a130be8c13823110e7d3fbcdf"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/point_examples_audit/audit_final130_0812.png",
+      "bytes": 55353,
+      "sha256": "f96a0ec2c70d9852d8bfc50582628a68b6a1f4010df9e386931d67cc56992ffb"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/point_examples_audit/audit_final130_1025.png",
+      "bytes": 152318,
+      "sha256": "5ee5a64bbc9b5698eb76c4309082c4a9c5e63778715266e0d99723617d2caead"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/point_examples_audit/audit_final130_1037.png",
+      "bytes": 169623,
+      "sha256": "090a2ec23bc6bfaa2ac7b8c4561bde72b6e45bd8ad50b7e2a86a837edc7d0f79"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/point_examples_audit/coordinates.json",
+      "bytes": 42190,
+      "sha256": "5e1fa2ef6d223a6ae3e52933f55703fdcd8f29d28f2e12b15bc573ddfe75fb97"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/point_examples_fit/coordinates.json",
+      "bytes": 20428,
+      "sha256": "ffa549b900605aacefe6f27da7df138282d6da7e643486f89284092a6318bd4c"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/point_examples_fit/fit_final130_0000.png",
+      "bytes": 110080,
+      "sha256": "c2ffad1850ed22ecc4b4530a8d6a656f3900203ab98b08d3d8448a97b8d5dab5"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/point_examples_fit/fit_final130_0586.png",
+      "bytes": 59731,
+      "sha256": "323e8dc5843d22b3bfe47c4a00e7e7ae0e34ac669a4b9bdf2553a21424d6cea1"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/point_examples_fit/fit_final130_0782.png",
+      "bytes": 138063,
+      "sha256": "1a93f7fc39400e534e75ff6ba139f35f5dcf47fbbf2a468ea9107fb867737a62"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/point_examples_fit/fit_final130_0784.png",
+      "bytes": 135983,
+      "sha256": "72c0c8cf50dbf22683d39914ea19012b47efb3bc198b18e88fb354b9077523bb"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/status.json",
+      "bytes": 350,
+      "sha256": "60084a266ececeda4a3492be79c1f7244a78bc4d24f0f148bf1ad3fe09073e0b"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p22_20261101_01/results/A_M_s1/summary.json",
+      "bytes": 167,
+      "sha256": "105071f7c5346043c1478736755baf77a94c9d398f61bc814c776ec004b01952"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/C/evaluation.json",
+      "bytes": 123294,
+      "sha256": "7d308c1234921d492f3c4e4d489bca2bde3abe4586c9c2fecaf9c200e94b0f2c"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/C/final.pth",
+      "bytes": 617943938,
+      "sha256": "9067080ecfda3948a7efc72e42b6a1ad290faa8eedcda4662ac0a3654df3296e"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/C/fit.json",
+      "bytes": 504971,
+      "sha256": "e8f7a41eb91a994f77559da838c9d35a5a76b0d85ad7525a814cd9be4c9307f0"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/C/point_examples_audit/audit_final130_0001.png",
+      "bytes": 106044,
+      "sha256": "d334c31c223765592e3d2b731cc56757e59e47536635234cde1a0b3e13773b57"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/C/point_examples_audit/audit_final130_0007.png",
+      "bytes": 102591,
+      "sha256": "83a6f1e273f329d684f30d13bef7316544c30a78ba944d2e7f62ae961ee0faf3"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/C/point_examples_audit/audit_final130_0178.png",
+      "bytes": 125617,
+      "sha256": "e9a6a80d29d3423dee40fd2d48abf942fc75ed6ae1009f9a55735f119df5571d"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/C/point_examples_audit/audit_final130_0584.png",
+      "bytes": 67087,
+      "sha256": "77fa84ff0a18c45abc6e6239788a7bb691846f52650c757880b46f378c3a299c"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/C/point_examples_audit/audit_final130_0776.png",
+      "bytes": 133644,
+      "sha256": "cd39efce78d832621160e75506be0c0628cb7ab6ac675e177e6328c89827310a"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/C/point_examples_audit/audit_final130_0812.png",
+      "bytes": 55273,
+      "sha256": "0f2284ba256f8d47b55369cdc755fe6c3e37cad99554e3b1177b5c3e9b3bb39c"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/C/point_examples_audit/audit_final130_1025.png",
+      "bytes": 152864,
+      "sha256": "47f6e7719d8b9ae1fe73ccb713f0f1d9c70b507f97a70b298dc0066dcc37cefc"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/C/point_examples_audit/audit_final130_1037.png",
+      "bytes": 170796,
+      "sha256": "c030fb1c09d633713e617dd65dd99228a4b57aa761ca9f22d43abf422ecadd9d"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/C/point_examples_audit/coordinates.json",
+      "bytes": 40904,
+      "sha256": "23c9b6578c5e061bb9143cff0dbac6c816b3156e5b967cad88282ccf2e161563"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/C/point_examples_fit/coordinates.json",
+      "bytes": 20056,
+      "sha256": "874a257d1b14184520a8ec53534820b9c41c3a281a8869c7ecedd593e0ddc079"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/C/point_examples_fit/fit_final130_0000.png",
+      "bytes": 109999,
+      "sha256": "315382380d303e01cfc504eb6aa054ec778bfbde7acd26fca01f3b177376e4f7"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/C/point_examples_fit/fit_final130_0586.png",
+      "bytes": 59668,
+      "sha256": "6875cb588e2657fc966d14f2d0128db4d23b51a0bfe98792932781ecd3791161"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/C/point_examples_fit/fit_final130_0782.png",
+      "bytes": 138072,
+      "sha256": "f2cc16962d0c10bf2c1898280a96f4af36ef230ca8bef055b8a38b94c4e72997"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/C/point_examples_fit/fit_final130_0784.png",
+      "bytes": 136297,
+      "sha256": "9d1e4371fee3768941dedfd4050e7d506523609dbb2ed50eb0d26dfc0be15876"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/C/summary.json",
+      "bytes": 168,
+      "sha256": "d050a661a9482670ed3b0de81865c2f899d4aabaa46799d0d115bd027a02b189"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/E/evaluation.json",
+      "bytes": 123291,
+      "sha256": "8ebe5b1eeb551fc5cdbc855491bb2bf9490a831a925f54c2314f6d00646f16ea"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/E/final.pth",
+      "bytes": 617943938,
+      "sha256": "037fd64d606172e4ed1282b95627fb7714b243dca2f124756049e815796d6837"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/E/fit.json",
+      "bytes": 504969,
+      "sha256": "0934b9bf30a39450756613948f8f6c50052db0149e63973db624a0336b39ac67"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/E/point_examples_audit/audit_final130_0001.png",
+      "bytes": 106056,
+      "sha256": "de90c5f9e533d9f5174bbd707791ffbed42a09e80e33a6aeb1f6bf12751faf12"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/E/point_examples_audit/audit_final130_0007.png",
+      "bytes": 102580,
+      "sha256": "b3aa5732d6d32da19e099fa7b264cc6d657ab2deb2350e83ce3265358dffdd0c"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/E/point_examples_audit/audit_final130_0178.png",
+      "bytes": 125620,
+      "sha256": "dcb568733867f8a682c988481e3524621477e2ff214571510132c509d835de59"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/E/point_examples_audit/audit_final130_0584.png",
+      "bytes": 67099,
+      "sha256": "8dcdcc63e73aa246f350b45c6f5a0918d4a7d01585a151e4eef7e81f0171250c"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/E/point_examples_audit/audit_final130_0776.png",
+      "bytes": 133585,
+      "sha256": "f0e9fc97dc11740491c9d161f767094afe0462f78cfab1fb2063a13d8b539136"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/E/point_examples_audit/audit_final130_0812.png",
+      "bytes": 55287,
+      "sha256": "a7b4fd1d182241758210467ec7c812c43d5a26b2aa2ab6f64f15ca8236fbaff7"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/E/point_examples_audit/audit_final130_1025.png",
+      "bytes": 152564,
+      "sha256": "0f67b32923d72f47a7bbaf0aed281a65b8cf010c0c266a5ca8df3c3f3ca81551"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/E/point_examples_audit/audit_final130_1037.png",
+      "bytes": 170839,
+      "sha256": "c7b69058946a4d80579309ae4c9850260d82e3bf53ed76bbd3a84c37f4a867e4"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/E/point_examples_audit/coordinates.json",
+      "bytes": 40859,
+      "sha256": "2c162aadf8aee0e34a7cf2f8fd2f733174d313bfcf5eaf012232b711a73f3b6b"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/E/point_examples_fit/coordinates.json",
+      "bytes": 20055,
+      "sha256": "ddad29398371f784f3c50b57f5f4c632c98cc3059e49c91cbd3e704e98c7e3af"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/E/point_examples_fit/fit_final130_0000.png",
+      "bytes": 110003,
+      "sha256": "26ab542ae347b56fc1c5235ab7c45e7fc83a135f87639eb594e25f984b1ebd2d"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/E/point_examples_fit/fit_final130_0586.png",
+      "bytes": 59680,
+      "sha256": "fa569abb084766bb8067c82beecfdb28fef746efa0e3dfc5516dd274e5b8e8c3"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/E/point_examples_fit/fit_final130_0782.png",
+      "bytes": 138211,
+      "sha256": "23fc348debf243a4973c00639891e1412dc027d554fdf2e9757a164497912f27"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/E/point_examples_fit/fit_final130_0784.png",
+      "bytes": 136373,
+      "sha256": "1596ecc09e157d89be2b68a4ef691fb9699c9f3fb78a77ccb84f995ecf6b3042"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/E/summary.json",
+      "bytes": 167,
+      "sha256": "aaa624395535bd749c03af87b8ca12b6f24bb874de08d6a6117afb78ce787d67"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/complete.json",
+      "bytes": 139,
+      "sha256": "f5321cec1f1dfd78219ee0ae09265fd3b27fcb76170e76c017aa107d5933d485"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/loss.jsonl",
+      "bytes": 42069,
+      "sha256": "fa5163b8bc29e75dd5e2d875c0b63d105afc18738bc816a3cfbaa705dc341e70"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/manifest.json",
+      "bytes": 32735,
+      "sha256": "2819bf8087491e5dc87aa0e639a252774c4622a5d73189e85d9dc4c704405a4f"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/status.json",
+      "bytes": 351,
+      "sha256": "b1d960b06081b6db65a5bb692703a0cdc29fd16bbf4058c57040c18d4c5d69f1"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/trajectory_s19.launch.json",
+      "bytes": 316,
+      "sha256": "53d2036802b620433933cc335fb831d2c526f2cce085d46e81f37342b6486fa1"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s19/trajectory_s19.log",
+      "bytes": 42425,
+      "sha256": "b987c9dc6f9f9708731e77da189aef85070a3a8fe7ea1fd8d0f368472746a3c8"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/C/evaluation.json",
+      "bytes": 123267,
+      "sha256": "d79888daec1a21667ceafe52cd7bd2bd614091a47eb24763dbb7b994a192cdf3"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/C/final.pth",
+      "bytes": 617943938,
+      "sha256": "9e0c56218b4dd2c67c68200bf935578630c157a0a9e24e1c8dffcb35ea791435"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/C/fit.json",
+      "bytes": 504968,
+      "sha256": "209c810ea52a0438e0fb803b6b15d52cf5ed32d40c1ec9ceca17b13f213aed25"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/C/point_examples_audit/audit_final130_0001.png",
+      "bytes": 105929,
+      "sha256": "3b50daf0a1c15e3ef9147187287e622702590c67c9447fc8e85a1925982d8c36"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/C/point_examples_audit/audit_final130_0007.png",
+      "bytes": 102573,
+      "sha256": "b5df390b767227b4c26710beca8b67bd6e88d181a8ccc435a7fc7947da64b397"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/C/point_examples_audit/audit_final130_0178.png",
+      "bytes": 126168,
+      "sha256": "ca5bdea1c09d4b42c0947d4def4621d7abb13ff627670d1508b4255e913ba59f"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/C/point_examples_audit/audit_final130_0584.png",
+      "bytes": 67087,
+      "sha256": "77fa84ff0a18c45abc6e6239788a7bb691846f52650c757880b46f378c3a299c"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/C/point_examples_audit/audit_final130_0776.png",
+      "bytes": 134852,
+      "sha256": "855a32d0a8eb43a4735bd9f3c87008d857f6fd0c1d42438e795e62784e072d94"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/C/point_examples_audit/audit_final130_0812.png",
+      "bytes": 55273,
+      "sha256": "0f2284ba256f8d47b55369cdc755fe6c3e37cad99554e3b1177b5c3e9b3bb39c"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/C/point_examples_audit/audit_final130_1025.png",
+      "bytes": 153016,
+      "sha256": "ec25811bbdbc39b3965837b8b167ba75813aaf7ac5e26b5e110d16d6d29baed7"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/C/point_examples_audit/audit_final130_1037.png",
+      "bytes": 171035,
+      "sha256": "bccfdd0d249327cb8e1c339510334a8d88b4735af4077d1697185ce5028d86a7"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/C/point_examples_audit/coordinates.json",
+      "bytes": 40525,
+      "sha256": "3d691136e8654a1c906151bb567020340939b289e487575ad1330a35e8b26e6f"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/C/point_examples_fit/coordinates.json",
+      "bytes": 20148,
+      "sha256": "7b2ef1edcba1abfab7338260d2ef8c6a0ffae8dadf8821621fb154e5c470d817"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/C/point_examples_fit/fit_final130_0000.png",
+      "bytes": 110058,
+      "sha256": "bc155f1fb31827e891b6fae781a2572f5f7c450e378abc2a3f3b05475f5fe033"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/C/point_examples_fit/fit_final130_0586.png",
+      "bytes": 59668,
+      "sha256": "6875cb588e2657fc966d14f2d0128db4d23b51a0bfe98792932781ecd3791161"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/C/point_examples_fit/fit_final130_0782.png",
+      "bytes": 138448,
+      "sha256": "34139c01d411263b0d9fbc39138af17cc0d5349c57f15810642ba5d0c99a71fc"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/C/point_examples_fit/fit_final130_0784.png",
+      "bytes": 136295,
+      "sha256": "e57b987863a7a4adb0902a5a87588888962f3f6e5ea64efae761eaa570dab49d"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/C/summary.json",
+      "bytes": 168,
+      "sha256": "e1f9e35175942d48d4407291c1ae52ae137a0d1a49bd61a234767252cb3b420b"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/E/evaluation.json",
+      "bytes": 123281,
+      "sha256": "3b188c47bcb4fee57efa74822df0c3ab3c8197d2ebdeb7cc4ba27178f5354434"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/E/final.pth",
+      "bytes": 617943938,
+      "sha256": "add421279213abcb84e4ae581dd8d5635a190e27f22e0df04290a4ddbf3854f7"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/E/fit.json",
+      "bytes": 504968,
+      "sha256": "2efede01c8b065263ff93e24c86a4b7736d7d02ad622f9b7c4e5b32d881e385f"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/E/point_examples_audit/audit_final130_0001.png",
+      "bytes": 105951,
+      "sha256": "e02d0c3f667544f99a739230cc4cfc8c861a395ce00cae2e7d734921e36e0872"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/E/point_examples_audit/audit_final130_0007.png",
+      "bytes": 102592,
+      "sha256": "0872d165019d8515f794fab9a5caee0b232d56d749d5b5b83bc257ce85960209"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/E/point_examples_audit/audit_final130_0178.png",
+      "bytes": 125630,
+      "sha256": "03a857c0874558cf40961d26e14c00502a4ae872e2bc0ebdada97c6caad82de4"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/E/point_examples_audit/audit_final130_0584.png",
+      "bytes": 67099,
+      "sha256": "8dcdcc63e73aa246f350b45c6f5a0918d4a7d01585a151e4eef7e81f0171250c"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/E/point_examples_audit/audit_final130_0776.png",
+      "bytes": 135019,
+      "sha256": "6e1b0b377971835d962030f5af1e7a872fad7716452b4b1a331d6a6892d1235f"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/E/point_examples_audit/audit_final130_0812.png",
+      "bytes": 55287,
+      "sha256": "a7b4fd1d182241758210467ec7c812c43d5a26b2aa2ab6f64f15ca8236fbaff7"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/E/point_examples_audit/audit_final130_1025.png",
+      "bytes": 152722,
+      "sha256": "84f9906a3f264ac1a43beb00538f307c79efc8ca2059d2565f829dd6b7d4008b"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/E/point_examples_audit/audit_final130_1037.png",
+      "bytes": 171154,
+      "sha256": "0bb6ead7563077340d2723dee1cf70115aee15bf29189cb8e4c928cb00a958a0"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/E/point_examples_audit/coordinates.json",
+      "bytes": 40816,
+      "sha256": "b89738ebc11dc2a6ced54d9a6084251875f13c62a391cc6cc0df968bef74fa1f"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/E/point_examples_fit/coordinates.json",
+      "bytes": 20150,
+      "sha256": "343b467d3884e3421e6a1f5835fdfd975e4564a89c2119543bfa3742e27cb18e"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/E/point_examples_fit/fit_final130_0000.png",
+      "bytes": 110003,
+      "sha256": "26ab542ae347b56fc1c5235ab7c45e7fc83a135f87639eb594e25f984b1ebd2d"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/E/point_examples_fit/fit_final130_0586.png",
+      "bytes": 59680,
+      "sha256": "fa569abb084766bb8067c82beecfdb28fef746efa0e3dfc5516dd274e5b8e8c3"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/E/point_examples_fit/fit_final130_0782.png",
+      "bytes": 138518,
+      "sha256": "c57c23c65f41833b0c6d474f454adf3e0f48dbc1d2ea327b90759ddb69aeb0b8"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/E/point_examples_fit/fit_final130_0784.png",
+      "bytes": 136175,
+      "sha256": "101f0fdb2fabbf29d1241470d42d129f530494dae674e90ca28f0fc8111a6f67"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/E/summary.json",
+      "bytes": 168,
+      "sha256": "a46f668394bf1f32008a2e32ce0dc0a99f37cac71ec3c521281b0d378db4269f"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/complete.json",
+      "bytes": 139,
+      "sha256": "fd05a0bd293c468483840a9d6d336d1b49823dba97bbd958264643c84ba18c45"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/loss.jsonl",
+      "bytes": 42064,
+      "sha256": "7ea83373ceedfb7318c470812c43bc8263025b76901b42f594b4ed94f62860e1"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/manifest.json",
+      "bytes": 32732,
+      "sha256": "f1362ccc093b385e9018acb91179ce39559d1974b2fab307b65f792d3f85d55f"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/status.json",
+      "bytes": 351,
+      "sha256": "6890d86786813c10ff9636d39be4a9e6a6a8e41866de5ccc755cc041b321d448"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/trajectory_s1.launch.json",
+      "bytes": 315,
+      "sha256": "164d57a3696cb2d8493c0ffdf3ec0bdb39f55f48ad8a9745a655550aecf3a27e"
+    },
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/results/trajectory_s1/trajectory_s1.log",
+      "bytes": 42421,
+      "sha256": "c173e0d6188c95b5c4251622c922439361101c3a111c6d39c1589589e2687a9a"
+    }
+  ],
+  "p23_source": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p23_20261104_01/snapshot",
+  "data": "/expanse/lustre/projects/jhu159/xjin10/bdd26/migration_20261020/data/pannuke",
+  "weights": "/expanse/lustre/projects/jhu159/xjin10/bdd26/migration_20261020/weights/MahmoodLab/UNI/pytorch_model.bin",
+  "note": "Checkpoint and small-payload hashes verified against original preservation manifests; no archival claim"
+}

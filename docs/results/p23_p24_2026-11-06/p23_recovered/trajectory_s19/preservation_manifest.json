@@ -1,0 +1,174 @@
+{
+  "C/evaluation.json": {
+    "bytes": 123294,
+    "sha256": "7d308c1234921d492f3c4e4d489bca2bde3abe4586c9c2fecaf9c200e94b0f2c"
+  },
+  "C/final.pth": {
+    "bytes": 617943938,
+    "sha256": "9067080ecfda3948a7efc72e42b6a1ad290faa8eedcda4662ac0a3654df3296e"
+  },
+  "C/fit.json": {
+    "bytes": 504971,
+    "sha256": "e8f7a41eb91a994f77559da838c9d35a5a76b0d85ad7525a814cd9be4c9307f0"
+  },
+  "C/point_examples_audit/audit_final130_0001.png": {
+    "bytes": 106044,
+    "sha256": "d334c31c223765592e3d2b731cc56757e59e47536635234cde1a0b3e13773b57"
+  },
+  "C/point_examples_audit/audit_final130_0007.png": {
+    "bytes": 102591,
+    "sha256": "83a6f1e273f329d684f30d13bef7316544c30a78ba944d2e7f62ae961ee0faf3"
+  },
+  "C/point_examples_audit/audit_final130_0178.png": {
+    "bytes": 125617,
+    "sha256": "e9a6a80d29d3423dee40fd2d48abf942fc75ed6ae1009f9a55735f119df5571d"
+  },
+  "C/point_examples_audit/audit_final130_0584.png": {
+    "bytes": 67087,
+    "sha256": "77fa84ff0a18c45abc6e6239788a7bb691846f52650c757880b46f378c3a299c"
+  },
+  "C/point_examples_audit/audit_final130_0776.png": {
+    "bytes": 133644,
+    "sha256": "cd39efce78d832621160e75506be0c0628cb7ab6ac675e177e6328c89827310a"
+  },
+  "C/point_examples_audit/audit_final130_0812.png": {
+    "bytes": 55273,
+    "sha256": "0f2284ba256f8d47b55369cdc755fe6c3e37cad99554e3b1177b5c3e9b3bb39c"
+  },
+  "C/point_examples_audit/audit_final130_1025.png": {
+    "bytes": 152864,
+    "sha256": "47f6e7719d8b9ae1fe73ccb713f0f1d9c70b507f97a70b298dc0066dcc37cefc"
+  },
+  "C/point_examples_audit/audit_final130_1037.png": {
+    "bytes": 170796,
+    "sha256": "c030fb1c09d633713e617dd65dd99228a4b57aa761ca9f22d43abf422ecadd9d"
+  },
+  "C/point_examples_audit/coordinates.json": {
+    "bytes": 40904,
+    "sha256": "23c9b6578c5e061bb9143cff0dbac6c816b3156e5b967cad88282ccf2e161563"
+  },
+  "C/point_examples_fit/coordinates.json": {
+    "bytes": 20056,
+    "sha256": "874a257d1b14184520a8ec53534820b9c41c3a281a8869c7ecedd593e0ddc079"
+  },
+  "C/point_examples_fit/fit_final130_0000.png": {
+    "bytes": 109999,
+    "sha256": "315382380d303e01cfc504eb6aa054ec778bfbde7acd26fca01f3b177376e4f7"
+  },
+  "C/point_examples_fit/fit_final130_0586.png": {
+    "bytes": 59668,
+    "sha256": "6875cb588e2657fc966d14f2d0128db4d23b51a0bfe98792932781ecd3791161"
+  },
+  "C/point_examples_fit/fit_final130_0782.png": {
+    "bytes": 138072,
+    "sha256": "f2cc16962d0c10bf2c1898280a96f4af36ef230ca8bef055b8a38b94c4e72997"
+  },
+  "C/point_examples_fit/fit_final130_0784.png": {
+    "bytes": 136297,
+    "sha256": "9d1e4371fee3768941dedfd4050e7d506523609dbb2ed50eb0d26dfc0be15876"
+  },
+  "C/summary.json": {
+    "bytes": 168,
+    "sha256": "d050a661a9482670ed3b0de81865c2f899d4aabaa46799d0d115bd027a02b189"
+  },
+  "E/evaluation.json": {
+    "bytes": 123291,
+    "sha256": "8ebe5b1eeb551fc5cdbc855491bb2bf9490a831a925f54c2314f6d00646f16ea"
+  },
+  "E/final.pth": {
+    "bytes": 617943938,
+    "sha256": "037fd64d606172e4ed1282b95627fb7714b243dca2f124756049e815796d6837"
+  },
+  "E/fit.json": {
+    "bytes": 504969,
+    "sha256": "0934b9bf30a39450756613948f8f6c50052db0149e63973db624a0336b39ac67"
+  },
+  "E/point_examples_audit/audit_final130_0001.png": {
+    "bytes": 106056,
+    "sha256": "de90c5f9e533d9f5174bbd707791ffbed42a09e80e33a6aeb1f6bf12751faf12"
+  },
+  "E/point_examples_audit/audit_final130_0007.png": {
+    "bytes": 102580,
+    "sha256": "b3aa5732d6d32da19e099fa7b264cc6d657ab2deb2350e83ce3265358dffdd0c"
+  },
+  "E/point_examples_audit/audit_final130_0178.png": {
+    "bytes": 125620,
+    "sha256": "dcb568733867f8a682c988481e3524621477e2ff214571510132c509d835de59"
+  },
+  "E/point_examples_audit/audit_final130_0584.png": {
+    "bytes": 67099,
+    "sha256": "8dcdcc63e73aa246f350b45c6f5a0918d4a7d01585a151e4eef7e81f0171250c"
+  },
+  "E/point_examples_audit/audit_final130_0776.png": {
+    "bytes": 133585,
+    "sha256": "f0e9fc97dc11740491c9d161f767094afe0462f78cfab1fb2063a13d8b539136"
+  },
+  "E/point_examples_audit/audit_final130_0812.png": {
+    "bytes": 55287,
+    "sha256": "a7b4fd1d182241758210467ec7c812c43d5a26b2aa2ab6f64f15ca8236fbaff7"
+  },
+  "E/point_examples_audit/audit_final130_1025.png": {
+    "bytes": 152564,
+    "sha256": "0f67b32923d72f47a7bbaf0aed281a65b8cf010c0c266a5ca8df3c3f3ca81551"
+  },
+  "E/point_examples_audit/audit_final130_1037.png": {
+    "bytes": 170839,
+    "sha256": "c7b69058946a4d80579309ae4c9850260d82e3bf53ed76bbd3a84c37f4a867e4"
+  },
+  "E/point_examples_audit/coordinates.json": {
+    "bytes": 40859,
+    "sha256": "2c162aadf8aee0e34a7cf2f8fd2f733174d313bfcf5eaf012232b711a73f3b6b"
+  },
+  "E/point_examples_fit/coordinates.json": {
+    "bytes": 20055,
+    "sha256": "ddad29398371f784f3c50b57f5f4c632c98cc3059e49c91cbd3e704e98c7e3af"
+  },
+  "E/point_examples_fit/fit_final130_0000.png": {
+    "bytes": 110003,
+    "sha256": "26ab542ae347b56fc1c5235ab7c45e7fc83a135f87639eb594e25f984b1ebd2d"
+  },
+  "E/point_examples_fit/fit_final130_0586.png": {
+    "bytes": 59680,
+    "sha256": "fa569abb084766bb8067c82beecfdb28fef746efa0e3dfc5516dd274e5b8e8c3"
+  },
+  "E/point_examples_fit/fit_final130_0782.png": {
+    "bytes": 138211,
+    "sha256": "23fc348debf243a4973c00639891e1412dc027d554fdf2e9757a164497912f27"
+  },
+  "E/point_examples_fit/fit_final130_0784.png": {
+    "bytes": 136373,
+    "sha256": "1596ecc09e157d89be2b68a4ef691fb9699c9f3fb78a77ccb84f995ecf6b3042"
+  },
+  "E/summary.json": {
+    "bytes": 167,
+    "sha256": "aaa624395535bd749c03af87b8ca12b6f24bb874de08d6a6117afb78ce787d67"
+  },
+  "complete.json": {
+    "bytes": 139,
+    "sha256": "f5321cec1f1dfd78219ee0ae09265fd3b27fcb76170e76c017aa107d5933d485"
+  },
+  "last.pth": {
+    "bytes": 2471812658,
+    "sha256": "fcbe376b69624db1b39077aac6b766144211f53318a4cf90848a0fdeb8939938"
+  },
+  "loss.jsonl": {
+    "bytes": 42069,
+    "sha256": "fa5163b8bc29e75dd5e2d875c0b63d105afc18738bc816a3cfbaa705dc341e70"
+  },
+  "manifest.json": {
+    "bytes": 32735,
+    "sha256": "2819bf8087491e5dc87aa0e639a252774c4622a5d73189e85d9dc4c704405a4f"
+  },
+  "status.json": {
+    "bytes": 351,
+    "sha256": "b1d960b06081b6db65a5bb692703a0cdc29fd16bbf4058c57040c18d4c5d69f1"
+  },
+  "trajectory_s19.launch.json": {
+    "bytes": 316,
+    "sha256": "53d2036802b620433933cc335fb831d2c526f2cce085d46e81f37342b6486fa1"
+  },
+  "trajectory_s19.log": {
+    "bytes": 42425,
+    "sha256": "b987c9dc6f9f9708731e77da189aef85070a3a8fe7ea1fd8d0f368472746a3c8"
+  }
+}

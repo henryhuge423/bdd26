@@ -1,0 +1,10 @@
+{
+  "exit_code": 0,
+  "epochs": 130,
+  "ema_updates": 17420,
+  "outputs": [
+    "C",
+    "E"
+  ],
+  "elapsed_seconds": 15078.424558421597
+}
