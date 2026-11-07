@@ -1,6 +1,6 @@
 # P23 / D24 / P24 — 2026-11-06
 
-P24 V100 validation55571695 passed; formal submission awaits fresh storage admission. See [current status](P24_SUBMISSION.md) and [storage recovery](P24_STORAGE_RECOVERY.md).
+P24 V100 validation55571695 passed; formal submission was blocked before sbatch by a600second project quota timeout. See [current status](P24_SUBMISSION.md) and [storage recovery](P24_STORAGE_RECOVERY.md).
 
 - [English analysis](RESULTS_EN.md)
 - [详细中文分析](RESULTS_ZH.md)

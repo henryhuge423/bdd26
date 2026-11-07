@@ -2,6 +2,7 @@
   "smoke_evidence.json": "0701dd6fe716197527f956e4a1457d69ce944be2009e8a5b7d5d7a51b1a5ed27",
   "control.json": "8a1dfb85a22880a1d6904d0772b01af2b62972bc14a3b023706a1777ac866392",
   "cpu_tests.log": "dd5d27a2c5c75f084907ea435b5bf02da10d8f39038291571517fd2539016e0a",
+  "formal_admission_failure.json": "bc52c6e15fadc6a26244895ea51a05d3d8b380a6b73cd64405cc3134ad5356e1",
   "ready.json": "2f7d3f306ec13257e219383fef4e7e8ca53abecaeff419b00949b4acb7ef98ec",
   "L/manifest.json": "da4cdda3b4e20c8de2a2c200eecd1ede742934a052fc100eff8e746056c4620f",
   "L/smoke.json": "8bf3ad8ed22fcdbf73d9da2672ea1c24b7d827ab36e8ccf8837e1d5f205bdb1c",

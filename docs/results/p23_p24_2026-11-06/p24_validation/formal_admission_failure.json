@@ -1,0 +1,19 @@
+{
+  "checked_utc": "2026-11-07T13:54:40.713787Z",
+  "markers": {
+    "submission.started": false,
+    "job_id.txt": false,
+    "submission_receipt.json": false,
+    "resource_before_formal.json": false
+  },
+  "user_queue_empty": true,
+  "former_submit_parent_exists": false,
+  "former_quota_helper_exists": false,
+  "former_lfs_exists": true,
+  "status": "BLOCKED_BEFORE_SBATCH",
+  "reason": "project_user_quota_timeout",
+  "timeout_seconds": 600,
+  "smoke_job_id": "55571695",
+  "formal_driver_exited": true,
+  "formal_job_id": null
+}
