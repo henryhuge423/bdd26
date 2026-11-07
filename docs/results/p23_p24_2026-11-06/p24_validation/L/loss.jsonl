@@ -1,0 +1,1 @@
+{"epoch": 1, "train_loss": 30.222483713235427, "training_seconds": 7.171132376883179, "checkpoint_seconds": 1.8285476970486343, "epoch_seconds": 9.002358962781727, "elapsed_seconds": 34.90790476696566, "checkpoint_bytes": 1853871572, "optimizer_steps": 9, "effective_batch": 16, "microbatch": 4, "peak_memory": 4396229120}

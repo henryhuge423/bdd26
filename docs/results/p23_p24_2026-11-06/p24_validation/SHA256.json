@@ -1,0 +1,22 @@
+{
+  "smoke_evidence.json": "0701dd6fe716197527f956e4a1457d69ce944be2009e8a5b7d5d7a51b1a5ed27",
+  "control.json": "8a1dfb85a22880a1d6904d0772b01af2b62972bc14a3b023706a1777ac866392",
+  "cpu_tests.log": "dd5d27a2c5c75f084907ea435b5bf02da10d8f39038291571517fd2539016e0a",
+  "ready.json": "2f7d3f306ec13257e219383fef4e7e8ca53abecaeff419b00949b4acb7ef98ec",
+  "L/manifest.json": "da4cdda3b4e20c8de2a2c200eecd1ede742934a052fc100eff8e746056c4620f",
+  "L/smoke.json": "8bf3ad8ed22fcdbf73d9da2672ea1c24b7d827ab36e8ccf8837e1d5f205bdb1c",
+  "L/loss.jsonl": "8409ebde05170908941ede1d1470ed4d416162f17ad24fa3bdc1a6bb533515b9",
+  "L/smoke_measurements.json": "cb7ae8758addaa81f7e97700a23f33e2a05f69202d1a85d340593232b4cf9e07",
+  "L/status.json": "df6cd18ed50e34613ac4d3d125932215f2c83c74c119e3c9714dddbef7be6e1d",
+  "L/point_examples_smoke/fit_1epoch_preliminary_0000.png": "fb087ba6aac3d36e63ea019fb73e6617c600a60c74ed00f1ed41909c9a665d6e",
+  "L/point_examples_smoke/fit_1epoch_preliminary_0782.png": "c9375bd817222d6610bed70fb4ce9ba0bcfa3a416ac76b6ebd63e993f8a9f34b",
+  "L/point_examples_smoke/coordinates.json": "3022db357ec1bb8fccfca7e521d95bc903227773c490e0513ac5d9331ef9b2b3",
+  "C/manifest.json": "40e89287e5df9eb506e3a8f1dc455fd0c3afed709e79d9aefaed89f6c49b2b0c",
+  "C/smoke.json": "e5650d7603103f7ef9b5177c18378e3593a3b32ca9e15a87cecd36b2319e6598",
+  "C/loss.jsonl": "b37e27a503a19d9e977f93361df34f98649ec6ce8bbf89f5440bc74d250f9cbe",
+  "C/smoke_measurements.json": "d036b3e38de819b7f12b3bc3988660c362a37ec6f32d4bc1b41fcbea1a2547f6",
+  "C/status.json": "0bbd2adb4c0f48f01caa3a491a6d7d405c3bbca501576cb5ded7384747f7aad9",
+  "C/point_examples_smoke/fit_1epoch_preliminary_0000.png": "bf2ca7611c776c8ae50ddd6871c7c0278935a2022a19ada888fd633ca746eb15",
+  "C/point_examples_smoke/fit_1epoch_preliminary_0782.png": "e63d0ea885b081af66d5630023052c6fe834027d321d1d4e7be65547234c24a6",
+  "C/point_examples_smoke/coordinates.json": "7b5313a14c31d26e2cf1b52bc4a32a245201c08b66b333fcd42c7db2e5cddbb7"
+}
