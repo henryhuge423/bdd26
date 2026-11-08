@@ -1,0 +1,40 @@
+{
+  "array_job_id": "55599902",
+  "submitted_utc": "2026-11-08T02:43:19.776376Z",
+  "source_commit": "4f467331de7a43e4855dd02c22345e2f4a59a9ee",
+  "source_manifest_sha256": "5efef9d479aab158fe8f1a88c333dd449924576b1dd854864b52c916a315a75c",
+  "smoke_job_id": "55571695",
+  "smoke_elapsed_seconds": 858,
+  "project": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p24_20261106_02",
+  "scratch": "/expanse/lustre/scratch/xjin10/temp_project/bdd26/p24_20261106_02",
+  "array": "none; sequential task IDs 0,1,2,3",
+  "mapping": [
+    "C19",
+    "L19",
+    "C1",
+    "L1"
+  ],
+  "resources": {
+    "gpu": 1,
+    "cpu": 4,
+    "memory_GiB": 32,
+    "hours_per_task": 12,
+    "total_GPU_hours": 48,
+    "concurrency": 1,
+    "runner_budget_hours": 12
+  },
+  "readiness": "PASS",
+  "schedule": "serial four fresh runs; 43140s plus 30s cleanup per run; 48h job",
+  "wrapper_sha256": "410ab90714cbb5e133d54f633182214a96b50a18239e51b8228e5a05c1608a20",
+  "allocation_admission": {
+    "allocation": 1900,
+    "spent": 1033,
+    "reserved_full_walltime_SU": 466.04347826086956,
+    "additional_requested_GPU_hours": 48,
+    "quota_headroom_bytes": {
+      "scratch_user": 7533995208704,
+      "project_user": 7533995208704,
+      "project_group": 51911134584832
+    }
+  }
+}

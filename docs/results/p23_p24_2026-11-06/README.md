@@ -16,3 +16,6 @@ The early compact-evidence analysis is retained in `figures/analysis.json`; its 
 All metrics are repeated fold1 point-development evidence, not PQ or independent test performance. Original scientific snapshots and failed infrastructure attempts are retained. No checkpoint is included here.
 
 To regenerate the initial descriptive plots, run the pinned project Python with `scripts/analyze_p23_d24.py docs/results/p23_p24_2026-11-06/evidence OUTPUT_DIRECTORY`. Full recovery verification invokes unchanged `proposal_p3_utils.admission` on the retained C/E `evaluation.json` files; the command record is in LM1 ignored `ops/logs/remote_session/review20261106_rawverify47`.
+
+
+Latest P24 formal submission: **55599902**, single serial four-run job,7November21:43EST. [Current record](../p24_submission_2026-11-07/README.md).

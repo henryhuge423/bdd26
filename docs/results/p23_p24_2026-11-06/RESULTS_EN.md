@@ -66,3 +66,6 @@ The original admission conjunction is unchanged and must pass separately in both
 All scores are repeated fold1 point-proposal development measurements:2134 fitting images,522 audit images,11 Dead-positive audit images and145 interior Dead objects,80% of them Lung/Colon. They are not PQ, not an independent test, and not patient-level evidence. Seeds are not extra independent patients. Keep the remaining folds and original split/selection rules frozen.
 
 P23 scientific source9f2075b5a14e202c73fe804acf0ab4549aeee2a0, manifest830f3cdd44db1a17387a0e419137124257c0e719ff3a21fd9b037527e4172470. P22 source3af8cac4d025b7d97a1b548e3f3ef93863546bad, manifest2ff1440699a7d23dc77b486087403896998dbeda7e2e55539714ac84cc54c492. LM1 ignored evidence lives under `ops/review_20261106` and `ops/p24_development_20261106`. Early `figures/analysis.json` explicitly describes the compact-evidence stage; `raw_verification.json` supersedes its retrieval limitation. Original failed attempts and partial outputs are preserved.
+
+
+Latest P24 formal submission: **55599902**, single serial four-run job,7November21:43EST. [Current record](../p24_submission_2026-11-07/README.md).

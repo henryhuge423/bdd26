@@ -64,3 +64,6 @@ P24：C/L编码器学习率1e-5/3e-5，均仅训练UNI最后12层；头部学习
 所有指标来自反复使用的fold1点提议开发集，2134图拟合、522图审计；内部Dead仅11张阳性图、145个对象，80%来自Lung和Colon。它们不是PQ、不是独立test、不是患者层面的统计证据。两种子不等于多了独立患者。P22/P23失败配方继续关闭；下一轮是否成功，仍按原双种子完整条件判定。
 
 完整原始小结果、8张最终图、配对分析与哈希均保留，来源和复现入口见 [英文报告](RESULTS_EN.md) 和 [目录](README.md)。历史阶段PDF不覆盖这次更新，仍保持原日期的内容范围。
+
+
+Latest P24 formal submission: **55599902**, single serial four-run job,7November21:43EST. [Current record](../p24_submission_2026-11-07/README.md).

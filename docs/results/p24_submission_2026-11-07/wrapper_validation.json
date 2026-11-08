@@ -1,0 +1,26 @@
+[
+  {
+    "case": "success",
+    "status": "PASS",
+    "exit": 0,
+    "tasks": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "fresh_bash_per_task": true
+  },
+  {
+    "case": "arm_failure",
+    "status": "PASS",
+    "exit": 1,
+    "tasks": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "fresh_bash_per_task": true
+  }
+]

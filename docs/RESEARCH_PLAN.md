@@ -408,3 +408,8 @@ Strategy: **run all ablations on fold-1 only, then run the final configuration o
 
 
 P12 closeout (2026-10-24): all four 130-epoch runs completed; original admission failed for both seeds (Dead recall R−C −0.034483 / −0.027586). This fixed decoder-dropout recipe is closed. See `results/PROPOSAL_P12_RESULTS_2026-10-24.md`. Development point metrics only; no test claim.
+
+
+## 2026-11-07 P24 formal submission
+
+Job55599902 submitted21:43EST as a single sequential C19/L19/C1/L1 job after storage recovery and account submission-count dry rejection of the array. Original source4f46733 and four fresh130epoch runs/48GPUh retained; concurrency1,48h walltime,each arm43140s+30s cleanup. Initial PENDING/Priority; no formal metrics yet. [Record](results/p24_submission_2026-11-07/README.md).
