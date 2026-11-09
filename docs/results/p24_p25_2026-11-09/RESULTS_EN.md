@@ -63,3 +63,13 @@ python docs/results/p24_p25_2026-11-09/make_figures.py docs/results/p24_p25_2026
 ```
 
 `artifact_hashes.json` covers published scientific payloads and all48original PNGs. Portable manifests preserve scientific identity and fixed IDs; full operational manifests/logs remain in ignored LM1ops. `analysis.json` retains both seeds/all522images, original gate and cost summaries. `paired_dead_images.csv` lists every positive-image change. All fixed examples use the pre-existing GT-only strata, same fixed threshold and original four-panel rendering(raw/GT/prediction/unique-match status); no best-image selection. Smoke previews, when present, are explicitly one-epoch fit-only. See [P25 state](P25_SUBMISSION.md), [specification](../../superpowers/specs/2026-11-09-proposal-p25-design.md), [Chinese report](RESULTS_ZH.md) and [reader](READER_ZH.md).
+
+## Additional descriptive sensitivity (original gate unchanged)
+
+Dropping each of the11positive images in turn gives Dead-recall changes ranging+.048to+.100(seed19) and−.041667to+.015385(seed1). In particular, excluding image1037brings seed19's gain below.05; excluding Cervix1756reverses seed1's sign. This is a post-result sensitivity description, not a replacement bootstrap, selection rule or re-evaluation of the original pass/fail decision. Single-image influence reinforces the limited support.
+
+The8predetermined audit examples cover53of145interiorDead(36.55%). Exact GT-index matching within these images finds seed19 retained26/gained9/lost5/missed-by-both13; seed1 retained24/gained7/lost7/missed-by-both15. Net changes+4/0differ from the full522-image+11/−2. These fixed strata illustrate actual object transitions but do not estimate their full-cohort frequencies. The diagnostic enforces equality to the original saved per-image Dead counts. Its initial GT/predicted-index interpretation was rejected by that assertion; the matching-source convention(GT index first) was verified and corrected before these results were generated. Original evaluation/gates are unaffected.
+
+![Leave-one-image sensitivity](figures/p24_leave_one_image.png)
+
+[Sensitivity values and exact fixed-example transitions](descriptive_sensitivity.json); [all tissue changes](figures/tissue_changes.csv). Rebuild these descriptions with `python docs/results/p24_p25_2026-11-09/descriptive_sensitivity.py`.

@@ -1,0 +1,306 @@
+{
+  "post_hoc": true,
+  "changes_original_gate": false,
+  "leave_one_positive_image_out": {
+    "19": {
+      "rows": [
+        {
+          "excluded_image": 178,
+          "excluded_tissue": "Breast",
+          "remaining_Dead": 144,
+          "delta": 0.0763888888888889
+        },
+        {
+          "excluded_image": 776,
+          "excluded_tissue": "Colon",
+          "remaining_Dead": 138,
+          "delta": 0.07971014492753623
+        },
+        {
+          "excluded_image": 1025,
+          "excluded_tissue": "Lung",
+          "remaining_Dead": 120,
+          "delta": 0.1
+        },
+        {
+          "excluded_image": 1037,
+          "excluded_tissue": "Lung",
+          "remaining_Dead": 125,
+          "delta": 0.048
+        },
+        {
+          "excluded_image": 1038,
+          "excluded_tissue": "Lung",
+          "remaining_Dead": 130,
+          "delta": 0.05384615384615385
+        },
+        {
+          "excluded_image": 1482,
+          "excluded_tissue": "Colon",
+          "remaining_Dead": 96,
+          "delta": 0.09375
+        },
+        {
+          "excluded_image": 1756,
+          "excluded_tissue": "Cervix",
+          "remaining_Dead": 130,
+          "delta": 0.06923076923076923
+        },
+        {
+          "excluded_image": 2076,
+          "excluded_tissue": "Esophagus",
+          "remaining_Dead": 137,
+          "delta": 0.08029197080291971
+        },
+        {
+          "excluded_image": 2482,
+          "excluded_tissue": "Stomach",
+          "remaining_Dead": 142,
+          "delta": 0.08450704225352113
+        },
+        {
+          "excluded_image": 2485,
+          "excluded_tissue": "Stomach",
+          "remaining_Dead": 144,
+          "delta": 0.0763888888888889
+        },
+        {
+          "excluded_image": 2587,
+          "excluded_tissue": "Uterus",
+          "remaining_Dead": 144,
+          "delta": 0.0763888888888889
+        }
+      ],
+      "min": 0.048,
+      "max": 0.1
+    },
+    "1": {
+      "rows": [
+        {
+          "excluded_image": 178,
+          "excluded_tissue": "Breast",
+          "remaining_Dead": 144,
+          "delta": -0.013888888888888888
+        },
+        {
+          "excluded_image": 776,
+          "excluded_tissue": "Colon",
+          "remaining_Dead": 138,
+          "delta": -0.014492753623188406
+        },
+        {
+          "excluded_image": 1025,
+          "excluded_tissue": "Lung",
+          "remaining_Dead": 120,
+          "delta": 0.008333333333333333
+        },
+        {
+          "excluded_image": 1037,
+          "excluded_tissue": "Lung",
+          "remaining_Dead": 125,
+          "delta": -0.04
+        },
+        {
+          "excluded_image": 1038,
+          "excluded_tissue": "Lung",
+          "remaining_Dead": 130,
+          "delta": -0.03076923076923077
+        },
+        {
+          "excluded_image": 1482,
+          "excluded_tissue": "Colon",
+          "remaining_Dead": 96,
+          "delta": -0.041666666666666664
+        },
+        {
+          "excluded_image": 1756,
+          "excluded_tissue": "Cervix",
+          "remaining_Dead": 130,
+          "delta": 0.015384615384615385
+        },
+        {
+          "excluded_image": 2076,
+          "excluded_tissue": "Esophagus",
+          "remaining_Dead": 137,
+          "delta": -0.0072992700729927005
+        },
+        {
+          "excluded_image": 2482,
+          "excluded_tissue": "Stomach",
+          "remaining_Dead": 142,
+          "delta": -0.014084507042253521
+        },
+        {
+          "excluded_image": 2485,
+          "excluded_tissue": "Stomach",
+          "remaining_Dead": 144,
+          "delta": -0.013888888888888888
+        },
+        {
+          "excluded_image": 2587,
+          "excluded_tissue": "Uterus",
+          "remaining_Dead": 144,
+          "delta": -0.006944444444444444
+        }
+      ],
+      "min": -0.041666666666666664,
+      "max": 0.015384615384615385
+    }
+  },
+  "fixed_examples": {
+    "19": {
+      "audit_images": 8,
+      "totals": {
+        "Dead_objects": 53,
+        "retained": 26,
+        "gained": 9,
+        "lost": 5,
+        "missed_both": 13
+      },
+      "records": [
+        {
+          "image": 178,
+          "Dead_objects": 1,
+          "retained": 0,
+          "gained": 0,
+          "lost": 0,
+          "missed_both": 1
+        },
+        {
+          "image": 776,
+          "Dead_objects": 7,
+          "retained": 5,
+          "gained": 0,
+          "lost": 0,
+          "missed_both": 2
+        },
+        {
+          "image": 1025,
+          "Dead_objects": 25,
+          "retained": 12,
+          "gained": 3,
+          "lost": 4,
+          "missed_both": 6
+        },
+        {
+          "image": 1037,
+          "Dead_objects": 20,
+          "retained": 9,
+          "gained": 6,
+          "lost": 1,
+          "missed_both": 4
+        },
+        {
+          "image": 584,
+          "Dead_objects": 0,
+          "retained": 0,
+          "gained": 0,
+          "lost": 0,
+          "missed_both": 0
+        },
+        {
+          "image": 812,
+          "Dead_objects": 0,
+          "retained": 0,
+          "gained": 0,
+          "lost": 0,
+          "missed_both": 0
+        },
+        {
+          "image": 1,
+          "Dead_objects": 0,
+          "retained": 0,
+          "gained": 0,
+          "lost": 0,
+          "missed_both": 0
+        },
+        {
+          "image": 7,
+          "Dead_objects": 0,
+          "retained": 0,
+          "gained": 0,
+          "lost": 0,
+          "missed_both": 0
+        }
+      ],
+      "scope": "predetermined GT-stratified examples only; not full522 audit"
+    },
+    "1": {
+      "audit_images": 8,
+      "totals": {
+        "Dead_objects": 53,
+        "retained": 24,
+        "gained": 7,
+        "lost": 7,
+        "missed_both": 15
+      },
+      "records": [
+        {
+          "image": 178,
+          "Dead_objects": 1,
+          "retained": 0,
+          "gained": 0,
+          "lost": 0,
+          "missed_both": 1
+        },
+        {
+          "image": 776,
+          "Dead_objects": 7,
+          "retained": 4,
+          "gained": 0,
+          "lost": 0,
+          "missed_both": 3
+        },
+        {
+          "image": 1025,
+          "Dead_objects": 25,
+          "retained": 13,
+          "gained": 1,
+          "lost": 4,
+          "missed_both": 7
+        },
+        {
+          "image": 1037,
+          "Dead_objects": 20,
+          "retained": 7,
+          "gained": 6,
+          "lost": 3,
+          "missed_both": 4
+        },
+        {
+          "image": 584,
+          "Dead_objects": 0,
+          "retained": 0,
+          "gained": 0,
+          "lost": 0,
+          "missed_both": 0
+        },
+        {
+          "image": 812,
+          "Dead_objects": 0,
+          "retained": 0,
+          "gained": 0,
+          "lost": 0,
+          "missed_both": 0
+        },
+        {
+          "image": 1,
+          "Dead_objects": 0,
+          "retained": 0,
+          "gained": 0,
+          "lost": 0,
+          "missed_both": 0
+        },
+        {
+          "image": 7,
+          "Dead_objects": 0,
+          "retained": 0,
+          "gained": 0,
+          "lost": 0,
+          "missed_both": 0
+        }
+      ],
+      "scope": "predetermined GT-stratified examples only; not full522 audit"
+    }
+  }
+}
