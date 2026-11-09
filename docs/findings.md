@@ -1,4 +1,4 @@
-> **2026-11-09 — P24 closed; P25 validation prepared:** Four130epoch P24 runs COMPLETED/0:0.126smallfiles/48finalPNG/479sealedsource verified; original gate fails bothseeds(Dead gain+.075862/-.013793). Precision improves consistently, but rare-object transfer remains seed-dependent. P25 fixes full24 layerwise adaptation against originalC;87focusedCPUchecks passed, fullCPU/hardware validation pending. [EN/ZH/reader, raw results and execution state](results/p24_p25_2026-11-09/README.md). Reusedfold1 point development,notPQ/test.
+> **2026-11-09 — P24 closed; P25 submitted:** P24 four130epoch runs completed; original two-seed gate failed despite consistent precision gain.126smallfiles/48finalPNG/479source verified. P25 fixed full24 layerwise adaptation passedCPU1086/3 andV10055635543(422s);formal **55635726** submitted once03:59EST,four12h tasks,concurrency2,max48GPUh. Tasks0/1RUNNING,2/3PENDING at firstcheck; submission is not completion. [EN/ZH/reader,rawresults and receipt](results/p24_p25_2026-11-09/README.md). Reusedfold1 point development,notPQ/test.
 
 ## 2026-10-30 — P21 operational recovery (no new scientific result)
 

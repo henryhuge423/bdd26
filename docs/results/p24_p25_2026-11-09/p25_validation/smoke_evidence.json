@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "job_id": "55635543",
+  "elapsed_seconds": 422,
+  "safety_hours": {
+    "C": 7.172935661438025,
+    "D": 9.614655871468443
+  },
+  "peak_GiB": {
+    "C": 4.0943074226379395,
+    "D": 6.8152995109558105
+  },
+  "source_manifest_sha256": "b419ac061fffc7d36f0b87614d4ec3f7cb1ad93994a35947bd0a9f6e71153354",
+  "files": 29
+}
