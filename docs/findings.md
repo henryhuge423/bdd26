@@ -1,3 +1,5 @@
+> **2026-11-09 — P24 closed; P25 validation prepared:** Four130epoch P24 runs COMPLETED/0:0.126smallfiles/48finalPNG/479sealedsource verified; original gate fails bothseeds(Dead gain+.075862/-.013793). Precision improves consistently, but rare-object transfer remains seed-dependent. P25 fixes full24 layerwise adaptation against originalC;87focusedCPUchecks passed, fullCPU/hardware validation pending. [EN/ZH/reader, raw results and execution state](results/p24_p25_2026-11-09/README.md). Reusedfold1 point development,notPQ/test.
+
 ## 2026-10-30 — P21 operational recovery (no new scientific result)
 
 Original C19 failed in quota preflight before training; three unstarted tasks replaced by array 55440148. Frozen source and research protocol unchanged. Storage guard uses bounded retries with invalid-data rejection. Focused regression28passed. [Details](results/p20_p21_2026-10-30/P21_RECOVERY_2026-10-30.md).
