@@ -1,0 +1,4 @@
+\begin{tikzpicture}
+\begin{axis}[ybar,bar width=16pt,width=.75\linewidth,height=5.5cm,ymin=-9,ymax=11,ylabel={\netlabel},symbolic x coords={Lung,Colon},xtick=data,xticklabels={\lunglabel,\colonlabel},legend style={at={(.5,1.18)},anchor=north,legend columns=2},nodes near coords,grid=major]
+\addplot coordinates {(Lung,9) (Colon,-7)};\addplot coordinates {(Lung,8) (Colon,-6)};\legend{\seedlabel\ 19,\seedlabel\ 1}
+\end{axis}\end{tikzpicture}

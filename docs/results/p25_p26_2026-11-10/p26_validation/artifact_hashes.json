@@ -1,0 +1,20 @@
+{
+  "C/loss.jsonl": "55d0b73e084cd6688e0d44692d3c3c262def8226a4d3c47dfcceb45143dd61c8",
+  "C/point_examples_smoke/coordinates.json": "4995cd79248091f210126579675df639c547952e12e617dae36db64ed47650ea",
+  "C/point_examples_smoke/fit_1epoch_preliminary_0000.png": "a63c00d7169d7b1b5d84ff3ec2c226eea32a795b50906e4ee1dc844dae7afd11",
+  "C/point_examples_smoke/fit_1epoch_preliminary_0782.png": "6859b47a510537bbdea9e9b44b1347b3275a302dd411bc0c7f20d0fe58a1d270",
+  "C/portable_manifest.json": "e3e6d83605e4814d91fffbec63a781721052a303c898c5652f940a74b6e43497",
+  "C/smoke.json": "a7dbbb6858de07b1a9c915b67995ed0f4782390eadee04bf23e1b42b6ac0ab56",
+  "C/status.json": "62ff613333d803f2b943646818e6a200255510226a575b85a694f94f11851643",
+  "R/loss.jsonl": "b897c17aadb3ba0643a5a822c7849a4177fc09af4e35a7a85f5aeb6ece2d55a4",
+  "R/point_examples_smoke/coordinates.json": "ca78db12d860c1c834ee141466d69ab523b5b20f7698c467cd7268ec959ae60f",
+  "R/point_examples_smoke/fit_1epoch_preliminary_0000.png": "94702c59d47e6efa46b3a0bad44095ef89db8d2a730d6e2f66718e4a92a4ec28",
+  "R/point_examples_smoke/fit_1epoch_preliminary_0782.png": "fe572a1915aca0b905e0b07654e1bc9686b1b252f60066a2ef7701b297f371cf",
+  "R/portable_manifest.json": "2090e37f7f43e9476007eb49e6f655ed44dfaea489731c7502046aaa566f870f",
+  "R/smoke.json": "6fa257acdb5a0a9fa868b1311823b80e7ad74cafb536cedc2a5f90bf48191ba4",
+  "R/status.json": "95fdf75bf06b869a38cfccc872e84e4afa55d4c40c3c4835fa37b1d9c71032f2",
+  "control.json": "fa7ce513a3d669e5be5c955b1f4d62b49bfdfb5a199d3550ae2deb84268a344e",
+  "cpu_tests.log": "84cd9402bb66a396d943fc154f5ffb93d8a423efa8dea9cbda01d7b223cfefc1",
+  "ready.json": "4e9930f54e1485bf595c396024ecf32e65d28a0bedc9252fb92de6b4f0c2cf42",
+  "smoke_evidence.json": "27bfcf9fd594436a09e8e48001f28e3c35b471fd0bac4a40f0bf3f1587f3fe26"
+}

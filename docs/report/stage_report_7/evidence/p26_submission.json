@@ -1,0 +1,15 @@
+{
+  "experiment": "P26",
+  "formal_array": "55663583",
+  "submitted_utc": "2026-11-10T18:14:02.765697Z",
+  "first_check": "Four tasks PENDING; formal training not started; no formal results",
+  "tasks": {"0": "C19", "1": "R19", "2": "C1", "3": "R1"},
+  "concurrency": 2,
+  "per_task": {"gpu": "V100", "gpu_count": 1, "cpus": 4, "memory_gib": 32, "time_limit_hours": 12},
+  "formal_ceiling_gpu_hours": 48,
+  "source_commit": "bd01a06cda900eac5376a72ca6b8bc36c2cb0407",
+  "sealed_source_files": 490,
+  "sealed_source_manifest_sha256": "7aab074a1eb9b852e6ffa063d38fc6af57cfbe7f53a213ed8993647083510714",
+  "cpu_full": {"passed": 1096, "skipped": 3, "warnings": 19073, "seconds": 1286.94},
+  "gpu_validation": {"job": "55661530", "state": "COMPLETED", "exit": "0:0", "seconds": 689, "node_tests_passed": 97, "node_test_seconds": 222.85, "small_files_sha_verified": 29, "safe_130_epoch_hours_C_R": [7.06561287, 7.19878445], "peak_training_gib_C_R": [4.09430742, 4.65749311]}
+}

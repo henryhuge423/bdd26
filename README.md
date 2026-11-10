@@ -1,3 +1,5 @@
+> **2026-11-10 — P25 reviewed; P26 submitted:** P25 completed four 130-epoch runs. Overall recall and precision improved, while Dead recall of .524138/.517241 and precision of .744371/.742446 fell below the original criteria. The 114 verified small files include 48 final PNGs; 485 source files also matched. P26 tests a fixed constraint toward pretrained parameters on the original last-12-layer control. The full CPU suite (1,096 passed, 3 skipped) and V100 validation 55661530 passed. Formal array **55663583** was submitted once at 13:14 EST: four 12-hour tasks, concurrency 2, at most 48 GPU hours, initially pending. [Analysis, figures and receipt](docs/results/p25_p26_2026-11-10/README.md). These are repeated fold-1 point-development comparisons.
+
 > **2026-11-09 — P24 closed; P25 submitted:** P24 four130epoch runs completed; original two-seed gate failed despite consistent precision gain.126smallfiles/48finalPNG/479source verified. P25 fixed full24 layerwise adaptation passedCPU1086/3 andV10055635543(422s);formal **55635726** submitted once03:59EST,four12h tasks,concurrency2,max48GPUh. Tasks0/1RUNNING,2/3PENDING at firstcheck; submission is not completion. [EN/ZH/reader,rawresults and receipt](docs/results/p24_p25_2026-11-09/README.md). Reusedfold1 point development,notPQ/test.
 
 > **2026-11-06 — P23 closed; P24 prepared:** Final raw P23 results reproduce EMA Dead gains+.006897/+.020690; both original gates fail. D24 partial object diagnosis shows weak local response dominates misses. Higher encoder-rate P24 retains last12 and the original gate; CPU1055passed/3skipped plus71 focused checks. Expanse source sealing is in progress; no job receipt yet at this checkpoint. [EN/ZH analysis, final examples and current submission state](docs/results/p23_p24_2026-11-06/README.md). Reused fold1 point development, not PQ/test.
@@ -371,7 +373,8 @@ Full methods, uncertainty and provenance: [P0–P3 results](docs/results/P0_P3_R
 
 ### Reports
 
-- `docs/report/stage_report_6/` — latest stage VI: detailed English/Chinese reports and illustrated Chinese reader: visibility, query/point diagnostics, E19 and P3–P17 progress.
+- `docs/report/stage_report_7/` — latest stage VII: English and Chinese detailed reports, a Chinese reader, LaTeX sources and verified P17–P26 evidence.
+- `docs/report/stage_report_6/` — prior stage VI: detailed English/Chinese reports and illustrated Chinese reader: visibility, query/point diagnostics, E19 and P3–P17 progress.
 - `docs/report/stage_report_5/` — prior stage V (EN, ZH and plain-language ZH):
   typing-oracle ceiling, T0–T3 probe closure, E1 no-expert revision (E1-C/E1-M),
   E1-T label-ambiguity resonance, E3 utility-learning stop; verified numbers included.

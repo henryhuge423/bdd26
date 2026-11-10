@@ -1,6 +1,6 @@
 # P25 results and P26 follow-up — 10 November 2026
 
-P25 improved overall point detection and precision in both seeds, while its dead-nucleus recall remained below the prespecified requirements. The fixed full-depth, layerwise-rate configuration is closed. P26 tests one new training constraint: keeping the original last-12-layer encoder near its pretrained parameters.
+P25 improved overall point detection and precision in both seeds, while its dead-nucleus recall remained below the prespecified requirements. We will not pursue this full-depth, layerwise-rate configuration further. P26 tests one new training constraint: keeping the original last-12-layer encoder near its pretrained parameters.
 
 - [English analysis](RESULTS_EN.md) and [Chinese analysis](RESULTS_ZH.md)
 - [Verified aggregates and original decision](analysis.json)

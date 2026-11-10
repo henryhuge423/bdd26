@@ -1,0 +1,7 @@
+\begin{tikzpicture}
+\begin{axis}[ybar,bar width=9pt,width=.88\linewidth,height=6cm,ymin=0,ymax=1, ylabel={\fractionlabel},symbolic x coords={C19,D19,C1,D1},xtick=data,legend style={at={(.5,1.18)},anchor=north,legend columns=3},grid=major]
+\addplot coordinates {(C19,.4759) [0.476] (D19,.5241) [0.524] (C1,.4483) [0.448] (D1,.5172) [0.517]};
+\addplot coordinates {(C19,.5899) [0.590] (D19,.6504) [0.650] (C1,.5980) [0.598] (D1,.6398) [0.640]};
+\addplot coordinates {(C19,.6900) [0.690] (D19,.7444) [0.744] (C1,.6919) [0.692] (D1,.7424) [0.742]};
+\legend{\deadlabel,\overalllabel,\precisionlabel}
+\end{axis}\end{tikzpicture}
