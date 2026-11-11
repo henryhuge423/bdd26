@@ -11,7 +11,7 @@ P21 & Class-center auxiliary task & 64/.692 $\to$ 65/.699 & 70/.696 $\to$ 65/.69
 P22 & All 24 blocks, uniform rate & 67/.692 $\to$ 85/.728 & 62/.699 $\to$ 82/.734 & Dead recall and precision minima\\
 P23 & Weight averaging & 69/.692 $\to$ 70/.694 & 60/.694 $\to$ 63/.691 & Dead, gain and precision\\
 P24 & Higher rate, last 12 blocks & 67/.688 $\to$ 78/.732 & 68/.694 $\to$ 66/.731 & Dead recall and precision minima\\
-P25 & All blocks, layerwise rates & 69/.690 $\to$ 76/.744 & 65/.692 $\to$ 75/.742 & Dead recall, precision and interval\\\bottomrule
+P25 & All blocks, layerwise rates & 69/.690 $\to$ 76/.744 & 65/.692 $\to$ 75/.742 & Dead recall, precision and interval\\P26 & Pretrained-weight anchor & 67/.697 $\to$ 69/.679 & 64/.693 $\to$ 66/.688 & Dead, precision, gain and interval\\\bottomrule
 \end{tabularx}\caption{Each round uses its own fresh control; precision rounded to three decimals.}\end{table}
 
 P22 treatment finds 85 and 82 Dead nuclei, versus 76 and 75 for P25. These are not randomized treatments within a single paired experiment: P22 controls find 67 and 62, whereas P25 controls find 69 and 65. Training trajectories and layerwise rates differ. P22 uses a uniform rate across all blocks; P25 uses layerwise rates. The lower P25 counts therefore do not isolate which change caused the difference or establish a confirmed ranking. P25's improvement across all nuclei also does not automatically make it a better rare-Dead strategy: overall recall has 12,250 nuclei in its denominator, but the target subgroup has only 145.

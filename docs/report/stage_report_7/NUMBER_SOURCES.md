@@ -12,3 +12,5 @@ The machine-readable evidence files in `evidence/` travel with this report. Hist
 - Scientific definitions: `scripts/proposal_p3_utils.py`, `gt_objects` and `score_points`: class label 4 from ground truth, interior mask does not touch an image boundary, small Dead area strictly below 67 native pixels, one-to-one matching at distance at most 3 pixels; precision uses all matched candidates over all candidates.
 
 - P26 partial snapshot, 10 November 22:05 EST: Expanse job 55663583 C19/R19 COMPLETED/0:0, 130 epochs; C1/R1 epochs 120/117 running. C19 summary SHA256 bb6c78b5fc93ccba753cfd29c488458dcae66088ad16addcbe4781d09bf903d2; R19 1cc69ff50363624e70ceba6f0056921be5eedf5466dc13cd707cbbd6badeb46a. Both summary and completion hashes match project preservation manifests. Other files and full gate not independently verified in this partial snapshot.
+
+- P26 four-run final audit: `evidence/p26_gate.json`. All four 130-epoch completion, summary and 522-image evaluation files were checked against the project preservation manifests. The original admission function and independent bootstrap agree; final checkpoints were not independently rehashed.

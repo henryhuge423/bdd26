@@ -1,9 +1,9 @@
 \begin{tikzpicture}
-\begin{axis}[ybar,bar width=18pt,width=.90\linewidth,height=7cm,ymin=0,ymax=.8,
- ylabel={\fractionlabel},symbolic x coords={Dead,Overall,Precision},xtick=data,
- xticklabels={\deadlabel,\overalllabel,\precisionlabel},grid=major,
- legend style={at={(.5,1.12)},anchor=north,legend columns=2},nodes near coords, point meta=explicit symbolic]
-\addplot coordinates {(Dead,.462069) [0.462] (Overall,.583673) [0.584] (Precision,.697221) [0.697]};
-\addplot coordinates {(Dead,.475862) [0.476] (Overall,.570857) [0.571] (Precision,.678537) [0.679]};
-\legend{C19,R19}
+\begin{axis}[ybar,bar width=9pt,width=.90\linewidth,height=7cm,ymin=0,ymax=.8,
+ ylabel={\fractionlabel},symbolic x coords={C19,R19,C1,R1},xtick=data,grid=major,
+ legend style={at={(.5,1.16)},anchor=north,legend columns=3}]
+\addplot coordinates {(C19,.462069) (R19,.475862) (C1,.441379) (R1,.455172)};
+\addplot coordinates {(C19,.583673) (R19,.570857) (C1,.596245) (R1,.569224)};
+\addplot coordinates {(C19,.697221) (R19,.678537) (C1,.692519) (R1,.688080)};
+\legend{\deadlabel,\overalllabel,\precisionlabel}
 \end{axis}\end{tikzpicture}
