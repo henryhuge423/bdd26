@@ -1,6 +1,6 @@
 # Stage report 7
 
-Three PDFs and editable XeLaTeX sources are supplied: `stage_report_7_en`, `stage_report_7_zh` and `summary_plain_zh`. The `figs/` files use TikZ/PGFPlots; `assets/` contains two predetermined original P25 result images; `evidence/` contains the machine-readable numerical summaries. `NUMBER_SOURCES.md` maps claims to evidence. Run `python verify_numbers.py` to check principal P25 numbers against the bundled files.
+Three PDFs and editable XeLaTeX sources are supplied: `stage_report_7_en`, `stage_report_7_zh` and `summary_plain_zh`. The `figs/` files use TikZ/PGFPlots; `assets/` contains two predetermined original P25 result images; `evidence/` contains the machine-readable numerical summaries. The 10 November 22:05 EST update includes P26 seed 19 partial results, a cross-round comparison and enlarged fixed examples; seed 1 was still running. `NUMBER_SOURCES.md` maps claims to evidence. Run `python verify_numbers.py` to check principal P25 numbers against the bundled files.
 
 The original build used TeX Live 2022 with XeLaTeX, PGFPlots 1.18 and TeX Gyre Termes. The Chinese sources use `ctexart` with `fontset=windows` and the Windows Chinese fonts. On Windows, with these on PATH:
 

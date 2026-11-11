@@ -1,0 +1,27 @@
+{
+  "snapshot_est": "2026-11-10 22:05",
+  "job": "55663583",
+  "completed": {
+    "C19": {
+      "epochs": 130,
+      "dead_hits": 67,
+      "dead_total": 145,
+      "recall": 0.5836734693877551,
+      "precision": 0.697220867869332,
+      "summary_sha256": "bb6c78b5fc93ccba753cfd29c488458dcae66088ad16addcbe4781d09bf903d2"
+    },
+    "R19": {
+      "epochs": 130,
+      "dead_hits": 69,
+      "dead_total": 145,
+      "recall": 0.5708571428571428,
+      "precision": 0.6785367746943528,
+      "summary_sha256": "1cc69ff50363624e70ceba6f0056921be5eedf5466dc13cd707cbbd6badeb46a"
+    }
+  },
+  "running": {
+    "C1": 120,
+    "R1": 117
+  },
+  "scope": "summary and completion file hashes verified against preservation manifests; complete four-run gate not yet checked"
+}

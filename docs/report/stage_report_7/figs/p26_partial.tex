@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\begin{axis}[ybar,bar width=18pt,width=.90\linewidth,height=7cm,ymin=0,ymax=.8,
+ ylabel={\fractionlabel},symbolic x coords={Dead,Overall,Precision},xtick=data,
+ xticklabels={\deadlabel,\overalllabel,\precisionlabel},grid=major,
+ legend style={at={(.5,1.12)},anchor=north,legend columns=2},nodes near coords, point meta=explicit symbolic]
+\addplot coordinates {(Dead,.462069) [0.462] (Overall,.583673) [0.584] (Precision,.697221) [0.697]};
+\addplot coordinates {(Dead,.475862) [0.476] (Overall,.570857) [0.571] (Precision,.678537) [0.679]};
+\legend{C19,R19}
+\end{axis}\end{tikzpicture}

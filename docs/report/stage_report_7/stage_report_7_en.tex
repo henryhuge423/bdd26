@@ -7,7 +7,7 @@
 \author{bdd26 research record}\date{10 November 2026}
 \begin{document}\maketitle
 \begin{abstract}
-This report reviews point-localization studies P17 through P25. P25 adapted all encoder layers with a layerwise learning rate. Both seeds improved overall recall and precision and detected a net seven and ten more Dead nuclei, respectively. Neither met the original minimum requirements for Dead recall and precision, and neither paired interval had a strictly positive lower bound. We will not pursue this particular training configuration further. P26 tests a single change that anchors trainable encoder weights to their pretrained values; GPU validation has passed.
+This report reviews point-localization studies P17 through P25. P25 adapted all encoder layers with a layerwise learning rate. Both seeds improved overall recall and precision and detected a net seven and ten more Dead nuclei, respectively. Neither met the original minimum requirements for Dead recall and precision, and neither paired interval had a strictly positive lower bound. We will not pursue this particular training configuration further. P26 tests an anchor to pretrained weights; the first seed is complete and the second remains in progress.
 \end{abstract}\tableofcontents\newpage
 \section{The task and how to read the results}
 The project ultimately aims to identify each nucleus in microscopy images, delineate its boundary, and classify it. This stage isolates an earlier step: predict a center for each nucleus. A correct center is useful for constructing an instance, but does not establish a correct boundary or class.
@@ -28,6 +28,9 @@ P17--P24 asked whether different image features, training settings, or model upd
 \textbf{Enlarging the input and adding an auxiliary task (P20--P21).} P20 interpolated 256-pixel images to 512 before encoding. Dead hits rose from 66 to 79 and 69 to 75, while recall and precision remained below their minimum requirements and training cost rose considerably. Interpolation does not create new image detail. P21 added five class-specific center maps as training-only auxiliary targets; its Dead hits changed from 64 to 65 and 70 to 65.
 
 \textbf{Depth, parameter averaging, and learning rate (P22--P24).} P22 trained all 24 encoder blocks and gained a net 18 and 20 Dead hits. Object-level analysis showed both gains and losses. P23's exponential moving average gained one and three hits. P24 increased the uniform learning rate of the last 12 blocks from $10^{-5}$ to $3\times10^{-5}$. Precision rose in both seeds, but Dead hits changed 67 to 78 and 68 to 66. Small Dead hits improved from 7/32 to 11/32 in both seeds while changes among larger objects offset some of that gain.
+
+\def\roundxlabel{Change in Dead hits: treatment minus same-round control}
+\begin{figure}[H]\centering\input{figs/rounds.tex}\caption{P17--P25: same-round paired Dead hit differences out of 145 audit objects. Each bar uses that round's own control, not a direct randomized comparison across rounds. P22 yields the largest consistent gains, but does not pass the full gate.}\end{figure}
 
 \section{P25: full-depth layerwise adaptation}
 The encoder is the part of the model that extracts information from an image. Control C trains the last 12 UNI encoder blocks at $10^{-5}$. New approach D trains all 24, with initial block-$b$ rate $3\times10^{-5}\cdot0.95^{23-b}$: approximately $9.22\times10^{-6}$ at the bottom and $3\times10^{-5}$ at the top. The data, 130-epoch schedule, loss, decoder and prespecified decision criteria remain fixed. D changes both trainable depth and the rate distribution; the comparison evaluates the combined configuration.
@@ -52,20 +55,26 @@ The paired bootstrap resamples Dead-positive audit images within each tissue 1,0
 \subsection{Where the net changes occur}
 \begin{figure}[H]\centering\input{figs/tissue.tex}\caption{Net Dead hits by tissue: 60 in lung and 56 in colon. These comparisons were examined after the overall results.}\end{figure}
 The new approach detected nine and eight more Dead nuclei in lung images but seven and six fewer in colon images, respectively. In seed 19, the colon loss nearly offsets the lung gain. These are differences between per-image hit counts: a net gain of seven does not mean exactly seven previously missed objects were recovered while all others were retained. Five lung and colon images contain 116 of the 145 Dead nuclei, so a small number of images can have substantial influence.
-\begin{figure}[H]\centering\includegraphics[width=.94\linewidth]{assets/C19_1037.png}\\[3pt]\includegraphics[width=.94\linewidth]{assets/D19_1037.png}
-\caption{Predetermined audit image 1037, seed 19: C above, D below. Each row shows original image, annotated centers, predictions, and matching status. Magenta marks interior Dead annotations and cyan other annotations; green indicates a match, red a missed annotation, and orange an extra prediction. Image-level totals include all nuclei; the increase from 10 to 15 refers specifically to Dead nuclei. This one image illustrates, but cannot represent, the full cohort.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=.82\linewidth,trim=0 0 512 0,clip]{assets/C19_1037.png}\\[3pt]
+\includegraphics[width=.82\linewidth,trim=512 0 0 0,clip]{assets/C19_1037.png}
+\caption{Seed 19 control C: image, annotations, predictions, and matching.}\end{figure}
+\begin{figure}[H]\centering
+\includegraphics[width=.82\linewidth,trim=0 0 512 0,clip]{assets/D19_1037.png}\\[3pt]
+\includegraphics[width=.82\linewidth,trim=512 0 0 0,clip]{assets/D19_1037.png}
+\caption{Predetermined audit image 1037, seed 19: D is shown here. The two rows show original image, annotated centers, predictions, and matching status. Magenta marks interior Dead annotations and cyan other annotations; green indicates a match, red a missed annotation, and orange an extra prediction. Image-level totals include all nuclei; the increase from 10 to 15 refers specifically to Dead nuclei. This one image illustrates, but cannot represent, the full cohort.}\end{figure}
 
 \subsection{Fitting versus transfer}
 D finds 649/656 Dead nuclei on the fit images in both seeds, about 98.9\%; on audit images it finds 76/145 and 75/145, about 52\%. The model fits the training images closely, but performance is much lower on the audit images. Image differences, model features, the training objective and optimization are possible contributors.
 
 \section{P26: testing an anchor to pretrained weights}
-P26 plans a same-seed comparison of C and R. The added penalty encourages the trainable encoder parameters to remain near their pretrained values while allowing them to change. R adds only this L2SP term:
+P26 uses a same-seed comparison of C and R. The added penalty encourages the trainable encoder parameters to remain near their pretrained values while allowing them to change. R adds only this L2SP term:
 \[ L_R=L_C+\frac{0.01}{2}\sum_{\theta\in\text{trainable encoder}}(\theta-\theta_0)^2. \]
 The detection head is not anchored. The original AdamW weight decay of 0.01 remains; the penalty is applied once per effective batch. Both arms train the last 12 blocks for 130 epochs with seeds 19 and 1, the last checkpoint and the unchanged decision criteria. The fit-audit gap does not itself show that pretrained knowledge was forgotten. Li et al. introduced L2SP at ICML 2018: \url{https://proceedings.mlr.press/v80/li18a.html}.
 
 The final P26 CPU regression passed 1,096 tests with three skipped. V100 validation job 55661530 completed with COMPLETED/0:0 in 689 seconds, including 97 passing node checks. Validation compared both control seeds' gradients, parameters, optimizer and random states, and checked the added penalty's gradients and updates, BF16, frozen states and checkpoint reloads. A 1.5-fold projection for 130 epochs was 7.07/7.20 hours for C/R; peak training memory was 4.09/4.66 GiB. Hash verification covered 490 sealed source files and 29 small validation artifacts.
 
-Formal array 55663583 was submitted at 13:14:02 EST on 10 November 2026. Its four tasks are C19, R19, C1 and R1, with at most two concurrent; each requests one V100 for at most 12 hours, for a total ceiling of 48 GPU hours. At the first post-submission check all four were pending: formal training had not started and no formal outcome was available. If the original decision criteria are not met, this particular configuration will not be pursued further.
+At 22:05 EST on 10 November, tasks C19 and R19 had completed 130 epochs with SLURM COMPLETED/0:0; C1 and R1 were running at epochs 120 and 117, respectively. In the completed seed 19 pair, C versus R audit Dead recall was 67/145 (0.4621) versus 69/145 (0.4759), overall recall 0.5837 versus 0.5709, and precision 0.6972 versus 0.6785. The Dead increase is 2/145 (0.0138); R falls below the prespecified absolute Dead and precision minima and the 0.05 gain requirement for this seed. Summary and completion files match their preservation-manifest SHA256 values. The remaining runs and full paired gate have not yet been verified; this is a partial result, not a two-seed conclusion.
+\begin{figure}[H]\centering\input{figs/p26_partial.tex}\caption{P26 seed 19 only: the anchored arm gains two Dead matches while overall recall and precision fall. The second seed was still running at the snapshot.}\end{figure}
 
 \input{appendix_en.tex}
 \section{Evidence and verification}
