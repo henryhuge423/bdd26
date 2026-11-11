@@ -1,82 +1,69 @@
-\documentclass[11pt,a4paper]{article}
-\usepackage[margin=23mm]{geometry}\usepackage{fontspec}\setmainfont{TeX Gyre Termes}
-\usepackage{booktabs,tabularx,array,graphicx,amsmath,xcolor,float,tikz,pgfplots}\pgfplotsset{compat=1.18}
-\usepackage[hidelinks]{hyperref}\setlength{\parskip}{.5em}\setlength{\parindent}{0pt}\emergencystretch=3em
-\def\fractionlabel{Fraction}\def\deadlabel{Dead recall}\def\overalllabel{Overall recall}\def\precisionlabel{Precision}\def\netlabel{Net Dead hits: D minus C}\def\seedlabel{Seed}\def\lunglabel{Lung}\def\colonlabel{Colon}
-\title{\bfseries Finding More Nucleus Centers\\[6pt]\large Nuclear instance segmentation: stage report 7}
-\author{bdd26 research record}\date{10 November 2026}
-\begin{document}\maketitle
-\begin{abstract}
-This report reviews point-localization studies P17 through P26. P25 adapted all encoder layers with a layerwise learning rate. Both seeds improved overall recall and precision and detected a net seven and ten more Dead nuclei, respectively. Neither met the original minimum requirements for Dead recall and precision, and neither paired interval had a strictly positive lower bound. We will not pursue this particular training configuration further. P26 anchors trainable weights to their pretrained values; both seeds fail the original gate.
-\end{abstract}\tableofcontents\newpage
-\section{The task and how to read the results}
-The project ultimately aims to identify each nucleus in microscopy images, delineate its boundary, and classify it. This stage isolates an earlier step: predict a center for each nucleus. A correct center is useful for constructing an instance, but does not establish a correct boundary or class.
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=22mm]{geometry}
+\usepackage{booktabs,tabularx,array,graphicx,amsmath,xcolor,float,tikz,pgfplots}
+\pgfplotsset{compat=1.18}\usepackage[hidelinks]{hyperref}
+\setlength{\parskip}{.45em}\setlength{\parindent}{0pt}\emergencystretch=3em
+\def\fitlabel{Fit overall recall}\def\controlname{Control}\def\treatmentname{Treatment}
+\def\objectlabel{Interior Dead objects}\def\retained{Retained}\def\gained{Gained}\def\lost{Lost}\def\missed{Missed by both}\def\seedname{Seed}
+\def\roundxlabel{Dead hit change: treatment minus same-round control}\def\seedlabel{Seed}
+\def\fractionlabel{Fraction}\def\deadlabel{Dead recall}\def\overalllabel{Overall recall}\def\precisionlabel{Precision}
+\def\fitdead{Fit Dead recall}\def\auditdead{Audit Dead recall}
+\title{\bfseries Nucleus-center localization: experiments and object-level diagnosis\\\large Stage report 7}\author{bdd26 research}\date{10 November 2026}\begin{document}\maketitle\tableofcontents\newpage
+\section{Question and stage findings}
+The model places one center point per nucleus. The audit set contains 522 images and 12,250 nuclei, including 145 interior Dead nuclei in 11 images; the fit set contains 2,134 images. One-to-one matching uses a three-pixel radius. Overall recall measures coverage of annotated nuclei, Dead recall measures the annotated Dead subgroup, and precision is the fraction of predicted points that match.
 
-Dead denotes dying or dead nuclei, including apoptotic and necrotic examples. These are rare and often difficult to locate. Predictions are matched one-to-one to annotated centers using a fixed rule. \textbf{Recall} is the fraction of annotated nuclei found; \textbf{precision} is the fraction of predicted points that match an annotation. Producing more points can recover misses but can also create false alarms, so both numbers matter.
+P17 exposed a coverage collapse during fitting. P19 halved the number of optimizer updates per epoch and reduced fit coverage. P20 gained Dead matches at about 4.3 times the training cost. P21's auxiliary semantic head improved fitting while audit coverage fell. P22 full-depth adaptation produced the strongest consistent Dead gains and fewer extra points. P23 weight averaging changed only a few Dead matches; P24 improved precision with tissue-dependent changes; P25 improved overall point coverage; P26 anchoring reduced overall recall and precision. The following sections trace these outcomes to individual images and nuclei.
+\begin{figure}[H]\centering\input{figs/rounds.tex}\caption{Dead hit changes within each round and seed, out of 145; P22 shows the largest gain in each seed.}\end{figure}
+\section{P17--P21: fit, optimization and image scale}
+\subsection{P17: high precision from a small set of candidates}
+The scratch CNN K produced 1,795 points and matched 1,709 in seed 19, giving 95.21\% precision. Its matched UNI control produced 10,644 points and matched 7,285, giving 68.44\% precision. K emitted no point in 198/522 audit images, versus 22 for C. Fit recall was 14.41\%/11.92\% and audit recall 13.95\%/11.89\%; Dead hits were 30/31 versus 60/67 for C. The main operational issue is missing candidates across much of the image set.
 
-The main point head predicts locations, not a class for each point. Dead recall is calculated after matching, using the ground-truth Dead labels to select the subgroup; precision is the matched fraction of all main-map points, not Dead classification precision. An interior nucleus has a mask that does not touch the image boundary. A small Dead nucleus is an interior Dead object with an annotated mask area below 67 native pixels. One-to-one matching allows a Euclidean distance of at most three native pixels, maximizes the number of matches, and then minimizes the sum of squared distances.
+\subsection{P18: RGB residual path}
+Adding the RGB path H raised seed-19 fit recall from 97.43\% to 98.52\% and audit matches from 7,172 to 7,361. Seed 1 gained 37 audit matches. Dead hits changed 71 to 70 and 64 to 67. Seed 19 gained four Dead hits in lung and lost five in colon; seed 1 gained two in each tissue and lost two in cervix. The overall gain and the tissue-specific changes describe different parts of the same result.
 
-These are repeated PanNuke fold 1 development comparisons. Training images are used to fit the model; audit images compare training approaches. The two random seeds repeat each comparison under different training randomness; they do not change the data split. The audit contains 522 images, of which 11 contain 145 interior Dead nuclei. It is not a new independent patient cohort. Point matching is not instance segmentation PQ or an official three-fold test result. Each new approach is compared with its own freshly trained, same-seed control, rather than ranked across different experimental rounds.
+\subsection{P19: effective batch and optimizer steps}
+Increasing effective batch from 16 to 32 reduced AdamW updates per epoch from 134 to 67. Fit recall fell from 97.37\% to 94.74\% and from 97.91\% to 94.10\%; Dead hits changed 66 to 57 and 63 to 63. In seed 1 colon gained five, while esophagus and lung lost four and two. The fit decline appears alongside fewer updates under the fixed 130-epoch schedule. Training time fell by only 1.5--1.9\% with the same physical batch.
 
-\section{What P17--P24 established}
-P17--P24 asked whether different image features, training settings, or model updates could improve localization. None of these approaches met all prespecified decision criteria in both seeds; their results reveal different kinds of difficulty.
+\subsection{P20: larger encoder input}
+Interpolating the input from 256 to 512 raised Dead hits from 66 to 79 and 69 to 75. Seed 19 gained ten in lung and five in colon, while losing two in cervix. Seed 1 gained four in lung and five in cervix, while losing three in esophagus. Small-Dead hits changed 7 to 9 and 8 to 7. Fit Dead hits rose from 629/627 to 653/655; audit matches changed by +3 and -244. Treatment training took 17.1--17.3 hours versus about 4 hours for C.
 
-\textbf{Training a convolutional model from scratch (P17).} Fit-set overall recall was only 14.41\% and 11.92\% in the two seeds, and audit coverage was also low. Architecture, pretraining, initialization and optimization changed together, so the comparison evaluates the combined approach.
+\subsection{P21: five-class center supervision}
+Auxiliary arm A reduced audit matches from 7,300 to 7,132 and 7,389 to 7,241. Dead hits changed 64 to 65 and 70 to 65. In seed 1 an esophagus image fell from 7/8 to 2/8 and a lung image from 11 to 7; small Dead fell from 10/32 to 5/32. Fit matching rose while audit matching fell.
 
-\textbf{Adding RGB information and changing batch size (P18--P19).} P18 retained UNI and added an RGB residual path; Dead recall and precision remained below their minimum requirements. P19 increased effective batch size from 16 to 32: Dead hits changed from 66 to 57 and from 63 to 63. The larger batch also halved updates per epoch, so this compares training behavior as well as batch size.
+Lung image 1025 contains 38 annotated nuclei including 25 interior Dead. Seed-19 C produced 38 points and matched 29; A produced 39 and matched 27. The green, red and orange marks show the spatial changes in matched, missed and extra points.
+\begin{figure}[H]\centering\input{figs/fit_comparison.tex}\caption{Seed-19 fit recall for each round’s control and treatment.}\end{figure}
+\begin{figure}[H]\centering\input{figs/p20_fit_audit.tex}\caption{P20 Dead recall on fit and audit images; C encodes 256 pixels, U encodes an interpolated 512-pixel image.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=.47\linewidth]{assets/casebook/p21_c_1025.png}\hfill\includegraphics[width=.47\linewidth]{assets/casebook/p21_a_1025.png}\caption{P21 lung image 1025: C left, A right. Green: matched; red: missed; orange: extra.}\end{figure}
+\section{P22: which nuclei did full-depth adaptation recover?}
+Control C adapts the last 12 UNI blocks and M adapts all 24. Dead hits rose 67 to 85 and 62 to 82; overall recall rose 6.02 and 6.15 percentage points, and precision 3.64 and 3.46 points. Seed 19 produced 488 more candidates and 738 more matches, reducing extra points by 250. Seed 1 produced 542 more candidates and 753 more matches, reducing extra points by 211. Training time increased by 42--43\%, with peak memory rising from 4.05 to 6.75 GiB.
 
-\textbf{Enlarging the input and adding an auxiliary task (P20--P21).} P20 interpolated 256-pixel images to 512 before encoding. Dead hits rose from 66 to 79 and 69 to 75, while recall and precision remained below their minimum requirements and training cost rose considerably. Interpolation does not create new image detail. P21 added five class-specific center maps as training-only auxiliary targets; its Dead hits changed from 64 to 65 and 70 to 65.
+Of 145 Dead objects, seed 19 retained 55 hits, gained 30, lost 12 and missed 48 in both arms; seed 1 retained 56, gained 26, lost 6 and missed 57 in both. Seed-19 lung contributed a net 12 and cervix a net 7. Colon had five gains and five losses. Small-Dead hits rose from 7/32 to 11/32 in both seeds.
 
-\textbf{Depth, parameter averaging, and learning rate (P22--P24).} P22 trained all 24 encoder blocks and gained a net 18 and 20 Dead hits. Object-level analysis showed both gains and losses. P23's exponential moving average gained one and three hits. P24 increased the uniform learning rate of the last 12 blocks from $10^{-5}$ to $3\times10^{-5}$. Precision rose in both seeds, but Dead hits changed 67 to 78 and 68 to 66. Small Dead hits improved from 7/32 to 11/32 in both seeds while changes among larger objects offset some of that gain.
+Each crop below shows the original image, C matching and M matching. The white-and-black ring marks the same GT nucleus. Green marks a match, red a miss and orange an extra point. Each 80-by-80-pixel crop is enlarged by nearest-neighbor interpolation. The local response is the maximum within three pixels of the GT center; the fixed threshold is 0.5.
+\begin{figure}[H]\centering\input{figs/p22_transitions.tex}\caption{P22 object-level transitions, totaling 145 for each seed.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=.98\linewidth]{assets/casebook/recovered_1037.png}\caption{Lung 1037, object 67 (row 98, column 180; area 65 pixels): C response approximately 0, M 0.792; miss becomes match.}\end{figure}
+The small nucleus lies beside darker staining. C gives a red miss at this location; M gives a green match.
+\begin{figure}[H]\centering\includegraphics[width=.98\linewidth]{assets/casebook/missed_1037.png}\caption{Lung 1037, object 57 (row 43, column 37; area 214 pixels): C response approximately 0, M 0.446; both outputs miss it.}\end{figure}
+The nucleus lies among several dark-stained structures. M increases the response but it remains below 0.5, leaving a red miss.
+\begin{figure}[H]\centering\includegraphics[width=.98\linewidth]{assets/casebook/lost_0776.png}\caption{Colon 776, object 7 (row 148, column 26; area 137 pixels): C response 0.835 and matched; M response 0.146 and missed.}\end{figure}
+The same GT position changes from green to red. The object-level record reveals exchanges that net counts compress.
+\section{P23--P26: averaging, learning rates and anchoring}
+\subsection{P23: EMA mainly preserves existing detections}
+Each seed produces final C and exponential-moving-average E weights from one trajectory. Dead hits changed 69 to 70 and 60 to 63; small Dead remained 6/32 in all four outputs. In seed 19 all 69 existing matches were retained, one low-response object became matched, and 72 remained low-response. The seed-19 gain was in lung image 1025; seed-1 gains occurred in colon 776, colon 1482 and cervix 1756.
 
-\def\roundxlabel{Change in Dead hits: treatment minus same-round control}
-\begin{figure}[H]\centering\input{figs/rounds.tex}\caption{P17--P26: same-round paired Dead hit differences out of 145 audit objects. Each bar uses that round's own control, not a direct randomized comparison across rounds. P22 yields the largest consistent gains, but does not pass the full gate.}\end{figure}
+\subsection{P24: higher learning rate improves precision unevenly across images}
+Increasing the last-12 learning rate from $10^{-5}$ to $3\times10^{-5}$ raised precision from 0.688 to 0.732 and 0.694 to 0.731. Candidate counts fell by 589/471 while all-nucleus matches rose by 29/38. Dead hits changed 67 to 78 and 68 to 66. Small-Dead hits rose 7/32 to 11/32 in both seeds; changes among larger Dead were +7 and -6. Lung image 1037 gained 5/3 Dead hits, whereas lung 1025 lost 1/3; cervix 1756 changed +2/-4. In the image below several red marks turn green in L, while other red and orange marks remain.
 
-\section{P25: full-depth layerwise adaptation}
-The encoder is the part of the model that extracts information from an image. Control C trains the last 12 UNI encoder blocks at $10^{-5}$. New approach D trains all 24, with initial block-$b$ rate $3\times10^{-5}\cdot0.95^{23-b}$: approximately $9.22\times10^{-6}$ at the bottom and $3\times10^{-5}$ at the top. The data, 130-epoch schedule, loss, decoder and prespecified decision criteria remain fixed. D changes both trainable depth and the rate distribution; the comparison evaluates the combined configuration.
+\begin{figure}[H]\centering\includegraphics[width=.47\linewidth]{assets/casebook/p24_c_1037.png}\hfill\includegraphics[width=.47\linewidth]{assets/casebook/p24_l_1037.png}\caption{P24 lung image 1037, seed 19: C left, L right. Green marks matches, red misses, orange extras.}\end{figure}
+\subsection{P25: layerwise adaptation across all blocks}
+The 24-block layerwise recipe raised overall recall from 0.590/0.598 to 0.650/0.640 and precision from 0.690/0.692 to 0.744/0.742. Dead hits changed 69 to 76 and 65 to 75. Matches increased by 741/512 while extra points fell by 510/544. Lung image 1037 changed 10 to 15 and 10 to 16; colon image 1482 changed 15 to 9 and 14 to 10. These opposite tissue changes explain the smaller total net gain.
 
-All four runs completed 130 epochs and 17,420 optimizer updates; results use the last checkpoint. Overall recall has 12,250 annotated nuclei as its denominator, and Dead recall has 145. Precision uses each run's actual candidate count.
-\begin{table}[H]\centering\small\begin{tabular}{lrrrrr}\toprule
-Seed/arm & Dead hits & Dead recall & Overall recall & Precision & Small Dead/32\\\midrule
-19 C & 69 & .475862 & .589878 & .690031 & 8\\
-19 D & 76 & .524138 & .650367 & .744371 & 10\\
-1 C & 65 & .448276 & .598041 & .691850 & 7\\
-1 D & 75 & .517241 & .639837 & .742446 & 12\\\bottomrule
-\end{tabular}\caption{P25 fixed-decoder audit results.}\end{table}
-\begin{figure}[H]\centering\input{figs/metrics.tex}\caption{D improves both overall recall and precision in each seed, while Dead recall remains below the original 0.60 floor.}\end{figure}
+\subsection{P26: anchoring to pretrained weights}
+All four tasks completed 130 epochs. Dead hits changed 67 to 69 and 64 to 66. R overall recall was 0.571/0.569 versus C 0.584/0.596; R precision was 0.679/0.688 versus C 0.697/0.693. Both paired Dead gains were 2/145, with original intervals $[-0.006173,0.053793]$ and $[-0.071429,0.061224]$. The anchor reduced overall coverage and precision in this comparison, with a small Dead change.
 
-In seed 19, D matched 741 more nuclei (7,226 to 7,967) while producing 231 more candidates (10,472 to 10,703). In seed 1, it matched 512 more (7,326 to 7,838) with 32 fewer candidates (10,589 to 10,557). Both precision and overall recall improved together.
+\section{Synthesis: where misses arise}
+Across the four P22 models, 94.87\%--97.59\% of missed Dead objects had a local maximum below 0.5 within three pixels of the annotated center. Seed-19 C/M had 74/57 such low-response objects and 4/3 localization-or-NMS misses. Object 57 illustrates a response that rises yet remains below threshold; object 67 crosses the threshold and matches; colon object 7 shows a response that weakens in the same comparison. These locations guide further inspection of local features, similar fit-set morphology and center-response distributions across tissues.
 
-\subsection{The original decision rule}
-Both seeds had to meet every requirement: Dead recall at least 0.60, a gain of at least 0.05 over the same-seed control, a strictly positive lower bound of the original paired bootstrap 95\% interval, precision at least 0.75, and the support, relative-performance and nondegeneracy conditions. A pass on one condition cannot replace a failure on another.
-
-The paired bootstrap resamples Dead-positive audit images within each tissue 1,000 times (random seed 20261018) to describe uncertainty on this image set; it is not independent patient-level validation. Seed 19 gained $7/145=0.048276$, with interval $[-0.010417,0.164835]$; seed 1 gained $10/145=0.068966$, with interval $[0,0.194031]$. Both runs fall short of the minimum Dead recall and precision; neither interval has a strictly positive lower bound. Seed 19 also falls short of the gain minimum. The zero lower bound for seed 1 is not positive. The original rule and independent recomputation agree: both seeds fail, so we will not pursue this exact combined configuration further.
-
-\subsection{Where the net changes occur}
-\begin{figure}[H]\centering\input{figs/tissue.tex}\caption{Net Dead hits by tissue: 60 in lung and 56 in colon. These comparisons were examined after the overall results.}\end{figure}
-The new approach detected nine and eight more Dead nuclei in lung images but seven and six fewer in colon images, respectively. In seed 19, the colon loss nearly offsets the lung gain. These are differences between per-image hit counts: a net gain of seven does not mean exactly seven previously missed objects were recovered while all others were retained. Five lung and colon images contain 116 of the 145 Dead nuclei, so a small number of images can have substantial influence.
-\begin{figure}[H]\centering\includegraphics[width=.82\linewidth,trim=0 0 512 0,clip]{assets/C19_1037.png}\\[3pt]
-\includegraphics[width=.82\linewidth,trim=512 0 0 0,clip]{assets/C19_1037.png}
-\caption{Seed 19 control C: image, annotations, predictions, and matching.}\end{figure}
-\begin{figure}[H]\centering
-\includegraphics[width=.82\linewidth,trim=0 0 512 0,clip]{assets/D19_1037.png}\\[3pt]
-\includegraphics[width=.82\linewidth,trim=512 0 0 0,clip]{assets/D19_1037.png}
-\caption{Predetermined audit image 1037, seed 19: D is shown here. The two rows show original image, annotated centers, predictions, and matching status. Magenta marks interior Dead annotations and cyan other annotations; green indicates a match, red a missed annotation, and orange an extra prediction. Image-level totals include all nuclei; the increase from 10 to 15 refers specifically to Dead nuclei. This one image illustrates, but cannot represent, the full cohort.}\end{figure}
-
-\subsection{Fitting versus transfer}
-D finds 649/656 Dead nuclei on the fit images in both seeds, about 98.9\%; on audit images it finds 76/145 and 75/145, about 52\%. The model fits the training images closely, but performance is much lower on the audit images. Image differences, model features, the training objective and optimization are possible contributors.
-
-\section{P26: testing an anchor to pretrained weights}
-P26 uses a same-seed comparison of C and R. The added penalty encourages the trainable encoder parameters to remain near their pretrained values while allowing them to change. R adds only this L2SP term:
-\[ L_R=L_C+\frac{0.01}{2}\sum_{\theta\in\text{trainable encoder}}(\theta-\theta_0)^2. \]
-The detection head is not anchored. The original AdamW weight decay of 0.01 remains; the penalty is applied once per effective batch. Both arms train the last 12 blocks for 130 epochs with seeds 19 and 1, the last checkpoint and the unchanged decision criteria. The fit-audit gap does not itself show that pretrained knowledge was forgotten. Li et al. introduced L2SP at ICML 2018: \url{https://proceedings.mlr.press/v80/li18a.html}.
-
-The final P26 CPU regression passed 1,096 tests with three skipped. V100 validation job 55661530 completed with COMPLETED/0:0 in 689 seconds, including 97 passing node checks. Validation compared both control seeds' gradients, parameters, optimizer and random states, and checked the added penalty's gradients and updates, BF16, frozen states and checkpoint reloads. A 1.5-fold projection for 130 epochs was 7.07/7.20 hours for C/R; peak training memory was 4.09/4.66 GiB. Hash verification covered 490 sealed source files and 29 small validation artifacts.
-
-All four P26 tasks completed 130 epochs with SLURM COMPLETED/0:0. For seed 19, C and R matched 67 and 69 of 145 Dead nuclei; for seed 1, 64 and 66. In each seed the Dead gain was 0.013793. Paired 95\% intervals were [$-$0.006173, 0.053793] and [$-$0.071429, 0.061224]. R overall recall was 0.570857/0.569224 versus C 0.583673/0.596245, and R precision was 0.678537/0.688080 versus C 0.697221/0.692519. Both seeds fail the original gate, independently reproduced. Summary, completion and evaluation payloads for all four runs match their preservation manifests; checkpoints were not independently rehashed.
-\begin{figure}[H]\centering\input{figs/p26_partial.tex}\caption{P26 four-run audit: the anchored arm gains two Dead matches in each seed while overall recall and precision fall.}\end{figure}
-
-\input{appendix_en.tex}
-\section{Evidence and verification}
-All four P25 top-level SLURM tasks report COMPLETED/0:0. Their elapsed times are 4:07:51, 5:49:40, 4:08:06 and 5:53:40. With one GPU per task, their sum is 19:59:17, or 19.9881 GPU hours, including job-level overhead. The collection records verification of 114 small files, including 48 final PNGs, and 485 sealed source files. Large checkpoints were checked against recorded sizes and preservation inventories; they were not independently transferred and rehashed in this review. The accompanying \texttt{NUMBER\_SOURCES.md} maps the figures and claims to their records.
+Pairwise results use each round's own same-seed control. \texttt{NUMBER\_SOURCES.md} records source files, matching definitions and image provenance.
+\begin{figure}[H]\centering\input{figs/p26_partial.tex}\caption{P26 audit metrics for C and R in both seeds.}\end{figure}
 \end{document}

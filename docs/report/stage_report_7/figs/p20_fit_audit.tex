@@ -1,0 +1,7 @@
+\begin{tikzpicture}
+\begin{axis}[ybar,bar width=16pt,width=.9\linewidth,height=6cm,ymin=0,ymax=1.1,
+ ylabel={\fractionlabel},symbolic x coords={C19,U19,C1,U1},xtick=data,grid=major,
+ legend style={at={(.5,1.14)},anchor=north,legend columns=2}]
+\addplot coordinates {(C19,.95884) (U19,.99543) (C1,.95579) (U1,.99848)};
+\addplot coordinates {(C19,.45517) (U19,.54483) (C1,.47586) (U1,.51724)};
+\legend{\fitdead,\auditdead}\end{axis}\end{tikzpicture}

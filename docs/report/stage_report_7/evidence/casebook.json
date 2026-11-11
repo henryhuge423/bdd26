@@ -1,0 +1,131 @@
+{
+  "source": "docs/results/p23_p24_2026-11-06/evidence/d24_recovered_six.jsonl",
+  "source_sha256": "1dd28abe8b42468b27df68c72ffd527dc83d19323d843ae669bfe6a9e962e90f",
+  "coordinate_order": "row,column",
+  "objects": [
+    {
+      "tag": "P22_C_19",
+      "gt_index": 67,
+      "kind": 4,
+      "center": [
+        98,
+        180
+      ],
+      "interior": true,
+      "area": 65,
+      "reason": "low_response",
+      "radius3_max": 0.00031688943272456527,
+      "center_response": 0.00031688943272456527,
+      "neighbors12": 0,
+      "candidate_index": null,
+      "candidate_score": null,
+      "image": 1037,
+      "tissue": "Lung"
+    },
+    {
+      "tag": "P22_C_19",
+      "gt_index": 57,
+      "kind": 4,
+      "center": [
+        43,
+        37
+      ],
+      "interior": true,
+      "area": 214,
+      "reason": "low_response",
+      "radius3_max": 0.00024826108710840344,
+      "center_response": 3.542121021382627e-06,
+      "neighbors12": 0,
+      "candidate_index": null,
+      "candidate_score": null,
+      "image": 1037,
+      "tissue": "Lung"
+    },
+    {
+      "tag": "P22_C_19",
+      "gt_index": 7,
+      "kind": 4,
+      "center": [
+        148,
+        26
+      ],
+      "interior": true,
+      "area": 137,
+      "reason": "matched",
+      "radius3_max": 0.8350804448127747,
+      "center_response": 3.5003429843527556e-07,
+      "neighbors12": 0,
+      "candidate_index": 11,
+      "candidate_score": 0.8350804448127747,
+      "image": 776,
+      "tissue": "Colon"
+    },
+    {
+      "tag": "P22_M_19",
+      "gt_index": 67,
+      "kind": 4,
+      "center": [
+        98,
+        180
+      ],
+      "interior": true,
+      "area": 65,
+      "reason": "matched",
+      "radius3_max": 0.7917909026145935,
+      "center_response": 4.370361352812324e-07,
+      "neighbors12": 0,
+      "candidate_index": 51,
+      "candidate_score": 0.7917909026145935,
+      "image": 1037,
+      "tissue": "Lung"
+    },
+    {
+      "tag": "P22_M_19",
+      "gt_index": 57,
+      "kind": 4,
+      "center": [
+        43,
+        37
+      ],
+      "interior": true,
+      "area": 214,
+      "reason": "low_response",
+      "radius3_max": 0.44601210951805115,
+      "center_response": 0.44601210951805115,
+      "neighbors12": 0,
+      "candidate_index": null,
+      "candidate_score": null,
+      "image": 1037,
+      "tissue": "Lung"
+    },
+    {
+      "tag": "P22_M_19",
+      "gt_index": 7,
+      "kind": 4,
+      "center": [
+        148,
+        26
+      ],
+      "interior": true,
+      "area": 137,
+      "reason": "low_response",
+      "radius3_max": 0.1463310569524765,
+      "center_response": 1.914287395266001e-07,
+      "neighbors12": 0,
+      "candidate_index": null,
+      "candidate_score": null,
+      "image": 776,
+      "tissue": "Colon"
+    }
+  ],
+  "original_image_sha256": {
+    "p22_c_1037.png": "e235dc97c7f744b0ef97da19f1b9daf84e5580f7112b82af9174892ffb61c1c7",
+    "p22_m_1037.png": "9bbc0ec4adb37b295f4d310b05586ca1ca83836fe3c6468aeffb67a7ea00557d",
+    "p22_c_0776.png": "bf8c235281b567114bb84dbb40ca82054e17bdd991e4a16f46978ee2722a9a56",
+    "p22_m_0776.png": "5ff8643a502dedb665a5b535fdd5675250159b122d095d054b66b9360652b8c4",
+    "p21_c_1025.png": "fc511006f13cc0c2673642deceb13cb13276266624b3ccfddb35fbd9a314648b",
+    "p21_a_1025.png": "9de4b157c380c74784e14aa319f3b8cf37c3dbd5619a600a7ef4fc8843d59208",
+    "p24_c_1037.png": "7cf9f3f5aab9244fe237f634bf6d49045b0dcb4d63869cb2e2564cb96df7ee22",
+    "p24_l_1037.png": "9ad89363a364297d277cc982e7490bffcd6af0caf5cd2868331b8e49f900dc97"
+  }
+}

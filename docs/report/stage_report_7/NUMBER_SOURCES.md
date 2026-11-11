@@ -1,16 +1,16 @@
-# Stage 7 numerical sources and calculations
+# Stage 7 evidence and figure sources
 
-The machine-readable evidence files in `evidence/` travel with this report. Historical source records below are indexed relative to the project repository root. Snapshot: 10 November 2026, P25 completed; P26 formal array submitted and pending at first check.
+The cohort is fold 1: 2,134 fit images, 522 audit images, 12,250 audit nuclei and 145 interior Dead nuclei across 11 audit images. Matching is one-to-one within three native pixels. See `scripts/proposal_p3_utils.py` for object and matching definitions.
 
-- P25 audit, fit, pairwise differences, bootstrap intervals, original gate and independent agreement: `evidence/p25_analysis.json`, especially `runs`, `pairs`, `original_gate` and `independent_gate_equal`. The pair structure uses `H_hits` as its generic treatment label; the values are P25 D and agree with the run aggregates.
-- P25 fixed-example transitions and leave-one-image analysis: `evidence/descriptive_sensitivity.json`. This corrected output checks per-image object counts against original scores; an earlier diagnostic draft with reversed GT/prediction indices failed that assertion and is not used.
-- P25 GPU cost: `evidence/p25_analysis.json` `sacct`, top-level array tasks 0–3, one GPU each: 04:07:51 + 05:49:40 + 04:08:06 + 05:53:40 = 19:59:17 = 71,957 seconds / 3,600 = 19.9880556 hours. Batch, extern and python substeps are not additional tasks.
-- Figures: `figs/metrics.tex` uses the four `runs.*.audit` aggregates; `figs/tissue.tex` uses `pairs.*.dead_tissues`. `assets/C19_1037.png` and `assets/D19_1037.png` are the original predetermined final-checkpoint examples. Image 1037 Dead counts 10 and 15 are in `pairs.19.dead_images`.
-- Collection evidence, original result files, 48 fixed images, preservation records and the historical reports are indexed under `docs/results/` in the project. The P24 and P25 design record is `docs/results/p24_p25_2026-11-09/`; the P25 closeout record is `docs/results/p25_p26_2026-11-10/`. Large checkpoints were size-checked against preservation records but were not independently transferred or rehashed for this review.
-- Earlier comparisons: P17 closeout 26 October; P18 closeout 27 October; P19/P20 `docs/results/p19_p20_2026-10-27/`; P20/P21 `docs/results/p20_p21_2026-10-30/`; P21/P22 `docs/results/p21_p22_2026-11-01/`; P22 closeout 4 November; P23/P24 6 November; P24/P25 `docs/results/p24_p25_2026-11-09/`. See each round's source record for its same-round controls and full decision details.
-- P26 implementation, validation and initial formal receipt: `evidence/p26_submission.json`. Its current running state must be read from the project record. L2SP method reference: https://proceedings.mlr.press/v80/li18a.html.
-- Scientific definitions: `scripts/proposal_p3_utils.py`, `gt_objects` and `score_points`: class label 4 from ground truth, interior mask does not touch an image boundary, small Dead area strictly below 67 native pixels, one-to-one matching at distance at most 3 pixels; precision uses all matched candidates over all candidates.
+- P17: `docs/results/PROPOSAL_P17_RESULTS_2026-10-26.md`; 1,795 candidates, 1,709 matches and 198 empty audit images for K19.
+- P18: `docs/results/p18_p19_2026-10-27/P18_RESULTS_EN.md` and `p18_independent_analysis.json`; organ and image-level counts.
+- P19: `docs/results/p19_p20_2026-10-27/RESEARCH_REVIEW_ZH.md`, `P19_NUMBERS.json`.
+- P20: `docs/results/p20_p21_2026-10-30/RESEARCH_REVIEW_ZH.md`, `P20_NUMBERS.json`, `P20_DIAGNOSTICS.json`.
+- P21: `docs/results/p21_p22_2026-11-01/RESEARCH_REVIEW_ZH.md`, `P21_NUMBERS.json`; fixed final C19/A19 lung 1025 images in `assets/originals`.
+- P22: `docs/results/p22_p23_2026-11-04/P22_NUMBERS.json`; `docs/results/p23_p24_2026-11-06/evidence/d24_recovered_six.jsonl` supplies per-object matches, response maxima, area and coordinates. `evidence/casebook.json` contains the six selected C/M records and hashes of the included original images. `make_casebook.py` crops 80x80-pixel regions and adds a ring centered at the GT position.
+- P23: `docs/results/p23_p24_2026-11-06/RESULTS_ZH.md`, `raw_verification.json`, and D24 object records.
+- P24: `docs/results/p24_p25_2026-11-09/RESULTS_ZH.md`, `analysis.json`, `descriptive_sensitivity.json`, and the original image files under that directory's `raw/`.
+- P25: `evidence/p25_analysis.json`, `evidence/descriptive_sensitivity.json`; `verify_numbers.py` reproduces the principal table, gates and GPU-time sum.
+- P26: `evidence/p26_gate.json`; the original admission implementation and independent bootstrap were applied to four saved 522-image evaluation files. Each evaluation, summary and 130-epoch completion record matched its preservation manifest.
 
-- P26 partial snapshot, 10 November 22:05 EST: Expanse job 55663583 C19/R19 COMPLETED/0:0, 130 epochs; C1/R1 epochs 120/117 running. C19 summary SHA256 bb6c78b5fc93ccba753cfd29c488458dcae66088ad16addcbe4781d09bf903d2; R19 1cc69ff50363624e70ceba6f0056921be5eedf5466dc13cd707cbbd6badeb46a. Both summary and completion hashes match project preservation manifests. Other files and full gate not independently verified in this partial snapshot.
-
-- P26 four-run final audit: `evidence/p26_gate.json`. All four 130-epoch completion, summary and 522-image evaluation files were checked against the project preservation manifests. The original admission function and independent bootstrap agree; final checkpoints were not independently rehashed.
+Figures `rounds.tex`, `fit_comparison.tex`, `p20_fit_audit.tex`, `p22_transitions.tex` and `p26_partial.tex` are generated by TikZ/PGFPlots during compilation. Original final-checkpoint PNGs and enlarged crops are included in `assets/originals` and `assets/casebook`. The green, red, and orange overlays encode matched, missed, and extra points. The white-black ring in the three object cases marks the selected GT center.

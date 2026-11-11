@@ -1,0 +1,7 @@
+\begin{tikzpicture}
+\begin{axis}[ybar,bar width=12pt,width=.9\linewidth,height=6cm,ymin=0,ymax=1.08,
+ ylabel={\fitlabel},symbolic x coords={P17,P19,P20,P22},xtick=data,grid=major,
+ legend style={at={(.5,1.14)},anchor=north,legend columns=2},point meta=explicit symbolic]
+\addplot coordinates {(P17,.9789) [0.979] (P19,.9737) [0.974] (P20,.9785) [0.979] (P22,.9777) [0.978]};
+\addplot coordinates {(P17,.1441) [0.144] (P19,.9474) [0.947] (P20,.9976) [0.998] (P22,.9882) [0.988]};
+\legend{\controlname,\treatmentname}\end{axis}\end{tikzpicture}

@@ -1,0 +1,8 @@
+\begin{tikzpicture}
+\begin{axis}[ybar,bar width=14pt,width=.9\linewidth,height=6cm,ymin=0,ymax=65,
+ ylabel={\objectlabel},symbolic x coords={Retained,Gained,Lost,Missed},xtick=data,
+ xticklabels={\retained,\gained,\lost,\missed},grid=major,nodes near coords,
+ legend style={at={(.5,1.14)},anchor=north,legend columns=2}]
+\addplot coordinates {(Retained,55) (Gained,30) (Lost,12) (Missed,48)};
+\addplot coordinates {(Retained,56) (Gained,26) (Lost,6) (Missed,57)};
+\legend{\seedname\ 19,\seedname\ 1}\end{axis}\end{tikzpicture}
