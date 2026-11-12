@@ -1,0 +1,50 @@
+{
+  "array_job_id": "55702167",
+  "submitted_utc": "2026-11-12T13:52:41.996454Z",
+  "source_commit": "3aa320e992913e024021ab53437391f0a772ec27",
+  "source_manifest_sha256": "957730d3c0e0f37c9bbed10e4af79cb81dba9b2c8644a870ec2f9d09c52258b1",
+  "smoke_job_id": "55702061",
+  "smoke_elapsed_seconds": 444,
+  "array": "0-3%2",
+  "mapping": [
+    "C19",
+    "E19",
+    "C1",
+    "E1"
+  ],
+  "resources": {
+    "gpu": 1,
+    "cpu": 4,
+    "memory_GiB": 32,
+    "hours_per_task": 12,
+    "total_GPU_hours": 48,
+    "concurrency": 2,
+    "runner_budget_hours": 12
+  },
+  "readiness": "PASS",
+  "source_files": 495,
+  "cpu_focused": {
+    "passed": 102
+  },
+  "smoke": {
+    "status": "PASS",
+    "job_id": "55702061",
+    "elapsed_seconds": 444,
+    "safety_hours": {
+      "C": 7.034108735422693,
+      "E": 8.283270204174006
+    },
+    "peak_GiB": {
+      "C": 4.0943074226379395,
+      "E": 4.890423774719238
+    },
+    "source_manifest_sha256": "957730d3c0e0f37c9bbed10e4af79cb81dba9b2c8644a870ec2f9d09c52258b1",
+    "files": 29
+  },
+  "resource_evaluation": {
+    "allocation": 1900,
+    "spent": 1477,
+    "reserved_full_walltime_SU": 84.0,
+    "additional_requested_GPU_hours": 48
+  }
+}

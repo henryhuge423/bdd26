@@ -1,0 +1,70 @@
+{
+  "RESULTS_ZH.md": {
+    "sha256": "06182704834d518377f2916d5c8554ddeb77ebcd3e18e12bee0994418e5ed758",
+    "bytes": 6962
+  },
+  "RESULTS_EN.md": {
+    "sha256": "b0ce6105b7ffca494b2356605f4ff0b60cba38dd169ce0665f123700170f357c",
+    "bytes": 7138
+  },
+  "READER_ZH.md": {
+    "sha256": "f51ea85e2b152f4b71b00a8920699531187c73b1e14b7163c27f875fc6290e97",
+    "bytes": 1527
+  },
+  "p26_analysis.json": {
+    "sha256": "c8e9c2af6c67ae4f2a84cb41d04046f06ae8bd1bd42d128341aa90c5f24a40e7",
+    "bytes": 105412
+  },
+  "object_summary.json": {
+    "bytes": 5060,
+    "sha256": "c4dbdce3aacb77283237efcf2792d70c950bb05ee6ad413bbc77b86ec437c4f7"
+  },
+  "fixed_objects.csv": {
+    "bytes": 8259,
+    "sha256": "520cca4e516bee7a920e1f9248d9be55ce48d437c772e3b5a4f16e9d49f873e5"
+  },
+  "stage_pairs.csv": {
+    "bytes": 278,
+    "sha256": "9509c9e6f2867a44fd32846ea2bbeabbeecaaa982709068d6592ab79b000c62d"
+  },
+  "collection_result.json": {
+    "sha256": "a012710b633871587add2164bf5a6982e4bb0937410cfce3fd6966a53583bb63",
+    "bytes": 3591
+  },
+  "figures/p26_dead_by_image.png": {
+    "sha256": "9a716de7de7c6eac913eda22bf4a863ed5b42544adadc70127a6f4083cf87fc9",
+    "bytes": 98387
+  },
+  "figures/p26_example_1037.png": {
+    "sha256": "3f87113ca40aa6f0b7ea1ab782c6b0dc27d195c1965f95dea0520164819e9225",
+    "bytes": 364210
+  },
+  "figures/p26_example_776.png": {
+    "sha256": "75586a21b45c2dfe7c30272b75a2fb2016ed1cc176c12676df0b5a4e71578015",
+    "bytes": 294346
+  },
+  "figures/p26_training_curves.png": {
+    "sha256": "c2fe67743f6a7ea80d594e8e6f4762defcf9432aeaea2d7263481d32453e4cee",
+    "bytes": 168914
+  },
+  "figures/stage_comparison.png": {
+    "sha256": "61545e9c7cecdddc268bf7b8e2569cc367be624589b8dd6b5cd7e7a43ba51fc7",
+    "bytes": 87101
+  },
+  "coordinates/A_C_s19.json": {
+    "sha256": "251678a05f857db5bc0cea34b2f9c2f3b07c94a7ef38fc1ed09706c6b1090331",
+    "bytes": 40754
+  },
+  "coordinates/A_R_s19.json": {
+    "sha256": "cdc35ca81186456ab91a446b46702d9efaa5db5d03df1d00df11b50bcc690cc7",
+    "bytes": 40552
+  },
+  "coordinates/A_C_s1.json": {
+    "sha256": "0cca5ad2793b51591de8cc783249330bb93f258216d27339d4e0fdb0b519ac26",
+    "bytes": 40853
+  },
+  "coordinates/A_R_s1.json": {
+    "sha256": "aa2baf20d6ea777d4e1d990d428835e5840b0f6df8bab4d1feb3004d2c1f8f6a",
+    "bytes": 40109
+  }
+}

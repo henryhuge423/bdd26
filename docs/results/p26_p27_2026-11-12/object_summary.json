@@ -1,0 +1,246 @@
+{
+  "seeds": {
+    "19": {
+      "fixed": {
+        "missed_both": 16,
+        "lost": 7,
+        "gained": 4,
+        "retained": 26
+      },
+      "leave_one_min": [
+        2076,
+        -0.0072992700729927005
+      ],
+      "leave_one_max": [
+        1482,
+        0.052083333333333336
+      ],
+      "largest_dead_images": [
+        {
+          "image": 776,
+          "tissue": "Colon",
+          "dead_total": 7,
+          "C_hits": 3,
+          "H_hits": 1,
+          "net": -2
+        },
+        {
+          "image": 1482,
+          "tissue": "Colon",
+          "dead_total": 49,
+          "C_hits": 15,
+          "H_hits": 12,
+          "net": -3
+        },
+        {
+          "image": 1756,
+          "tissue": "Cervix",
+          "dead_total": 15,
+          "C_hits": 7,
+          "H_hits": 9,
+          "net": 2
+        },
+        {
+          "image": 2076,
+          "tissue": "Esophagus",
+          "dead_total": 8,
+          "C_hits": 2,
+          "H_hits": 5,
+          "net": 3
+        }
+      ]
+    },
+    "1": {
+      "fixed": {
+        "missed_both": 18,
+        "retained": 25,
+        "lost": 5,
+        "gained": 5
+      },
+      "leave_one_min": [
+        1037,
+        -0.008
+      ],
+      "leave_one_max": [
+        776,
+        0.036231884057971016
+      ],
+      "largest_dead_images": [
+        {
+          "image": 776,
+          "tissue": "Colon",
+          "dead_total": 7,
+          "C_hits": 5,
+          "H_hits": 2,
+          "net": -3
+        },
+        {
+          "image": 1037,
+          "tissue": "Lung",
+          "dead_total": 20,
+          "C_hits": 9,
+          "H_hits": 12,
+          "net": 3
+        },
+        {
+          "image": 1482,
+          "tissue": "Colon",
+          "dead_total": 49,
+          "C_hits": 11,
+          "H_hits": 13,
+          "net": 2
+        },
+        {
+          "image": 1756,
+          "tissue": "Cervix",
+          "dead_total": 15,
+          "C_hits": 6,
+          "H_hits": 8,
+          "net": 2
+        }
+      ]
+    }
+  },
+  "previously_persistent": [
+    {
+      "seed": 19,
+      "image": 776,
+      "tissue": "Colon",
+      "gt_index": 13,
+      "y": 244,
+      "x": 95,
+      "area": 86,
+      "state": "missed_both",
+      "c_match": null,
+      "r_match": null,
+      "c_nearest_px": 76.32168761236873,
+      "r_nearest_px": 17.0
+    },
+    {
+      "seed": 19,
+      "image": 1025,
+      "tissue": "Lung",
+      "gt_index": 10,
+      "y": 8,
+      "x": 11,
+      "area": 93,
+      "state": "missed_both",
+      "c_match": null,
+      "r_match": null,
+      "c_nearest_px": 4.47213595499958,
+      "r_nearest_px": 38.897300677553446
+    },
+    {
+      "seed": 19,
+      "image": 1025,
+      "tissue": "Lung",
+      "gt_index": 15,
+      "y": 54,
+      "x": 13,
+      "area": 184,
+      "state": "missed_both",
+      "c_match": null,
+      "r_match": null,
+      "c_nearest_px": 13.601470508735444,
+      "r_nearest_px": 13.45362404707371
+    },
+    {
+      "seed": 19,
+      "image": 1025,
+      "tissue": "Lung",
+      "gt_index": 34,
+      "y": 243,
+      "x": 209,
+      "area": 198,
+      "state": "missed_both",
+      "c_match": null,
+      "r_match": null,
+      "c_nearest_px": 14.142135623730951,
+      "r_nearest_px": 14.212670403551895
+    },
+    {
+      "seed": 19,
+      "image": 1037,
+      "tissue": "Lung",
+      "gt_index": 60,
+      "y": 64,
+      "x": 186,
+      "area": 315,
+      "state": "missed_both",
+      "c_match": null,
+      "r_match": null,
+      "c_nearest_px": 4.123105625617661,
+      "r_nearest_px": 3.1622776601683795
+    },
+    {
+      "seed": 1,
+      "image": 776,
+      "tissue": "Colon",
+      "gt_index": 13,
+      "y": 244,
+      "x": 95,
+      "area": 86,
+      "state": "missed_both",
+      "c_match": null,
+      "r_match": null,
+      "c_nearest_px": 75.47184905645283,
+      "r_nearest_px": 76.00657866263946
+    },
+    {
+      "seed": 1,
+      "image": 1025,
+      "tissue": "Lung",
+      "gt_index": 10,
+      "y": 8,
+      "x": 11,
+      "area": 93,
+      "state": "missed_both",
+      "c_match": null,
+      "r_match": null,
+      "c_nearest_px": 42.15447781671598,
+      "r_nearest_px": 41.23105625617661
+    },
+    {
+      "seed": 1,
+      "image": 1025,
+      "tissue": "Lung",
+      "gt_index": 15,
+      "y": 54,
+      "x": 13,
+      "area": 184,
+      "state": "missed_both",
+      "c_match": null,
+      "r_match": null,
+      "c_nearest_px": 19.6468827043885,
+      "r_nearest_px": 21.37755832643195
+    },
+    {
+      "seed": 1,
+      "image": 1025,
+      "tissue": "Lung",
+      "gt_index": 34,
+      "y": 243,
+      "x": 209,
+      "area": 198,
+      "state": "missed_both",
+      "c_match": null,
+      "r_match": null,
+      "c_nearest_px": 14.866068747318506,
+      "r_nearest_px": 14.212670403551895
+    },
+    {
+      "seed": 1,
+      "image": 1037,
+      "tissue": "Lung",
+      "gt_index": 60,
+      "y": 64,
+      "x": 186,
+      "area": 315,
+      "state": "missed_both",
+      "c_match": null,
+      "r_match": null,
+      "c_nearest_px": 6.0,
+      "r_nearest_px": 5.0990195135927845
+    }
+  ]
+}
