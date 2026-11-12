@@ -132,7 +132,7 @@ def validate_config(saved,expected):
     if saved!=expected:raise ValueError('checkpoint P26 configuration mismatch')
 
 @torch.no_grad()
-def write_examples(model,fold,ids,out,scope,limit):
+def write_examples(model,fold,ids,out,scope,limit,experiment='P26'):
     out=Path(out);out.mkdir(parents=True,exist_ok=False);model.eval();records=[]
     chosen=select_examples(ids,fold.gt,limit)
     for i in chosen:
@@ -141,7 +141,7 @@ def write_examples(model,fold,ids,out,scope,limit):
         points=decode_peaks(prob);gt=fold.gt[i];pairs=match_points(points,gt)
         row=score_points(points,gt);assert row['matched']==len(pairs)
         name=f'{scope}_{i:04d}.png'
-        render_example(fold.images[i],gt,points,out/name,f'P26 {model.arm} {scope} image{i} tissue{fold.tissue[i]}')
+        render_example(fold.images[i],gt,points,out/name,f'{experiment} {model.arm} {scope} image{i} tissue{fold.tissue[i]}')
         records.append(dict(image=int(i),scope=scope,tissue=str(fold.tissue[i]),gt=gt,points=points,unique_pairs=pairs,score=row,png=name))
     dump(out/'coordinates.json',dict(selection='GT-only deterministic strata',scope=scope,records=records,main_map_only=True))
     return records
@@ -152,18 +152,23 @@ def example_manifest(fit,audit,gt):
     encoded=json.dumps(ids,sort_keys=True,separators=(',',':')).encode()
     return dict(**ids,sha256=hashlib.sha256(encoded).hexdigest(),selection='GT-only deterministic strata')
 
-def parse_args(argv=None):
+def parse_args(argv=None, *, arms=ARMS):
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('data','weights','out'):p.add_argument('--'+name,required=True)
     p.add_argument('--phase',choices=['A'],default='A')
-    p.add_argument('--arm',choices=list(ARMS),required=True)
+    p.add_argument('--arm',choices=list(arms),required=True)
     p.add_argument('--seed',type=int,choices=[19,1],default=19)
     p.add_argument('--smoke',action='store_true')
     p.add_argument('--microbatch',type=int,choices=[4],default=4)
     return p.parse_args(argv)
 
 def main():
-    args=parse_args();config=run_config(args.arm,args.seed,args.microbatch);out=Path(args.out)
+    args = parse_args()
+    train(args, run_config(args.arm, args.seed, args.microbatch), Proposal, args.arm)
+
+
+def train(args, config, proposal_class, objective_arm, *, experiment='P26'):
+    out = Path(args.out)
     prepare_output(out)
     torch.set_num_threads(4);random.seed(args.seed);np.random.seed(args.seed);torch.manual_seed(args.seed)
     started=time.monotonic()
@@ -175,7 +180,7 @@ def main():
         manifest['input_sha256'][name]=actual
     manifest['input_sha256']['fold1/tissue.npy']=sha(Path(args.data)/'fold1/tissue.npy')
     assert manifest['input_sha256']['fold1/tissue.npy']==TISSUE_SHA
-    fold=Fold(args.data,1,args.arm)
+    fold=Fold(args.data,1,objective_arm)
     fit,audit=split_indices(fold.tissue,[any(g[0]==4 and g[2] for g in row) for row in fold.gt])
     manifest.update(fit=fit,audit=audit,cohort_sha256=validate_cohort(fit,audit))
     assert len(fit)==2134 and len(audit)==522
@@ -185,7 +190,7 @@ def main():
     if args.smoke:manifest['smoke_fit']=smoke_ids(fit,fold.gt)
     assert torch.cuda.is_available()
     torch.cuda.set_per_process_memory_fraction(.85)
-    model=Proposal(args.weights,True,args.arm).cuda()
+    model=proposal_class(args.weights,True,args.arm).cuda()
     from nucseg.cellvit import model as source
     assert Path(source.__file__).resolve().is_relative_to(Path(__file__).resolve().parent.parent/'src'),source.__file__
     encoder_names=[n for n,p in model.encoder.named_parameters() if p.requires_grad]
@@ -194,12 +199,14 @@ def main():
     manifest.update(source=str(Path(source.__file__).resolve()),torch=torch.__version__,numpy=np.__version__,gpu=os.environ['CUDA_VISIBLE_DEVICES'],trainable_encoder_parameters=sum(p.numel() for p in model.encoder.parameters() if p.requires_grad),head_parameters=sum(p.numel() for p in model.head.parameters()),trainable_encoder_names=encoder_names,trained_blocks=trained_blocks)
     assert torch.__version__=='2.5.1+cu124' and np.__version__=='1.23.5'
     dump(out/'manifest.json',manifest)
-    anchor=snapshot_anchor(model) if args.arm=='R' else None
-    opt=make_optimizer(model,args.arm)
+    anchor=snapshot_anchor(model) if objective_arm=='R' else None
+    opt=make_optimizer(model,objective_arm)
     optimizer_ids={id(p) for g in opt.param_groups for p in g['params']}
     assert optimizer_ids=={id(p) for p in model.parameters() if p.requires_grad}
-    watched=dict(encoder=model.encoder.blocks[23].attn.qkv.weight,output=model.head.out.weight)
-    watched.update(block12=model.encoder.blocks[12].attn.qkv.weight)
+    first_block, last_block = trained_blocks[0], trained_blocks[-1]
+    watched = dict(encoder=model.encoder.blocks[last_block].attn.qkv.weight,
+                   output=model.head.out.weight)
+    watched[f'block{first_block}'] = model.encoder.blocks[first_block].attn.qkv.weight
     gradients={k:0. for k in watched};precision={};handles=[]
     if args.smoke:
         fit=manifest['smoke_fit'];epochs=1
@@ -211,7 +218,7 @@ def main():
             handles.append(module.register_forward_hook(lambda m,a,o,key=key:precision.update({key:str(o.dtype)})))
     else:epochs=130
     for epoch in range(epochs):
-        if time.monotonic()-started>run_budget_hours(args.arm)*3600:raise TimeoutError('P26 run budget exhausted')
+        if time.monotonic()-started>run_budget_hours(objective_arm)*3600:raise TimeoutError('P26 run budget exhausted')
         if shutil.disk_usage(out).free<20<<30:raise RuntimeError('disk floor')
         model.train();schedule_epoch(opt,epoch)
         ids=np.random.default_rng(np.random.SeedSequence([args.seed,epoch,123])).permutation(fit).tolist()
@@ -228,7 +235,7 @@ def main():
                             assert torch.is_autocast_enabled('cuda') and torch.get_autocast_dtype('cuda')==torch.bfloat16
                             assert precision==dict(encoder='torch.bfloat16',output='torch.bfloat16')
                             assert logits.dtype==torch.float32
-                    yield loss_for_microbatch(logits,y,total_count,args.arm)
+                    yield loss_for_microbatch(logits,y,total_count,objective_arm)
             focal,reg=backward_effective_batch(model,anchor,losses())
             step_loss=focal+reg
 
@@ -254,16 +261,16 @@ def main():
         validate_smoke_memory(training_peak)
         assert frozen_hashes(model)==frozen_before,'a frozen encoder tensor changed'
         assert all(p.grad is None for p in model.encoder.parameters() if not p.requires_grad)
-        block12_changed=not torch.equal(model.encoder.blocks[12].attn.qkv.weight,block12_before);assert block12_changed
+        block12_changed=not torch.equal(model.encoder.blocks[12].attn.qkv.weight,block12_before);assert block12_changed == (12 in trained_blocks)
         block0_changed=not torch.equal(model.encoder.blocks[0].attn.qkv.weight,block0_before)
-        assert not block0_changed,(args.arm,block0_changed)
+        assert block0_changed == (0 in trained_blocks), (args.arm, block0_changed)
         changes={k:float((p-before[k]).abs().max()) for k,p in watched.items()}
         assert all(v>0 and math.isfinite(v) for v in changes.values())
         for h in handles:h.remove()
         model.eval();x,_,_=fold.batch(fit[:2],args.seed,0,False);x=x.cuda()
         with torch.no_grad(),torch.autocast('cuda',dtype=torch.bfloat16):prediction=model(x).float().cpu()
         reload_start=time.monotonic()
-        fresh=Proposal(args.weights,True,args.arm).cuda().eval()
+        fresh=proposal_class(args.weights,True,args.arm).cuda().eval()
         for name in ('last.pth','final.pth'):
             loaded=torch.load(out/name,map_location='cpu',weights_only=False);validate_config(loaded['config'],config)
             load_adapted(fresh,loaded['model'])
@@ -272,20 +279,20 @@ def main():
             del loaded
         torch.cuda.synchronize();reload_seconds=time.monotonic()-reload_start
         estimate=130*training_seconds/len(fit)*2134+130*save_seconds+final_seconds+1800
-        report=dict(status='MEASURED',estimated_seconds_130=estimate,safety_seconds=1.5*estimate,budget_hours=run_budget_hours(args.arm),training_images=len(fit),training_seconds=training_seconds,checkpoint_seconds=save_seconds,final_checkpoint_seconds=final_seconds,checkpoint_bytes=saved,changes=changes,gradients=gradients,precision_trace=dict(enabled=True,amp_dtype='torch.bfloat16',layers=precision,logits_dtype='torch.float32'),reload_equal=True,final_reload_equal=True,reload_seconds=reload_seconds,training_peak_memory=training_peak,peak_memory=torch.cuda.max_memory_allocated(),seconds=time.monotonic()-started)
+        report=dict(status='MEASURED',estimated_seconds_130=estimate,safety_seconds=1.5*estimate,budget_hours=run_budget_hours(objective_arm),training_images=len(fit),training_seconds=training_seconds,checkpoint_seconds=save_seconds,final_checkpoint_seconds=final_seconds,checkpoint_bytes=saved,changes=changes,gradients=gradients,precision_trace=dict(enabled=True,amp_dtype='torch.bfloat16',layers=precision,logits_dtype='torch.float32'),reload_equal=True,final_reload_equal=True,reload_seconds=reload_seconds,training_peak_memory=training_peak,peak_memory=torch.cuda.max_memory_allocated(),seconds=time.monotonic()-started)
         report.update(optimizer_initial_lrs=[g['initial_lr'] for g in opt.param_groups],observed_input_size=model.observed_input_size,observed_token_grids=model.observed_token_grids,effective_batch_lengths=batch_lengths,effective_object_counts=object_counts,smoke_fit=fit,all_frozen_encoder_tensors_unchanged=True,frozen_encoder_tensors=len(frozen_before),exact_optimizer_membership=True,trainable_encoder_names=encoder_names,trained_blocks=trained_blocks,block12_changed=block12_changed,block0_changed=block0_changed)
-        try:validate_config(config,run_config('R' if args.arm=='C' else 'C',args.seed,args.microbatch))
+        try:validate_config(dict(config, arm='different'), config)
         except ValueError:report['cross_arm_config_rejected']=True
         else:raise AssertionError('wrong arm config accepted')
         dump(out/'smoke_measurements.json',report)
-        assert estimate*1.5<run_budget_hours(args.arm)*3600,estimate
-        write_examples(model,fold,fit,out/'point_examples_smoke','fit_1epoch_preliminary',2)
+        assert estimate*1.5<run_budget_hours(objective_arm)*3600,estimate
+        write_examples(model,fold,fit,out/'point_examples_smoke','fit_1epoch_preliminary',2,experiment=experiment)
         report['status']='PASS';dump(out/'smoke.json',report);return
     dump(out/'fit.json',evaluate(model,fold,fit))
     rows=evaluate(model,fold,audit)
     dump(out/'evaluation.json',rows);dump(out/'summary.json',aggregate(rows))
-    write_examples(model,fold,audit,out/'point_examples_audit','audit_final130',8)
-    write_examples(model,fold,fit,out/'point_examples_fit','fit_final130',4)
+    write_examples(model,fold,audit,out/'point_examples_audit','audit_final130',8,experiment=experiment)
+    write_examples(model,fold,fit,out/'point_examples_fit','fit_final130',4,experiment=experiment)
     for scope in ('fit','audit'):
         saved_examples=json.loads((out/f'point_examples_{scope}'/'coordinates.json').read_text())
         assert [r['image'] for r in saved_examples['records']]==manifest['fixed_examples'][scope]
