@@ -1,0 +1,59 @@
+{
+  "status": "PASS",
+  "files": 98,
+  "png": 48,
+  "source_verified": 495,
+  "bundle_bytes": 5899934,
+  "bundle_sha256": "feb38ea7443e842ed5e9def71774776c04bb80e6e0bfa2269080b31b66ef24f3",
+  "checkpoint_sizes": {
+    "A_C_s19/final.pth": {
+      "actual": 617943874,
+      "manifest": 617943874,
+      "manifest_sha256": "509b15639ffa2b10355e0ded414c94fa3be3984e68e1d573530589a2f880c5a4",
+      "independently_rehashed": false
+    },
+    "A_C_s19/last.pth": {
+      "actual": 1853871956,
+      "manifest": 1853871956,
+      "manifest_sha256": "d87c7eeacd5c8e5f55c21824192b80acb7f933bd02e07fc09bdafb612009038d",
+      "independently_rehashed": false
+    },
+    "A_E_s19/final.pth": {
+      "actual": 617943746,
+      "manifest": 617943746,
+      "manifest_sha256": "e604465cf764284760d8934e578d10a41ea667c0d7d521623a1e49d62bfab3d9",
+      "independently_rehashed": false
+    },
+    "A_E_s19/last.pth": {
+      "actual": 1853871828,
+      "manifest": 1853871828,
+      "manifest_sha256": "091aabcad54c31526229ca57bad97735a9655b22b66a06b24573108b2acd5877",
+      "independently_rehashed": false
+    },
+    "A_C_s1/final.pth": {
+      "actual": 617943874,
+      "manifest": 617943874,
+      "manifest_sha256": "27122e3a393a6d894a479a23e8a32cab21bb9a58d0604604811c6cef71bb2393",
+      "independently_rehashed": false
+    },
+    "A_C_s1/last.pth": {
+      "actual": 1853871956,
+      "manifest": 1853871956,
+      "manifest_sha256": "10bd22fc4a5cb6b039655b46fe6dbd1fc6a5ae042daf898c7672277df8109ab6",
+      "independently_rehashed": false
+    },
+    "A_E_s1/final.pth": {
+      "actual": 617943746,
+      "manifest": 617943746,
+      "manifest_sha256": "7eef6f33536d7c8fcd35d400358a55ae05f3e7604455db635764ad297d0dfd83",
+      "independently_rehashed": false
+    },
+    "A_E_s1/last.pth": {
+      "actual": 1853871828,
+      "manifest": 1853871828,
+      "manifest_sha256": "4fd6a8c7f3838eeff9d42fe19bf02b4be8de4955e2aa1f1091f2bb78d6768dc3",
+      "independently_rehashed": false
+    }
+  },
+  "sacct": "JobID|JobName|State|ExitCode|Elapsed|Start|End|NodeList\n55702167_0|bdd26-p27|COMPLETED|0:0|04:09:34|2026-11-12T07:13:47|2026-11-12T11:23:21|exp-4-57\n55702167_0.batch|batch|COMPLETED|0:0|04:09:34|2026-11-12T07:13:47|2026-11-12T11:23:21|exp-4-57\n55702167_0.extern|extern|COMPLETED|0:0|04:09:34|2026-11-12T07:13:47|2026-11-12T11:23:21|exp-4-57\n55702167_0.0|python|COMPLETED|0:0|04:08:41|2026-11-12T07:14:16|2026-11-12T11:22:57|exp-4-57\n55702167_1|bdd26-p27|COMPLETED|0:0|05:00:46|2026-11-12T07:13:47|2026-11-12T12:14:33|exp-12-59\n55702167_1.batch|batch|COMPLETED|0:0|05:00:46|2026-11-12T07:13:47|2026-11-12T12:14:33|exp-12-59\n55702167_1.extern|extern|COMPLETED|0:0|05:00:46|2026-11-12T07:13:47|2026-11-12T12:14:33|exp-12-59\n55702167_1.0|python|COMPLETED|0:0|05:00:05|2026-11-12T07:14:16|2026-11-12T12:14:21|exp-12-59\n55702167_2|bdd26-p27|COMPLETED|0:0|04:21:01|2026-11-12T11:23:42|2026-11-12T15:44:43|exp-4-57\n55702167_2.batch|batch|COMPLETED|0:0|04:21:01|2026-11-12T11:23:42|2026-11-12T15:44:43|exp-4-57\n55702167_2.extern|extern|COMPLETED|0:0|04:21:01|2026-11-12T11:23:42|2026-11-12T15:44:43|exp-4-57\n55702167_2.0|python|COMPLETED|0:0|04:17:56|2026-11-12T11:26:17|2026-11-12T15:44:13|exp-4-57\n55702167_3|bdd26-p27|COMPLETED|0:0|05:04:21|2026-11-12T12:49:11|2026-11-12T17:53:32|exp-4-57\n55702167_3.batch|batch|COMPLETED|0:0|05:04:21|2026-11-12T12:49:11|2026-11-12T17:53:32|exp-4-57\n55702167_3.extern|extern|COMPLETED|0:0|05:04:21|2026-11-12T12:49:11|2026-11-12T17:53:32|exp-4-57\n55702167_3.0|python|COMPLETED|0:0|05:03:04|2026-11-12T12:49:49|2026-11-12T17:52:53|exp-4-57\n"
+}
