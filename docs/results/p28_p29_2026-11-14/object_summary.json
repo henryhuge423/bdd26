@@ -1,0 +1,34 @@
+{
+  "19": {
+    "fixed": {
+      "missed_both": 14,
+      "lost": 6,
+      "retained": 26,
+      "gained": 7
+    },
+    "leave_one_min": [
+      1038,
+      -0.023076923076923078
+    ],
+    "leave_one_max": [
+      1482,
+      0.0625
+    ]
+  },
+  "1": {
+    "fixed": {
+      "gained": 5,
+      "lost": 5,
+      "retained": 28,
+      "missed_both": 15
+    },
+    "leave_one_min": [
+      1038,
+      -0.015384615384615385
+    ],
+    "leave_one_max": [
+      1025,
+      0.0
+    ]
+  }
+}
