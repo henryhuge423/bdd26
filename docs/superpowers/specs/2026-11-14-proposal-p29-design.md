@@ -1,0 +1,15 @@
+# P29: two contiguous encoder groups at equal capacity
+
+Frozen 2026-11-14 before P29 training. This is an adaptive fold-1 development experiment selected after P28; no validation/test-fold model evaluation is included.
+
+P22 full-depth adaptation recovered 18/20 additional interior Dead nuclei; P27 first-12 adaptation recovered 6/15 and reduced unmatched predictions by 502/696 while training recall fell to 88.80%/87.82%. P28 odd-index adaptation recovered only 2/-1 Dead nuclei despite 528/273 additional total matches. These observations motivate a fixed comparison of two contiguous groups against late-only updates. The hypothesis is that early feature adaptation and late output adaptation can complement one another; existing decoded points do not establish the underlying representation mechanism.
+
+Control C updates zero-based blocks 12..23. Intervention B updates blocks 0..5 and 18..23. Both update 151,179,264 encoder parameters and the same 3,294,657-parameter head. All other encoder parameters remain frozen and the encoder stays in evaluation mode. Gradients traverse the frozen middle blocks. Learning rates remain encoder 1e-5/head 3e-4, AdamW decay .01 and original cosine130 schedule.
+
+Four fresh C/B × seeds19/1 runs, 130 epochs, epoch-130 checkpoint, fixed 2,134 training/522 development-evaluation images, effective batch16/physical4, original centers, focal numerator and effective-batch object denominator, input256, original augmentation and fixed decoder. No resume, EMA, anchor, semantic auxiliary, threshold search, extra seeds or selected checkpoint.
+
+The primary comparison is B minus its newly trained same-seed C, with the original paired decision unchanged: ≥10 Dead-positive images/≥100 interior Dead objects, Dead recall≥.60, gain≥.05, positive lower bound of the fixed 1,000 tissue-stratified image-bootstrap draws (seed20261018), precision≥.75 and no more than .02 loss in precision or total recall, nondegeneracy≥.95. Both seeds must satisfy all clauses. Fixed GT-only 8 development/4 training examples per run and object coordinates are preserved. Scientific conclusions use all 522 evaluation images; historical rounds provide descriptive context.
+
+GPU validation must prove original control parity, equal initial states/RNG and parameter counts, nonzero data gradients and beyond-decay updates in blocks0/23, no gradients or changes to frozen middle blocks, BF16/FP32 behavior, exact reload, source/data/cohort hashes and timing/memory readiness. Four V100 tasks at ≤12h each, concurrency2: formal upper bound48 GPUh; one ≤30min validation job, minimum account charge1 SU. Storage/allocation/queue/readback/source checks precede submission. Every submission is create-once with preserved receipts and no requeue.
+
+The exact odd-index P28 recipe closes under its two-seed rule. P29 is a new allocation hypothesis, with results and decision reported regardless of outcome. This round ends after submission; progression beyond its fixed experiment requires a subsequent task and verified results.
