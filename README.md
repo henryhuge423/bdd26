@@ -1,3 +1,5 @@
+> **2026-11-14 — Complete research progress, 103 slides.** The updated [progress PDF](Presentations/progress/PanNuke_Progress_2026-11-14.pdf) covers baseline reproductions, early research, E1–E19, frozen point probes, P3–P29, and recorded failures and recovery attempts. Each experiment explains its question, tested change, measured result and interpretation. Fixed examples trace gained, lost and missed nuclei. The local editable PPTX contains English speaking notes and Chinese explanations on every slide. [Full slide-to-source index](docs/results/PROGRESS_EXPERIMENT_INDEX_2026-11-14.md). P29 execution state is dated November 14, 16:08 EST.
+
 > **2026-11-14 — P28 reviewed; P29 submitted.** Four P28 runs completed 130 epochs; 500 source files and 98 small payloads, including 48 final PNGs, were verified. Alternating encoder blocks added 528/273 total matches and 2/−1 interior Dead matches; both original decisions failed. P29 compares the first six plus last six blocks with the last twelve at equal capacity. LM1 and V100 acceptance passed 114 focused tests. Formal array **55735733** was submitted once at 14:31 EST: four 12-hour V100 tasks, concurrency two, maximum 48 GPU hours; all were PENDING/Priority at 14:36 EST. [Analysis, figures and receipt](docs/results/p28_p29_2026-11-14/README.md).
 
 > **2026-11-12 — P27 reviewed; P28 prepared.** Early-block adaptation improved paired development coverage and precision in both seeds, with 6/15 additional interior Dead matches. The original two-seed rule did not pass. P28 keeps the 12-block budget and distributes updates across depth. LM1 passed 107 focused tests. Expanse GPU accounting stopped the attempt before submission. [Analysis, figures and status](docs/results/p27_p28_2026-11-12/README.md).
@@ -132,7 +134,7 @@ found a maximum of 276 instances per image, 23 rounded centers outside masks, an
 images. PM-Net remains a proposal; no new training. Current mechanism runner
 passed 52 focused checks; the prior 403-test full regression belongs to the training implementation.
 
-Latest complete [progress PDF](Presentations/progress/PanNuke_Progress_2026-10-15.pdf)
+Latest complete [progress PDF](Presentations/progress/PanNuke_Progress_2026-11-14.pdf)
 and [project proposal PDF](docs/report/project_proposal/PanNuke_Project_Proposal.pdf).
 Only current PDFs are tracked in these delivery directories; the complete PPTX is
 available locally and ignored. Generators/QA/provenance build files live in ignored ops.
