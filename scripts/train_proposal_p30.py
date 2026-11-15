@@ -10,7 +10,7 @@ DEPTH = {"C": p27.DEPTH["C"], "M": tuple(range(6, 18))}
 
 def configure_encoder_depth(encoder, arm):
     if arm not in ARMS or len(encoder.blocks) != 24:
-        raise ValueError("P30 requires C/B and a 24-block encoder")
+        raise ValueError("P30 requires C/M and a 24-block encoder")
     encoder.requires_grad_(False)
     for index in DEPTH[arm]:
         encoder.blocks[index].requires_grad_(True)
