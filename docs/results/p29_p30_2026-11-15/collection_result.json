@@ -1,0 +1,231 @@
+{
+  "status": "SCIENTIFIC_RESULTS_VERIFIED",
+  "files": 92,
+  "png": 48,
+  "source_verified": 505,
+  "scheduler": "JobID|State|ExitCode|Elapsed\n55735733_0|COMPLETED|0:0|04:13:24\n55735733_1|COMPLETED|0:0|05:00:21\n55735733_2|COMPLETED|0:0|05:07:52\n55735733_3|RUNNING|0:0|10:53:27\n",
+  "experimental_seed1_original_preservation_pending": true,
+  "checkpoint_independently_rehashed": false,
+  "scientific_recovery": {
+    "A_C_s1": {
+      "verified": {
+        "A_C_s1/manifest.json": {
+          "bytes": 33467,
+          "sha256": "15a513dafbf5421e1e6884f02643ce3e1440f3841dde08b368c002afd22c4c8b"
+        },
+        "A_C_s1/loss.jsonl": {
+          "bytes": 52896,
+          "sha256": "ad720d38e18d8d5421847f887d487b432076fde8ae590500084d845534c67f14"
+        },
+        "A_C_s1/complete.json": {
+          "bytes": 77,
+          "sha256": "66e7fbb216cba8996f5267e245d3b3ee4d9f812daa48eb23c112d341fa49fc57"
+        },
+        "A_C_s1/evaluation.json": {
+          "bytes": 123306,
+          "sha256": "fee61c049b6caee0a5c326e25e2af3bc36ffad3924cbf0a059c40f9921212464"
+        },
+        "A_C_s1/fit.json": {
+          "bytes": 504971,
+          "sha256": "0cdb2468a7b5d88c26724eb0e9c362a9391c48532b801903e7a2735b5fdac3e4"
+        },
+        "A_C_s1/summary.json": {
+          "bytes": 168,
+          "sha256": "2f7c80d821cef2dfb36c28bd061d09a066d3f760e43bfa45a59a5e8ce3af58d2"
+        },
+        "A_C_s1/status.json": {
+          "bytes": 439,
+          "sha256": "63518856ef3c92624a1809bb68b433a417df6cdac5ba8da3e448682ec1b0c6c8"
+        },
+        "A_C_s1/point_examples_audit/coordinates.json": {
+          "bytes": 40993,
+          "sha256": "79fa3966a2c3b9cccb951e54dbf7964115cf1e7ff73b2206ae3ce1c65dc1dc0c"
+        },
+        "A_C_s1/point_examples_audit/audit_final130_0007.png": {
+          "bytes": 102563,
+          "sha256": "4c17eaf908da0c9c2eee9680bdd24e7263d28ec9966e3ef2837a45bdbc887ff2"
+        },
+        "A_C_s1/point_examples_audit/audit_final130_0776.png": {
+          "bytes": 134700,
+          "sha256": "3b45f16453bd32a821f4d7095f2730d0ccfff894f324f27c7d409a15b4221bd2"
+        },
+        "A_C_s1/point_examples_audit/audit_final130_1037.png": {
+          "bytes": 170380,
+          "sha256": "acce284f3f6f4c2f3db2c965ff971f942e9427613ee9391062827cc1c42f5508"
+        },
+        "A_C_s1/point_examples_audit/audit_final130_0584.png": {
+          "bytes": 67156,
+          "sha256": "4d2d74b3e5b6fac3f10cf1ea06066c79f8b50c0b9e4a95c3eb8d7a4d47eadf33"
+        },
+        "A_C_s1/point_examples_audit/audit_final130_0812.png": {
+          "bytes": 55324,
+          "sha256": "b6652cd27d66fb4e9f3c2e51feae9c658bf6eadd89e5808a5eca9a8e08fd1df4"
+        },
+        "A_C_s1/point_examples_audit/audit_final130_0001.png": {
+          "bytes": 106009,
+          "sha256": "0ae79387e24ccc2ac9c88b0332d9092534a4c778c3f2772cf99aa0a06fe5ab52"
+        },
+        "A_C_s1/point_examples_audit/audit_final130_1025.png": {
+          "bytes": 152844,
+          "sha256": "cd89708ef0648cb42241b35fe84c360e4edbcd0bba3930c9355438075def67f3"
+        },
+        "A_C_s1/point_examples_audit/audit_final130_0178.png": {
+          "bytes": 126311,
+          "sha256": "16eb441e0f6873e52dede4cd740d9eb5bd10e6383cfeb8b10008ef2e29ca31f2"
+        },
+        "A_C_s1/point_examples_fit/coordinates.json": {
+          "bytes": 20134,
+          "sha256": "df4f6f6de3aefb8af347864ab196978e0c2f0eff091a92b203b6475033731d9a"
+        },
+        "A_C_s1/point_examples_fit/fit_final130_0586.png": {
+          "bytes": 59722,
+          "sha256": "ed55ff3ca11dcb6a23353e2fc9b87c490300a5f09868ae824b9f38664c80f5cf"
+        },
+        "A_C_s1/point_examples_fit/fit_final130_0784.png": {
+          "bytes": 136315,
+          "sha256": "81af5af84bfcbbf54f5a1858e629351c8169fcde5eff0092019a34100fd1a646"
+        },
+        "A_C_s1/point_examples_fit/fit_final130_0000.png": {
+          "bytes": 110137,
+          "sha256": "b6774800ca0131085bd42ab38e5eb84a027f92f308004f25e4536a70cd14b6f9"
+        },
+        "A_C_s1/point_examples_fit/fit_final130_0782.png": {
+          "bytes": 138415,
+          "sha256": "9db52d6a3b1de0f23250b0568f13d5473c2fafc3c59b0e46b349f6d635cfc2bf"
+        }
+      },
+      "checkpoint_sizes": {
+        "A_C_s1/last.pth": {
+          "actual": 1853871956,
+          "manifest": 1853871956,
+          "manifest_sha256": "34b2ba0cb473cca12567081392660815cd3c667ba2e0a76f38a07256387ae2d4",
+          "independently_rehashed": false
+        },
+        "A_C_s1/final.pth": {
+          "actual": 617943874,
+          "manifest": 617943874,
+          "manifest_sha256": "386a19af6f016b12bff4a32100fa9fd65559d5a928c479f2c628b02f884a6a23",
+          "independently_rehashed": false
+        }
+      },
+      "original_preservation_verified": true,
+      "source_root": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p29_20261114_01/results/A_C_s1",
+      "scientific_complete": {
+        "exit_code": 0,
+        "epochs": 130,
+        "elapsed_seconds": 18337.03455465194
+      },
+      "scheduler": "JobID|State|ExitCode|Elapsed\n55735733_0|COMPLETED|0:0|04:13:24\n55735733_1|COMPLETED|0:0|05:00:21\n55735733_2|COMPLETED|0:0|05:07:52\n55735733_3|RUNNING|0:0|10:53:25\n"
+    },
+    "A_B_s1": {
+      "verified": {
+        "A_B_s1/manifest.json": {
+          "bytes": 33368,
+          "sha256": "f57cbda39bf43a8f4fb1b98e7e0ae38ed62d6ba51db2ea3aaad0fe449bafcc4e"
+        },
+        "A_B_s1/loss.jsonl": {
+          "bytes": 52770,
+          "sha256": "11ab08d6db8467ba3f4237f09992189a50baa8b6e22e1f0a88dbdfc6bd667cce"
+        },
+        "A_B_s1/complete.json": {
+          "bytes": 77,
+          "sha256": "38ce6c1254a96cc284a9314469ddc666e3f8d74898b715964e150534d352ec80"
+        },
+        "A_B_s1/evaluation.json": {
+          "bytes": 123322,
+          "sha256": "52ad35c0d908ddb13a338acb47a1cee8e833de28d778cdac84ba1aab28837d91"
+        },
+        "A_B_s1/fit.json": {
+          "bytes": 504951,
+          "sha256": "8c71c3bc40488bbff24b925d11b9d36b624db5febbeb5c7b14f24a47e77a6d31"
+        },
+        "A_B_s1/summary.json": {
+          "bytes": 167,
+          "sha256": "c0b176feef3462c9de5e1021dcb557d994f038287de7f968d280241a60ae0e0f"
+        },
+        "A_B_s1/status.json": {
+          "bytes": 438,
+          "sha256": "d113a2789c9f715b88fd9f89d2184531deb6bcb11be1f5b836f6e7bb1d75a7a7"
+        },
+        "A_B_s1/point_examples_audit/coordinates.json": {
+          "bytes": 41198,
+          "sha256": "90a129ff953d69d4e4aeddc9edf3a79b1c7045fe813dcaf70d9f023ab067c6d1"
+        },
+        "A_B_s1/point_examples_audit/audit_final130_0007.png": {
+          "bytes": 104054,
+          "sha256": "48bb19eb4f4d5dfc65e9439813fa46236175c60b394229d227ab6a324bbbb4c0"
+        },
+        "A_B_s1/point_examples_audit/audit_final130_0776.png": {
+          "bytes": 134335,
+          "sha256": "701f639b7c4edb9c992858d6b2e2fe8c0d0007be273f9e26958261741ad58838"
+        },
+        "A_B_s1/point_examples_audit/audit_final130_0812.png": {
+          "bytes": 55331,
+          "sha256": "4d5a404f217e18e7a529925995505019447b86a6fe3f4b4b789eb2ca55e9d92e"
+        },
+        "A_B_s1/point_examples_audit/audit_final130_0001.png": {
+          "bytes": 105490,
+          "sha256": "1312610d3f2082dc8dc4c1d59f3fdfdf6db0e9f87e3fdfbb57d402bb8d0c2a71"
+        },
+        "A_B_s1/point_examples_audit/audit_final130_0584.png": {
+          "bytes": 67153,
+          "sha256": "03280dea45885bc8e93356c5f037934e9c07604f532faa4142a19e551b149c8b"
+        },
+        "A_B_s1/point_examples_audit/audit_final130_1037.png": {
+          "bytes": 170330,
+          "sha256": "d7567e8a15954f007fa0e0ba09833f198d9f1d08bf46ebf0e476836d7f3dba3c"
+        },
+        "A_B_s1/point_examples_audit/audit_final130_1025.png": {
+          "bytes": 151964,
+          "sha256": "b3e76e8abc9b526d49a1dc1afa5b8491776683b1b878109feee08cbc59af43bd"
+        },
+        "A_B_s1/point_examples_audit/audit_final130_0178.png": {
+          "bytes": 125859,
+          "sha256": "dec0242eaaf1d9ea31a48309749d2ac56e3d6c4eb367e00aca0b9c0fa2c5a4da"
+        },
+        "A_B_s1/point_examples_fit/coordinates.json": {
+          "bytes": 19942,
+          "sha256": "d5a874e43c3fdd6ca6da0db2369c8e05b004cfb60afda655d2a0f437861388fb"
+        },
+        "A_B_s1/point_examples_fit/fit_final130_0586.png": {
+          "bytes": 59720,
+          "sha256": "0d17df5eb4e3d699bda37de3d9c889ee77d646ce318dd03835b9db55a125667f"
+        },
+        "A_B_s1/point_examples_fit/fit_final130_0782.png": {
+          "bytes": 138431,
+          "sha256": "02fa2aa547fa6084ed89a18731250c6a4413bab7b6610cb1d551f5d9c09678c0"
+        },
+        "A_B_s1/point_examples_fit/fit_final130_0000.png": {
+          "bytes": 110062,
+          "sha256": "0000fb143ec1a53a8fd7d63063bbd666cc80cf4e028c64aeedb00e2ec2c8a6c0"
+        },
+        "A_B_s1/point_examples_fit/fit_final130_0784.png": {
+          "bytes": 136641,
+          "sha256": "b0520867734fab57f67ce9558631c399147039fbff05bbb01b34a82b399bfed7"
+        }
+      },
+      "checkpoint_sizes": {
+        "A_B_s1/last.pth": {
+          "actual": 1853871828,
+          "manifest": null,
+          "manifest_sha256": null,
+          "independently_rehashed": false
+        },
+        "A_B_s1/final.pth": {
+          "actual": 617943810,
+          "manifest": null,
+          "manifest_sha256": null,
+          "independently_rehashed": false
+        }
+      },
+      "original_preservation_verified": false,
+      "source_root": "/expanse/lustre/scratch/xjin10/temp_project/bdd26/p29_20261114_01/A_B_s1",
+      "scientific_complete": {
+        "exit_code": 0,
+        "epochs": 130,
+        "elapsed_seconds": 36507.08913286077
+      },
+      "scheduler": "JobID|State|ExitCode|Elapsed\n55735733_0|COMPLETED|0:0|04:13:24\n55735733_1|COMPLETED|0:0|05:00:21\n55735733_2|COMPLETED|0:0|05:07:52\n55735733_3|RUNNING|0:0|10:53:27\n"
+    }
+  }
+}

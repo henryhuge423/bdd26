@@ -1,0 +1,16 @@
+{
+  "epoch": 130,
+  "train_loss": 0.09875338475177137,
+  "focal_loss": 0.09875338475177137,
+  "regularizer_loss": 0.0,
+  "block_drift": {},
+  "training_seconds": 135.48198882304132,
+  "checkpoint_seconds": 1.9574733143672347,
+  "epoch_seconds": 137.44259729003534,
+  "elapsed_seconds": 17855.037513689138,
+  "checkpoint_bytes": 1853871828,
+  "optimizer_steps": 134,
+  "effective_batch": 16,
+  "microbatch": 4,
+  "peak_memory": 5200901632
+}

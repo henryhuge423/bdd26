@@ -1,0 +1,30 @@
+{
+  "storage_layout": {
+    "ost": 43,
+    "scope": "P29 _01 directories only",
+    "reason": "OST18 write hang reproduced; OST43 fsync/readback verified",
+    "minimum_target_free_GiB": 150
+  },
+  "source_commit": "562ff1731a90fe60ace4c4c4aa489d8eb13fbf7c",
+  "tested_source_sha256": "90cd7c62c694d5d9b4d734944a273ef84401ea21ce58f8c77b201dbd6f48e846",
+  "refreshed_files": [],
+  "new_files": [
+    "docs/superpowers/plans/2026-11-14-proposal-p29.md",
+    "docs/superpowers/specs/2026-11-14-proposal-p29-design.md",
+    "scripts/train_proposal_p29.py",
+    "scripts/verify_p29_control.py",
+    "tests/test_proposal_p29.py"
+  ],
+  "parent_manifest_sha256": "b3ef53eebecdd4481d2024f3eef2063427d1068af9e460958a70f79ad64e9113",
+  "source_manifest_sha256": "7be3f3064ac2223e387d1cd4d1636884e05c79b82f4441105b0e7b610c06d20e",
+  "script_hashes": {
+    "smoke.sbatch": "c6c16993629d98fb0076942562d2879438f618a2718de0dbc6764492fd39f15b",
+    "train_array.sbatch": "6797c5296bb45b6aed32de4453542213958883a53095dfb4d6a860b392884b95",
+    "validate_ready.py": "a2eb423edc2a8b31edec3e72280c001dee3b3eac0355336f9cb39f1028c90881"
+  },
+  "data_root": "/expanse/lustre/projects/jhu159/xjin10/bdd26/migration_20261020/data/pannuke",
+  "runtime": "/expanse/lustre/projects/jhu159/xjin10/bdd26/runtimes/p3_20261020_01",
+  "automatic_phase_B": false,
+  "cpu_focused": "114 passed (P29/P27/P26/P25/P25guard/P24/P22/P14)",
+  "cpu_summary": "114 passed in 12.57s"
+}
