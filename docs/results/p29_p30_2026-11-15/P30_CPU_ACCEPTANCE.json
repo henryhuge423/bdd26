@@ -1,0 +1,52 @@
+{
+  "job_id": "55745667",
+  "scheduler": "55745667|COMPLETED|0:0|106\n",
+  "elapsed_seconds": 106,
+  "ready": {
+    "status": "PASS",
+    "no_gpu_devices": true,
+    "elapsed_seconds": 75.88608918711543,
+    "source_code_sha256": "e32af843b9558b48b8f23d53a38f296517d84993d14fd6f94037ca8d42d1babe",
+    "source_manifest_sha256": "00cd884d5555380e8cd1aaef9b766e50db394d5ae5268753351e723336027ce0",
+    "native_torch_manifest_sha256": "b92fe29c73d34fc6b191510beea51b87c5a17ced36f3f81948ee003e47107685",
+    "versions": {
+      "torch": "2.5.1+cu124",
+      "numpy": "1.23.5",
+      "scipy": "1.10.1",
+      "torchvision": "0.20.1+cu124",
+      "timm": "1.0.9",
+      "Pillow": "10.0.1"
+    },
+    "cpu_summary": "121 passed in 11.95s"
+  },
+  "files_sha256": {
+    "cpu_ready.json": {
+      "bytes": 593,
+      "sha256": "22a70ff386998db8311475fb74dc7b3f01c47a96e63a988289d0a0abe8514aa6"
+    },
+    "runtime_import.json": {
+      "bytes": 567,
+      "sha256": "cd8824dd538fd68c0f920a0d935c412a1ee8ecf97f78f952dd5c5ac484b2e8d9"
+    },
+    "cpu_tests.log": {
+      "bytes": 181,
+      "sha256": "a50690ac5e22056b84f9eb8ca510f82648fad75390d6856ef25cea34104951ec"
+    },
+    "slurm-55745667.out": {
+      "bytes": 1418,
+      "sha256": "379dfd7805c84a4a9e9fcc3aa8a50c74d0fab29271e8a38b45b513dd463fdbc3"
+    },
+    "slurm-55745667.err": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "submission_receipt.json": {
+      "bytes": 3815,
+      "sha256": "62b85cec193ebb9cd8b63259590aa5b7c28c4766d40f5cb45684839895b2d93c"
+    }
+  },
+  "original_platform_sha256": "87e7d2f54b21b290b35dfa2bdcb66e4d80a275be8c9b6abd0fae3ceb3dd62547",
+  "numpy_native_manifest_sha256": "35d30b7f00af09e238fdbfc8247b0c851a1525a259b096e5ee8714eeadd98419",
+  "scientific_code_unchanged": true,
+  "no_GPU": true
+}

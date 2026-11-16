@@ -1,0 +1,27 @@
+{
+  "job_id": "55745707",
+  "submitted_utc": "2026-11-16T03:14:08.024554Z",
+  "source_commit": "232d7f44398be41dc8521e93cf52339597953df7",
+  "source_files": 514,
+  "source_manifest_sha256": "73a9d313d81525eaca316cd41f0a310ac3da7310d6742412181f2c812853c58e",
+  "script_hashes": {
+    "smoke.sbatch": "94dafb5425a648828dd42c07477d6c6712cf3114bad045fb32bdb733ed295daa",
+    "train_array.sbatch": "985cd37313fffe47edf933627b896b61519e180c43c375806b98e17a8dfc0fa4",
+    "validate_ready.py": "21a88b9df780cde5f1045c1c8d3d0a640d89c0a7d01ad0600a3488da1cce144d"
+  },
+  "source_directory": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p30_20261115_07",
+  "smoke_directory": "/expanse/lustre/scratch/xjin10/temp_project/bdd26/p30_smoke_20261115_07",
+  "training_directory": "/expanse/lustre/scratch/xjin10/temp_project/bdd26/p30_20261115_07",
+  "cpu_job_id": "55745667",
+  "original_partition": "gpu-preempt",
+  "pending_current_partition": "gpu-debug",
+  "pending_current_qos": "gpu-debug-normal",
+  "same_pending_JobID": true,
+  "gpu": 1,
+  "cpu": 4,
+  "memory_GiB": 32,
+  "max_seconds": 1800,
+  "no_requeue": true,
+  "source_and_resources_preserved": true,
+  "formal_submitted": false
+}

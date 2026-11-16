@@ -1,6 +1,6 @@
 # P30: middle-twelve versus last-twelve UNI updates
 
-**Status at 2026-11-16 02:48 UTC: formal experiment has not been submitted.** CPU-only pinned-runtime verification **55745506** is pending in the shared queue. No completed GPU readiness receipt exists. The two cancelled GPU attempts stopped before training.
+**Status at 2026-11-16 03:17 UTC: formal experiment has not been submitted.** CPU-only pinned-runtime verification **55745667** completed successfully in 106 seconds; all pinned imports and **121 tests in 11.95 seconds** passed. The corrected V100 acceptance **55745707** was submitted once at 03:14 UTC and is pending. The same pending JobID was moved from gpu-preempt to the restored gpu-debug queue after scheduler test-only showed an earlier start. Its source, one-GPU/four-CPU/32-GiB resources, 30-minute cap and no-requeue setting were preserved. [CPU acceptance evidence](P30_CPU_ACCEPTANCE.json) and [GPU submission receipt](P30_GPU_ACCEPTANCE_RECEIPT.json) record actual state.
 
 ## Frozen scientific comparison
 
@@ -16,7 +16,11 @@ The recovery preserves all pinned versions: Python 3.10.21, torch 2.5.1+cu124, N
 
 The system-Python archive bootstrap removes Python-home/search/library variables before extraction. R5 also fixes missing hashlib/json imports in the formal preservation block; shell syntax, embedded Python compilation and global-name checks passed for every launcher block. Source/config identity remains required on the actual compute node.
 
-CPU-only verification **55745506** was submitted once after fresh allocation, three-scope quota, capacity and fsync/readback checks: one node, four CPU cores, 8 GiB RAM, 15 minutes, zero GPUs, no requeue. It imports all pinned packages, verifies source hashes and executes the 121 focused tests before writing cpu_ready.json. The first two CPU preparation attempts failed before actual submission (wrong resource name; missing explicit node count); their records were preserved. A read-only test of moving the same pending CPU JobID to ind-shared was rejected because jhu159 lacks that resource allocation; the original job was preserved.
+The first two CPU preparations failed before sbatch (wrong resource name; missing explicit node count). CPU job 55745506 then ran after a legal change of its pending scheduler route and exposed a conda-forge standard-library version-parser mismatch. Job 55745560 exposed a stalled NumPy random-library read and then Pillow's missing adjacent shared-library directory; job 55745652 reproduced the latter after exact NumPy-native recovery. All failed records remain preserved.
+
+The successful CPU job **55745667** used one node, four CPU cores, 8 GiB RAM, a five-minute bound, zero GPUs and no requeue on the preempt CPU partition. It restored the exact original conda-forge platform.py (42,211 bytes), nine NumPy random native files (3,186,312 bytes) matching every original RECORD hash/size, and original adjacent Pillow/NumPy/SciPy/torchvision/NVIDIA library-directory references. NumPy archive SHA256: `90bc3624062a7852b91af675f324c1ed794686da2632f915edbca7ffcc3bc371`; manifest SHA256: `35d30b7f00af09e238fdbfc8247b0c851a1525a259b096e5ee8714eeadd98419`. All six pinned package versions imported with zero visible GPUs, the exact source inventory was verified, and 121 focused tests passed. No new GPU allocation was consumed during these CPU corrections.
+
+Corrected R7 source: **514 files**, manifest `73a9d313d81525eaca316cd41f0a310ac3da7310d6742412181f2c812853c58e`, published source commit `232d7f44398be41dc8521e93cf52339597953df7`. Its script/source/test identity matches the accepted CPU snapshot (`e32af843b9558b48b8f23d53a38f296517d84993d14fd6f94037ca8d42d1babe`). Three-scope quota, 100-GiB filesystem headroom, OST43 plus 150-GiB target reserve, source hashes, exact platform bytes, fresh fsync/readback, allocation headroom including the formal budget and scheduler test-only all passed immediately before the one GPU acceptance submission.
 
 ## Recovery within the original GPU budget
 
@@ -24,4 +28,4 @@ The revised external scheduling ledger stays within the original 48.5-GPU-hour p
 
 ## Next executable decision
 
-Collect actual CPU COMPLETED/0:0 and cpu_ready PASS; seal and admit the corrected R5 source; execute one bounded V100 acceptance allocation; inspect the complete control, learning, frozen-suffix, reload, precision, identity, memory and timing evidence. Only then perform fresh storage/account/queue/readback and scheduler admission and submit the four-task formal request once. Existing P29 outputs and all prior failed attempts remain preserved.
+Inspect job 55745707. On actual COMPLETED/0:0 and ready PASS, collect and verify the complete control, learning, frozen-suffix, reload, precision, identity, memory and timing evidence. Only then perform fresh storage/account/queue/readback and scheduler admission and submit the four-task formal request once. Existing P29 outputs and all prior failed attempts remain preserved.
