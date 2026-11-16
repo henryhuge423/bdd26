@@ -4142,5 +4142,8 @@
     }
   },
   "original_preservation_pending": true,
-  "scheduler_closeout_pending": true
+  "scheduler_closeout_pending": false,
+  "scheduler_final": "JobID|State|ExitCode|ElapsedRaw\n55735733_0|COMPLETED|0:0|15204\n55735733_1|COMPLETED|0:0|18021\n55735733_2|COMPLETED|0:0|18472\n55735733_3|TIMEOUT|0:0|43210\n",
+  "scheduler_final_verified_utc": "2026-11-16T02:38:50Z",
+  "scheduler_timeout_phase": "preservation after scientific completion"
 }

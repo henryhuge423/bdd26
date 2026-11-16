@@ -1,0 +1,32 @@
+[
+  {
+    "name": "RESULTS_EN",
+    "pages": 15,
+    "all_pages_rendered": true,
+    "nonempty_text_every_page": true,
+    "missing_glyphs": 0,
+    "max_overfull_hbox_pt": 1.27655,
+    "pdf_sha256": "a4783fb3eb2c2d165826a727e24820bc42f4bf6d93e39e0ef6d8f24a7b9d8ded",
+    "visual_review": "All 35 pages rendered; prior full layout review retained; scheduler-update first/last pages visually rechecked"
+  },
+  {
+    "name": "RESULTS_ZH",
+    "pages": 15,
+    "all_pages_rendered": true,
+    "nonempty_text_every_page": true,
+    "missing_glyphs": 0,
+    "max_overfull_hbox_pt": 0,
+    "pdf_sha256": "703420cf191b7fb32b72e7e39fb44cc8774a35c11d4eb618643ee109b4c5cd63",
+    "visual_review": "All 35 pages rendered; prior full layout review retained; scheduler-update first/last pages visually rechecked"
+  },
+  {
+    "name": "READER_ZH",
+    "pages": 5,
+    "all_pages_rendered": true,
+    "nonempty_text_every_page": true,
+    "missing_glyphs": 0,
+    "max_overfull_hbox_pt": 0,
+    "pdf_sha256": "79e4614ed430d8d60bb54e2b894877a5d63a97b1d823209a30b32d486205d14a",
+    "visual_review": "All 35 pages rendered; prior full layout review retained; scheduler-update first/last pages visually rechecked"
+  }
+]

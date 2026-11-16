@@ -1,7 +1,9 @@
 # P29 results and P30 preparation — November 15, 2026
 
-P29's four models completed 130 epochs and development evaluation. The first-six plus last-six intervention adds 16/13 interior Dead matches and 283/165 total matches, while removing 65/64 unmatched predictions. Both original seed-level decisions are false. Final scheduler preservation of experimental seed 1 remains pending.
+P29's four models completed 130 epochs and development evaluation. The first-six plus last-six intervention adds 16/13 interior Dead matches and 283/165 total matches, while removing 65/64 unmatched predictions. Both original seed-level decisions are false. Experimental seed 1 reached the scheduler time limit during preservation after all model evaluation and final images completed; its original preservation manifest remains unavailable.
 
+- [English PDF](reports/RESULTS_EN.pdf), [中文 PDF](reports/RESULTS_ZH.pdf), [中文导读 PDF](reports/READER_ZH.pdf)
+- [LaTeX sources, build instructions and page validation](reports/README.md)
 - [Detailed English stage analysis](RESULTS_EN.md)
 - [详细中文阶段分析](RESULTS_ZH.md)
 - [中文导读](READER_ZH.md)

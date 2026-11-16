@@ -3,7 +3,7 @@
   "files": 92,
   "png": 48,
   "source_verified": 505,
-  "scheduler": "JobID|State|ExitCode|Elapsed\n55735733_0|COMPLETED|0:0|04:13:24\n55735733_1|COMPLETED|0:0|05:00:21\n55735733_2|COMPLETED|0:0|05:07:52\n55735733_3|RUNNING|0:0|10:53:27\n",
+  "scheduler": "JobID|State|ExitCode|ElapsedRaw\n55735733_0|COMPLETED|0:0|15204\n55735733_1|COMPLETED|0:0|18021\n55735733_2|COMPLETED|0:0|18472\n55735733_3|TIMEOUT|0:0|43210\n",
   "experimental_seed1_original_preservation_pending": true,
   "checkpoint_independently_rehashed": false,
   "scientific_recovery": {
@@ -227,5 +227,8 @@
       },
       "scheduler": "JobID|State|ExitCode|Elapsed\n55735733_0|COMPLETED|0:0|04:13:24\n55735733_1|COMPLETED|0:0|05:00:21\n55735733_2|COMPLETED|0:0|05:07:52\n55735733_3|RUNNING|0:0|10:53:27\n"
     }
-  }
+  },
+  "scheduler_at_collection": "JobID|State|ExitCode|Elapsed\n55735733_0|COMPLETED|0:0|04:13:24\n55735733_1|COMPLETED|0:0|05:00:21\n55735733_2|COMPLETED|0:0|05:07:52\n55735733_3|RUNNING|0:0|10:53:27\n",
+  "scheduler_final_verified_utc": "2026-11-16T02:38:50Z",
+  "scheduler_timeout_phase": "preservation after scientific completion"
 }
