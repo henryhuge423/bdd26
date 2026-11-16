@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "source_manifest_sha256": "73a9d313d81525eaca316cd41f0a310ac3da7310d6742412181f2c812853c58e",
+  "cpu_summary": "121 passed in 105.55s (0:01:45)",
+  "smoke_job_id": "55745707",
+  "elapsed_seconds": 424,
+  "all_original_hardware_gates": true,
+  "actual_cumulative_acceptance_seconds": 2099,
+  "formal_seconds_per_task": 42720,
+  "total_GPU_seconds_upper_bound": 172979,
+  "original_GPU_seconds_upper_bound": 174600
+}

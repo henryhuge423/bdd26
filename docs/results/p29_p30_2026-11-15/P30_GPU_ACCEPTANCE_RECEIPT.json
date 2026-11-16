@@ -23,5 +23,13 @@
   "max_seconds": 1800,
   "no_requeue": true,
   "source_and_resources_preserved": true,
-  "formal_submitted": false
+  "formal_submitted": true,
+  "formal_array_job_id": "55746187",
+  "scheduler_state": "COMPLETED",
+  "exit_code": "0:0",
+  "elapsed_seconds": 424,
+  "acceptance_status": "PASS",
+  "final_partition": "gpu-debug",
+  "final_qos": "gpu-debug-normal",
+  "historical_pending_fields_scope": "Partition/QoS fields prefixed pending describe the original pending scheduling change."
 }

@@ -1,6 +1,8 @@
-# P29 results and P30 preparation — November 15, 2026
+# P29 results and P30 formal submission — November 15–16, 2026
 
 P29's four models completed 130 epochs and development evaluation. The first-six plus last-six intervention adds 16/13 interior Dead matches and 283/165 total matches, while removing 65/64 unmatched predictions. Both original seed-level decisions are false. Experimental seed 1 reached the scheduler time limit during preservation; CPU recovery job 55745860 subsequently preserved and verified all 23 run files, including both checkpoints and 12 final PNGs.
+
+P30 formal array **55746187** was submitted at 03:54:47 UTC on November 16 after CPU and V100 acceptance passed. The four C19/M19/C1/M1 tasks request 130 epochs with concurrency two. At 04:22:29 UTC all were PENDING/Priority. The combined acceptance/formal GPU envelope is 48.049722 hours within the original 48.5 hours. [Formal receipt](P30_FORMAL_SUBMISSION.json), [complete acceptance evidence and four one-epoch preview PNGs](p30_smoke/README.md).
 
 - [English PDF](reports/RESULTS_EN.pdf), [中文 PDF](reports/RESULTS_ZH.pdf), [中文导读 PDF](reports/READER_ZH.pdf)
 - [LaTeX sources, build instructions and page validation](reports/README.md)

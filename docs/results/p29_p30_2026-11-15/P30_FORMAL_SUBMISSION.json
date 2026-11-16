@@ -1,0 +1,52 @@
+{
+  "array_job_id": "55746187",
+  "submitted_utc": "2026-11-16T03:54:47.093470Z",
+  "source_commit": "232d7f44398be41dc8521e93cf52339597953df7",
+  "source_manifest_sha256": "73a9d313d81525eaca316cd41f0a310ac3da7310d6742412181f2c812853c58e",
+  "smoke_job_id": "55745707",
+  "smoke_elapsed_seconds": 424,
+  "project": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p30_20261115_07",
+  "scratch": "/expanse/lustre/scratch/xjin10/temp_project/bdd26/p30_20261115_07",
+  "array": "0-3%2",
+  "mapping": [
+    "C19",
+    "M19",
+    "C1",
+    "M1"
+  ],
+  "resources": {
+    "gpu": 1,
+    "cpu": 4,
+    "memory_GiB": 32,
+    "hours_per_task": 11.866666666666667,
+    "total_GPU_hours": 47.46666666666667,
+    "concurrency": 2,
+    "runner_budget_hours": 12
+  },
+  "readiness": "PASS",
+  "resource_admission_summary": {
+    "allocation": 1900,
+    "spent": 1562,
+    "other_queued_full_walltime_upper_bound_SU": 116.13043478260869,
+    "additional_requested_GPU_hours": 47.46666666666667,
+    "quota_headroom_bytes": {
+      "scratch_user": 6669464555520,
+      "project_user": 6669464555520,
+      "project_group": 51040114924544
+    }
+  },
+  "scientific_implementation_commit": "7fecc38cff9c8eaa2456115d56204535a905c977",
+  "source_files": 514,
+  "source_code_sha256": "e32af843b9558b48b8f23d53a38f296517d84993d14fd6f94037ca8d42d1babe",
+  "status_checked_utc": "2026-11-16T04:22:29Z",
+  "scheduler_states": {
+    "0": "PENDING/Priority",
+    "1": "PENDING/Priority",
+    "2": "PENDING/Priority",
+    "3": "PENDING/Priority"
+  },
+  "completed_training_runs": 0,
+  "actual_cumulative_acceptance_seconds": 2099,
+  "combined_GPU_seconds_upper_bound": 172979,
+  "original_GPU_seconds_upper_bound": 174600
+}

@@ -1,0 +1,11 @@
+PINNED_ADJACENT_LIBRARY_NAMESPACES_PASS ['Pillow.libs', 'numpy.libs', 'scipy.libs', 'torchvision.libs', 'nvidia']
+ORIGINAL_CONDA_FORGE_PLATFORM_PASS 42211
+EXACT_NUMPY_RANDOM_NATIVES_PASS 9
+NODE_LOCAL_PYTHON_AND_TORCH_NATIVES_PASS 3657 7
+Filesystem                                               Size  Used Avail Use% Mounted on
+10.22.101.123@o2ib:10.22.101.124@o2ib:/expanse/scratch    11P  9.5P  1.4P  88% /expanse/lustre/scratch
+10.22.101.123@o2ib:10.22.101.124@o2ib:/expanse/projects   11P  9.5P  1.4P  88% /expanse/lustre/projects
+/dev/nvme0n1p1                                           1.5T  111M  1.4T   1% /scratch
+uuid, name, memory.free [MiB], memory.used [MiB]
+GPU-2cf868a8-d856-bd27-b730-75381f5f5a2c, Tesla V100-SXM2-32GB, 32495 MiB, 0 MiB
+{"status": "PASS", "source_manifest_sha256": "73a9d313d81525eaca316cd41f0a310ac3da7310d6742412181f2c812853c58e", "safety_hours": {"C": 7.070071487891521, "M": 7.677060670047902}, "peak_GiB": {"C": 4.0943074226379395, "M": 4.490508556365967}}

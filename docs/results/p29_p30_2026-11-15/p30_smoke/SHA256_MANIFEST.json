@@ -1,0 +1,86 @@
+{
+  "C/loss.jsonl": {
+    "bytes": 401,
+    "sha256": "6b76ba5682f0540118ef150d7896e0a0f25336db1880afb32709dc5bb2f58501"
+  },
+  "C/manifest.json": {
+    "bytes": 34622,
+    "sha256": "775e218c9d151345ba9fba70d4a6199a564d023e39aadf2c13e221fa4249c87e"
+  },
+  "C/point_examples_smoke/coordinates.json": {
+    "bytes": 6271,
+    "sha256": "0c4b20e0c5e49390b7321b0eb3533e46ec0998d357a2d4ef0db8d366bc7c4192"
+  },
+  "C/point_examples_smoke/fit_1epoch_preliminary_0000.png": {
+    "bytes": 112438,
+    "sha256": "ba40f301311573be6659405892ca17c7b0fc8c127164b5f1192215782701331e"
+  },
+  "C/point_examples_smoke/fit_1epoch_preliminary_0782.png": {
+    "bytes": 140933,
+    "sha256": "9a5e7cf8efa77b6c71fc044783751a5e6d354dc6a4b51250d69ca61732a0099c"
+  },
+  "C/smoke.json": {
+    "bytes": 7956,
+    "sha256": "e0874d68ecb41c54ae6c513833c18bd600c768f28040c22feeebf834e1b0ece3"
+  },
+  "C/smoke_measurements.json": {
+    "bytes": 7960,
+    "sha256": "16b16d770b2b81a0039deb52352534489cff79d4e04670dae6a20430a5473e58"
+  },
+  "C/status.json": {
+    "bytes": 430,
+    "sha256": "9cf7ea927e8e25b6cd5e45bcf9637fd78ebf0c08343cee361b035487f4f0a274"
+  },
+  "M/loss.jsonl": {
+    "bytes": 400,
+    "sha256": "c56756581c59993f27351f23d45dc9d510132b4fd1db6e4970fb09d2a0040e7d"
+  },
+  "M/manifest.json": {
+    "bytes": 34551,
+    "sha256": "ba8a70583a3b69299fdd50caef4ad98da6576da434e2ef11d3e9fe1682456197"
+  },
+  "M/point_examples_smoke/coordinates.json": {
+    "bytes": 7613,
+    "sha256": "663f63b50e7c8d8ee5d0ba8888ce57599183820d4a741d986307c0c614c9033b"
+  },
+  "M/point_examples_smoke/fit_1epoch_preliminary_0000.png": {
+    "bytes": 115587,
+    "sha256": "53fbf4dca2ae288c4ed792e5bbdc27a9e07d570ab822ebfe38eb48a146e9a70f"
+  },
+  "M/point_examples_smoke/fit_1epoch_preliminary_0782.png": {
+    "bytes": 141334,
+    "sha256": "2bc20e3dcbc4a581d26b69ecf27bb1cbd83b493cf3a70276d75199bc8acbdd70"
+  },
+  "M/smoke.json": {
+    "bytes": 7895,
+    "sha256": "2ae4de67414d5305c11bc195f494ae1bed27fb39aaf73c8099904e3cf4206316"
+  },
+  "M/smoke_measurements.json": {
+    "bytes": 7899,
+    "sha256": "3ebb55523e1494bbf5ef012fe2a7b9f0a9d0dcfc599fb86cf0cc4e1903215006"
+  },
+  "M/status.json": {
+    "bytes": 429,
+    "sha256": "42de625ceba307eacca50661454ca6c6878988cea77b111bb945bb88a2340af9"
+  },
+  "control.json": {
+    "bytes": 2124,
+    "sha256": "fced461d2a2f5e24a9122958f7914b1138aed96859fe68021b5e65823b169613"
+  },
+  "cpu_tests.log": {
+    "bytes": 192,
+    "sha256": "be0774138f749131ce8774a879285a1b6c2947ad35c710c54388c659fb3e730f"
+  },
+  "ready.json": {
+    "bytes": 22677,
+    "sha256": "8034d6a6a7b64dd983e5520902647aabfdc11455fa9bd6cacab005919f1f51ca"
+  },
+  "slurm-55745707.err": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "slurm-55745707.out": {
+    "bytes": 994,
+    "sha256": "8d1824a4e6f42c46faac3259b169c1c45f76b18ef114f23b9c36af2cdd2d6c87"
+  }
+}

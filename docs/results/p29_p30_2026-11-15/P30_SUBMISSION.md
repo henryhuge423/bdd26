@@ -1,10 +1,12 @@
 # P30: middle-twelve versus last-twelve UNI updates
 
-**Status at 2026-11-16 03:17 UTC: formal experiment has not been submitted.** CPU-only pinned-runtime verification **55745667** completed successfully in 106 seconds; all pinned imports and **121 tests in 11.95 seconds** passed. The corrected V100 acceptance **55745707** was submitted once at 03:14 UTC and is pending. The same pending JobID was moved from gpu-preempt to the restored gpu-debug queue after scheduler test-only showed an earlier start. Its source, one-GPU/four-CPU/32-GiB resources, 30-minute cap and no-requeue setting were preserved. [CPU acceptance evidence](P30_CPU_ACCEPTANCE.json) and [GPU submission receipt](P30_GPU_ACCEPTANCE_RECEIPT.json) record actual state.
+**Formal array 55746187 was submitted once at 2026-11-16T03:54:47.093470Z (November 15, 22:54:47 EST).** At 04:22:29 UTC all four tasks were PENDING/Priority. Mapping is 0=C19, 1=M19, 2=C1, 3=M1, concurrency two. Each requests one V100, four CPU cores, 32 GiB RAM and 11:52:00. [Formal receipt](P30_FORMAL_SUBMISSION.json) and [scheduler snapshot](P30_FORMAL_STATUS_2026-11-16.txt) record the actual submission.
+
+CPU acceptance **55745667** completed/0:0 in 106 seconds, with all pinned imports and **121 tests in 11.95 seconds**. V100 acceptance **55745707** completed/0:0 in 424 seconds and passed **121 node tests in 105.55 seconds**, followed by all original hardware gates. The same pending acceptance JobID moved legally from gpu-preempt to gpu-debug and ran on exp-7-60; source, resources, 30-minute bound and no-requeue were preserved. [CPU evidence](P30_CPU_ACCEPTANCE.json), [GPU receipt](P30_GPU_ACCEPTANCE_RECEIPT.json), [hardware review](P30_HARDWARE_REVIEW.json), and [complete original acceptance evidence with four preliminary PNGs](p30_smoke/README.md) provide provenance.
 
 ## Frozen scientific comparison
 
-P30 compares zero-based blocks 6–17 (arm M) with blocks 12–23 (arm C). Each updates 151,179,264 encoder parameters and 3,294,657 head parameters. The design was frozen before complete P29 seed-1 outcomes. Encoder/head learning rates 1e-5/3e-4, AdamW decay .01, the original cosine schedule, 130 epochs, seeds 19/1, cohort 2,134/522, input 256, effective batch 16/physical batch 4, focal objective, decoder, final-checkpoint rule and original two-seed decision remain unchanged. Scientific implementation: `7fecc38cff9c8eaa2456115d56204535a905c977`.
+P30 compares zero-based blocks 6–17 (arm M) with blocks 12–23 (arm C). Each updates 151,179,264 encoder parameters and 3,294,657 head parameters. The design was frozen before complete P29 seed-1 outcomes. Encoder/head learning rates 1e-5/3e-4, AdamW decay .01, the original cosine schedule, 130 epochs, seeds 19/1, cohort 2,134/522, input 256, effective batch 16/physical batch 4, focal objective, decoder, last-checkpoint evaluation rule and original two-seed decision remain unchanged. Scientific implementation: `7fecc38cff9c8eaa2456115d56204535a905c977`.
 
 The latest LM1 focused checks passed **121 tests in 21.38 seconds**; the complete 352-file script/source/test inventory was sealed. Hardware acceptance requires exact C/P3 parity, identical starting tensors/RNG and parameter counts, actual nonzero gradients and updates beyond weight decay in middle blocks 6/17, invariant frozen suffix, BF16 forward with FP32 parameters/loss, last/final reload, source/data identity, memory and conservative timing. These requirements precede formal submission.
 
@@ -22,10 +24,21 @@ The successful CPU job **55745667** used one node, four CPU cores, 8 GiB RAM, a 
 
 Corrected R7 source: **514 files**, manifest `73a9d313d81525eaca316cd41f0a310ac3da7310d6742412181f2c812853c58e`, published source commit `232d7f44398be41dc8521e93cf52339597953df7`. Its script/source/test identity matches the accepted CPU snapshot (`e32af843b9558b48b8f23d53a38f296517d84993d14fd6f94037ca8d42d1babe`). Three-scope quota, 100-GiB filesystem headroom, OST43 plus 150-GiB target reserve, source hashes, exact platform bytes, fresh fsync/readback, allocation headroom including the formal budget and scheduler test-only all passed immediately before the one GPU acceptance submission.
 
-## Recovery within the original GPU budget
+## Actual hardware acceptance and budget
 
-The revised external scheduling ledger stays within the original 48.5-GPU-hour package: 1,020 + 655 prior seconds, at most 1,800 recovered-acceptance seconds, and four formal tasks at 42,720 seconds each = 174,355 seconds (48.431944 GPU hours), below 174,600 seconds. Formal mapping remains C19/M19/C1/M1 with concurrency two, each one V100, four CPU cores and 32 GiB RAM. Each external scheduler limit is 11:52:00; scientific training still requires all 130 epochs and retains its original 12-hour logical budget. Both measured conservative safety estimates must be below 42,720 seconds. The dated pretraining scheduling addendum is in the frozen design document. No additional recovery GPU allocation is included.
+For both seeds, C/P3 states matched exactly after two effective optimizer steps, and C/M initial tensors and RNG were identical. P3, C and M each have 154,473,921 trainable parameters. Middle blocks 6 and 17 had positive data gradients and updates beyond pure AdamW decay in both seeds. All frozen encoder tensors remained unchanged; BF16 forward, FP32 logits, last/final checkpoint reload, optimizer membership and source/data/cohort identity passed. Complete measurements are preserved in `p30_smoke/ready.json` and `p30_smoke/control.json`.
 
-## Next executable decision
+| Arm | Conservative 130-epoch estimate | Peak training memory |
+| --- | ---: | ---: |
+| C, last twelve | 7.070071 h | 4.094307 GiB |
+| M, middle twelve | 7.677061 h | 4.490509 GiB |
 
-Inspect job 55745707. On actual COMPLETED/0:0 and ready PASS, collect and verify the complete control, learning, frozen-suffix, reload, precision, identity, memory and timing evidence. Only then perform fresh storage/account/queue/readback and scheduler admission and submit the four-task formal request once. Existing P29 outputs and all prior failed attempts remain preserved.
+Both conservative estimates are below the 11:52:00 scheduler bound. Actual acceptance consumed 1,020 + 655 + 424 = **2,099 seconds**. Four formal tasks request 4 x 42,720 = **170,880 seconds (47.466667 GPU hours)**. The combined upper envelope is **172,979 seconds (48.049722 GPU hours)**, below the original 174,600-second/48.5-hour package. Scientific training still requires 130 epochs and keeps its original 12-hour logical budget; scheduler cleanup may affect actual accounting.
+
+Immediately before the actual formal submission, fresh three-scope quota, filesystem and OST43 capacity, 150-GiB target reserve, fsync/readback, source hashes, account headroom including existing queued work, queue limits and scheduler test-only passed. The receipt preserves the measured admission summary.
+
+Project source and preserved results: `/expanse/lustre/projects/jhu159/xjin10/bdd26/p30_20261115_07`. Formal training and logs: `/expanse/lustre/scratch/xjin10/temp_project/bdd26/p30_20261115_07`. Acceptance: the sibling `p30_smoke_20261115_07` scratch directory. The formal receipt binds the deployed source commit and 514-file manifest; later documentation commits leave that sealed snapshot intact.
+
+## Next result review
+
+Monitor the existing array **55746187**. After each task finishes, verify 130 continuous epochs, last-checkpoint evaluation, original source/data/cohort/seed identity, complete metrics, fixed examples and preservation hashes. Analyze both seeds under the frozen decision rule. The current four PNGs are one-epoch preliminary training-set previews; final formal examples are collected after epoch 130. Preserve all earlier attempts and P29 data, and retain create-once markers so successful collectors and submissions are never replayed.
