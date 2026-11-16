@@ -1,0 +1,178 @@
+{
+  "status": "PASS",
+  "source": "/expanse/lustre/scratch/xjin10/temp_project/bdd26/p29_20261114_01/A_B_s1",
+  "target": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p29_preservation_20261116_01/results/A_B_s1",
+  "final_png": 12,
+  "source_manifest_sha256": "7be3f3064ac2223e387d1cd4d1636884e05c79b82f4441105b0e7b610c06d20e",
+  "scientific_complete": {
+    "exit_code": 0,
+    "epochs": 130,
+    "elapsed_seconds": 36507.08913286077
+  },
+  "elapsed_seconds": 177.5465935897082,
+  "job_id": "55745860",
+  "checkpoint_hashes": {
+    "last.pth": {
+      "bytes": 1853871828,
+      "sha256": "1c42e4d42be6732d441e1d684e76b8ebcfe9b458140d1d1d637f92c4321f5288",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "final.pth": {
+      "bytes": 617943810,
+      "sha256": "a739fd85aac518e7902651ce08503f0b609b96ac5bcd12a9abe1499d5edb0943",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    }
+  },
+  "manifest_sha256": "7796d8192ecb39ff4c17c740e21039dd189282bdf5061c17d6394163a6038e90",
+  "no_GPU": true,
+  "no_retraining": true,
+  "file_count": 23,
+  "files": {
+    "complete.json": {
+      "bytes": 77,
+      "sha256": "38ce6c1254a96cc284a9314469ddc666e3f8d74898b715964e150534d352ec80",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "evaluation.json": {
+      "bytes": 123322,
+      "sha256": "52ad35c0d908ddb13a338acb47a1cee8e833de28d778cdac84ba1aab28837d91",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "final.pth": {
+      "bytes": 617943810,
+      "sha256": "a739fd85aac518e7902651ce08503f0b609b96ac5bcd12a9abe1499d5edb0943",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "fit.json": {
+      "bytes": 504951,
+      "sha256": "8c71c3bc40488bbff24b925d11b9d36b624db5febbeb5c7b14f24a47e77a6d31",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "last.pth": {
+      "bytes": 1853871828,
+      "sha256": "1c42e4d42be6732d441e1d684e76b8ebcfe9b458140d1d1d637f92c4321f5288",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "loss.jsonl": {
+      "bytes": 52770,
+      "sha256": "11ab08d6db8467ba3f4237f09992189a50baa8b6e22e1f0a88dbdfc6bd667cce",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "manifest.json": {
+      "bytes": 33368,
+      "sha256": "f57cbda39bf43a8f4fb1b98e7e0ae38ed62d6ba51db2ea3aaad0fe449bafcc4e",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "point_examples_audit/audit_final130_0001.png": {
+      "bytes": 105490,
+      "sha256": "1312610d3f2082dc8dc4c1d59f3fdfdf6db0e9f87e3fdfbb57d402bb8d0c2a71",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "point_examples_audit/audit_final130_0007.png": {
+      "bytes": 104054,
+      "sha256": "48bb19eb4f4d5dfc65e9439813fa46236175c60b394229d227ab6a324bbbb4c0",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "point_examples_audit/audit_final130_0178.png": {
+      "bytes": 125859,
+      "sha256": "dec0242eaaf1d9ea31a48309749d2ac56e3d6c4eb367e00aca0b9c0fa2c5a4da",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "point_examples_audit/audit_final130_0584.png": {
+      "bytes": 67153,
+      "sha256": "03280dea45885bc8e93356c5f037934e9c07604f532faa4142a19e551b149c8b",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "point_examples_audit/audit_final130_0776.png": {
+      "bytes": 134335,
+      "sha256": "701f639b7c4edb9c992858d6b2e2fe8c0d0007be273f9e26958261741ad58838",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "point_examples_audit/audit_final130_0812.png": {
+      "bytes": 55331,
+      "sha256": "4d5a404f217e18e7a529925995505019447b86a6fe3f4b4b789eb2ca55e9d92e",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "point_examples_audit/audit_final130_1025.png": {
+      "bytes": 151964,
+      "sha256": "b3e76e8abc9b526d49a1dc1afa5b8491776683b1b878109feee08cbc59af43bd",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "point_examples_audit/audit_final130_1037.png": {
+      "bytes": 170330,
+      "sha256": "d7567e8a15954f007fa0e0ba09833f198d9f1d08bf46ebf0e476836d7f3dba3c",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "point_examples_audit/coordinates.json": {
+      "bytes": 41198,
+      "sha256": "90a129ff953d69d4e4aeddc9edf3a79b1c7045fe813dcaf70d9f023ab067c6d1",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "point_examples_fit/coordinates.json": {
+      "bytes": 19942,
+      "sha256": "d5a874e43c3fdd6ca6da0db2369c8e05b004cfb60afda655d2a0f437861388fb",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "point_examples_fit/fit_final130_0000.png": {
+      "bytes": 110062,
+      "sha256": "0000fb143ec1a53a8fd7d63063bbd666cc80cf4e028c64aeedb00e2ec2c8a6c0",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "point_examples_fit/fit_final130_0586.png": {
+      "bytes": 59720,
+      "sha256": "0d17df5eb4e3d699bda37de3d9c889ee77d646ce318dd03835b9db55a125667f",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "point_examples_fit/fit_final130_0782.png": {
+      "bytes": 138431,
+      "sha256": "02fa2aa547fa6084ed89a18731250c6a4413bab7b6610cb1d551f5d9c09678c0",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "point_examples_fit/fit_final130_0784.png": {
+      "bytes": 136641,
+      "sha256": "b0520867734fab57f67ce9558631c399147039fbff05bbb01b34a82b399bfed7",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "status.json": {
+      "bytes": 438,
+      "sha256": "d113a2789c9f715b88fd9f89d2184531deb6bcb11be1f5b836f6e7bb1d75a7a7",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    },
+    "summary.json": {
+      "bytes": 167,
+      "sha256": "c0b176feef3462c9de5e1021dcb557d994f038287de7f968d280241a60ae0e0f",
+      "source_stream_hashed": true,
+      "target_independently_rehashed": true
+    }
+  },
+  "scheduler": "JobIDRaw|State|ExitCode|ElapsedRaw\n55745860|COMPLETED|0:0|185\n",
+  "scheduler_elapsed_seconds": 185,
+  "scheduler_verified_utc": "2026-11-16T03:24:50Z",
+  "previous_collected_small_payloads_compared": 21,
+  "source_manifest_reference_inherited": true,
+  "external_archival_complete": false
+}

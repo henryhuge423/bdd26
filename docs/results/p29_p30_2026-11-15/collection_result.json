@@ -230,5 +230,29 @@
   },
   "scheduler_at_collection": "JobID|State|ExitCode|Elapsed\n55735733_0|COMPLETED|0:0|04:13:24\n55735733_1|COMPLETED|0:0|05:00:21\n55735733_2|COMPLETED|0:0|05:07:52\n55735733_3|RUNNING|0:0|10:53:27\n",
   "scheduler_final_verified_utc": "2026-11-16T02:38:50Z",
-  "scheduler_timeout_phase": "preservation after scientific completion"
+  "scheduler_timeout_phase": "preservation after scientific completion",
+  "experimental_seed1_preservation_recovery": {
+    "status": "PASS",
+    "job_id": "55745860",
+    "file_count": 23,
+    "final_png": 12,
+    "checkpoint_hashes": {
+      "last.pth": {
+        "bytes": 1853871828,
+        "sha256": "1c42e4d42be6732d441e1d684e76b8ebcfe9b458140d1d1d637f92c4321f5288",
+        "source_stream_hashed": true,
+        "target_independently_rehashed": true
+      },
+      "final.pth": {
+        "bytes": 617943810,
+        "sha256": "a739fd85aac518e7902651ce08503f0b609b96ac5bcd12a9abe1499d5edb0943",
+        "source_stream_hashed": true,
+        "target_independently_rehashed": true
+      }
+    },
+    "target": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p29_preservation_20261116_01/results/A_B_s1",
+    "manifest_sha256": "7796d8192ecb39ff4c17c740e21039dd189282bdf5061c17d6394163a6038e90",
+    "artifact": "P29_PRESERVATION_RECOVERY.json"
+  },
+  "scientific_preservation_pending": false
 }

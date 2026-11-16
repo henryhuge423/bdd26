@@ -1,6 +1,6 @@
 # P29 results and P30 preparation — November 15, 2026
 
-P29's four models completed 130 epochs and development evaluation. The first-six plus last-six intervention adds 16/13 interior Dead matches and 283/165 total matches, while removing 65/64 unmatched predictions. Both original seed-level decisions are false. Experimental seed 1 reached the scheduler time limit during preservation after all model evaluation and final images completed; its original preservation manifest remains unavailable.
+P29's four models completed 130 epochs and development evaluation. The first-six plus last-six intervention adds 16/13 interior Dead matches and 283/165 total matches, while removing 65/64 unmatched predictions. Both original seed-level decisions are false. Experimental seed 1 reached the scheduler time limit during preservation; CPU recovery job 55745860 subsequently preserved and verified all 23 run files, including both checkpoints and 12 final PNGs.
 
 - [English PDF](reports/RESULTS_EN.pdf), [中文 PDF](reports/RESULTS_ZH.pdf), [中文导读 PDF](reports/READER_ZH.pdf)
 - [LaTeX sources, build instructions and page validation](reports/README.md)
@@ -14,7 +14,7 @@ P29's four models completed 130 epochs and development evaluation. The first-six
 - [Object summary and image sensitivity](object_summary.json)
 - [P20–P29 paired comparison table](stage_pairs.csv)
 
-The report includes 48 epoch-130 model PNGs and 13 large analysis PNGs. Original images, GT centers, predictions and one-to-one assignments are in `p29_files/`. Figures and all results use the frozen fold-1 development cohort. The 505-source-file verification comes from the earlier verified seed-19 collection; 92 collected small payloads have SHA256 verification. Experimental seed-1 data were recovered directly from scratch after application completion. Six checkpoint sizes match original preservation records; two experimental seed-1 checkpoint sizes were recorded directly. Independent checkpoint rehashing and external archival are pending.
+The report includes 48 epoch-130 model PNGs and 13 large analysis PNGs. Original images, GT centers, predictions and one-to-one assignments are in `p29_files/`. Figures and all results use the frozen fold-1 development cohort. The 505-source-file verification comes from the earlier verified seed-19 collection; 92 collected small payloads have SHA256 verification. Experimental seed-1 data were recovered directly from scratch after application completion. Six checkpoint sizes match original preservation records; both experimental seed-1 checkpoints now have independent source/target SHA256 verification in [P29_PRESERVATION_RECOVERY.json](P29_PRESERVATION_RECOVERY.json). Independent rehashing of the other six and external archival are pending.
 
 Reproduce numerical analysis and figures from the repository root:
 

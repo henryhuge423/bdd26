@@ -2,29 +2,29 @@
   "reports": [
     {
       "name": "RESULTS_EN",
-      "pdf_bytes": 2140428,
-      "pdf_sha256": "a4783fb3eb2c2d165826a727e24820bc42f4bf6d93e39e0ef6d8f24a7b9d8ded",
-      "tex_sha256": "ff2815fbec0a4e86ff09b5d15e98604cd57202d2c3379651afd7ee7a61bd25eb"
+      "pdf_bytes": 2140598,
+      "pdf_sha256": "7e12744da17563a17d934df8c8ef269c955fe0d65e4ff270123b03cc1cd9af67",
+      "tex_sha256": "21e3e7dba85bb9917cda0d63d317cb13a24f0fe86343558db508bcf0ea692c01"
     },
     {
       "name": "RESULTS_ZH",
-      "pdf_bytes": 2327514,
-      "pdf_sha256": "703420cf191b7fb32b72e7e39fb44cc8774a35c11d4eb618643ee109b4c5cd63",
-      "tex_sha256": "9cb0622a17833cbbc2ed07903c09ed91670b35981e87b62e6df646b11cccbe82"
+      "pdf_bytes": 2327694,
+      "pdf_sha256": "c23c98de70409f1e49272d3520a75b5889f4fd315a81181f673ee1d92fb00d3f",
+      "tex_sha256": "2230a54bf5e33e2dad8880f514f89caf9fc55a85eaeda5677256c2ff8426b0f1"
     },
     {
       "name": "READER_ZH",
-      "pdf_bytes": 1086981,
-      "pdf_sha256": "79e4614ed430d8d60bb54e2b894877a5d63a97b1d823209a30b32d486205d14a",
-      "tex_sha256": "13e6aebffdd709a8361a5641c070fcb7e7211cc6f2c8ee96f28495238c807bf4"
+      "pdf_bytes": 1086731,
+      "pdf_sha256": "1690b266b28990ea956894e0e712f96daa32c2a69f4e4d44dd4e18af7a481bf7",
+      "tex_sha256": "0a26fac64891d38a13ae6fdd6523a56a8b0a505dac4d7383985f4d2ac687947f"
     }
   ],
   "input_sha256": {
-    "p29_verified_analysis.json": "2d9782b5abaf55ed323315a8db0f65f17fc4d8877cd614066ec133bfa570b2c2",
+    "p29_verified_analysis.json": "73e552d49e2e628df3357771574e391e64ecf6c7f8b4b2cb84ccb847146b7ce3",
     "stage_pairs.csv": "caee13a22e1b2c0c06ba2621a21525506d1215a2cb5cec99bd82431a6233d4b0",
-    "RESULTS_EN.md": "ff5164f7099ccc5ed3ccead85bbb9d17c62b773ebcd99ff4fff6284800d5e9fb",
-    "RESULTS_ZH.md": "648762d4ac2f2538318957ec2a197e77e3ca6cae236dd7adef069f3dcd3c67e9",
-    "READER_ZH.md": "c01d9d564d98d76a1d5ebaa6dce00570d770e62eebf444cc4d4b6ed491814ee3",
+    "RESULTS_EN.md": "b7f455eca55ca9ba6aa6380b77312e77bcf635209ea7ea7f341a7bd25a850696",
+    "RESULTS_ZH.md": "a038e4c4e95c50ad8d1561fd19122a1f0b79d8c6c28c2e60effd0731f8348052",
+    "READER_ZH.md": "c8c914535f1b480d62d67fb4cf7bdd2b4223eb2e56e3ac5f4f3b1bd21318b0dc",
     "figures/p29_image_1025_seed_1.png": "20c31661f207c410b05ade2e1cf27e1e19cc60ff92c15f70b3c8c63af0c3d6c2",
     "figures/p29_image_1025_seed_19.png": "92cf1ea0df3034d64d1f6581ddbd1f7e13d4b87c934810c960126f56ee7bdbfc",
     "figures/p29_image_1037_seed_1.png": "01450a1b1a008d54e0cebca6ad39f719c44fc457d6bb4c5bb5c62c1928a8f19c",
@@ -43,8 +43,8 @@
   ],
   "real_image_figures": "existing SHA-verified microscopy overlays",
   "compiler": "XeLaTeX, two passes; Pandoc only produces TeX source",
-  "scientific_report_git_commit": "f06e29c0faf431d6d5fb67ed07d4067b65266b95",
-  "scheduler_update_verified_utc": "2026-11-16T02:38:50Z",
   "generator_sha256": "9bcdc09170c6af6164cfad0323dd4933c23d72c255bc7073db784a577d9b98ca",
-  "text_transport": "UTF-8/LF; scientific input content unchanged by line-ending normalization"
+  "scientific_report_git_commit": "1c244f34c113b235ae94ba58d1164dbf034e5dec",
+  "preservation_recovery_job_id": "55745860",
+  "text_transport": "UTF-8/LF"
 }

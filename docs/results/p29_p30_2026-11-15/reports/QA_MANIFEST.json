@@ -6,8 +6,8 @@
     "nonempty_text_every_page": true,
     "missing_glyphs": 0,
     "max_overfull_hbox_pt": 1.27655,
-    "pdf_sha256": "a4783fb3eb2c2d165826a727e24820bc42f4bf6d93e39e0ef6d8f24a7b9d8ded",
-    "visual_review": "All 35 pages rendered; prior full layout review retained; scheduler-update first/last pages visually rechecked"
+    "pdf_sha256": "7e12744da17563a17d934df8c8ef269c955fe0d65e4ff270123b03cc1cd9af67",
+    "visual_review": "All 35 pages rendered; full prior layout review retained; updated preservation pages visually inspected"
   },
   {
     "name": "RESULTS_ZH",
@@ -16,8 +16,8 @@
     "nonempty_text_every_page": true,
     "missing_glyphs": 0,
     "max_overfull_hbox_pt": 0,
-    "pdf_sha256": "703420cf191b7fb32b72e7e39fb44cc8774a35c11d4eb618643ee109b4c5cd63",
-    "visual_review": "All 35 pages rendered; prior full layout review retained; scheduler-update first/last pages visually rechecked"
+    "pdf_sha256": "c23c98de70409f1e49272d3520a75b5889f4fd315a81181f673ee1d92fb00d3f",
+    "visual_review": "All 35 pages rendered; full prior layout review retained; updated preservation pages visually inspected"
   },
   {
     "name": "READER_ZH",
@@ -26,7 +26,7 @@
     "nonempty_text_every_page": true,
     "missing_glyphs": 0,
     "max_overfull_hbox_pt": 0,
-    "pdf_sha256": "79e4614ed430d8d60bb54e2b894877a5d63a97b1d823209a30b32d486205d14a",
-    "visual_review": "All 35 pages rendered; prior full layout review retained; scheduler-update first/last pages visually rechecked"
+    "pdf_sha256": "1690b266b28990ea956894e0e712f96daa32c2a69f4e4d44dd4e18af7a481bf7",
+    "visual_review": "All 35 pages rendered; full prior layout review retained; updated preservation pages visually inspected"
   }
 ]

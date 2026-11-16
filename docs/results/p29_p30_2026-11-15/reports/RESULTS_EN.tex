@@ -85,10 +85,10 @@ original twelve-block update budget. Total matches increased by 283/165
 and unmatched predictions decreased by 65/64. Both paired
 image-bootstrap intervals are positive. Final Dead recall and precision
 remain below the original absolute criteria. All four models completed
-130 epochs and development evaluation; the last scheduler task reached
-its time limit during preservation, after training, final-checkpoint
-reload, development evaluation and result images had completed. Across
-this stage, updating encoder representations has produced more
+130 epochs and development evaluation. The last scheduler task reached
+its time limit during preservation; a subsequent CPU job preserved and
+verified both experimental seed-1 checkpoints and all result images.
+Across this stage, updating encoder representations has produced more
 consistent gains than the tested auxiliary supervision, parameter
 averaging and weight constraint. The effect depends on which layers are
 updated and which tissue images are considered.
@@ -473,13 +473,16 @@ regardless of outcome.
 The combined scientific collection verifies 92 small payloads, including
 48 final PNGs, against their collected SHA256 values. The 505
 source-file verification is inherited from the verified seed-19
-collection. Seed-19 and control seed-1 payloads also match original
-preservation records; experimental seed-1 files were recovered directly
-from scratch after model completion, its scheduler subsequently timed
-out during preservation, and the original preservation manifest has not
-been recovered. Six checkpoint sizes match preservation records and two
-experimental seed-1 sizes were recorded directly. Independent
-large-checkpoint rehashing and external archival remain outstanding.
+collection. Seed-19 and control seed-1 payloads match original
+preservation records. Experimental seed 1 timed out during preservation
+after model completion. CPU recovery job 55745860 completed in 185
+seconds and preserved all 23 run files, including both checkpoints and
+12 final PNGs, with source hashes and independent target readback. All
+21 small files match the earlier collection. Six other checkpoint sizes
+match original records; independent rehashing of those six and external
+archival remain outstanding.
+\href{../P29_PRESERVATION_RECOVERY.json}{Preservation recovery} records
+the verified checkpoint hashes.
 \href{../p29_verified_analysis.json}{Machine-readable analysis},
 \href{../object_summary.json}{object changes},
 \href{../stage_pairs.csv}{stage pair table}, and
