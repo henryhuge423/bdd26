@@ -1,0 +1,8 @@
+{
+  "recall": 0.5928163265306122,
+  "precision": 0.7013714506470929,
+  "dead_recall": 0.4827586206896552,
+  "dead_images": 11,
+  "dead_objects": 145,
+  "nondeg": 1.0
+}

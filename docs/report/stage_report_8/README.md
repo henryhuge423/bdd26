@@ -1,0 +1,9 @@
+# Stage report 8 / 第八阶段报告
+
+The three PDFs cover P27–P31, with P20–P26 included as context. P31 uses the final 130-epoch results of Expanse array 55792463; the P31 fixed-example images are reconstructed from saved original pixels, predicted centers and one-to-one matches. The three PDFs are in `reports/`: `RESULTS_EN.pdf`, `RESULTS_ZH.pdf` and `READER_ZH.pdf`.
+
+Build from this directory on Windows with Python 3, Pillow, Pandoc, XeLaTeX, CTeX/Fandol and PGFPlots installed: `python build_latex_reports.py --root .`. It converts the three Markdown texts to LaTeX, draws statistical charts with PGFPlots, and runs XeLaTeX twice. If a sandbox prevents the XeLaTeX executable starting, run the build in an environment where the installed compiler can start. The already-generated `.tex` files and `reports/tex_figures/` are also included; run `xelatex` twice from `reports/` on each `.tex` file. No package installation is needed.
+
+Run `python verify_numbers.py` to check the retained P31 evaluation counts, selected files against original preservation manifests, and the fixed-example one-to-one coordinates. `p31_inputs.zip` has the same selected P31 raw records and input images; `p31_files/` is its extracted form. All 92 small P31 preservation payloads were separately checked on LM1; this directory includes the subset used for the report. Large model checkpoints were not copied. P30 and earlier raw analyses and source provenance are retained in `docs/results/p30_p31_2026-11-16/`, `docs/results/p28_p29_2026-11-14/`, and `docs/report/stage_report_7/`.
+
+`qa_latex_reports.py` renders every page and checks text extraction, glyphs and layout warnings. `pdf_qa/QA.json` records the final checks; page images and contact sheets are kept in the local build workspace. `prepare_stage8.py` documents image reconstruction and initial drafting, while the checked-in Markdown and generated LaTeX are the final editable report sources.

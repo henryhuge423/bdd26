@@ -1,0 +1,29 @@
+[
+  {
+    "name": "RESULTS_EN",
+    "pages": 23,
+    "all_pages_rendered": true,
+    "nonempty_text_every_page": true,
+    "missing_glyphs": 0,
+    "max_overfull_hbox_pt": 3.14616,
+    "pdf_sha256": "543f953b48e817dae2bb315478d406e84210c6c37d8124c0109a0c0e4fa539c2"
+  },
+  {
+    "name": "RESULTS_ZH",
+    "pages": 23,
+    "all_pages_rendered": true,
+    "nonempty_text_every_page": true,
+    "missing_glyphs": 0,
+    "max_overfull_hbox_pt": 3.14616,
+    "pdf_sha256": "084aaebf5c03389cb47916ec5658d391dd904886c147e6d902f93e50eaaf1315"
+  },
+  {
+    "name": "READER_ZH",
+    "pages": 8,
+    "all_pages_rendered": true,
+    "nonempty_text_every_page": true,
+    "missing_glyphs": 0,
+    "max_overfull_hbox_pt": 0,
+    "pdf_sha256": "dba4531206c05a94155b8066ea9cd8926d8b54d66740a167be799677481c34b0"
+  }
+]
