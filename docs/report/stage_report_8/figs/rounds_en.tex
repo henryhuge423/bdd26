@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=2 by 1,horizontal sep=2.0cm},width=7cm,height=8.8cm,ytick={0,1,2,3,4},yticklabels={P27,P28,P29,P30,P31},ymin=-.6,ymax=4.6,y dir=reverse,grid=major,grid style={gray!20},tick label style={font=\small},label style={font=\small},title style={font=\small},legend style={font=\small,at={(.5,-.18)},anchor=north,legend columns=2}]
+\nextgroupplot[title={Interior Dead matches},xlabel={Intervention minus control: matches}]
+\addplot[only marks,mark=*,mark size=2.5pt,color=blue!65!black] coordinates {(6,-0.12) (2,0.88) (16,1.88) (7,2.88) (8,3.88)};
+\addlegendentry{Seed 19}
+\addplot[only marks,mark=diamond*,mark size=2.5pt,color=orange!85!black] coordinates {(15,0.12) (-1,1.12) (13,2.12) (15,3.12) (2,4.12)};
+\addlegendentry{Seed 1}
+\nextgroupplot[title={All-nucleus matches},xlabel={Intervention minus control: matches}]
+\addplot[only marks,mark=*,mark size=2.5pt,color=blue!65!black] coordinates {(521,-0.12) (528,0.88) (283,1.88) (648,2.88) (-140,3.88)};
+\addlegendentry{Seed 19}
+\addplot[only marks,mark=diamond*,mark size=2.5pt,color=orange!85!black] coordinates {(213,0.12) (273,1.12) (165,2.12) (516,3.12) (6,4.12)};
+\addlegendentry{Seed 1}
+\end{groupplot}
+\end{tikzpicture}

@@ -1,29 +1,26 @@
 [
   {
-    "name": "RESULTS_EN",
-    "pages": 23,
-    "all_pages_rendered": true,
-    "nonempty_text_every_page": true,
+    "name": "stage_report_8_en",
+    "pages": 21,
+    "text_every_page": true,
     "missing_glyphs": 0,
-    "max_overfull_hbox_pt": 3.14616,
-    "pdf_sha256": "543f953b48e817dae2bb315478d406e84210c6c37d8124c0109a0c0e4fa539c2"
+    "max_overfull_pt": 1.5507,
+    "sha256": "da0cf46c1af73dab49dc01a497aba4520778013dfb1dfc94d1c5a84b2b09ab4f"
   },
   {
-    "name": "RESULTS_ZH",
-    "pages": 23,
-    "all_pages_rendered": true,
-    "nonempty_text_every_page": true,
+    "name": "stage_report_8_zh",
+    "pages": 21,
+    "text_every_page": true,
     "missing_glyphs": 0,
-    "max_overfull_hbox_pt": 3.14616,
-    "pdf_sha256": "084aaebf5c03389cb47916ec5658d391dd904886c147e6d902f93e50eaaf1315"
+    "max_overfull_pt": 1.5507,
+    "sha256": "7a5f92e3b15237e11e3b7f298da30e6a64ff6a14e0deeae76e70558ebcf94380"
   },
   {
-    "name": "READER_ZH",
+    "name": "summary_plain_zh",
     "pages": 8,
-    "all_pages_rendered": true,
-    "nonempty_text_every_page": true,
+    "text_every_page": true,
     "missing_glyphs": 0,
-    "max_overfull_hbox_pt": 0,
-    "pdf_sha256": "dba4531206c05a94155b8066ea9cd8926d8b54d66740a167be799677481c34b0"
+    "max_overfull_pt": 0,
+    "sha256": "ff9b4740136dfd594a79da02b0aecfb0f6359e81f40e32c411c25d4ac356447e"
   }
 ]
