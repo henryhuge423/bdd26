@@ -1,0 +1,81 @@
+{
+  "adjacent_native_library_namespaces": {
+    "original_site_packages": true,
+    "names": [
+      "Pillow.libs",
+      "numpy.libs",
+      "scipy.libs",
+      "torchvision.libs",
+      "nvidia"
+    ]
+  },
+  "numpy_random_native_overlay": {
+    "prefix": "/expanse/lustre/projects/jhu159/xjin10/bdd26/runtime_native_numpy_p30_20261115_01",
+    "manifest_sha256": "35d30b7f00af09e238fdbfc8247b0c851a1525a259b096e5ee8714eeadd98419",
+    "files": 9,
+    "bytes": 3186312,
+    "original_RECORD_matching": true
+  },
+  "original_platform_overlay": {
+    "prefix": "/expanse/lustre/projects/jhu159/xjin10/bdd26/runtime_stdlib_patch_p30_20261115_01",
+    "sha256": "87e7d2f54b21b290b35dfa2bdcb66e4d80a275be8c9b6abd0fae3ceb3dd62547",
+    "bytes": 42211,
+    "original_byte_identity": true
+  },
+  "torch_native_overlay": {
+    "prefix": "/expanse/lustre/projects/jhu159/xjin10/bdd26/runtime_native_torch_p30_20261115_01",
+    "manifest_sha256": "b92fe29c73d34fc6b191510beea51b87c5a17ced36f3f81948ee003e47107685",
+    "files": 7,
+    "bytes": 1199887,
+    "original_RECORD_matching": true
+  },
+  "native_overlay": {
+    "prefix": "/expanse/lustre/projects/jhu159/xjin10/bdd26/runtime_native_p30_20261115_01",
+    "manifest_sha256": "8322180570c00b5262c4337b60c83eb2db1fad68caeec0e53adbea23f33cb56f",
+    "files": 75,
+    "original_metadata_matching": true
+  },
+  "package_overlay": {
+    "node_local_extraction": true,
+    "prefix": "/expanse/lustre/projects/jhu159/xjin10/bdd26/runtime_packages_p30_20261115_02",
+    "manifest_sha256": "fca061562aafacfbe2a2b6150f7484427a7673d9d41c73219412c1c238c51cca",
+    "files": 3657,
+    "original_record_matching": true
+  },
+  "runtime_overlay": {
+    "prefix": "/expanse/lustre/projects/jhu159/xjin10/bdd26/runtime_startup_p30_20261115_01",
+    "stdlib_manifest_sha256": "0f8d8390c1ccc0d9a422c6a12f822230519ee19afc8e1e5b2d1ad878b8a967bc",
+    "archive_sha256": "2ba22d68f6bfb0ffcfb3729ec382d5905fdebdd56b82a4ad46add9e65e95db22",
+    "files": 870,
+    "pure_python_only": true
+  },
+  "storage_layout": {
+    "ost": 43,
+    "scope": "P31 _01 directories only",
+    "reason": "OST18 write hang reproduced; OST43 fsync/readback verified",
+    "minimum_target_free_GiB": 150
+  },
+  "source_commit": "26ce1f26da5326364f39f3d61c225d615876ad37",
+  "tested_source_sha256": "06a8a2e44106f7a1e864d04f3524e41527db4388ee27614eb3310fa5eb725075",
+  "refreshed_files": [],
+  "new_files": [
+    "docs/superpowers/plans/2026-11-16-proposal-p31.md",
+    "docs/superpowers/specs/2026-11-16-proposal-p31-design.md",
+    "scripts/analyze_proposal_p30.py",
+    "scripts/train_proposal_p31.py",
+    "scripts/verify_p31_control.py",
+    "tests/test_proposal_p31.py"
+  ],
+  "parent_manifest_sha256": "73a9d313d81525eaca316cd41f0a310ac3da7310d6742412181f2c812853c58e",
+  "source_manifest_sha256": "0c0dbfb0b4e2e545a384383781b6005ed5b5baaa1b2c22d4c0fb7cef37d75f6e",
+  "script_hashes": {
+    "smoke.sbatch": "018b34e8338fd54280b6292e3b76f0c06b80b696f832a846ee13c3122d7e738c",
+    "train_array.sbatch": "dfd822bc32d5c69dfee374d1d53da51544bd7be06af26412a4cf94148f75c811",
+    "validate_ready.py": "aafdad5f09ffb8360cb24c858abf9218f39a73a1b80b6a4046d361af9dcb1ab0"
+  },
+  "data_root": "/expanse/lustre/projects/jhu159/xjin10/bdd26/migration_20261020/data/pannuke",
+  "runtime": "/expanse/lustre/projects/jhu159/xjin10/bdd26/runtimes/p3_20261020_01",
+  "automatic_phase_B": false,
+  "cpu_focused": "131 passed (P31 and inherited controls)",
+  "cpu_summary": "131 passed in 3.98s"
+}

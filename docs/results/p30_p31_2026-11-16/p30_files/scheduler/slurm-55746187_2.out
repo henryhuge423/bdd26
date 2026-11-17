@@ -1,0 +1,17 @@
+phase_start utc=2026-11-16T11:24:57Z
+PINNED_ADJACENT_LIBRARY_NAMESPACES_PASS ['Pillow.libs', 'numpy.libs', 'scipy.libs', 'torchvision.libs', 'nvidia']
+ORIGINAL_CONDA_FORGE_PLATFORM_PASS 42211
+EXACT_NUMPY_RANDOM_NATIVES_PASS 9
+NODE_LOCAL_PYTHON_AND_TORCH_NATIVES_PASS 3657 7
+Filesystem                                               Size  Used Avail Use% Mounted on
+10.22.101.123@o2ib:10.22.101.124@o2ib:/expanse/scratch    11P  9.5P  1.4P  88% /expanse/lustre/scratch
+10.22.101.123@o2ib:10.22.101.124@o2ib:/expanse/projects   11P  9.5P  1.4P  88% /expanse/lustre/projects
+/dev/nvme0n1p1                                           1.5T  112M  1.4T   1% /scratch
+phase_quota_pass utc=2026-11-16T11:25:00Z
+uuid, name, memory.free [MiB], memory.used [MiB]
+GPU-691b31db-fc49-cb78-7b40-ce7ee91691cf, Tesla V100-SXM2-32GB, 32495 MiB, 0 MiB
+phase_identity_pass utc=2026-11-16T11:25:45Z
+{"attempt": 1, "command": ["lfs", "quota", "-u", "xjin10", "/expanse/lustre/projects"], "status": "PASS", "started_utc": "2026-11-16T15:35:25.085756+00:00", "returncode": 0, "stdout": "Disk quotas for usr xjin10 (uid 543889):\n     Filesystem  kbytes   quota   limit   grace   files   quota   limit   grace\n/expanse/lustre/projects\n                3740120869       0 10240000000       -  147740       0 2000000       -\n", "stderr": "", "quota_free_bytes": 6655876230144, "quota_free_files": 1852260, "elapsed_seconds": 1.5658437148667872, "filesystem_free_bytes": 1487120324624384, "required_bytes": 85899345920, "required_files": 1000}
+{"attempt": 1, "command": ["lfs", "quota", "-g", "jhu159", "/expanse/lustre/projects"], "status": "PASS", "started_utc": "2026-11-16T15:35:26.836696+00:00", "returncode": 0, "stdout": "Disk quotas for grp jhu159 (gid 15104):\n     Filesystem  kbytes   quota   limit   grace   files   quota   limit   grace\n/expanse/lustre/projects\n                3856506929       0 53687091200       -  392348       0       0       -\ngid 15104 is using default file quota setting\n", "stderr": "", "quota_free_bytes": 51026518293504, "quota_free_files": null, "elapsed_seconds": 0.5520371473394334, "filesystem_free_bytes": 1487120324624384, "required_bytes": 85899345920, "required_files": 1000}
+phase_preserve_start utc=2026-11-16T15:35:27Z
+phase_exit utc=2026-11-16T15:35:37Z rc=0

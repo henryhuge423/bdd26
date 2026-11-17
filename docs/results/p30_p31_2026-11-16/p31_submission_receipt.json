@@ -1,0 +1,56 @@
+{
+  "array_job_id": "55792463",
+  "submitted_utc": "2026-11-17T03:05:58.793890Z",
+  "source_commit": "26ce1f26da5326364f39f3d61c225d615876ad37",
+  "source_manifest_sha256": "0c0dbfb0b4e2e545a384383781b6005ed5b5baaa1b2c22d4c0fb7cef37d75f6e",
+  "smoke_job_id": "55792375",
+  "smoke_elapsed_seconds": 369,
+  "project": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p31_20261116_01",
+  "scratch": "/expanse/lustre/scratch/xjin10/temp_project/bdd26/p31_20261116_01",
+  "array": "0-3%2",
+  "mapping": [
+    "C19",
+    "G19",
+    "C1",
+    "G1"
+  ],
+  "resources": {
+    "gpu": 1,
+    "cpu": 4,
+    "memory_GiB": 32,
+    "hours_per_task": 12.0,
+    "total_GPU_hours": 48.0,
+    "concurrency": 2,
+    "runner_budget_hours": 12
+  },
+  "readiness": "PASS",
+  "resource_evaluation": {
+    "allocation": 1900,
+    "spent": 1453,
+    "other_queued_full_walltime_upper_bound_SU": 25.565217391304344,
+    "additional_requested_GPU_hours": 48.0,
+    "quota_headroom_bytes": {
+      "scratch_user": 6645848014848,
+      "project_user": 6645848014848,
+      "project_group": 51012067282944
+    },
+    "pending": [
+      {
+        "job_id": "55782722",
+        "time_hours": 24.0,
+        "gpus": 1,
+        "cpus": 10,
+        "memory_GiB": 96.0,
+        "conservative_SU": 25.043478260869563
+      },
+      {
+        "job_id": "55792252",
+        "time_hours": 0.5,
+        "gpus": 1,
+        "cpus": 10,
+        "memory_GiB": 96.0,
+        "conservative_SU": 0.5217391304347826
+      }
+    ]
+  }
+}

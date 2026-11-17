@@ -1,0 +1,112 @@
+{
+  "P22_DIAGNOSTICS.json": {
+    "before_sha256": "5fd6d0a6fe9953eea97e521f2f2e9662786c6714089a3e2703bba89406a3d923",
+    "published_sha256": "a844c30900c1106f1f0a050128ee399b96dd69271e98653ac1978a45be183e25",
+    "change": "CRLF to LF; text and numerical values identical"
+  },
+  "P22_NUMBERS.json": {
+    "before_sha256": "2d4b00cd2a983b8f9e2c11ca02f81ced1af651409772837f4fbc06b03e62df0a",
+    "published_sha256": "6fdd5b188464ccc05b5442766d3a08a4e9fc9faa59c10df561ddff62940ca3e6",
+    "change": "CRLF to LF; text and numerical values identical"
+  },
+  "REPORT_QA.json": {
+    "before_sha256": "b506a95a8a8fbf9851666db838bfd1fd5a812e22fd7f7c311d76d305cb6eb0b6",
+    "published_sha256": "1499f029d42f2a29a1f1f7ef9823c3c3378da31f7a19aea76dee47d5cd8d8a29",
+    "change": "CRLF to LF; text and numerical values identical"
+  },
+  "early_fixed_objects.csv": {
+    "before_sha256": "8955621dd782779e0bdfeb308f4e5c041eaed2e573d2b669ff8afcec34aa01de",
+    "published_sha256": "3c02f4b9fc2fa60faf5cbe0bbe92181cfcb6ded4876db85b6016be4e6db95f05",
+    "change": "CRLF to LF; text and numerical values identical"
+  },
+  "fixed_objects.csv": {
+    "before_sha256": "5f30d84777c302893332eb9bc42f4ac1aa350a8817fa7c5eb3cccdf2d9ae907d",
+    "published_sha256": "b4a9ceee10207f4d3bee16e4e46db3613d68c935333640ce1d74e93184895ec3",
+    "change": "CRLF to LF; text and numerical values identical"
+  },
+  "reports/BUILD_MANIFEST.json": {
+    "before_sha256": "c54b291389708243f89a6554f5890f76e115170ca843ee6a5dc83baec3493179",
+    "published_sha256": "68ace96dd46b0524a596771f492683d1141e45177c180cc16f6a78f972a4db5a",
+    "change": "CRLF to LF; text and numerical values identical"
+  },
+  "reports/READER_ZH.build.md": {
+    "before_sha256": "8273da940cdbe8c502fa1560859771b92fee56f6a295fb718525a350d7484155",
+    "published_sha256": "a00b0299f7a9741805acc03335b11720172bb388098075d244ec689444c7a923",
+    "change": "CRLF to LF; text and numerical values identical"
+  },
+  "reports/READER_ZH.tex": {
+    "before_sha256": "cb30ab1c283b821a083c89b30ff89d93dcec9e4308644ede217cd463c8dde735",
+    "published_sha256": "45c55974b22fff8512c7a3a91c262f7cadbf0f39d20116525dd35c091b4844a7",
+    "change": "CRLF to LF; text and numerical values identical"
+  },
+  "reports/README.md": {
+    "before_sha256": "511532a2eee7b776045030a9734eb2458229895633679276859ef05a42d77ec1",
+    "published_sha256": "b254bfaee09406507c56b538417a9eb4b7e0db85da21bfe24f7b8f1f6b1cd130",
+    "change": "CRLF to LF; text and numerical values identical"
+  },
+  "reports/RESULTS_EN.build.md": {
+    "before_sha256": "b32678690a0da926684bd0888ec242291dfa7953e6bee2ee2aa91a0762e5b3d5",
+    "published_sha256": "e1f107dd6feeeaa59258374c6317c69cdcf5016e766a1e1011ea564fdae2ee3b",
+    "change": "CRLF to LF; text and numerical values identical"
+  },
+  "reports/RESULTS_EN.tex": {
+    "before_sha256": "88956a7eb3dff135888c58085f539b84b65551a6b074b1bedf3658cbcaacae84",
+    "published_sha256": "d69f0f36e80074b09cf0a0693f42671602118e9b6aee201f6fdde5e32e80728e",
+    "change": "CRLF to LF; text and numerical values identical"
+  },
+  "reports/RESULTS_ZH.build.md": {
+    "before_sha256": "98594b8be1de92f00ec5833a25f814ba997faf0cca56fced741d80fb562cae8b",
+    "published_sha256": "04851f421abaf279bacb38872578ecbc3705fe50836a2ef0301bfea1fd356037",
+    "change": "CRLF to LF; text and numerical values identical"
+  },
+  "reports/RESULTS_ZH.tex": {
+    "before_sha256": "521b56077eeb0338c2044e6e9d59fe461d89c8dd453c2276183274229d7cd307",
+    "published_sha256": "bfefdb010419deb036d6e8ae3758d51d43ce57fa13b62631da68ea356e76ff09",
+    "change": "CRLF to LF; text and numerical values identical"
+  },
+  "reports/report_header.tex": {
+    "before_sha256": "bcd5b4358773e87b456091bd271d4e9a135d8d7ae627e2ab21f89479df56a2ec",
+    "published_sha256": "b5fadaab8b93d9cffdcb546e47f879a61c018c0dd17fead307ce288052568d80",
+    "change": "CRLF to LF; text and numerical values identical"
+  },
+  "reports/tex_figures/p30_dead_by_image_seed_1.tex": {
+    "before_sha256": "275c806be5dc0fc368dd94e6f9d34d46292e33e70613e81930a3758e04b8fc1f",
+    "published_sha256": "963e2f673e56220b9889e374f146285dda6c187a70d1847e249e692332f72b88",
+    "change": "CRLF to LF; text and numerical values identical"
+  },
+  "reports/tex_figures/p30_dead_by_image_seed_19.tex": {
+    "before_sha256": "de7130365ae2c85ae663f2860730b23ccdd94e90a84308b0a7f67fc84962982e",
+    "published_sha256": "b67b949b260adb0b871b806edb98142374ad5c5cfa5cc57a33cf7cc67caf22a0",
+    "change": "CRLF to LF; text and numerical values identical"
+  },
+  "reports/tex_figures/p30_training_seed_1.tex": {
+    "before_sha256": "73e33bd884ec20818da631ba1571c7a09622b891a78451cc424965688e39974b",
+    "published_sha256": "1ad79dd6086aae2ca4f5f9173b987d9c7647a99da1b1e48920ed1cac8239e4ba",
+    "change": "CRLF to LF; text and numerical values identical"
+  },
+  "reports/tex_figures/p30_training_seed_19.tex": {
+    "before_sha256": "01c9771510d6e83634ce10a71f875a8f5825f861b5212a1fcc04143a7451bacb",
+    "published_sha256": "f138e0ecb64c48f6eb97de02925d879ee3276f6c20f209a0953ba668e6017783",
+    "change": "CRLF to LF; text and numerical values identical"
+  },
+  "reports/tex_figures/stage_net_all.tex": {
+    "before_sha256": "0c9284ec1eceb742fca3fc5e9d83eaa5cddc445473988bb2ba7f4265487ecf8f",
+    "published_sha256": "6490a9e23ca86a9c0b57eef236e0f99fcfd12d68d0a4626c1bd7733c30e59d22",
+    "change": "CRLF to LF; text and numerical values identical"
+  },
+  "reports/tex_figures/stage_net_dead.tex": {
+    "before_sha256": "36b64205ee89785c5c2d8548596a3433794343f7442edc4ff2df03666b427c7b",
+    "published_sha256": "0d43b95138458f31315dbcfa2682e7dc677838d39aaf1cc578fa833f48f7c29b",
+    "change": "CRLF to LF; text and numerical values identical"
+  },
+  "reports/tex_figures/stage_net_extra.tex": {
+    "before_sha256": "92e586fb84c2436ef5a5099ec46614f6b3705619dc3680353dfbb320058ad501",
+    "published_sha256": "40dd65c376634d2fb17b197ad77382a8101343dc4d97f80efc30235d6b229e80",
+    "change": "CRLF to LF; text and numerical values identical"
+  },
+  "stage_pairs.csv": {
+    "before_sha256": "3ca9d57b25d6b5b0c688ca3f1bae5e7354d45d6960aeae623b7d33b08573875b",
+    "published_sha256": "17d724328d96de6033c388457a296bc9df9dc5b2bb156861bc4d7f794aadd3c6",
+    "change": "CRLF to LF; text and numerical values identical"
+  }
+}

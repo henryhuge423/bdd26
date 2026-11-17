@@ -1,0 +1,21 @@
+{
+  "input_sha256": {
+    "early_files/P22/A_C_s19/point_examples_audit/coordinates.json": "80f6d889ee22593503d52f780c1be14fe8f491b980d24987d374f224bcce226c",
+    "early_files/P22/A_M_s19/point_examples_audit/coordinates.json": "4c0a27a770c262392ab3559dea1631dd28f7ab07d530736e0bb7464abd1bd6cb",
+    "p30_files/A_C_s19/point_examples_audit/coordinates.json": "2efd9fd516968cacfff2c6fed69d103c3bb51fe1e0a16357dda4bd41342852c3",
+    "p30_files/A_C_s19/point_examples_audit/audit_final130_0776.png": "8c673575cd7f7590915630b887c616563223a78d914bb40b1d8f64b45e9c6f25",
+    "p30_files/A_C_s19/point_examples_audit/audit_final130_1037.png": "b0053f280647cd978a36b9b4387d987d19835a9b3c3f2309ba4358a44014bdd1",
+    "early_files/P22/A_C_s1/point_examples_audit/coordinates.json": "77950eb489ecab622dc769fcb137ec001aded7769a57f9202e7bde6b42b9f4f1",
+    "early_files/P22/A_M_s1/point_examples_audit/coordinates.json": "5e1fa2ef6d223a6ae3e52933f55703fdcd8f29d28f2e12b15bc573ddfe75fb97",
+    "p30_files/A_C_s1/point_examples_audit/coordinates.json": "b9b3e3fbb387f32fac6ab743a235aa68ccc041ec00cd02bac1682afae005ce30",
+    "p30_files/A_C_s1/point_examples_audit/audit_final130_0776.png": "49a41c2d503321feed50e96b09035f2730d3b48b1ef6cd7cf2a62428d3147c8e",
+    "p30_files/A_C_s1/point_examples_audit/audit_final130_1037.png": "86274777a76a95c6a9a04afdcfb4122852b2dc466af6001a8581c3782c1d5d36",
+    "early_files/P25/A_C_s19/point_examples_audit/coordinates.json": "505fe8757cdd4f83a2b83b3c9521cbbf281a794fb5d27648ff53635df8141604",
+    "early_files/P25/A_D_s19/point_examples_audit/coordinates.json": "edf047ef7a1157b033528e32788eeb3861264910ef1fdeecf3f16ec2aad8a9e9",
+    "early_files/P25/A_C_s1/point_examples_audit/coordinates.json": "d6db852930f6e9a74cdd24287a665f523dcb7aba7e1b3c14838e772314c0d6c7",
+    "early_files/P25/A_D_s1/point_examples_audit/coordinates.json": "085eb315a5571a75772e98fd95b5b75fdc29df3d2f8f03d37de7e3dce9249c7b"
+  },
+  "objects": 212,
+  "image_source": "Original native RGB panel from P30; identical frozen input and GT identities across rounds",
+  "matching": "preserved one-to-one assignments; radius 3 native pixels"
+}

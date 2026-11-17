@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "small_files_verified": 117,
+  "png": 48,
+  "source_files_verified": 514,
+  "checkpoint_sizes_verified": 8,
+  "checkpoint_independently_rehashed": false,
+  "sacct": "JobID|State|ExitCode|ElapsedRaw|NodeList\n55746187_0|COMPLETED|0:0|14931|exp-5-60\n55746187_1|COMPLETED|0:0|16377|exp-4-59\n55746187_2|COMPLETED|0:0|15046|exp-5-60\n55746187_3|COMPLETED|0:0|16426|exp-4-59\n",
+  "bundle_bytes": 5615993
+}

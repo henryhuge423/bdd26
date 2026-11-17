@@ -1,0 +1,32 @@
+[
+  {
+    "name": "RESULTS_EN",
+    "pages": 20,
+    "all_pages_rendered": true,
+    "nonempty_text_every_page": true,
+    "missing_glyphs": 0,
+    "max_overfull_hbox_pt": 3.14616,
+    "pdf_sha256": "4942f65ed3aa8a5194659dc191625a7149044fae97414bff03dee07146312f5f",
+    "visual_review": "Every rendered page reviewed; compact four-run table, large tissue panels, legends, labels and paragraph grouping checked"
+  },
+  {
+    "name": "RESULTS_ZH",
+    "pages": 19,
+    "all_pages_rendered": true,
+    "nonempty_text_every_page": true,
+    "missing_glyphs": 0,
+    "max_overfull_hbox_pt": 3.14616,
+    "pdf_sha256": "2a7e07066ab1452028058467b844c98f24799626e7a0c0a8d3f37ed02a6df08b",
+    "visual_review": "Every rendered page reviewed; compact four-run table, large tissue panels, legends, labels and paragraph grouping checked"
+  },
+  {
+    "name": "READER_ZH",
+    "pages": 7,
+    "all_pages_rendered": true,
+    "nonempty_text_every_page": true,
+    "missing_glyphs": 0,
+    "max_overfull_hbox_pt": 0,
+    "pdf_sha256": "c71fb9951245ecc79c5add02ee9719044e244b1da8579b7e1ee4ed38d8efc89d",
+    "visual_review": "Every rendered page reviewed; compact four-run table, large tissue panels, legends, labels and paragraph grouping checked"
+  }
+]

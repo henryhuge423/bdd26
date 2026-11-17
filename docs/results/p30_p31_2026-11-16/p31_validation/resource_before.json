@@ -1,0 +1,120 @@
+{
+  "allocation": "\n Resource          expanse_gpu     \n Project           jhu159          \n TG Project        TG-SEE260026    \n Total allocation  1900            \n Total spent       1452            \n Expiration        October 6, 2027 \n\n NAME          STATUS  USED  AVAILABLE  USED BY PROJECT \n--------------------------------------------------------\n agoyal5       allow     17       1900             1452 \n akalavagunta  allow      0       1900             1452 \n amankad       allow      2       1900             1452 \n arisdall      allow    135       1900             1452 \n auneri        allow      0       1900             1452 \n bwang38       allow      0       1900             1452 \n canc          allow      7       1900             1452 \n cwong4        allow      0       1900             1452 \n esun3         allow    170       1900             1452 \n jkoo          allow      0       1900             1452 \n jli123        allow      0       1900             1452 \n mgurria       allow      0       1900             1452 \n mjiang8       allow      0       1900             1452 \n mjung3        allow     12       1900             1452 \n rmundra       allow      0       1900             1452 \n sarde4        allow      0       1900             1452 \n wzhenyu       allow      0       1900             1452 \n xjin10        allow   1107       1900             1452 \n yai           allow      0       1900             1452 \n zfan11        allow      2       1900             1452 \n zjian2        allow      0       1900             1452 \n zsayyah       allow      0       1900             1452 \n zsong16       allow      0       1900             1452 \n",
+  "queue": "             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)\n",
+  "partition": "PartitionName=gpu-shared\n   AllowGroups=ALL AllowAccounts=ALL AllowQos=gpu-shared-normal,gpu-shared-cipres,gpu-shared-cosmic2,gpu-shared-eot\n   AllocNodes=ALL Default=NO QoS=N/A\n   DefaultTime=01:00:00 DisableRootJobs=NO ExclusiveUser=NO GraceTime=0 Hidden=NO\n   MaxNodes=1 MaxTime=2-00:00:00 MinNodes=1 LLN=NO MaxCPUsPerNode=64 MaxCPUsPerSocket=UNLIMITED\n   Nodes=exp-1-[57-60],exp-2-[57-60],exp-3-[57-60],exp-4-[57-60],exp-5-[57-60],exp-6-[57-60],exp-7-[57-58],exp-8-[57-60],exp-9-[57-60],exp-10-[57-60],exp-12-[57-60],exp-13-[57-60],exp-14-[57-60],exp-16-[57-59],exp-17-[57-59]\n   PriorityJobFactor=1 PriorityTier=300 RootOnly=NO ReqResv=NO OverSubscribe=NO\n   OverTimeLimit=NONE PreemptMode=OFF\n   State=UP TotalCPUs=2384 TotalNodes=56 SelectTypeParameters=NONE\n   JobDefaults=(null)\n   DefMemPerCPU=1024 MaxMemPerNode=377393\n   TRES=cpu=2384,mem=22318398M,node=56,billing=858240,gres/gpu=224\n   TRESBillingWeights=gres/gpu=3600,cpu=360.00,mem=37.40G,node=0\n   ResumeTimeout=GLOBAL SuspendTimeout=GLOBAL SuspendTime=GLOBAL PowerDownOnIdle=NO\n\n",
+  "storage_admission": {
+    "scratch_user": [
+      {
+        "attempt": 1,
+        "command": [
+          "lfs",
+          "quota",
+          "-u",
+          "xjin10",
+          "/expanse/lustre/scratch"
+        ],
+        "status": "PASS",
+        "started_utc": "2026-11-17T02:49:00.527195+00:00",
+        "returncode": 0,
+        "stdout": "Disk quotas for usr xjin10 (uid 543889):\n     Filesystem  kbytes   quota   limit   grace   files   quota   limit   grace\n/expanse/lustre/scratch\n                3745295986       0 10240000000       -  147819       0 2000000       -\n",
+        "stderr": "",
+        "quota_free_bytes": 6650576910336,
+        "quota_free_files": 1852181,
+        "elapsed_seconds": 3.1582416854798794,
+        "filesystem_free_bytes": 1483818182639616,
+        "required_bytes": 107374182400,
+        "required_files": 1000
+      }
+    ],
+    "project_user": [
+      {
+        "attempt": 1,
+        "command": [
+          "lfs",
+          "quota",
+          "-u",
+          "xjin10",
+          "/expanse/lustre/projects"
+        ],
+        "status": "PASS",
+        "started_utc": "2026-11-17T02:49:03.835945+00:00",
+        "returncode": 0,
+        "stdout": "Disk quotas for usr xjin10 (uid 543889):\n     Filesystem  kbytes   quota   limit   grace   files   quota   limit   grace\n/expanse/lustre/projects\n                3745295986       0 10240000000       -  147819       0 2000000       -\n",
+        "stderr": "",
+        "quota_free_bytes": 6650576910336,
+        "quota_free_files": 1852181,
+        "elapsed_seconds": 0.014404639601707458,
+        "filesystem_free_bytes": 1483818182639616,
+        "required_bytes": 107374182400,
+        "required_files": 1000
+      }
+    ],
+    "project_group": [
+      {
+        "attempt": 1,
+        "command": [
+          "lfs",
+          "quota",
+          "-g",
+          "jhu159",
+          "/expanse/lustre/projects"
+        ],
+        "status": "PASS",
+        "started_utc": "2026-11-17T02:49:04.001719+00:00",
+        "returncode": 0,
+        "stdout": "Disk quotas for grp jhu159 (gid 15104):\n     Filesystem  kbytes   quota   limit   grace   files   quota   limit   grace\n/expanse/lustre/projects\n                3862774577       0 53687091200       -  404521       0       0       -\ngid 15104 is using default file quota setting\n",
+        "stderr": "",
+        "quota_free_bytes": 51020100221952,
+        "quota_free_files": null,
+        "elapsed_seconds": 2.36263145506382,
+        "filesystem_free_bytes": 1483816065564672,
+        "required_bytes": 107374182400,
+        "required_files": 1000
+      }
+    ]
+  },
+  "evaluated": {
+    "allocation": 1900,
+    "spent": 1452,
+    "other_queued_full_walltime_upper_bound_SU": 25.565217391304344,
+    "additional_requested_GPU_hours": 0.5,
+    "pending": [
+      {
+        "job_id": "55782722",
+        "time_hours": 24.0,
+        "gpus": 1,
+        "cpus": 10,
+        "memory_GiB": 96.0,
+        "conservative_SU": 25.043478260869563
+      },
+      {
+        "job_id": "55792252",
+        "time_hours": 0.5,
+        "gpus": 1,
+        "cpus": 10,
+        "memory_GiB": 96.0,
+        "conservative_SU": 0.5217391304347826
+      }
+    ]
+  },
+  "target_before": {
+    "ost": 43,
+    "free_bytes": 19234423832576,
+    "reserve_bytes": 161061273600
+  },
+  "scratch_target_before": "expanse-OST002b_UUID 164733583360 145949409280 18783617024  89% /expanse/lustre/scratch[OST:43]",
+  "fresh_readback": [
+    {
+      "path": "/expanse/lustre/projects/jhu159/xjin10/bdd26/p31_20261116_01/p30_smoke_admission_20261112_01.bin",
+      "bytes": 65536,
+      "sha256": "5cf8165123dda6674d1a73e579adb07fe87d703fa5a92e3876339d6da6556609",
+      "utc": "2026-11-17T02:49:06.944191+00:00"
+    },
+    {
+      "path": "/expanse/lustre/scratch/xjin10/temp_project/bdd26/p31_smoke_20261116_01/p30_smoke_admission_20261112_01.bin",
+      "bytes": 65536,
+      "sha256": "eb984121cd46f8ebc531f586ba7b84497b7acff0080f6f23ed11c67c256a6d7c",
+      "utc": "2026-11-17T02:49:07.095042+00:00"
+    }
+  ]
+}

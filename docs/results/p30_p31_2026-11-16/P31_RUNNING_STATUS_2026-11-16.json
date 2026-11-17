@@ -1,0 +1,53 @@
+{
+  "utc": "2026-11-17T04:58:16.602056+00:00",
+  "queue": "                 JOBID      STATE         TIME   TIME_LIMIT               NODELIST(REASON)\n            55792463_2    PENDING         0:00     12:00:00            (JobArrayTaskLimit)\n            55792463_3    PENDING         0:00     12:00:00            (JobArrayTaskLimit)\n            55792463_1    RUNNING      1:42:00     12:00:00                       exp-5-60\n            55792463_0    RUNNING      1:42:00     12:00:00                       exp-6-59\n",
+  "accounting": "JobID|State|ExitCode|Elapsed\n55792463_0|RUNNING|0:0|01:42:00\n55792463_1|RUNNING|0:0|01:42:00\n55792463_2|PENDING|0:0|00:00:00\n55792463_3|PENDING|0:0|00:00:00\n",
+  "runs": {
+    "A_C_s19": {
+      "epoch_records": 53,
+      "last": {
+        "epoch": 53,
+        "train_loss": 0.4012113318699146,
+        "focal_loss": 0.4012113318699146,
+        "regularizer_loss": 0.0,
+        "block_drift": {},
+        "training_seconds": 110.0961325019598,
+        "checkpoint_seconds": 1.8257267172448337,
+        "epoch_seconds": 111.9248039429076,
+        "elapsed_seconds": 6021.494682820048,
+        "checkpoint_bytes": 1853872020,
+        "optimizer_steps": 134,
+        "effective_batch": 16,
+        "microbatch": 4,
+        "peak_memory": 4345896960
+      }
+    },
+    "A_G_s19": {
+      "epoch_records": 51,
+      "last": {
+        "epoch": 51,
+        "train_loss": 0.24137847580717425,
+        "focal_loss": 0.24137847580717425,
+        "regularizer_loss": 0.0,
+        "block_drift": {},
+        "training_seconds": 112.98787742527202,
+        "checkpoint_seconds": 1.9301012139767408,
+        "epoch_seconds": 114.92150646494702,
+        "elapsed_seconds": 6040.6299921837635,
+        "checkpoint_bytes": 1853920788,
+        "optimizer_steps": 134,
+        "effective_batch": 16,
+        "microbatch": 4,
+        "peak_memory": 4372725248
+      }
+    },
+    "A_C_s1": {
+      "epoch_records": 0,
+      "last": null
+    },
+    "A_G_s1": {
+      "epoch_records": 0,
+      "last": null
+    }
+  }
+}
