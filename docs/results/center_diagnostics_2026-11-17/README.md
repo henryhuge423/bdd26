@@ -9,6 +9,12 @@ P31 completed four 130-epoch runs. This review connects the latest native-label 
 - [Figure provenance](FIGURE_PROVENANCE.json)
 - [Earlier P27–P31 stage report](../../report/stage_report_8/README.md)
 
+## Verified submission
+
+D32 job **55825240** was submitted once at **2026-11-17 21:44:41 EST** (2026-11-18T02:44:41Z). Initial state: **PENDING / Priority**. One V100, four CPU cores, 32 GiB and four hours are requested. [Scientific submission record](SUBMISSION.json).
+
+CPU behavior checks: **13 passed in 1.48 seconds**. The job first repeats these checks on the compute node, then verifies actual-model hook/interpolation equality and independently rehashes the twelve existing last checkpoints. New model maps and final diagnostic figures are produced after the job starts.
+
 The preserved images below come from existing last-checkpoint outputs and native labels. They provide the evidence used to choose the diagnostic questions. D32 intermediate-map figures will be saved by the new job and analyzed after completion.
 
 ![Within-mask center displacement in fixed examples](figures/localization_cases.png)

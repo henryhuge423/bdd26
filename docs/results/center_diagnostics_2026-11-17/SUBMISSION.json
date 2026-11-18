@@ -1,0 +1,22 @@
+{
+  "experiment": "D32",
+  "job_id": "55825240",
+  "submitted_utc": "2026-11-18T02:44:41.118654Z",
+  "submitted_est": "2026-11-17 21:44:41 EST",
+  "models": 12,
+  "source_commit": "aa13672670cdd6778f3992a3f3592999381098fe",
+  "source_manifest_sha256": "d7224fa233737de41d4781e99eedcc5b205956514e4a590ae2988dcfbcc5d406",
+  "source_files": 522,
+  "launcher_sha256": "b5ae681759e976b20b957f2ea962aba0acfc1b4336d201a2ae3994bd552e997d",
+  "input_manifest_sha256": "d2f03a3dfa6318e597e3bc9b4b0eceaece139abbf946546df0030721226f57d6",
+  "resources": {
+    "gpu": 1,
+    "cpu": 4,
+    "memory_GiB": 32,
+    "hours": 4
+  },
+  "last_observed_state": "PENDING",
+  "last_observed_reason": "Priority",
+  "inference_only": true,
+  "cpu_validation": "13 passed in 1.48 seconds"
+}
