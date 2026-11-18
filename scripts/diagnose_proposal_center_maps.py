@@ -186,31 +186,75 @@ def validate_run(run, module, weights_digest, cohort):
 
 
 def render_panel(image, inst, gt, points, coarse, fine, path, title):
-    import matplotlib
-    matplotlib.use('Agg')
-    import matplotlib.pyplot as plt
-    fig, axes = plt.subplots(1, 4, figsize=(20, 5), constrained_layout=True)
-    axes[0].imshow(image)
+    """Large, deterministic panels using the pinned Pillow runtime.
+
+    Nearest-neighbor display preserves the measured grid cells. A common
+    black-to-orange-to-white scale spans score 0 to 1 in both map panels.
+    Display operations never feed back into inference or point matching.
+    """
+    from PIL import Image, ImageDraw, ImageFont
+
+    side, gap, left, top = 640, 36, 28, 174
+    canvas = Image.new('RGB', (4 * side + 3 * gap + 2 * left, 960), 'white')
+    draw = ImageDraw.Draw(canvas)
+
+    def label(position, text, scale=3):
+        font = ImageFont.load_default()
+        bounds = font.getbbox(text)
+        tile = Image.new('RGB', (bounds[2] - bounds[0] + 4, bounds[3] - bounds[1] + 4), 'white')
+        ImageDraw.Draw(tile).text((2 - bounds[0], 2 - bounds[1]), text, fill='black', font=font)
+        canvas.paste(tile.resize((tile.width * scale, tile.height * scale), Image.Resampling.NEAREST), position)
+
+    def offset(col):
+        return left + col * (side + gap)
+
+    def score_rgb(logits):
+        prob = 1 / (1 + np.exp(-np.clip(np.asarray(logits, dtype=np.float64), -700, 700)))
+        anchors = np.array([[0, 0, 0], [180, 30, 100], [255, 130, 30], [255, 255, 255]])
+        return np.stack([np.interp(prob, [0, .33, .67, 1], anchors[:, channel])
+                         for channel in range(3)], axis=-1).round().astype(np.uint8)
+
+    rgb = Image.fromarray(np.asarray(image, dtype=np.uint8)).resize((side, side), Image.Resampling.NEAREST)
+    for col, pixels in ((0, rgb), (1, Image.fromarray(score_rgb(coarse))),
+                        (2, Image.fromarray(score_rgb(fine))), (3, rgb)):
+        canvas.paste(pixels.resize((side, side), Image.Resampling.NEAREST), (offset(col), top))
+
+    def marker(col, pos, color, shape='circle'):
+        y, x = pos
+        cx, cy = offset(col) + (x + .5) * side / image.shape[1], top + (y + .5) * side / image.shape[0]
+        radius = 7
+        if shape == 'circle':
+            draw.ellipse((cx-radius, cy-radius, cx+radius, cy+radius), outline=color, width=3)
+        elif shape == 'plus':
+            draw.line((cx-radius, cy, cx+radius, cy), fill=color, width=3)
+            draw.line((cx, cy-radius, cx, cy+radius), fill=color, width=3)
+        else:
+            draw.line((cx-radius, cy-radius, cx+radius, cy+radius), fill=color, width=3)
+            draw.line((cx-radius, cy+radius, cx+radius, cy-radius), fill=color, width=3)
+
     for cls, (y, x), interior, _ in gt:
-        axes[0].plot(x, y, 'o', ms=5, mfc='none', mec='#ffbf00' if cls == 4 and interior else '#00bbdd')
-    axes[0].set_title('Image and annotated centers')
-    axes[1].imshow(1/(1+np.exp(-np.clip(coarse.astype(float), -700, 700))), vmin=0, vmax=1, cmap='magma')
-    axes[1].set_title('128-grid score before interpolation')
-    axes[2].imshow(1/(1+np.exp(-np.clip(fine.astype(float), -700, 700))), vmin=0, vmax=1, cmap='magma')
-    axes[2].set_title('256-grid score after interpolation')
-    axes[3].imshow(image)
+        marker(0, (y, x), '#ffbf00' if cls == 4 and interior else '#00bbdd')
     pairs = match_points(points, gt)
     hits, assigned = {int(a) for a, _ in pairs}, {int(b) for _, b in pairs}
     for index, (_, (y, x), _, _) in enumerate(gt):
-        axes[3].plot(x, y, 'o', ms=6, mfc='none', mec='#44cc44' if index in hits else '#ffbf00')
+        marker(3, (y, x), '#44cc44' if index in hits else '#ffbf00')
     for index, (y, x) in enumerate(points):
-        axes[3].plot(x, y, '+' if index in assigned else 'x', ms=5, color='#44cc44' if index in assigned else '#ff4444')
-    axes[3].set_title('Unique matches, misses and extra points')
-    for ax in axes:
-        ax.set_axis_off()
-    fig.suptitle(title + '\nFirst panel: yellow = interior Dead; last panel: yellow = missed, green = matched, red = extra', fontsize=12)
-    fig.savefig(path, dpi=150)
-    plt.close(fig)
+        marker(3, (y, x), '#44cc44' if index in assigned else '#ff4444', 'plus' if index in assigned else 'cross')
+    label((left, 18), title)
+    label((left, 66), 'Annotated centers: yellow = interior Dead; cyan = other nuclei', 2)
+    titles = ('Image and annotated centers', '128-grid center score', '256-grid center score', 'Unique center matching')
+    for col, text in enumerate(titles):
+        label((offset(col), 126), text, 2)
+    label((left, 838), 'Matching: green = matched; yellow = missed; red = extra. Matching radius = 3 native pixels.', 2)
+    label((left, 880), f'GT={len(gt)}; predictions={len(points)}; matches={len(pairs)}; misses={len(gt)-len(pairs)}; extra={len(points)-len(pairs)}', 2)
+    gradient = np.linspace(-20, 20, side).reshape(1, -1)
+    # A linear probability legend shares exactly the score-to-color mapping.
+    scores = np.linspace(1e-9, 1-1e-9, side)
+    gradient[0] = np.log(scores / (1-scores))
+    for col in (1, 2):
+        canvas.paste(Image.fromarray(score_rgb(gradient)).resize((side, 12)), (offset(col), 928))
+        label((offset(col), 900), 'Score: 0                   0.5                   1', 2)
+    canvas.save(path, format='PNG', dpi=(150, 150))
 
 
 def main(argv=None):
