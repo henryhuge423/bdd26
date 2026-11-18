@@ -1,0 +1,12 @@
+[
+  {
+    "source": "root_analysis/localization_cases.png",
+    "output": "figures/localization_cases.png",
+    "sha256": "0358881096d3674bf4eaeb550ad46758d9748b9d63238f5bc9d6af1950b2f538"
+  },
+  {
+    "source": "root_analysis/colon1482_p22_seed1.png",
+    "output": "figures/colon1482_p22_seed1.png",
+    "sha256": "d3c5d4dde0d266a235fa0b8061fa624f1029e50a5311ff25d7622cb885e80f3e"
+  }
+]
