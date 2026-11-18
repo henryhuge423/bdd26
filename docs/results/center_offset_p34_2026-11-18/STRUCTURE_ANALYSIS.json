@@ -1,0 +1,935 @@
+{
+  "scope": "145 interior Dead nuclei in eleven development images and 656 in the selected training images, each observed by twelve completed models",
+  "classes": {
+    "matched": "Matched within 3 px",
+    "near_center_unassigned": "Score >= 0.5 within 3 px, not assigned",
+    "displaced_in_mask": "Score >= 0.5 inside nucleus, beyond 3 px",
+    "weak_coarse_positive": "Below 0.5 inside nucleus, 128-grid positive nearby",
+    "no_response": "Below 0.5 everywhere near the nucleus"
+  },
+  "exclusive_classes": {
+    "development": {
+      "per_model": {
+        "P22_C_s1": {
+          "matched": 62,
+          "near_center_unassigned": 2,
+          "displaced_in_mask": 16,
+          "weak_coarse_positive": 19,
+          "no_response": 46
+        },
+        "P22_C_s19": {
+          "matched": 67,
+          "near_center_unassigned": 4,
+          "displaced_in_mask": 14,
+          "weak_coarse_positive": 22,
+          "no_response": 38
+        },
+        "P22_M_s1": {
+          "matched": 82,
+          "near_center_unassigned": 2,
+          "displaced_in_mask": 11,
+          "weak_coarse_positive": 15,
+          "no_response": 35
+        },
+        "P22_M_s19": {
+          "matched": 85,
+          "near_center_unassigned": 3,
+          "displaced_in_mask": 11,
+          "weak_coarse_positive": 10,
+          "no_response": 36
+        },
+        "P29_C_s1": {
+          "matched": 67,
+          "near_center_unassigned": 4,
+          "displaced_in_mask": 13,
+          "weak_coarse_positive": 22,
+          "no_response": 39
+        },
+        "P29_C_s19": {
+          "matched": 65,
+          "near_center_unassigned": 3,
+          "displaced_in_mask": 13,
+          "weak_coarse_positive": 26,
+          "no_response": 38
+        },
+        "P29_B_s1": {
+          "matched": 80,
+          "near_center_unassigned": 5,
+          "displaced_in_mask": 11,
+          "weak_coarse_positive": 9,
+          "no_response": 40
+        },
+        "P29_B_s19": {
+          "matched": 81,
+          "near_center_unassigned": 2,
+          "displaced_in_mask": 13,
+          "weak_coarse_positive": 7,
+          "no_response": 42
+        },
+        "P31_C_s1": {
+          "matched": 68,
+          "near_center_unassigned": 0,
+          "displaced_in_mask": 19,
+          "weak_coarse_positive": 17,
+          "no_response": 41
+        },
+        "P31_C_s19": {
+          "matched": 65,
+          "near_center_unassigned": 4,
+          "displaced_in_mask": 11,
+          "weak_coarse_positive": 19,
+          "no_response": 46
+        },
+        "P31_G_s1": {
+          "matched": 70,
+          "near_center_unassigned": 1,
+          "displaced_in_mask": 17,
+          "weak_coarse_positive": 15,
+          "no_response": 42
+        },
+        "P31_G_s19": {
+          "matched": 73,
+          "near_center_unassigned": 3,
+          "displaced_in_mask": 10,
+          "weak_coarse_positive": 19,
+          "no_response": 40
+        }
+      },
+      "total": {
+        "matched": 865,
+        "near_center_unassigned": 33,
+        "displaced_in_mask": 159,
+        "weak_coarse_positive": 200,
+        "no_response": 483
+      }
+    },
+    "training": {
+      "per_model": {
+        "P22_C_s1": {
+          "matched": 627,
+          "near_center_unassigned": 0,
+          "displaced_in_mask": 0,
+          "weak_coarse_positive": 18,
+          "no_response": 11
+        },
+        "P22_C_s19": {
+          "matched": 629,
+          "near_center_unassigned": 0,
+          "displaced_in_mask": 0,
+          "weak_coarse_positive": 13,
+          "no_response": 14
+        },
+        "P22_M_s1": {
+          "matched": 642,
+          "near_center_unassigned": 0,
+          "displaced_in_mask": 0,
+          "weak_coarse_positive": 6,
+          "no_response": 8
+        },
+        "P22_M_s19": {
+          "matched": 642,
+          "near_center_unassigned": 0,
+          "displaced_in_mask": 0,
+          "weak_coarse_positive": 8,
+          "no_response": 6
+        },
+        "P29_C_s1": {
+          "matched": 624,
+          "near_center_unassigned": 0,
+          "displaced_in_mask": 1,
+          "weak_coarse_positive": 13,
+          "no_response": 18
+        },
+        "P29_C_s19": {
+          "matched": 630,
+          "near_center_unassigned": 0,
+          "displaced_in_mask": 0,
+          "weak_coarse_positive": 7,
+          "no_response": 19
+        },
+        "P29_B_s1": {
+          "matched": 606,
+          "near_center_unassigned": 0,
+          "displaced_in_mask": 0,
+          "weak_coarse_positive": 20,
+          "no_response": 30
+        },
+        "P29_B_s19": {
+          "matched": 607,
+          "near_center_unassigned": 0,
+          "displaced_in_mask": 1,
+          "weak_coarse_positive": 19,
+          "no_response": 29
+        },
+        "P31_C_s1": {
+          "matched": 630,
+          "near_center_unassigned": 0,
+          "displaced_in_mask": 0,
+          "weak_coarse_positive": 11,
+          "no_response": 15
+        },
+        "P31_C_s19": {
+          "matched": 627,
+          "near_center_unassigned": 0,
+          "displaced_in_mask": 0,
+          "weak_coarse_positive": 9,
+          "no_response": 20
+        },
+        "P31_G_s1": {
+          "matched": 652,
+          "near_center_unassigned": 0,
+          "displaced_in_mask": 0,
+          "weak_coarse_positive": 3,
+          "no_response": 1
+        },
+        "P31_G_s19": {
+          "matched": 652,
+          "near_center_unassigned": 1,
+          "displaced_in_mask": 0,
+          "weak_coarse_positive": 3,
+          "no_response": 0
+        }
+      },
+      "total": {
+        "matched": 7568,
+        "near_center_unassigned": 1,
+        "displaced_in_mask": 2,
+        "weak_coarse_positive": 130,
+        "no_response": 171
+      }
+    }
+  },
+  "matched_point_distance": {
+    "development": {
+      "n": 863,
+      "median": 1.4142135623730951,
+      "share_within_1px": 0.4044032444959444,
+      "share_between_2_and_3px": 0.2572421784472769
+    },
+    "training": {
+      "n": 7568,
+      "median": 0.0,
+      "share_within_1px": 0.9937896405919662,
+      "share_between_2_and_3px": 0.0002642706131078224
+    }
+  },
+  "displaced_peak_distance": {
+    "n": 159,
+    "median": 4.0,
+    "share_3_to_4px": 0.46540880503144655,
+    "share_below_6px": 0.9371069182389937,
+    "maximum": 7.615773105863909,
+    "with_retained_point_inside_nucleus": 152
+  },
+  "object_consistency": {
+    "objects": 145,
+    "never_matched": 32,
+    "always_matched": 34,
+    "never_matched_in_largest_image": 25,
+    "largest_image": 1482,
+    "objects_in_largest_image": 49,
+    "never_matched_class_observations": {
+      "no_response": 329,
+      "displaced_in_mask": 35,
+      "weak_coarse_positive": 17,
+      "near_center_unassigned": 3
+    },
+    "per_image": {
+      "178": {
+        "objects": 1,
+        "matched_rate": 0.16666666666666666,
+        "never_matched": 0
+      },
+      "776": {
+        "objects": 7,
+        "matched_rate": 0.6428571428571429,
+        "never_matched": 1
+      },
+      "1025": {
+        "objects": 25,
+        "matched_rate": 0.7233333333333334,
+        "never_matched": 1
+      },
+      "1037": {
+        "objects": 20,
+        "matched_rate": 0.5458333333333333,
+        "never_matched": 2
+      },
+      "1038": {
+        "objects": 15,
+        "matched_rate": 0.6444444444444445,
+        "never_matched": 0
+      },
+      "1482": {
+        "objects": 49,
+        "matched_rate": 0.27380952380952384,
+        "never_matched": 25
+      },
+      "1756": {
+        "objects": 15,
+        "matched_rate": 0.5277777777777778,
+        "never_matched": 2
+      },
+      "2076": {
+        "objects": 8,
+        "matched_rate": 0.6770833333333334,
+        "never_matched": 0
+      },
+      "2482": {
+        "objects": 3,
+        "matched_rate": 0.1388888888888889,
+        "never_matched": 1
+      },
+      "2485": {
+        "objects": 1,
+        "matched_rate": 0.5833333333333334,
+        "never_matched": 0
+      },
+      "2587": {
+        "objects": 1,
+        "matched_rate": 1.0,
+        "never_matched": 0
+      }
+    }
+  },
+  "area_neighbor_strata": {
+    "200 px and above; isolated": {
+      "matched": 255,
+      "near_center_unassigned": 14,
+      "displaced_in_mask": 57,
+      "weak_coarse_positive": 35,
+      "no_response": 23
+    },
+    "80 to 199 px; isolated": {
+      "matched": 402,
+      "near_center_unassigned": 11,
+      "displaced_in_mask": 33,
+      "weak_coarse_positive": 79,
+      "no_response": 135
+    },
+    "80 to 199 px; neighbor within 12 px": {
+      "matched": 24,
+      "near_center_unassigned": 3,
+      "displaced_in_mask": 44,
+      "weak_coarse_positive": 18,
+      "no_response": 103
+    },
+    "under 80 px; isolated": {
+      "matched": 165,
+      "near_center_unassigned": 1,
+      "displaced_in_mask": 11,
+      "weak_coarse_positive": 43,
+      "no_response": 140
+    },
+    "under 80 px; neighbor within 12 px": {
+      "matched": 19,
+      "near_center_unassigned": 4,
+      "displaced_in_mask": 14,
+      "weak_coarse_positive": 25,
+      "no_response": 82
+    }
+  },
+  "arm_classes": {
+    "P22_M": {
+      "matched": 167,
+      "near_center_unassigned": 5,
+      "displaced_in_mask": 22,
+      "weak_coarse_positive": 25,
+      "no_response": 71
+    },
+    "P29_B": {
+      "matched": 161,
+      "near_center_unassigned": 7,
+      "displaced_in_mask": 24,
+      "weak_coarse_positive": 16,
+      "no_response": 82
+    },
+    "P31_G": {
+      "matched": 143,
+      "near_center_unassigned": 4,
+      "displaced_in_mask": 27,
+      "weak_coarse_positive": 34,
+      "no_response": 82
+    },
+    "last-12 control (6 models)": {
+      "matched": 394,
+      "near_center_unassigned": 17,
+      "displaced_in_mask": 86,
+      "weak_coarse_positive": 125,
+      "no_response": 248
+    }
+  },
+  "upper_bound_if_displaced_recovered": {
+    "P22_C_s1": {
+      "matched": 62,
+      "with_displaced": 78,
+      "rate": 0.5379310344827586
+    },
+    "P22_C_s19": {
+      "matched": 67,
+      "with_displaced": 81,
+      "rate": 0.5586206896551724
+    },
+    "P22_M_s1": {
+      "matched": 82,
+      "with_displaced": 93,
+      "rate": 0.6413793103448275
+    },
+    "P22_M_s19": {
+      "matched": 85,
+      "with_displaced": 96,
+      "rate": 0.6620689655172414
+    },
+    "P29_C_s1": {
+      "matched": 67,
+      "with_displaced": 80,
+      "rate": 0.5517241379310345
+    },
+    "P29_C_s19": {
+      "matched": 65,
+      "with_displaced": 78,
+      "rate": 0.5379310344827586
+    },
+    "P29_B_s1": {
+      "matched": 80,
+      "with_displaced": 91,
+      "rate": 0.6275862068965518
+    },
+    "P29_B_s19": {
+      "matched": 81,
+      "with_displaced": 94,
+      "rate": 0.6482758620689655
+    },
+    "P31_C_s1": {
+      "matched": 68,
+      "with_displaced": 87,
+      "rate": 0.6
+    },
+    "P31_C_s19": {
+      "matched": 65,
+      "with_displaced": 76,
+      "rate": 0.5241379310344828
+    },
+    "P31_G_s1": {
+      "matched": 70,
+      "with_displaced": 87,
+      "rate": 0.6
+    },
+    "P31_G_s19": {
+      "matched": 73,
+      "with_displaced": 83,
+      "rate": 0.5724137931034483
+    }
+  },
+  "development_predictions_all_classes": {
+    "note": "A nucleus counts as holding a matched point when a matched point lies inside its mask; the last column is an arithmetic upper bound, not a model result.",
+    "per_model": {
+      "P22_C_s1": {
+        "points": 10259,
+        "unmatched_in_nucleus_without_matched_point": 2017,
+        "matched": 7171,
+        "unmatched_outside_nuclei": 1051,
+        "unmatched_in_nucleus_holding_a_matched_point": 20,
+        "precision": 0.698996003509114,
+        "precision_if_in_nucleus_extras_resolved": 0.8973532571540189
+      },
+      "P22_C_s19": {
+        "points": 10497,
+        "matched": 7264,
+        "unmatched_outside_nuclei": 1109,
+        "unmatched_in_nucleus_without_matched_point": 2103,
+        "unmatched_in_nucleus_holding_a_matched_point": 21,
+        "precision": 0.6920072401638563,
+        "precision_if_in_nucleus_extras_resolved": 0.8941389843451699
+      },
+      "P22_M_s1": {
+        "points": 10801,
+        "unmatched_in_nucleus_without_matched_point": 1716,
+        "unmatched_outside_nuclei": 1136,
+        "matched": 7924,
+        "unmatched_in_nucleus_holding_a_matched_point": 25,
+        "precision": 0.7336357744653272,
+        "precision_if_in_nucleus_extras_resolved": 0.894580549368968
+      },
+      "P22_M_s19": {
+        "points": 10985,
+        "matched": 8002,
+        "unmatched_in_nucleus_without_matched_point": 1803,
+        "unmatched_outside_nuclei": 1161,
+        "unmatched_in_nucleus_holding_a_matched_point": 19,
+        "precision": 0.7284478834774692,
+        "precision_if_in_nucleus_extras_resolved": 0.8941273025715849
+      },
+      "P29_C_s1": {
+        "points": 10584,
+        "matched": 7329,
+        "unmatched_in_nucleus_without_matched_point": 2118,
+        "unmatched_outside_nuclei": 1117,
+        "unmatched_in_nucleus_holding_a_matched_point": 20,
+        "precision": 0.6924603174603174,
+        "precision_if_in_nucleus_extras_resolved": 0.8942635365391897
+      },
+      "P29_C_s19": {
+        "points": 10407,
+        "matched": 7257,
+        "unmatched_in_nucleus_without_matched_point": 2047,
+        "unmatched_outside_nuclei": 1082,
+        "unmatched_in_nucleus_holding_a_matched_point": 21,
+        "precision": 0.6973191121360622,
+        "precision_if_in_nucleus_extras_resolved": 0.8958212979010206
+      },
+      "P29_B_s1": {
+        "points": 10685,
+        "matched": 7494,
+        "unmatched_in_nucleus_without_matched_point": 2057,
+        "unmatched_outside_nuclei": 1114,
+        "unmatched_in_nucleus_holding_a_matched_point": 20,
+        "precision": 0.7013570425830604,
+        "precision_if_in_nucleus_extras_resolved": 0.8955461790904828
+      },
+      "P29_B_s19": {
+        "points": 10625,
+        "unmatched_in_nucleus_without_matched_point": 1982,
+        "matched": 7540,
+        "unmatched_outside_nuclei": 1088,
+        "unmatched_in_nucleus_holding_a_matched_point": 15,
+        "precision": 0.7096470588235294,
+        "precision_if_in_nucleus_extras_resolved": 0.8974552309142318
+      },
+      "P31_C_s1": {
+        "points": 10437,
+        "matched": 7256,
+        "unmatched_outside_nuclei": 1106,
+        "unmatched_in_nucleus_without_matched_point": 2058,
+        "unmatched_in_nucleus_holding_a_matched_point": 17,
+        "precision": 0.6952189326434799,
+        "precision_if_in_nucleus_extras_resolved": 0.8938579654510557
+      },
+      "P31_C_s19": {
+        "points": 10536,
+        "matched": 7274,
+        "unmatched_outside_nuclei": 1101,
+        "unmatched_in_nucleus_without_matched_point": 2144,
+        "unmatched_in_nucleus_holding_a_matched_point": 17,
+        "precision": 0.6903948367501899,
+        "precision_if_in_nucleus_extras_resolved": 0.8953322559178629
+      },
+      "P31_G_s1": {
+        "points": 10354,
+        "unmatched_in_nucleus_without_matched_point": 2019,
+        "matched": 7262,
+        "unmatched_outside_nuclei": 1053,
+        "unmatched_in_nucleus_holding_a_matched_point": 20,
+        "precision": 0.7013714506470929,
+        "precision_if_in_nucleus_extras_resolved": 0.8981033481710857
+      },
+      "P31_G_s19": {
+        "points": 10089,
+        "matched": 7134,
+        "unmatched_in_nucleus_without_matched_point": 1943,
+        "unmatched_outside_nuclei": 994,
+        "unmatched_in_nucleus_holding_a_matched_point": 18,
+        "precision": 0.7071067499256616,
+        "precision_if_in_nucleus_extras_resolved": 0.9013007645715421
+      }
+    }
+  },
+  "loss_theory": {
+    "model": "isotropic Gaussian uncertainty of the annotated center; Gaussian-weighted focal loss, sigma 1, radius 3",
+    "largest_sigma_with_score_at_least_half": 0.95,
+    "curve": [
+      {
+        "sigma": 0.25,
+        "center_probability": 0.9986594987034053,
+        "negative_weight": 3.2191006435414834e-05,
+        "optimal_score": 0.9771777522159835,
+        "point_estimate_within3": 1.0
+      },
+      {
+        "sigma": 0.3,
+        "center_probability": 0.9847138314565761,
+        "negative_weight": 0.0003743772021646218,
+        "optimal_score": 0.9473910308501956,
+        "point_estimate_within3": 0.9999999999999999
+      },
+      {
+        "sigma": 0.35,
+        "center_probability": 0.9357516700130658,
+        "negative_weight": 0.001684831166050038,
+        "optimal_score": 0.9116543382019968,
+        "point_estimate_within3": 1.0
+      },
+      {
+        "sigma": 0.4,
+        "center_probability": 0.8449615765287102,
+        "negative_weight": 0.004608905215321277,
+        "optimal_score": 0.8734506031727733,
+        "point_estimate_within3": 0.9999999999998185
+      },
+      {
+        "sigma": 0.45,
+        "center_probability": 0.7312399746224435,
+        "negative_weight": 0.009384193182792676,
+        "optimal_score": 0.834598773265659,
+        "point_estimate_within3": 0.9999999998893138
+      },
+      {
+        "sigma": 0.5,
+        "center_probability": 0.6186934771764698,
+        "negative_weight": 0.015888546603022018,
+        "optimal_score": 0.796254149208834,
+        "point_estimate_within3": 0.9999999897728935
+      },
+      {
+        "sigma": 0.55,
+        "center_probability": 0.52080335870078,
+        "negative_weight": 0.024090589561788466,
+        "optimal_score": 0.7586604992877015,
+        "point_estimate_within3": 0.9999997217746187
+      },
+      {
+        "sigma": 0.6,
+        "center_probability": 0.44065041379488323,
+        "negative_weight": 0.03428743317109936,
+        "optimal_score": 0.7215888676298734,
+        "point_estimate_within3": 0.9999966728026711
+      },
+      {
+        "sigma": 0.65,
+        "center_probability": 0.3763385011569402,
+        "negative_weight": 0.04690647692263862,
+        "optimal_score": 0.6850606896734068,
+        "point_estimate_within3": 0.9999775257870398
+      },
+      {
+        "sigma": 0.7,
+        "center_probability": 0.32472415728345505,
+        "negative_weight": 0.06221159707117924,
+        "optimal_score": 0.6495295740873996,
+        "point_estimate_within3": 0.9998991301935031
+      },
+      {
+        "sigma": 0.75,
+        "center_probability": 0.2829250746041529,
+        "negative_weight": 0.08017830061404344,
+        "optimal_score": 0.615607906865705,
+        "point_estimate_within3": 0.9996646141887654
+      },
+      {
+        "sigma": 0.8,
+        "center_probability": 0.2486763535934659,
+        "negative_weight": 0.10053736547574829,
+        "optimal_score": 0.5837814607489447,
+        "point_estimate_within3": 0.9991095233685179
+      },
+      {
+        "sigma": 0.85,
+        "center_probability": 0.22028309420991363,
+        "negative_weight": 0.12288259967174137,
+        "optimal_score": 0.5543044267514192,
+        "point_estimate_within3": 0.9980090263434817
+      },
+      {
+        "sigma": 0.9,
+        "center_probability": 0.1964874946172096,
+        "negative_weight": 0.14676608668871954,
+        "optimal_score": 0.5272269386133972,
+        "point_estimate_within3": 0.9961044823242136
+      },
+      {
+        "sigma": 0.95,
+        "center_probability": 0.17634895448376245,
+        "negative_weight": 0.1717568569068155,
+        "optimal_score": 0.5024647138923442,
+        "point_estimate_within3": 0.9931384930242649
+      },
+      {
+        "sigma": 1.0,
+        "center_probability": 0.1591549413887541,
+        "negative_weight": 0.19746844795509996,
+        "optimal_score": 0.479861559745707,
+        "point_estimate_within3": 0.9888869573195528
+      },
+      {
+        "sigma": 1.05,
+        "center_probability": 0.14435822482240515,
+        "negative_weight": 0.22356774745012986,
+        "optimal_score": 0.4592317589519662,
+        "point_estimate_within3": 0.9831812772415959
+      },
+      {
+        "sigma": 1.1,
+        "center_probability": 0.1315330107974529,
+        "negative_weight": 0.2497746905598256,
+        "optimal_score": 0.44038484325383365,
+        "point_estimate_within3": 0.9759189962066305
+      },
+      {
+        "sigma": 1.15,
+        "center_probability": 0.12034400233570307,
+        "negative_weight": 0.275858192798463,
+        "optimal_score": 0.42313854523520356,
+        "point_estimate_within3": 0.9670644671935408
+      },
+      {
+        "sigma": 1.2,
+        "center_probability": 0.11052426603583847,
+        "negative_weight": 0.30163084782046284,
+        "optimal_score": 0.40732473636948374,
+        "point_estimate_within3": 0.9566424976216987
+      },
+      {
+        "sigma": 1.25,
+        "center_probability": 0.1018591635787966,
+        "negative_weight": 0.32694345104239964,
+        "optimal_score": 0.39279149630153143,
+        "point_estimate_within3": 0.9447279747357098
+      },
+      {
+        "sigma": 1.3,
+        "center_probability": 0.0941745225395818,
+        "negative_weight": 0.351679764559521,
+        "optimal_score": 0.3794031672628191,
+        "point_estimate_within3": 0.931433919047978
+      },
+      {
+        "sigma": 1.35,
+        "center_probability": 0.08732781513958582,
+        "negative_weight": 0.37575168129094194,
+        "optimal_score": 0.3670394294485376,
+        "point_estimate_within3": 0.9168996855438605
+      },
+      {
+        "sigma": 1.4,
+        "center_probability": 0.08120150157749764,
+        "negative_weight": 0.3990948462369017,
+        "optimal_score": 0.35559395795615745,
+        "point_estimate_within3": 0.9012803598831547
+      },
+      {
+        "sigma": 1.45,
+        "center_probability": 0.07569795153003345,
+        "negative_weight": 0.42166475039727136,
+        "optimal_score": 0.34497295674776085,
+        "point_estimate_within3": 0.8847378688048169
+      },
+      {
+        "sigma": 1.5,
+        "center_probability": 0.07073553026306459,
+        "negative_weight": 0.44343329089076805,
+        "optimal_score": 0.3350937199017062,
+        "point_estimate_within3": 0.8674339544475012
+      },
+      {
+        "sigma": 1.55,
+        "center_probability": 0.06624555383637686,
+        "negative_weight": 0.4643857768637014,
+        "optimal_score": 0.32588329165534613,
+        "point_estimate_within3": 0.8495249306637556
+      },
+      {
+        "sigma": 1.6,
+        "center_probability": 0.062169899645271885,
+        "negative_weight": 0.48451835134569177,
+        "optimal_score": 0.31727725439724874,
+        "point_estimate_within3": 0.8311580132620783
+      },
+      {
+        "sigma": 1.65,
+        "center_probability": 0.058459115919889976,
+        "negative_weight": 0.5038357932575551,
+        "optimal_score": 0.3092186513785852,
+        "point_estimate_within3": 0.8124689633190469
+      },
+      {
+        "sigma": 1.7,
+        "center_probability": 0.05507091456468012,
+        "negative_weight": 0.5223496607481575,
+        "optimal_score": 0.30165703948513867,
+        "point_estimate_within3": 0.7935807765088314
+      },
+      {
+        "sigma": 1.75,
+        "center_probability": 0.051968961009648366,
+        "negative_weight": 0.5400767363716229,
+        "optimal_score": 0.2945476620083739,
+        "point_estimate_within3": 0.7746031717867433
+      },
+      {
+        "sigma": 1.8,
+        "center_probability": 0.04912189601622563,
+        "negative_weight": 0.5570377357201075,
+        "optimal_score": 0.28785072924445043,
+        "point_estimate_within3": 0.755632665949757
+      },
+      {
+        "sigma": 1.85,
+        "center_probability": 0.04650253998379754,
+        "negative_weight": 0.573256243438741,
+        "optimal_score": 0.28153079440863826,
+        "point_estimate_within3": 0.7367530577819241
+      },
+      {
+        "sigma": 1.9,
+        "center_probability": 0.04408724185630059,
+        "negative_weight": 0.5887578435896454,
+        "optimal_score": 0.27555621292223986,
+        "point_estimate_within3": 0.7180361815282185
+      },
+      {
+        "sigma": 1.95,
+        "center_probability": 0.041855343358801075,
+        "negative_weight": 0.603569414726125,
+        "optimal_score": 0.2698986741280667,
+        "point_estimate_within3": 0.6995428216655799
+      },
+      {
+        "sigma": 2.0,
+        "center_probability": 0.03978873579496419,
+        "negative_weight": 0.617718563512657,
+        "optimal_score": 0.2645327956501179,
+        "point_estimate_within3": 0.6813237082806921
+      },
+      {
+        "sigma": 2.05,
+        "center_probability": 0.03787149157188792,
+        "negative_weight": 0.6312331740956341,
+        "optimal_score": 0.2594357717869602,
+        "point_estimate_within3": 0.6634205346883154
+      },
+      {
+        "sigma": 2.1,
+        "center_probability": 0.03608955639382947,
+        "negative_weight": 0.6441410535782375,
+        "optimal_score": 0.2545870684402731,
+        "point_estimate_within3": 0.6458669566073327
+      },
+      {
+        "sigma": 2.15,
+        "center_probability": 0.03443049097414609,
+        "negative_weight": 0.6564696568172328,
+        "optimal_score": 0.2499681580943091,
+        "point_estimate_within3": 0.6286895458604614
+      },
+      {
+        "sigma": 2.2,
+        "center_probability": 0.032883253369489704,
+        "negative_weight": 0.6682458763140044,
+        "optimal_score": 0.24556228926561613,
+        "point_estimate_within3": 0.6119086818495116
+      },
+      {
+        "sigma": 2.25,
+        "center_probability": 0.031438014799636864,
+        "negative_weight": 0.6794958852159303,
+        "optimal_score": 0.24135428563486655,
+        "point_estimate_within3": 0.5955393716264965
+      },
+      {
+        "sigma": 2.3,
+        "center_probability": 0.030086003197308135,
+        "negative_weight": 0.6902450233921498,
+        "optimal_score": 0.23733037076015645,
+        "point_estimate_within3": 0.5795919948064158
+      },
+      {
+        "sigma": 2.35,
+        "center_probability": 0.02881936982240928,
+        "negative_weight": 0.7005177182234761,
+        "optimal_score": 0.2334780148629662,
+        "point_estimate_within3": 0.5640729733378035
+      },
+      {
+        "sigma": 2.4,
+        "center_probability": 0.027631075140179446,
+        "negative_weight": 0.7103374331773358,
+        "optimal_score": 0.22978580068450616,
+        "point_estimate_within3": 0.5489853686627737
+      },
+      {
+        "sigma": 2.45,
+        "center_probability": 0.026514790852717848,
+        "negative_weight": 0.719726638453507,
+        "optimal_score": 0.2262433058419251,
+        "point_estimate_within3": 0.5343294103804608
+      },
+      {
+        "sigma": 2.5,
+        "center_probability": 0.025464815526429294,
+        "negative_weight": 0.7287067990123666,
+        "optimal_score": 0.22284099948083935,
+        "point_estimate_within3": 0.5201029614293261
+      },
+      {
+        "sigma": 2.55,
+        "center_probability": 0.024476001703391367,
+        "negative_weight": 0.7372983761593039,
+        "optimal_score": 0.21957015133207275,
+        "point_estimate_within3": 0.5063019252206601
+      },
+      {
+        "sigma": 2.6,
+        "center_probability": 0.02354369274516152,
+        "negative_weight": 0.7455208395794293,
+        "optimal_score": 0.21642275154471796,
+        "point_estimate_within3": 0.4929206002374486
+      },
+      {
+        "sigma": 2.65,
+        "center_probability": 0.022663667950702963,
+        "negative_weight": 0.7533926873154684,
+        "optimal_score": 0.21339143989199388,
+        "point_estimate_within3": 0.47995198747218065
+      },
+      {
+        "sigma": 2.7,
+        "center_probability": 0.021832094729638818,
+        "negative_weight": 0.7609314716763169,
+        "optimal_score": 0.2104694431373067,
+        "point_estimate_within3": 0.46738805579747605
+      },
+      {
+        "sigma": 2.75,
+        "center_probability": 0.021045486808683535,
+        "negative_weight": 0.7681538294693997,
+        "optimal_score": 0.2076505195109194,
+        "point_estimate_within3": 0.45521997000493875
+      },
+      {
+        "sigma": 2.8,
+        "center_probability": 0.02030066761127824,
+        "negative_weight": 0.7750755152803539,
+        "optimal_score": 0.2049289093873432,
+        "point_estimate_within3": 0.44343828585293477
+      },
+      {
+        "sigma": 2.85,
+        "center_probability": 0.019594738084807387,
+        "negative_weight": 0.781711436790478,
+        "optimal_score": 0.20229929137383762,
+        "point_estimate_within3": 0.43203311606196554
+      },
+      {
+        "sigma": 2.9,
+        "center_probability": 0.018925048361535617,
+        "negative_weight": 0.7880756913364664,
+        "optimal_score": 0.1997567431244217,
+        "point_estimate_within3": 0.42099427080563023
+      },
+      {
+        "sigma": 2.95,
+        "center_probability": 0.018289172732723964,
+        "negative_weight": 0.7941816030873782,
+        "optimal_score": 0.1972967062841134,
+        "point_estimate_within3": 0.4103113758769702
+      },
+      {
+        "sigma": 3.0,
+        "center_probability": 0.017684887493564883,
+        "negative_weight": 0.8000417603486691,
+        "optimal_score": 0.19491495504680495,
+        "point_estimate_within3": 0.3999739713700443
+      }
+    ]
+  }
+}
