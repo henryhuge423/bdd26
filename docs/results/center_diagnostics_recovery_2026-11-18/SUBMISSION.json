@@ -1,0 +1,30 @@
+{
+  "experiment": "D32",
+  "attempt": "2026-11-18 rendering recovery",
+  "job_id": "55839400",
+  "submitted_utc": "2026-11-18T13:05:41.284369Z",
+  "initial_observed_state": "PENDING / Resources",
+  "models": 12,
+  "resource": {
+    "gpu": 1,
+    "cpu": 4,
+    "memory_GiB": 32,
+    "hours": 3.9333333333333336
+  },
+  "source_commit": "ddce2e1fbdea45803a4555630f3428d65848a2ce",
+  "source_manifest_sha256": "98d1798002b229d73aac398ad16e08103f5a062f1408bce1bf7b906abcfc3f7a",
+  "source_files": 522,
+  "diagnostic_manifest_sha256": "d2f03a3dfa6318e597e3bc9b4b0eceaece139abbf946546df0030721226f57d6",
+  "previous_failed_job": {
+    "job_id": "55825240",
+    "state": "FAILED",
+    "exit_code": "1:0",
+    "elapsed_seconds": 198,
+    "reason": "ModuleNotFoundError: matplotlib at the first render_panel call"
+  },
+  "walltime_envelope_seconds": 14358,
+  "original_diagnostic_budget_seconds": 14400,
+  "scientific_change": "Only render_panel; AST equal outside this function.",
+  "local_validation": "15 passed in 2.19s",
+  "automatic_training": false
+}

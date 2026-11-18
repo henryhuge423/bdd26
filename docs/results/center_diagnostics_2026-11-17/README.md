@@ -1,3 +1,5 @@
+> **November 18 update:** Job 55825240 failed while importing the plotting dependency. Its partial arrays and logs were preserved. The [recovery review and job 55839400](../center_diagnostics_recovery_2026-11-18/README.md) document the verified correction and new submission. The dated original plan and receipt below are retained.
+
 # Existing-model center diagnostics, November 17, 2026
 
 P31 completed four 130-epoch runs. This review connects the latest native-label audit and model-theory analysis to D32, a fixed twelve-model inference experiment.

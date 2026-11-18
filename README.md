@@ -1,3 +1,5 @@
+> **2026-11-18 — D32 recovered and D33 completed.** D32 job 55839400 completed twelve-model diagnosis and preservation (880s, 180 PNGs). D33 job 55839942 tested fixed sigmoid/interpolation order on the saved eleven-image development set (237s, CPU only, 180 additional PNGs); 21 node checks and all original count replays passed. It adds 2–13 Dead matches per model with increased extra predictions and lower selected-image precision. Original full-development rules are retained. [Bilingual analysis, object records, figures and actual receipts](docs/results/center_diagnostics_recovery_2026-11-18/README.md).
+
 > **2026-11-17 — P31 completed; intermediate-map diagnostic submitted.** All four P31 tasks completed 130 epochs (COMPLETED/0:0). The latest native-label audit separates within-mask center displacement from weak center response. D32 fixes twelve existing P22/P29/P31 models and the original data roles, decoder and seeds; D32 job **55825240** was submitted once at 21:44 EST, requesting one V100/4 CPU/32 GiB/4 hours; initial state PENDING/Priority. It will retain actual coarse/fine logits, peak decisions and one-pixel shift responses. [Analysis, bilingual plans and preserved result figures](docs/results/center_diagnostics_2026-11-17/README.md).
 
 > **Stage report 8 (2026-11-17):** [English report, detailed Chinese report and Chinese reader](docs/report/stage_report_8/README.md), covering P27–P31 and verified final P31 development results.
@@ -389,7 +391,8 @@ Full methods, uncertainty and provenance: [P0–P3 results](docs/results/P0_P3_R
 
 ### Reports
 
-- `docs/report/stage_report_7/` — latest stage VII: English and Chinese detailed reports, a Chinese reader, LaTeX sources and verified P17–P26 evidence.
+- `docs/report/stage_report_8/` — current stage VIII: English/Chinese reports, Chinese reader and verified P27–P31 results. D32/D33 follow-up measurements are linked in the November 18 update.
+- `docs/report/stage_report_7/` — prior stage VII: English and Chinese detailed reports, a Chinese reader, LaTeX sources and verified P17–P26 evidence.
 - `docs/report/stage_report_6/` — prior stage VI: detailed English/Chinese reports and illustrated Chinese reader: visibility, query/point diagnostics, E19 and P3–P17 progress.
 - `docs/report/stage_report_5/` — prior stage V (EN, ZH and plain-language ZH):
   typing-oracle ceiling, T0–T3 probe closure, E1 no-expert revision (E1-C/E1-M),

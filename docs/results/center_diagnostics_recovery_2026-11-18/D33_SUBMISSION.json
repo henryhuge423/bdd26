@@ -1,0 +1,33 @@
+{
+  "experiment": "D33",
+  "job_id": "55839942",
+  "submitted_utc": "2026-11-18T13:29:32.763202Z",
+  "source_commit": "5bf69a3d34bd945ea05e557111b17371869b2000",
+  "source_manifest_sha256": "aef0712cd632e784999a9e8074ccc965dafaa8a5421033a4c2284c1ad981f878",
+  "source_files": 524,
+  "resource": {
+    "gpu": 0,
+    "cpu": 4,
+    "memory_GiB": 16,
+    "hours": 1
+  },
+  "allocation_evaluation": {
+    "allocated": 50000,
+    "spent": 1547,
+    "queued_upper_bound_SU": 0.0,
+    "requested_CPU_SU_upper_bound": 16,
+    "other": []
+  },
+  "state": "COMPLETED",
+  "exit_code": "0:0",
+  "elapsed_seconds": 237,
+  "local_validation": "21 passed in 1.98s",
+  "node_validation": "21 passed in 6.23s",
+  "network_inference": false,
+  "optimizer_updates": 0,
+  "parent_job": "55839400",
+  "conditions": [
+    "original",
+    "sigmoid_before_interpolation"
+  ]
+}

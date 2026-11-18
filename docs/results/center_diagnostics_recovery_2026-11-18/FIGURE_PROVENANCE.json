@@ -1,0 +1,85 @@
+{
+  "figures/p22_control_seed19_image0178_partial.png": {
+    "bytes": 220019,
+    "sha256": "9ce1edf87f9bda692492f380320638bec22826127fe7bbe422c3b6d579f8a4db"
+  },
+  "PARTIAL_IMAGE_RECORD.json": {
+    "bytes": 6541,
+    "sha256": "700df78754b937af36bdbc399c96b3df537a209e83a25d22f8eba30587c40fcf"
+  },
+  "inputs": {
+    "selected_native_arrays.npz": {
+      "bytes": 4499708,
+      "sha256": "13f5c4390c25dc78600c4321ccefeb0268049ce2077de430792168d0e087d511"
+    },
+    "maps/P22_C_s19_development_0178.npz": {
+      "bytes": 168288,
+      "sha256": "23c5160c718cc2a85a298f9e9be8095cecdd9e843009091b6f4eb210a8cdc74f"
+    }
+  },
+  "figures/P29_B_s1_development_1037.png": {
+    "bytes": 301569,
+    "sha256": "2c679d815a33fb00d3ddce55130299b4b8fa8ddb9c368482277590476433aa2f",
+    "source": "Verified D32 compute-node PNG; original last-checkpoint output."
+  },
+  "figures/d33_P22_M_s19_development_0178.png": {
+    "bytes": 223012,
+    "sha256": "3b2bdcc1e2b7770639fa2449b3ae93e5a17ab09d0d89cdbe2f1864363589508a",
+    "source": "Verified D33 compute-node PNG; fixed intervention, same selected image."
+  },
+  "figures/d33_P22_C_s19_development_0178.png": {
+    "bytes": 223877,
+    "sha256": "cd64c39f0bee91e45bd38b774e03032000420f124c1522ce6b4d1fb7aae24ffd",
+    "source": "Verified D33 compute-node PNG; fixed intervention, same selected image."
+  },
+  "figures/P31_G_s1_development_1025.png": {
+    "bytes": 333409,
+    "sha256": "fe3ac1c315c5cba57dcf61a9aa51ce258a94b9eaf9a6359496a3186dccc84798",
+    "source": "Verified D32 compute-node PNG; original last-checkpoint output."
+  },
+  "figures/d33_P31_G_s1_development_1025.png": {
+    "bytes": 340674,
+    "sha256": "e0047ac512eafc20285735dc46f1961c93cfc69b69d98ac0083217143cb99d86",
+    "source": "Verified D33 compute-node PNG; fixed intervention, same selected image."
+  },
+  "figures/d32_response_and_localization_patterns.png": {
+    "bytes": 254889,
+    "sha256": "768a5ba241e84ce0f996acd7dbc646d66157bc90d91e45c70882841d2a0f4b23",
+    "source": "scripts/plot_center_diagnostic_patterns.py using D32_ANALYSIS.json"
+  },
+  "figures/P22_C_s1_development_1482.png": {
+    "bytes": 237636,
+    "sha256": "44c9234a2e7fb88088ae78a94988452a32983950a596264e17b85b97d5b60835",
+    "source": "Verified D32 compute-node PNG; original last-checkpoint output."
+  },
+  "figures/d33_P22_C_s1_development_1482.png": {
+    "bytes": 240881,
+    "sha256": "feb6839d09b3b0a368705a34546263c00f3b4258090f7a74e27d92117b96798b",
+    "source": "Verified D33 compute-node PNG; fixed intervention, same selected image."
+  },
+  "figures/d33_P22_M_s1_development_1482.png": {
+    "bytes": 241720,
+    "sha256": "e613722918f48639c2f32dfa5f0cd0c391637a681b79ff1455bbc3611d857b42",
+    "source": "Verified D33 compute-node PNG; fixed intervention, same selected image."
+  },
+  "figures/P22_M_s1_development_1482.png": {
+    "bytes": 237106,
+    "sha256": "d5e5bd787d58b80558505061d6b6cd8e66eff3ae6f0ed1d83caa25aff300a2fd",
+    "source": "Verified D32 compute-node PNG; original last-checkpoint output."
+  },
+  "figures/d33_P29_B_s1_development_1037.png": {
+    "bytes": 307825,
+    "sha256": "82b64cd4eac41b5190d98fd45dea4746926db6bc60d37e934bfdc081b20f99da",
+    "source": "Verified D33 compute-node PNG; fixed intervention, same selected image."
+  },
+  "figures/P22_C_s19_development_0178.png": {
+    "bytes": 219810,
+    "sha256": "87ae3a4a70e825e0ed43605f3ed0be285ff5bb7b92b23f52086bf3d5177754f1",
+    "source": "Verified D32 compute-node PNG; original last-checkpoint output."
+  },
+  "figures/P22_M_s19_development_0178.png": {
+    "bytes": 219267,
+    "sha256": "9af08d68218720160f3529d53ddc589ae7d7f5d9701389b16347b6f59f30b440",
+    "source": "Verified D32 compute-node PNG; original last-checkpoint output."
+  }
+}
