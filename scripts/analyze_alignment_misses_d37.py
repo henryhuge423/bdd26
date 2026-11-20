@@ -96,8 +96,10 @@ def main():
         summary=json.loads((folder/'summary.json').read_text()); rule=summary['rule']; threshold=summary['threshold']['threshold']
         entry={}
         for role in ('training','development'):
-            objects=read_objects(folder/f'{role}_objects.csv'); peaks=read_peaks(folder/f'{role}_points.npz',objects)
+            objects=read_objects(folder/f'{role}_objects.csv')
             original_rows={r['image']:r for r in json.loads((folder/f'{role}_original.json').read_text())}
+            for image in original_rows: objects.setdefault(image, [])
+            peaks=read_peaks(folder/f'{role}_points.npz',objects)
             selected_rows={r['image']:r for r in json.loads((folder/f'{role}_selected_threshold.json').read_text())}
             consensus_rows={r['image']:r for r in json.loads((folder/f'{role}_consensus.json').read_text())}
             buckets={f:{subset:{c:0 for c in CATEGORIES} for subset in ('all','central','interior_dead')} for f in FILLS}

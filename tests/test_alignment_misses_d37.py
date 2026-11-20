@@ -20,3 +20,12 @@ def test_near_point_can_be_assigned_elsewhere():
     missing=({0,1}-assigned).pop()
     assert abs(gt[missing][1][1]-points[0][1])<=3
     assert d37.partition(False,False,False,True)=='near_point_assigned_elsewhere'
+
+
+def test_peak_records_include_empty_annotation_images(tmp_path):
+    import numpy as np
+    path=tmp_path/'points.npz'
+    np.savez(path,image=[996],fill=[0],phase=[0],y=[2],x=[3],score=[.8])
+    peaks=d37.read_peaks(path,{996:[]})
+    assert peaks[996]['white'][0]==[(2,3,.8)]
+    assert d37.score_points(d37.retained(peaks[996]['white'][0]),[])['candidates']==1
