@@ -1,3 +1,5 @@
+> **P36 completed — November 20:** all eight scientific computations and preservation are complete; [current results and D37 diagnosis](../alignment_results_2026-11-20/README.md), [stage-nine reports](../../report/stage_report_9/README.md). The dated November 19 submission snapshot below is retained.
+
 # Offset readout (P34) and sixteen grid alignments (P35): results; P36 submitted — November 19, 2026
 
 > **Status:** P34 array 55855798: three tasks completed, one stopped by its time guard. P35 array 55867961: four tasks completed. P36 array **55892877** (eight tasks, 32 cores/64 GiB/8 hours each) was submitted once at 2026-11-19T21:51:49Z and was queued at 22:16Z. Results of P36 will be added when the job finishes.

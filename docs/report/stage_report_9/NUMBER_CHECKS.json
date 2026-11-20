@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "checks": 195,
+  "detectors": 8,
+  "roles": [
+    "training",
+    "development"
+  ],
+  "case_score": 0.4859921634197235,
+  "case_distance": 1.900292375165233,
+  "language_scan": "PASS",
+  "review": "self-reviewed"
+}

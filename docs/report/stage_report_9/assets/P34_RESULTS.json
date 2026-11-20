@@ -1,0 +1,770 @@
+{
+ "detectors": {
+  "P22_C_s19": {
+   "roles": {
+    "training": {
+     "objects": 2154,
+     "original": {
+      "matched": 2068,
+      "total": 2154,
+      "candidates": 2073,
+      "dead_hit": 628,
+      "dead_total": 656,
+      "recall": 0.9600742804085423,
+      "precision": 0.9975880366618427,
+      "dead_recall": 0.9573170731707317
+     },
+     "same_augmentation": {
+      "merged": {
+       "matched": 2066,
+       "total": 2154,
+       "candidates": 2072,
+       "dead_hit": 627,
+       "dead_total": 656,
+       "recall": 0.9591457753017641,
+       "precision": 0.997104247104247,
+       "dead_recall": 0.9557926829268293
+      },
+      "offset_error_at_center": {
+       "median": 0.31801752267899613,
+       "q90": 0.6443235606435938,
+       "within1": 0.9605385329619313,
+       "within3": 0.9935004642525533
+      },
+      "transitions": {
+       "gained": 0,
+       "lost": 2,
+       "dead_gained": 0,
+       "dead_lost": 1
+      },
+      "nuclei_with_inside_point": 2065,
+      "inside_point_far_before": 0,
+      "far_before_within3_after": 0,
+      "near_before_far_after": 2,
+      "median_point_distance_before": 0.0,
+      "median_point_distance_after": 0.3141872783970143
+     },
+     "with_translation": {
+      "merged": {
+       "matched": 2066,
+       "total": 2154,
+       "candidates": 2072,
+       "dead_hit": 627,
+       "dead_total": 656,
+       "recall": 0.9591457753017641,
+       "precision": 0.997104247104247,
+       "dead_recall": 0.9557926829268293
+      },
+      "offset_error_at_center": {
+       "median": 0.3371551580206047,
+       "q90": 0.6352520148080383,
+       "within1": 0.9693593314763231,
+       "within3": 0.9948932219127206
+      },
+      "transitions": {
+       "gained": 0,
+       "lost": 2,
+       "dead_gained": 0,
+       "dead_lost": 1
+      },
+      "nuclei_with_inside_point": 2065,
+      "inside_point_far_before": 0,
+      "far_before_within3_after": 0,
+      "near_before_far_after": 2,
+      "median_point_distance_before": 0.0,
+      "median_point_distance_after": 0.33493599374579064
+     }
+    },
+    "training_shifted": {
+     "objects": 2087,
+     "original": {
+      "matched": 1228,
+      "total": 2087,
+      "candidates": 1529,
+      "dead_hit": 396,
+      "dead_total": 638,
+      "recall": 0.588404408241495,
+      "precision": 0.8031393067364291,
+      "dead_recall": 0.6206896551724138
+     },
+     "same_augmentation": {
+      "merged": {
+       "matched": 1228,
+       "total": 2087,
+       "candidates": 1529,
+       "dead_hit": 398,
+       "dead_total": 638,
+       "recall": 0.588404408241495,
+       "precision": 0.8031393067364291,
+       "dead_recall": 0.6238244514106583
+      },
+      "offset_error_at_center": {
+       "median": 1.6537154373346148,
+       "q90": 6.671316620118808,
+       "within1": 0.2783900335409679,
+       "within3": 0.7273598466698611
+      },
+      "transitions": {
+       "gained": 26,
+       "lost": 26,
+       "dead_gained": 7,
+       "dead_lost": 5
+      },
+      "nuclei_with_inside_point": 1403,
+      "inside_point_far_before": 178,
+      "far_before_within3_after": 25,
+      "near_before_far_after": 26,
+      "median_point_distance_before": 1.4142135623730951,
+      "median_point_distance_after": 1.3546723362467081
+     },
+     "with_translation": {
+      "merged": {
+       "matched": 1228,
+       "total": 2087,
+       "candidates": 1529,
+       "dead_hit": 398,
+       "dead_total": 638,
+       "recall": 0.588404408241495,
+       "precision": 0.8031393067364291,
+       "dead_recall": 0.6238244514106583
+      },
+      "offset_error_at_center": {
+       "median": 1.4936408689605862,
+       "q90": 4.076043427270974,
+       "within1": 0.3095352180162913,
+       "within3": 0.8203162434115956
+      },
+      "transitions": {
+       "gained": 22,
+       "lost": 22,
+       "dead_gained": 7,
+       "dead_lost": 5
+      },
+      "nuclei_with_inside_point": 1403,
+      "inside_point_far_before": 178,
+      "far_before_within3_after": 22,
+      "near_before_far_after": 22,
+      "median_point_distance_before": 1.4142135623730951,
+      "median_point_distance_after": 1.3792741835732605
+     },
+     "original_recall_32px_from_filled_edges": {
+      "objects": 1495,
+      "recall": 0.671571906354515
+     }
+    },
+    "development": {
+     "objects": 12250,
+     "original": {
+      "matched": 7255,
+      "total": 12250,
+      "candidates": 10488,
+      "dead_hit": 66,
+      "dead_total": 145,
+      "recall": 0.5922448979591837,
+      "precision": 0.691742944317315,
+      "dead_recall": 0.45517241379310347
+     },
+     "same_augmentation": {
+      "merged": {
+       "matched": 7251,
+       "total": 12250,
+       "candidates": 10485,
+       "dead_hit": 66,
+       "dead_total": 145,
+       "recall": 0.5919183673469388,
+       "precision": 0.6915593705293276,
+       "dead_recall": 0.45517241379310347
+      },
+      "offset_error_at_center": {
+       "median": 1.8369339381028786,
+       "q90": 6.3504274955859135,
+       "within1": 0.23926530612244898,
+       "within3": 0.7087346938775511
+      },
+      "transitions": {
+       "gained": 166,
+       "lost": 170,
+       "dead_gained": 1,
+       "dead_lost": 1
+      },
+      "nuclei_with_inside_point": 9266,
+      "inside_point_far_before": 2031,
+      "far_before_within3_after": 161,
+      "near_before_far_after": 167,
+      "median_point_distance_before": 1.4142135623730951,
+      "median_point_distance_after": 1.6462301700287654
+     },
+     "with_translation": {
+      "merged": {
+       "matched": 7240,
+       "total": 12250,
+       "candidates": 10485,
+       "dead_hit": 65,
+       "dead_total": 145,
+       "recall": 0.5910204081632653,
+       "precision": 0.6905102527420124,
+       "dead_recall": 0.4482758620689655
+      },
+      "offset_error_at_center": {
+       "median": 1.7041002892099302,
+       "q90": 4.839495595665689,
+       "within1": 0.25787755102040816,
+       "within3": 0.7617142857142857
+      },
+      "transitions": {
+       "gained": 158,
+       "lost": 173,
+       "dead_gained": 0,
+       "dead_lost": 1
+      },
+      "nuclei_with_inside_point": 9266,
+      "inside_point_far_before": 2031,
+      "far_before_within3_after": 154,
+      "near_before_far_after": 171,
+      "median_point_distance_before": 1.4142135623730951,
+      "median_point_distance_after": 1.644617785389801
+     }
+    }
+   },
+   "training": {
+    "same_augmentation": {
+     "witness": {
+      "first_loss": 10.637624740600586,
+      "first_gradient_norm": 7.464133262634277,
+      "first_output_weight_change": 0.00029999998514540493
+     },
+     "epochs": 12,
+     "first_epoch_loss": 5.560466973716786,
+     "last_epoch_loss": 2.41487700288946,
+     "loss_decreased": true,
+     "train_seconds": 5854.506256594323,
+     "head_sha256": "bb5b3c2c653ca4bf551dcce4c78ed3da8fe1acf262f8bb4e14bed4f20f7a16f7"
+    },
+    "with_translation": {
+     "witness": {
+      "first_loss": 10.55964469909668,
+      "first_gradient_norm": 5.82455587387085,
+      "first_output_weight_change": 0.00029999998514540493
+     },
+     "epochs": 12,
+     "first_epoch_loss": 6.746697792296334,
+     "last_epoch_loss": 4.5357102445050055,
+     "loss_decreased": true,
+     "train_seconds": 5406.217154233716,
+     "head_sha256": "88bafe1a4dbf01bc3a3b7511740647fcc1404e25fd44732856fd74d1627c9b71"
+    }
+   }
+  },
+  "P22_C_s1": {
+   "roles": {
+    "training": {
+     "objects": 2154,
+     "original": {
+      "matched": 2075,
+      "total": 2154,
+      "candidates": 2078,
+      "dead_hit": 628,
+      "dead_total": 656,
+      "recall": 0.9633240482822656,
+      "precision": 0.9985563041385948,
+      "dead_recall": 0.9573170731707317
+     },
+     "same_augmentation": {
+      "merged": {
+       "matched": 2073,
+       "total": 2154,
+       "candidates": 2076,
+       "dead_hit": 628,
+       "dead_total": 656,
+       "recall": 0.9623955431754875,
+       "precision": 0.9985549132947977,
+       "dead_recall": 0.9573170731707317
+      },
+      "offset_error_at_center": {
+       "median": 0.349961501181722,
+       "q90": 0.6933559466905849,
+       "within1": 0.9628597957288765,
+       "within3": 0.9967502321262767
+      },
+      "transitions": {
+       "gained": 1,
+       "lost": 3,
+       "dead_gained": 1,
+       "dead_lost": 1
+      },
+      "nuclei_with_inside_point": 2073,
+      "inside_point_far_before": 1,
+      "far_before_within3_after": 1,
+      "near_before_far_after": 2,
+      "median_point_distance_before": 0.0,
+      "median_point_distance_after": 0.3428903015786618
+     },
+     "with_translation": {
+      "merged": {
+       "matched": 2072,
+       "total": 2154,
+       "candidates": 2076,
+       "dead_hit": 628,
+       "dead_total": 656,
+       "recall": 0.9619312906220984,
+       "precision": 0.9980732177263969,
+       "dead_recall": 0.9573170731707317
+      },
+      "offset_error_at_center": {
+       "median": 0.3451747639231527,
+       "q90": 0.6542591047562584,
+       "within1": 0.9716805942432684,
+       "within3": 0.9981429897864438
+      },
+      "transitions": {
+       "gained": 0,
+       "lost": 3,
+       "dead_gained": 0,
+       "dead_lost": 0
+      },
+      "nuclei_with_inside_point": 2073,
+      "inside_point_far_before": 1,
+      "far_before_within3_after": 0,
+      "near_before_far_after": 2,
+      "median_point_distance_before": 0.0,
+      "median_point_distance_after": 0.3434732805057783
+     }
+    },
+    "training_shifted": {
+     "objects": 2087,
+     "original": {
+      "matched": 1171,
+      "total": 2087,
+      "candidates": 1461,
+      "dead_hit": 365,
+      "dead_total": 638,
+      "recall": 0.5610924772400575,
+      "precision": 0.8015058179329226,
+      "dead_recall": 0.5721003134796239
+     },
+     "same_augmentation": {
+      "merged": {
+       "matched": 1173,
+       "total": 2087,
+       "candidates": 1460,
+       "dead_hit": 365,
+       "dead_total": 638,
+       "recall": 0.562050790608529,
+       "precision": 0.8034246575342465,
+       "dead_recall": 0.5721003134796239
+      },
+      "offset_error_at_center": {
+       "median": 1.6885297088236146,
+       "q90": 7.029376543574493,
+       "within1": 0.27982750359367514,
+       "within3": 0.7211308097747964
+      },
+      "transitions": {
+       "gained": 23,
+       "lost": 21,
+       "dead_gained": 6,
+       "dead_lost": 6
+      },
+      "nuclei_with_inside_point": 1346,
+      "inside_point_far_before": 180,
+      "far_before_within3_after": 22,
+      "near_before_far_after": 20,
+      "median_point_distance_before": 1.4142135623730951,
+      "median_point_distance_after": 1.3486828899157408
+     },
+     "with_translation": {
+      "merged": {
+       "matched": 1172,
+       "total": 2087,
+       "candidates": 1460,
+       "dead_hit": 364,
+       "dead_total": 638,
+       "recall": 0.5615716339242932,
+       "precision": 0.8027397260273973,
+       "dead_recall": 0.5705329153605015
+      },
+      "offset_error_at_center": {
+       "median": 1.4800779610420516,
+       "q90": 4.560452721846387,
+       "within1": 0.3124101581217058,
+       "within3": 0.7968375658840441
+      },
+      "transitions": {
+       "gained": 23,
+       "lost": 22,
+       "dead_gained": 5,
+       "dead_lost": 6
+      },
+      "nuclei_with_inside_point": 1346,
+      "inside_point_far_before": 180,
+      "far_before_within3_after": 22,
+      "near_before_far_after": 22,
+      "median_point_distance_before": 1.4142135623730951,
+      "median_point_distance_after": 1.333791683093942
+     },
+     "original_recall_32px_from_filled_edges": {
+      "objects": 1495,
+      "recall": 0.6454849498327759
+     }
+    },
+    "development": {
+     "objects": 12250,
+     "original": {
+      "matched": 7199,
+      "total": 12250,
+      "candidates": 10280,
+      "dead_hit": 61,
+      "dead_total": 145,
+      "recall": 0.5876734693877551,
+      "precision": 0.7002918287937743,
+      "dead_recall": 0.4206896551724138
+     },
+     "same_augmentation": {
+      "merged": {
+       "matched": 7175,
+       "total": 12250,
+       "candidates": 10279,
+       "dead_hit": 61,
+       "dead_total": 145,
+       "recall": 0.5857142857142857,
+       "precision": 0.6980250997178714,
+       "dead_recall": 0.4206896551724138
+      },
+      "offset_error_at_center": {
+       "median": 1.8344992641690872,
+       "q90": 6.565825163763737,
+       "within1": 0.23640816326530611,
+       "within3": 0.7055510204081633
+      },
+      "transitions": {
+       "gained": 156,
+       "lost": 180,
+       "dead_gained": 1,
+       "dead_lost": 1
+      },
+      "nuclei_with_inside_point": 9138,
+      "inside_point_far_before": 1954,
+      "far_before_within3_after": 155,
+      "near_before_far_after": 179,
+      "median_point_distance_before": 1.4142135623730951,
+      "median_point_distance_after": 1.665703070059927
+     },
+     "with_translation": {
+      "merged": {
+       "matched": 7189,
+       "total": 12250,
+       "candidates": 10279,
+       "dead_hit": 62,
+       "dead_total": 145,
+       "recall": 0.5868571428571429,
+       "precision": 0.6993870999124429,
+       "dead_recall": 0.42758620689655175
+      },
+      "offset_error_at_center": {
+       "median": 1.6865841240669133,
+       "q90": 4.982879439574046,
+       "within1": 0.26146938775510203,
+       "within3": 0.7585306122448979
+      },
+      "transitions": {
+       "gained": 172,
+       "lost": 182,
+       "dead_gained": 3,
+       "dead_lost": 2
+      },
+      "nuclei_with_inside_point": 9138,
+      "inside_point_far_before": 1954,
+      "far_before_within3_after": 171,
+      "near_before_far_after": 181,
+      "median_point_distance_before": 1.4142135623730951,
+      "median_point_distance_after": 1.6330721795307022
+     }
+    }
+   },
+   "training": {
+    "same_augmentation": {
+     "witness": {
+      "first_loss": 10.367841720581055,
+      "first_gradient_norm": 16.63129425048828,
+      "first_output_weight_change": 0.0003000000142492354
+     },
+     "epochs": 12,
+     "first_epoch_loss": 5.8435342068301255,
+     "last_epoch_loss": 2.4616538128678553,
+     "loss_decreased": true,
+     "train_seconds": 7205.029248287901,
+     "head_sha256": "6e0348dad03375c8a13b772e7debca382995e8581c3c5c7e388a38c82b57d5c8"
+    },
+    "with_translation": {
+     "witness": {
+      "first_loss": 10.415861129760742,
+      "first_gradient_norm": 15.050575256347656,
+      "first_output_weight_change": 0.0003000000142492354
+     },
+     "epochs": 12,
+     "first_epoch_loss": 6.761804165075958,
+     "last_epoch_loss": 4.5394004649275805,
+     "loss_decreased": true,
+     "train_seconds": 7974.457588260993,
+     "head_sha256": "b5fa36bda464d39831c5a18a5e7046fb077e522404bf7b1d477c325fbb47370d"
+    }
+   }
+  },
+  "P22_M_s19": {
+   "roles": {
+    "training": {
+     "objects": 2154,
+     "original": {
+      "matched": 2115,
+      "total": 2154,
+      "candidates": 2124,
+      "dead_hit": 642,
+      "dead_total": 656,
+      "recall": 0.9818941504178273,
+      "precision": 0.9957627118644068,
+      "dead_recall": 0.9786585365853658
+     },
+     "same_augmentation": {
+      "merged": {
+       "matched": 2109,
+       "total": 2154,
+       "candidates": 2120,
+       "dead_hit": 641,
+       "dead_total": 656,
+       "recall": 0.979108635097493,
+       "precision": 0.994811320754717,
+       "dead_recall": 0.9771341463414634
+      },
+      "offset_error_at_center": {
+       "median": 0.2761051504860327,
+       "q90": 0.5588513819706767,
+       "within1": 0.9753946146703807,
+       "within3": 0.9976787372330548
+      },
+      "transitions": {
+       "gained": 0,
+       "lost": 6,
+       "dead_gained": 0,
+       "dead_lost": 1
+      },
+      "nuclei_with_inside_point": 2116,
+      "inside_point_far_before": 1,
+      "far_before_within3_after": 0,
+      "near_before_far_after": 5,
+      "median_point_distance_before": 0.0,
+      "median_point_distance_after": 0.2723752274116491
+     },
+     "with_translation": {
+      "merged": {
+       "matched": 2110,
+       "total": 2154,
+       "candidates": 2121,
+       "dead_hit": 642,
+       "dead_total": 656,
+       "recall": 0.9795728876508821,
+       "precision": 0.9948137670909948,
+       "dead_recall": 0.9786585365853658
+      },
+      "offset_error_at_center": {
+       "median": 0.2973556623440726,
+       "q90": 0.5759115017101077,
+       "within1": 0.9805013927576601,
+       "within3": 0.9967502321262767
+      },
+      "transitions": {
+       "gained": 0,
+       "lost": 5,
+       "dead_gained": 0,
+       "dead_lost": 0
+      },
+      "nuclei_with_inside_point": 2116,
+      "inside_point_far_before": 1,
+      "far_before_within3_after": 0,
+      "near_before_far_after": 4,
+      "median_point_distance_before": 0.0,
+      "median_point_distance_after": 0.2996746125263088
+     }
+    },
+    "training_shifted": {
+     "objects": 2087,
+     "original": {
+      "matched": 1349,
+      "total": 2087,
+      "candidates": 1704,
+      "dead_hit": 428,
+      "dead_total": 638,
+      "recall": 0.6463823670340201,
+      "precision": 0.7916666666666666,
+      "dead_recall": 0.670846394984326
+     },
+     "same_augmentation": {
+      "merged": {
+       "matched": 1357,
+       "total": 2087,
+       "candidates": 1704,
+       "dead_hit": 431,
+       "dead_total": 638,
+       "recall": 0.650215620507906,
+       "precision": 0.7963615023474179,
+       "dead_recall": 0.6755485893416928
+      },
+      "offset_error_at_center": {
+       "median": 1.3554034085876572,
+       "q90": 5.333382021752813,
+       "within1": 0.3411595591758505,
+       "within3": 0.7939626257786296
+      },
+      "transitions": {
+       "gained": 22,
+       "lost": 14,
+       "dead_gained": 7,
+       "dead_lost": 4
+      },
+      "nuclei_with_inside_point": 1518,
+      "inside_point_far_before": 174,
+      "far_before_within3_after": 22,
+      "near_before_far_after": 13,
+      "median_point_distance_before": 1.4142135623730951,
+      "median_point_distance_after": 1.2088318108502296
+     },
+     "with_translation": {
+      "merged": {
+       "matched": 1354,
+       "total": 2087,
+       "candidates": 1704,
+       "dead_hit": 430,
+       "dead_total": 638,
+       "recall": 0.6487781504551988,
+       "precision": 0.7946009389671361,
+       "dead_recall": 0.6739811912225705
+      },
+      "offset_error_at_center": {
+       "median": 1.3003127157006016,
+       "q90": 3.965998430791222,
+       "within1": 0.36703402012458075,
+       "within3": 0.836607570675611
+      },
+      "transitions": {
+       "gained": 22,
+       "lost": 17,
+       "dead_gained": 6,
+       "dead_lost": 4
+      },
+      "nuclei_with_inside_point": 1518,
+      "inside_point_far_before": 174,
+      "far_before_within3_after": 21,
+      "near_before_far_after": 16,
+      "median_point_distance_before": 1.4142135623730951,
+      "median_point_distance_after": 1.2005227266858136
+     },
+     "original_recall_32px_from_filled_edges": {
+      "objects": 1495,
+      "recall": 0.7090301003344481
+     }
+    },
+    "development": {
+     "objects": 12250,
+     "original": {
+      "matched": 7979,
+      "total": 12250,
+      "candidates": 10945,
+      "dead_hit": 85,
+      "dead_total": 145,
+      "recall": 0.6513469387755102,
+      "precision": 0.7290086797624487,
+      "dead_recall": 0.5862068965517241
+     },
+     "same_augmentation": {
+      "merged": {
+       "matched": 7980,
+       "total": 12250,
+       "candidates": 10942,
+       "dead_hit": 80,
+       "dead_total": 145,
+       "recall": 0.6514285714285715,
+       "precision": 0.7292999451654176,
+       "dead_recall": 0.5517241379310345
+      },
+      "offset_error_at_center": {
+       "median": 1.5596740401892095,
+       "q90": 5.371980903388099,
+       "within1": 0.29975510204081635,
+       "within3": 0.7644081632653061
+      },
+      "transitions": {
+       "gained": 169,
+       "lost": 168,
+       "dead_gained": 0,
+       "dead_lost": 5
+      },
+      "nuclei_with_inside_point": 9673,
+      "inside_point_far_before": 1713,
+      "far_before_within3_after": 166,
+      "near_before_far_after": 165,
+      "median_point_distance_before": 1.4142135623730951,
+      "median_point_distance_after": 1.4470951895006379
+     },
+     "with_translation": {
+      "merged": {
+       "matched": 7993,
+       "total": 12250,
+       "candidates": 10942,
+       "dead_hit": 83,
+       "dead_total": 145,
+       "recall": 0.6524897959183673,
+       "precision": 0.730488027782855,
+       "dead_recall": 0.5724137931034483
+      },
+      "offset_error_at_center": {
+       "median": 1.4669572245020372,
+       "q90": 4.368837058078148,
+       "within1": 0.32073469387755105,
+       "within3": 0.8062040816326531
+      },
+      "transitions": {
+       "gained": 172,
+       "lost": 158,
+       "dead_gained": 1,
+       "dead_lost": 3
+      },
+      "nuclei_with_inside_point": 9673,
+      "inside_point_far_before": 1713,
+      "far_before_within3_after": 168,
+      "near_before_far_after": 157,
+      "median_point_distance_before": 1.4142135623730951,
+      "median_point_distance_after": 1.4449683559393343
+     }
+    }
+   },
+   "training": {
+    "same_augmentation": {
+     "witness": {
+      "first_loss": 10.637624740600586,
+      "first_gradient_norm": 17.72307014465332,
+      "first_output_weight_change": 0.0003000000142492354
+     },
+     "epochs": 12,
+     "first_epoch_loss": 5.123015762380941,
+     "last_epoch_loss": 2.247174156080816,
+     "loss_decreased": true,
+     "train_seconds": 9071.870783129707,
+     "head_sha256": "dfd1a38d21d04de46ac707febe2466d10de0de8ffb50ec586a4dca95c1c08bc1"
+    },
+    "with_translation": {
+     "witness": {
+      "first_loss": 10.55964469909668,
+      "first_gradient_norm": 14.814770698547363,
+      "first_output_weight_change": 0.00029999998514540493
+     },
+     "epochs": 12,
+     "first_epoch_loss": 6.1056931888040475,
+     "last_epoch_loss": 4.1859837630807295,
+     "loss_decreased": true,
+     "train_seconds": 6061.43719750084,
+     "head_sha256": "78c17cbdb242dd5e8695994ba619087bceef1d30a6b9124caf5583650eba411c"
+    }
+   }
+  }
+ },
+ "note": "P22_M_s1 (array task 3) stopped at the first-epoch time guard of its second readout and has no evaluation."
+}

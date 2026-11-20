@@ -1,0 +1,1343 @@
+{
+  "experiment": "D37",
+  "definition": [
+    "matched_original",
+    "matched_another_alignment",
+    "matched_only_below_0.5",
+    "near_point_assigned_elsewhere",
+    "no_point_within_3px_at_0.1"
+  ],
+  "detectors": {
+    "P15_C_s1": {
+      "training": {
+        "partition": {
+          "white": {
+            "all": {
+              "matched_original": 5475,
+              "matched_another_alignment": 36,
+              "matched_only_below_0.5": 65,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 5
+            },
+            "central": {
+              "matched_original": 3224,
+              "matched_another_alignment": 15,
+              "matched_only_below_0.5": 29,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 3
+            },
+            "interior_dead": {
+              "matched_original": 122,
+              "matched_another_alignment": 0,
+              "matched_only_below_0.5": 3,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 0
+            }
+          },
+          "mirror": {
+            "all": {
+              "matched_original": 5475,
+              "matched_another_alignment": 38,
+              "matched_only_below_0.5": 64,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 4
+            },
+            "central": {
+              "matched_original": 3224,
+              "matched_another_alignment": 16,
+              "matched_only_below_0.5": 28,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 3
+            },
+            "interior_dead": {
+              "matched_original": 122,
+              "matched_another_alignment": 0,
+              "matched_only_below_0.5": 3,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 0
+            }
+          }
+        },
+        "selected_threshold_transitions": {
+          "gained": 65,
+          "lost": 0
+        },
+        "images": 240,
+        "nuclei": 5581
+      },
+      "development": {
+        "partition": {
+          "white": {
+            "all": {
+              "matched_original": 7285,
+              "matched_another_alignment": 2894,
+              "matched_only_below_0.5": 498,
+              "near_point_assigned_elsewhere": 1,
+              "no_point_within_3px_at_0.1": 1572
+            },
+            "central": {
+              "matched_original": 4314,
+              "matched_another_alignment": 1795,
+              "matched_only_below_0.5": 194,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 711
+            },
+            "interior_dead": {
+              "matched_original": 58,
+              "matched_another_alignment": 56,
+              "matched_only_below_0.5": 6,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 25
+            }
+          },
+          "mirror": {
+            "all": {
+              "matched_original": 7285,
+              "matched_another_alignment": 2988,
+              "matched_only_below_0.5": 498,
+              "near_point_assigned_elsewhere": 1,
+              "no_point_within_3px_at_0.1": 1478
+            },
+            "central": {
+              "matched_original": 4314,
+              "matched_another_alignment": 1743,
+              "matched_only_below_0.5": 207,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 750
+            },
+            "interior_dead": {
+              "matched_original": 58,
+              "matched_another_alignment": 60,
+              "matched_only_below_0.5": 6,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 21
+            }
+          }
+        },
+        "selected_threshold_transitions": {
+          "gained": 422,
+          "lost": 0
+        },
+        "images": 522,
+        "nuclei": 12250
+      }
+    },
+    "P15_C_s19": {
+      "training": {
+        "partition": {
+          "white": {
+            "all": {
+              "matched_original": 5478,
+              "matched_another_alignment": 37,
+              "matched_only_below_0.5": 63,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 3
+            },
+            "central": {
+              "matched_original": 3225,
+              "matched_another_alignment": 20,
+              "matched_only_below_0.5": 25,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 1
+            },
+            "interior_dead": {
+              "matched_original": 123,
+              "matched_another_alignment": 0,
+              "matched_only_below_0.5": 2,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 0
+            }
+          },
+          "mirror": {
+            "all": {
+              "matched_original": 5478,
+              "matched_another_alignment": 44,
+              "matched_only_below_0.5": 56,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 3
+            },
+            "central": {
+              "matched_original": 3225,
+              "matched_another_alignment": 22,
+              "matched_only_below_0.5": 23,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 1
+            },
+            "interior_dead": {
+              "matched_original": 123,
+              "matched_another_alignment": 0,
+              "matched_only_below_0.5": 2,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 0
+            }
+          }
+        },
+        "selected_threshold_transitions": {
+          "gained": 66,
+          "lost": 0
+        },
+        "images": 240,
+        "nuclei": 5581
+      },
+      "development": {
+        "partition": {
+          "white": {
+            "all": {
+              "matched_original": 7255,
+              "matched_another_alignment": 2849,
+              "matched_only_below_0.5": 574,
+              "near_point_assigned_elsewhere": 1,
+              "no_point_within_3px_at_0.1": 1571
+            },
+            "central": {
+              "matched_original": 4292,
+              "matched_another_alignment": 1776,
+              "matched_only_below_0.5": 233,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 713
+            },
+            "interior_dead": {
+              "matched_original": 73,
+              "matched_another_alignment": 42,
+              "matched_only_below_0.5": 7,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 23
+            }
+          },
+          "mirror": {
+            "all": {
+              "matched_original": 7255,
+              "matched_another_alignment": 3011,
+              "matched_only_below_0.5": 518,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 1466
+            },
+            "central": {
+              "matched_original": 4292,
+              "matched_another_alignment": 1779,
+              "matched_only_below_0.5": 225,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 718
+            },
+            "interior_dead": {
+              "matched_original": 73,
+              "matched_another_alignment": 40,
+              "matched_only_below_0.5": 11,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 21
+            }
+          }
+        },
+        "selected_threshold_transitions": {
+          "gained": 314,
+          "lost": 0
+        },
+        "images": 522,
+        "nuclei": 12250
+      }
+    },
+    "P15_J_s1": {
+      "training": {
+        "partition": {
+          "white": {
+            "all": {
+              "matched_original": 2628,
+              "matched_another_alignment": 941,
+              "matched_only_below_0.5": 1931,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 81
+            },
+            "central": {
+              "matched_original": 1949,
+              "matched_another_alignment": 524,
+              "matched_only_below_0.5": 778,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 20
+            },
+            "interior_dead": {
+              "matched_original": 56,
+              "matched_another_alignment": 24,
+              "matched_only_below_0.5": 43,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 2
+            }
+          },
+          "mirror": {
+            "all": {
+              "matched_original": 2628,
+              "matched_another_alignment": 817,
+              "matched_only_below_0.5": 2036,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 100
+            },
+            "central": {
+              "matched_original": 1949,
+              "matched_another_alignment": 468,
+              "matched_only_below_0.5": 836,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 18
+            },
+            "interior_dead": {
+              "matched_original": 56,
+              "matched_another_alignment": 23,
+              "matched_only_below_0.5": 45,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 1
+            }
+          }
+        },
+        "selected_threshold_transitions": {
+          "gained": 2101,
+          "lost": 0
+        },
+        "images": 240,
+        "nuclei": 5581
+      },
+      "development": {
+        "partition": {
+          "white": {
+            "all": {
+              "matched_original": 4600,
+              "matched_another_alignment": 2178,
+              "matched_only_below_0.5": 4267,
+              "near_point_assigned_elsewhere": 1,
+              "no_point_within_3px_at_0.1": 1204
+            },
+            "central": {
+              "matched_original": 3310,
+              "matched_another_alignment": 1310,
+              "matched_only_below_0.5": 1663,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 731
+            },
+            "interior_dead": {
+              "matched_original": 44,
+              "matched_another_alignment": 30,
+              "matched_only_below_0.5": 55,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 16
+            }
+          },
+          "mirror": {
+            "all": {
+              "matched_original": 4600,
+              "matched_another_alignment": 1990,
+              "matched_only_below_0.5": 4459,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 1201
+            },
+            "central": {
+              "matched_original": 3310,
+              "matched_another_alignment": 1223,
+              "matched_only_below_0.5": 1759,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 722
+            },
+            "interior_dead": {
+              "matched_original": 44,
+              "matched_another_alignment": 33,
+              "matched_only_below_0.5": 55,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 13
+            }
+          }
+        },
+        "selected_threshold_transitions": {
+          "gained": 3942,
+          "lost": 0
+        },
+        "images": 522,
+        "nuclei": 12250
+      }
+    },
+    "P15_J_s19": {
+      "training": {
+        "partition": {
+          "white": {
+            "all": {
+              "matched_original": 2613,
+              "matched_another_alignment": 946,
+              "matched_only_below_0.5": 1922,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 100
+            },
+            "central": {
+              "matched_original": 1925,
+              "matched_another_alignment": 561,
+              "matched_only_below_0.5": 757,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 28
+            },
+            "interior_dead": {
+              "matched_original": 53,
+              "matched_another_alignment": 26,
+              "matched_only_below_0.5": 44,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 2
+            }
+          },
+          "mirror": {
+            "all": {
+              "matched_original": 2613,
+              "matched_another_alignment": 861,
+              "matched_only_below_0.5": 1982,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 125
+            },
+            "central": {
+              "matched_original": 1925,
+              "matched_another_alignment": 513,
+              "matched_only_below_0.5": 802,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 31
+            },
+            "interior_dead": {
+              "matched_original": 53,
+              "matched_another_alignment": 25,
+              "matched_only_below_0.5": 45,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 2
+            }
+          }
+        },
+        "selected_threshold_transitions": {
+          "gained": 2118,
+          "lost": 0
+        },
+        "images": 240,
+        "nuclei": 5581
+      },
+      "development": {
+        "partition": {
+          "white": {
+            "all": {
+              "matched_original": 4771,
+              "matched_another_alignment": 2104,
+              "matched_only_below_0.5": 4141,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 1234
+            },
+            "central": {
+              "matched_original": 3428,
+              "matched_another_alignment": 1273,
+              "matched_only_below_0.5": 1558,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 755
+            },
+            "interior_dead": {
+              "matched_original": 44,
+              "matched_another_alignment": 30,
+              "matched_only_below_0.5": 55,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 16
+            }
+          },
+          "mirror": {
+            "all": {
+              "matched_original": 4771,
+              "matched_another_alignment": 1916,
+              "matched_only_below_0.5": 4299,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 1264
+            },
+            "central": {
+              "matched_original": 3428,
+              "matched_another_alignment": 1169,
+              "matched_only_below_0.5": 1657,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 760
+            },
+            "interior_dead": {
+              "matched_original": 44,
+              "matched_another_alignment": 27,
+              "matched_only_below_0.5": 60,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 14
+            }
+          }
+        },
+        "selected_threshold_transitions": {
+          "gained": 3692,
+          "lost": 0
+        },
+        "images": 522,
+        "nuclei": 12250
+      }
+    },
+    "P22_C_s1": {
+      "training": {
+        "partition": {
+          "white": {
+            "all": {
+              "matched_original": 5477,
+              "matched_another_alignment": 31,
+              "matched_only_below_0.5": 65,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 8
+            },
+            "central": {
+              "matched_original": 3229,
+              "matched_another_alignment": 14,
+              "matched_only_below_0.5": 25,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 3
+            },
+            "interior_dead": {
+              "matched_original": 122,
+              "matched_another_alignment": 1,
+              "matched_only_below_0.5": 2,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 0
+            }
+          },
+          "mirror": {
+            "all": {
+              "matched_original": 5477,
+              "matched_another_alignment": 34,
+              "matched_only_below_0.5": 64,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 6
+            },
+            "central": {
+              "matched_original": 3229,
+              "matched_another_alignment": 13,
+              "matched_only_below_0.5": 27,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 2
+            },
+            "interior_dead": {
+              "matched_original": 122,
+              "matched_another_alignment": 1,
+              "matched_only_below_0.5": 2,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 0
+            }
+          }
+        },
+        "selected_threshold_transitions": {
+          "gained": 69,
+          "lost": 0
+        },
+        "images": 240,
+        "nuclei": 5581
+      },
+      "development": {
+        "partition": {
+          "white": {
+            "all": {
+              "matched_original": 7199,
+              "matched_another_alignment": 2893,
+              "matched_only_below_0.5": 521,
+              "near_point_assigned_elsewhere": 1,
+              "no_point_within_3px_at_0.1": 1636
+            },
+            "central": {
+              "matched_original": 4248,
+              "matched_another_alignment": 1814,
+              "matched_only_below_0.5": 220,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 732
+            },
+            "interior_dead": {
+              "matched_original": 61,
+              "matched_another_alignment": 54,
+              "matched_only_below_0.5": 6,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 24
+            }
+          },
+          "mirror": {
+            "all": {
+              "matched_original": 7199,
+              "matched_another_alignment": 3055,
+              "matched_only_below_0.5": 507,
+              "near_point_assigned_elsewhere": 1,
+              "no_point_within_3px_at_0.1": 1488
+            },
+            "central": {
+              "matched_original": 4248,
+              "matched_another_alignment": 1800,
+              "matched_only_below_0.5": 213,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 753
+            },
+            "interior_dead": {
+              "matched_original": 61,
+              "matched_another_alignment": 56,
+              "matched_only_below_0.5": 4,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 24
+            }
+          }
+        },
+        "selected_threshold_transitions": {
+          "gained": 407,
+          "lost": 0
+        },
+        "images": 522,
+        "nuclei": 12250
+      }
+    },
+    "P22_C_s19": {
+      "training": {
+        "partition": {
+          "white": {
+            "all": {
+              "matched_original": 5476,
+              "matched_another_alignment": 37,
+              "matched_only_below_0.5": 64,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 4
+            },
+            "central": {
+              "matched_original": 3227,
+              "matched_another_alignment": 16,
+              "matched_only_below_0.5": 25,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 3
+            },
+            "interior_dead": {
+              "matched_original": 123,
+              "matched_another_alignment": 0,
+              "matched_only_below_0.5": 2,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 0
+            }
+          },
+          "mirror": {
+            "all": {
+              "matched_original": 5476,
+              "matched_another_alignment": 43,
+              "matched_only_below_0.5": 59,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 3
+            },
+            "central": {
+              "matched_original": 3227,
+              "matched_another_alignment": 14,
+              "matched_only_below_0.5": 27,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 3
+            },
+            "interior_dead": {
+              "matched_original": 123,
+              "matched_another_alignment": 0,
+              "matched_only_below_0.5": 2,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 0
+            }
+          }
+        },
+        "selected_threshold_transitions": {
+          "gained": 66,
+          "lost": 0
+        },
+        "images": 240,
+        "nuclei": 5581
+      },
+      "development": {
+        "partition": {
+          "white": {
+            "all": {
+              "matched_original": 7255,
+              "matched_another_alignment": 2875,
+              "matched_only_below_0.5": 536,
+              "near_point_assigned_elsewhere": 1,
+              "no_point_within_3px_at_0.1": 1583
+            },
+            "central": {
+              "matched_original": 4310,
+              "matched_another_alignment": 1789,
+              "matched_only_below_0.5": 208,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 707
+            },
+            "interior_dead": {
+              "matched_original": 66,
+              "matched_another_alignment": 44,
+              "matched_only_below_0.5": 11,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 24
+            }
+          },
+          "mirror": {
+            "all": {
+              "matched_original": 7255,
+              "matched_another_alignment": 3021,
+              "matched_only_below_0.5": 473,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 1501
+            },
+            "central": {
+              "matched_original": 4310,
+              "matched_another_alignment": 1767,
+              "matched_only_below_0.5": 197,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 740
+            },
+            "interior_dead": {
+              "matched_original": 66,
+              "matched_another_alignment": 46,
+              "matched_only_below_0.5": 10,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 23
+            }
+          }
+        },
+        "selected_threshold_transitions": {
+          "gained": 367,
+          "lost": 0
+        },
+        "images": 522,
+        "nuclei": 12250
+      }
+    },
+    "P22_M_s1": {
+      "training": {
+        "partition": {
+          "white": {
+            "all": {
+              "matched_original": 5539,
+              "matched_another_alignment": 10,
+              "matched_only_below_0.5": 29,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 3
+            },
+            "central": {
+              "matched_original": 3258,
+              "matched_another_alignment": 4,
+              "matched_only_below_0.5": 8,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 1
+            },
+            "interior_dead": {
+              "matched_original": 124,
+              "matched_another_alignment": 0,
+              "matched_only_below_0.5": 1,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 0
+            }
+          },
+          "mirror": {
+            "all": {
+              "matched_original": 5539,
+              "matched_another_alignment": 14,
+              "matched_only_below_0.5": 25,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 3
+            },
+            "central": {
+              "matched_original": 3258,
+              "matched_another_alignment": 4,
+              "matched_only_below_0.5": 8,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 1
+            },
+            "interior_dead": {
+              "matched_original": 124,
+              "matched_another_alignment": 0,
+              "matched_only_below_0.5": 1,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 0
+            }
+          }
+        },
+        "selected_threshold_transitions": {
+          "gained": 15,
+          "lost": 0
+        },
+        "images": 240,
+        "nuclei": 5581
+      },
+      "development": {
+        "partition": {
+          "white": {
+            "all": {
+              "matched_original": 7933,
+              "matched_another_alignment": 2493,
+              "matched_only_below_0.5": 354,
+              "near_point_assigned_elsewhere": 2,
+              "no_point_within_3px_at_0.1": 1468
+            },
+            "central": {
+              "matched_original": 4666,
+              "matched_another_alignment": 1529,
+              "matched_only_below_0.5": 142,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 677
+            },
+            "interior_dead": {
+              "matched_original": 84,
+              "matched_another_alignment": 33,
+              "matched_only_below_0.5": 2,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 26
+            }
+          },
+          "mirror": {
+            "all": {
+              "matched_original": 7933,
+              "matched_another_alignment": 2571,
+              "matched_only_below_0.5": 369,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 1377
+            },
+            "central": {
+              "matched_original": 4666,
+              "matched_another_alignment": 1515,
+              "matched_only_below_0.5": 142,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 691
+            },
+            "interior_dead": {
+              "matched_original": 84,
+              "matched_another_alignment": 34,
+              "matched_only_below_0.5": 3,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 24
+            }
+          }
+        },
+        "selected_threshold_transitions": {
+          "gained": 145,
+          "lost": 0
+        },
+        "images": 522,
+        "nuclei": 12250
+      }
+    },
+    "P22_M_s19": {
+      "training": {
+        "partition": {
+          "white": {
+            "all": {
+              "matched_original": 5526,
+              "matched_another_alignment": 19,
+              "matched_only_below_0.5": 36,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 0
+            },
+            "central": {
+              "matched_original": 3251,
+              "matched_another_alignment": 8,
+              "matched_only_below_0.5": 12,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 0
+            },
+            "interior_dead": {
+              "matched_original": 124,
+              "matched_another_alignment": 0,
+              "matched_only_below_0.5": 1,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 0
+            }
+          },
+          "mirror": {
+            "all": {
+              "matched_original": 5526,
+              "matched_another_alignment": 23,
+              "matched_only_below_0.5": 32,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 0
+            },
+            "central": {
+              "matched_original": 3251,
+              "matched_another_alignment": 9,
+              "matched_only_below_0.5": 11,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 0
+            },
+            "interior_dead": {
+              "matched_original": 124,
+              "matched_another_alignment": 0,
+              "matched_only_below_0.5": 1,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 0
+            }
+          }
+        },
+        "selected_threshold_transitions": {
+          "gained": 38,
+          "lost": 0
+        },
+        "images": 240,
+        "nuclei": 5581
+      },
+      "development": {
+        "partition": {
+          "white": {
+            "all": {
+              "matched_original": 7979,
+              "matched_another_alignment": 2476,
+              "matched_only_below_0.5": 401,
+              "near_point_assigned_elsewhere": 2,
+              "no_point_within_3px_at_0.1": 1392
+            },
+            "central": {
+              "matched_original": 4750,
+              "matched_another_alignment": 1476,
+              "matched_only_below_0.5": 150,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 638
+            },
+            "interior_dead": {
+              "matched_original": 85,
+              "matched_another_alignment": 30,
+              "matched_only_below_0.5": 4,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 26
+            }
+          },
+          "mirror": {
+            "all": {
+              "matched_original": 7979,
+              "matched_another_alignment": 2584,
+              "matched_only_below_0.5": 356,
+              "near_point_assigned_elsewhere": 1,
+              "no_point_within_3px_at_0.1": 1330
+            },
+            "central": {
+              "matched_original": 4750,
+              "matched_another_alignment": 1462,
+              "matched_only_below_0.5": 153,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 649
+            },
+            "interior_dead": {
+              "matched_original": 85,
+              "matched_another_alignment": 33,
+              "matched_only_below_0.5": 1,
+              "near_point_assigned_elsewhere": 0,
+              "no_point_within_3px_at_0.1": 26
+            }
+          }
+        },
+        "selected_threshold_transitions": {
+          "gained": 293,
+          "lost": 0
+        },
+        "images": 522,
+        "nuclei": 12250
+      }
+    }
+  },
+  "inputs": {
+    "P15_C_s1/complete.json": {
+      "sha256": "852b1322204f57f81a04faa7944b281ac82812acbbf153d917a1ba3077881bb1",
+      "bytes": 122
+    },
+    "P15_C_s1/summary.json": {
+      "sha256": "9307f07c67b8e8d2f01d750eeac34d549747eb74ce75b69ddb5d6d43b46f4a5f",
+      "bytes": 36799
+    },
+    "P15_C_s1/selected_rule.json": {
+      "sha256": "4577e6973ba57a0810aedc1b62bdf0305a0465094dbf5042f9b5da186617a6ac",
+      "bytes": 431
+    },
+    "P15_C_s1/training_objects.csv": {
+      "sha256": "5065e9f7c58fa85e7bc7f0dd42a314dc172aaec0a705a2f0503be952af051476",
+      "bytes": 996237
+    },
+    "P15_C_s1/training_points.npz": {
+      "sha256": "2ff0875c8c36cde34afb8fb8a275773e9065b47b10add3eff16dc5242e776722",
+      "bytes": 916924
+    },
+    "P15_C_s1/training_original.json": {
+      "sha256": "0ee89e59a1d17173ff295ce2ab086b9afcb007f06962ae9383261242a7ffbe34",
+      "bytes": 35696
+    },
+    "P15_C_s1/training_selected_threshold.json": {
+      "sha256": "25bb43c49db32e8f15185dfd36266509d4032950505ec316fa53a36c98bea352",
+      "bytes": 35697
+    },
+    "P15_C_s1/training_consensus.json": {
+      "sha256": "a5a5ad708908c91a4551ded7924375b915055de9b9bc3cd8b14057edde0f6ca6",
+      "bytes": 35664
+    },
+    "P15_C_s1/development_objects.csv": {
+      "sha256": "de047731e4b8c307d2f6ff1825f966c18e659943fafc5f5d1a034824915ac021",
+      "bytes": 2104555
+    },
+    "P15_C_s1/development_points.npz": {
+      "sha256": "3a67cb522704a3088fce7ba976f3cc95e0f4dc33d1f330cb7102f052c9b5b743",
+      "bytes": 1964375
+    },
+    "P15_C_s1/development_original.json": {
+      "sha256": "54c9c3d374630e4c947f617736a2196c8f29a283bedc32018b2cc0dc53b91424",
+      "bytes": 77495
+    },
+    "P15_C_s1/development_selected_threshold.json": {
+      "sha256": "d1cd57e3e0c81b7588e49e638479d1c8b8a01902e01f03d4fa7264f8e8c97e8d",
+      "bytes": 77533
+    },
+    "P15_C_s1/development_consensus.json": {
+      "sha256": "6d7a2ad3e6b624a3852e813fa32a3d66084b7f8d0239f160f78688a3ecb13433",
+      "bytes": 77521
+    },
+    "P15_C_s19/complete.json": {
+      "sha256": "9d811d98d86de5553e1c70a9329e13061573e90b4d9cb6dca773023e5db31573",
+      "bytes": 123
+    },
+    "P15_C_s19/summary.json": {
+      "sha256": "b77e94aa95b4b2b11c5b002714c4f2202e9939cb967db305857bc68054a1e683",
+      "bytes": 36822
+    },
+    "P15_C_s19/selected_rule.json": {
+      "sha256": "ad11dd745a79981bf6855cc8f83ad2b4ce672a0312dbbad833b577245710a5e3",
+      "bytes": 433
+    },
+    "P15_C_s19/training_objects.csv": {
+      "sha256": "2cea7c8543913b63ae8fb87e66d9c45a48bc278fab7dc8e9e64b886f13a43b42",
+      "bytes": 998282
+    },
+    "P15_C_s19/training_points.npz": {
+      "sha256": "a40661055438e337b05a47b78a1265a2c037a99f595c632c2605243d660ea9f4",
+      "bytes": 923711
+    },
+    "P15_C_s19/training_original.json": {
+      "sha256": "dea35cf3221de727b725439a7c40c4542ccfda61953eadc8b416690a787e47b6",
+      "bytes": 35696
+    },
+    "P15_C_s19/training_selected_threshold.json": {
+      "sha256": "77a7d05a35668d367605a8f138c0453b8263600c434d095d2f5360ceb90f02c5",
+      "bytes": 35696
+    },
+    "P15_C_s19/training_consensus.json": {
+      "sha256": "05957f107a21c5d19d9940b72ce7279fc3a6fc7a015d00ded1bd1f59d08f451e",
+      "bytes": 35670
+    },
+    "P15_C_s19/development_objects.csv": {
+      "sha256": "b797800586a41f9bda4fced6866f6d7ae6d75785d2f971a2d439e86c54d8a3c1",
+      "bytes": 2108438
+    },
+    "P15_C_s19/development_points.npz": {
+      "sha256": "390461336e0a1655d373267bff418ee794e58f85787513d9195fc3c4a81211e7",
+      "bytes": 1970616
+    },
+    "P15_C_s19/development_original.json": {
+      "sha256": "50ce176caeb4f45422ad125bd3c013babc9c844addd01f27f17e84a8e532aa75",
+      "bytes": 77500
+    },
+    "P15_C_s19/development_selected_threshold.json": {
+      "sha256": "f87f9bea6bd3a1383bd5311b350bca5c9ac3d4720240e90b1a99406bb1451c89",
+      "bytes": 77531
+    },
+    "P15_C_s19/development_consensus.json": {
+      "sha256": "137f6063346dfa1437205821affca04f6f754022a940eedd5109fa2eeafd9d2e",
+      "bytes": 77517
+    },
+    "P15_J_s1/complete.json": {
+      "sha256": "7447abe760112b6a2c88e9c6221bb12152e45617ddd0f021b88859518670a9ab",
+      "bytes": 122
+    },
+    "P15_J_s1/summary.json": {
+      "sha256": "cf83cfc1280e269438149e6693eb0c00edd8c77b8c88642230d13dfd568f8cb3",
+      "bytes": 36633
+    },
+    "P15_J_s1/selected_rule.json": {
+      "sha256": "5a100939aa3d4cd8082f3132205e7818e03c3a636ae30df3139a726cca88773f",
+      "bytes": 432
+    },
+    "P15_J_s1/training_objects.csv": {
+      "sha256": "8c74cfd636f83f95ae8fb2013bd63241a2855946ad8691a4a73e79c91338535d",
+      "bytes": 789179
+    },
+    "P15_J_s1/training_points.npz": {
+      "sha256": "880f4b48940ab4b4b0454626fcf41ad36082bd3b65e0a4009d7ecc33b28708aa",
+      "bytes": 1217757
+    },
+    "P15_J_s1/training_original.json": {
+      "sha256": "afbfaf5bca0edca07e8d48bfa9589c0b23cec358ea4027b3c57cad8b8ec18019",
+      "bytes": 35550
+    },
+    "P15_J_s1/training_selected_threshold.json": {
+      "sha256": "903e6b194642cc0e24b973afd9c4df18e5e9db91a05ea562b13a62476eb8668b",
+      "bytes": 35700
+    },
+    "P15_J_s1/training_consensus.json": {
+      "sha256": "a1d67d6d175953b8815a68189fb7abd08fd4218cbbb1bbe9abe96a3dbc932611",
+      "bytes": 35620
+    },
+    "P15_J_s1/development_objects.csv": {
+      "sha256": "54d451c15109281b4f2a01d80b8dfdffa948f2090dfc6dee68948a66f02b3515",
+      "bytes": 1693270
+    },
+    "P15_J_s1/development_points.npz": {
+      "sha256": "fa76c8134e17d43662ba363870285691e96ba366d88dba8dbdb34b369262efca",
+      "bytes": 2621015
+    },
+    "P15_J_s1/development_original.json": {
+      "sha256": "d6ed5fffeeb0b6cce6c9112316624d698c650a2c2fbb57ff7007c70238bdd717",
+      "bytes": 77201
+    },
+    "P15_J_s1/development_selected_threshold.json": {
+      "sha256": "5cda273422f0fa45819ff0993381d2a88e3efb0762cd09b88480fb2bb43b233b",
+      "bytes": 77591
+    },
+    "P15_J_s1/development_consensus.json": {
+      "sha256": "7f1aa828d48b6941e42c218af7ffd72f2b9a7488dd2c36fe6ff9df0bdf5801ce",
+      "bytes": 77412
+    },
+    "P15_J_s19/complete.json": {
+      "sha256": "46e0d9f575fd1e3b44ca1d5642feef6809079c7803b1dec12946108757443f64",
+      "bytes": 123
+    },
+    "P15_J_s19/summary.json": {
+      "sha256": "8d1446860e3326294922824b9c57ae66146028bccdeaedeffcd4bf89cb1501dd",
+      "bytes": 36647
+    },
+    "P15_J_s19/selected_rule.json": {
+      "sha256": "0fd47fbafbb0f441e2bffbff6384e7c3bb1997908a84b39b5003d9df319a0dc0",
+      "bytes": 432
+    },
+    "P15_J_s19/training_objects.csv": {
+      "sha256": "86fd0bde83e7691496328ef13f8c35ed979271a36e66f424c2fcba621c6c640a",
+      "bytes": 800482
+    },
+    "P15_J_s19/training_points.npz": {
+      "sha256": "515f3674acd5756787bbed544f8b5f9d325486fb9a602de453b6e4ff1ff9caf6",
+      "bytes": 1199661
+    },
+    "P15_J_s19/training_original.json": {
+      "sha256": "6a97fe02cde0ab3f704d72980924a7dd4fe324fe1122e008bb41456d9342ec69",
+      "bytes": 35551
+    },
+    "P15_J_s19/training_selected_threshold.json": {
+      "sha256": "c12b7c4104c1887691a147b59e1322cf2930029491a91db346940a475d2ac528",
+      "bytes": 35699
+    },
+    "P15_J_s19/training_consensus.json": {
+      "sha256": "8c49813e2323fd14a75a827969360bf1e576733ec80875849c5d22d0c27a257a",
+      "bytes": 35624
+    },
+    "P15_J_s19/development_objects.csv": {
+      "sha256": "6b508c9cfb31c5f8ec38345d6ed0c07aa47f8a7bb68262641888e5c015cf0e53",
+      "bytes": 1720255
+    },
+    "P15_J_s19/development_points.npz": {
+      "sha256": "7ebc52b8c79d7ea0c5fd743926dea5458e19af3260adf0e6d88954e291929808",
+      "bytes": 2582718
+    },
+    "P15_J_s19/development_original.json": {
+      "sha256": "b22446840003806bd6b68cd50b78bf973c29735ac7ac3901592f5ebb83868800",
+      "bytes": 77234
+    },
+    "P15_J_s19/development_selected_threshold.json": {
+      "sha256": "a8af8e47146d67f77c90f0d6300d6c0dfb93a52ead4b8c227410e30b73ed8a58",
+      "bytes": 77583
+    },
+    "P15_J_s19/development_consensus.json": {
+      "sha256": "390c6faf1bd280c9c00d640faa3227dd05d840e74ac59f892476410abbbe820f",
+      "bytes": 77431
+    },
+    "P22_C_s1/complete.json": {
+      "sha256": "0ced7c3e0dbd2512479d6d57d25c3bc89c0624381be1c2b2bab9a5efc6dc92f6",
+      "bytes": 121
+    },
+    "P22_C_s1/summary.json": {
+      "sha256": "f83847f909b8ac1713c9081c707b742909277542273e81a7c04e47ebf7d09abb",
+      "bytes": 36827
+    },
+    "P22_C_s1/selected_rule.json": {
+      "sha256": "78826d05d4fe788e82de8d5d7f2caed1d02a33e2e3e9e5d80685787951e5a5fe",
+      "bytes": 432
+    },
+    "P22_C_s1/training_objects.csv": {
+      "sha256": "aaedbc563b9d97b31aa1a9d52c1de7a0239eccd7a4843a0cc894943bbb25a8c2",
+      "bytes": 991109
+    },
+    "P22_C_s1/training_points.npz": {
+      "sha256": "f43f01b9846ae65ea44789e3777eca98ceea29e7cdd8746a1a764950e9dcd33a",
+      "bytes": 899087
+    },
+    "P22_C_s1/training_original.json": {
+      "sha256": "e75af4fe3fdb6b6d42a5fc05639f9758ea389a62e4b515989c9faec134357d75",
+      "bytes": 35696
+    },
+    "P22_C_s1/training_selected_threshold.json": {
+      "sha256": "83aebe12bd6f431725b873cf568f28179ab2ccce231b6e3c9722a13989b2ed36",
+      "bytes": 35696
+    },
+    "P22_C_s1/training_consensus.json": {
+      "sha256": "4705d8a8c3c7d06d572bed3df0c961f25bdb3b879f9980fca62ddb5bae550f29",
+      "bytes": 35673
+    },
+    "P22_C_s1/development_objects.csv": {
+      "sha256": "b9ddc4826a8f6d47ccc497d88a4421e4206bfc829d8c10a1ab61b41829f220ab",
+      "bytes": 2098932
+    },
+    "P22_C_s1/development_points.npz": {
+      "sha256": "e6101853318af9df0ef3faa65d2443914664268335d153d4f46a5a66e8471bb4",
+      "bytes": 1937629
+    },
+    "P22_C_s1/development_original.json": {
+      "sha256": "7f795b92e103c465f5f4cab50648a232edc9b6f5d7d20db4dd033ca73d5839e6",
+      "bytes": 77490
+    },
+    "P22_C_s1/development_selected_threshold.json": {
+      "sha256": "22cdff345b51d63665f26ec36821162fd2a2f5889db6f9e95b89d51029d2f34d",
+      "bytes": 77535
+    },
+    "P22_C_s1/development_consensus.json": {
+      "sha256": "572b597d4c3358cbf17a7c31dba1a667a8cefb90d9679517233b75a38b50d905",
+      "bytes": 77530
+    },
+    "P22_C_s19/complete.json": {
+      "sha256": "265372685fe83fa62e6a246f259ba0014a559149b1aa014f67355ff628203f28",
+      "bytes": 123
+    },
+    "P22_C_s19/summary.json": {
+      "sha256": "fdd712591ec486495fd34c0043450a4506a7495666da143e96477dfd17205ad7",
+      "bytes": 36820
+    },
+    "P22_C_s19/selected_rule.json": {
+      "sha256": "d15fb430a291f249a4cfbd4bbcb5f541472d0a3d8c16ef5d0a2c6057fb06441f",
+      "bytes": 433
+    },
+    "P22_C_s19/training_objects.csv": {
+      "sha256": "b24c9f30a2fad7361ed4acb79f4ee6c93f9aa1d2bcb10724c0398f7f8f1e08d5",
+      "bytes": 999770
+    },
+    "P22_C_s19/training_points.npz": {
+      "sha256": "e62a442ea1872206e3e9192f59f61c0bd7e168480601bdd307bc4c186ddf42cd",
+      "bytes": 918780
+    },
+    "P22_C_s19/training_original.json": {
+      "sha256": "2e7973700b3319eeb7005d8111fd26f14dcbf40394a8caf214f65041c3498b01",
+      "bytes": 35696
+    },
+    "P22_C_s19/training_selected_threshold.json": {
+      "sha256": "0e0b7831b14dc6da88dce5eb2e670eb904eddf9b7be756adc025c1c0c8a86cbb",
+      "bytes": 35696
+    },
+    "P22_C_s19/training_consensus.json": {
+      "sha256": "85220abd73a6b8f24010740f9019db625077e13691508c75a56d84332b13f1f0",
+      "bytes": 35663
+    },
+    "P22_C_s19/development_objects.csv": {
+      "sha256": "cf006a586da243a91d50d6cfe800bb1d1d17a77e6839df13fb7a3caccce43882",
+      "bytes": 2114547
+    },
+    "P22_C_s19/development_points.npz": {
+      "sha256": "e976616549b7c55e3ce1a88f4d85d795c4cddf2beea6f7406800ca46f3c58976",
+      "bytes": 1965841
+    },
+    "P22_C_s19/development_original.json": {
+      "sha256": "3fbe6ce7165f63ac1bca16e662c6fc0c709aeeebc5113d8b6646b8c6e745ee86",
+      "bytes": 77508
+    },
+    "P22_C_s19/development_selected_threshold.json": {
+      "sha256": "84a0ec2df8e7896dbfacc689e9a83d63966f1a960a6bb1d3026368450b685972",
+      "bytes": 77538
+    },
+    "P22_C_s19/development_consensus.json": {
+      "sha256": "2586554d6dacd21b6f4ae038a1c4ef20f0eb186be7633990075bee4b5b443f79",
+      "bytes": 77512
+    },
+    "P22_M_s1/complete.json": {
+      "sha256": "4e754c858bba303bc80cce74d3c3f7f20ff8483c22155afea237acaa233131f4",
+      "bytes": 122
+    },
+    "P22_M_s1/summary.json": {
+      "sha256": "6d27814bd4beb45d356614df4e4a8014a56371b67cfc9d5b005f96cdb0494a69",
+      "bytes": 36863
+    },
+    "P22_M_s1/selected_rule.json": {
+      "sha256": "93e14e6c25a3a5cc740134d783a2ea3d0317a8597fbd867fabc12063dc3c8137",
+      "bytes": 432
+    },
+    "P22_M_s1/training_objects.csv": {
+      "sha256": "4fec86784dcae88d4a88675616ea8caf8b07f277e0f5fc89fa224633ce255683",
+      "bytes": 996921
+    },
+    "P22_M_s1/training_points.npz": {
+      "sha256": "520399e6e2c01052f643a5351fe5fc3c51e9269b34d82278d39739052f27059a",
+      "bytes": 906844
+    },
+    "P22_M_s1/training_original.json": {
+      "sha256": "2e747493239bd3e6c164725ab5fec3c30a2a78772f834a42db1bb10ed061709f",
+      "bytes": 35696
+    },
+    "P22_M_s1/training_selected_threshold.json": {
+      "sha256": "799521bdbe301a0d6ac930be02f6f1a6de8629c2c40040a9f4c3eaf253b41938",
+      "bytes": 35696
+    },
+    "P22_M_s1/training_consensus.json": {
+      "sha256": "9f40ad0b87e21101d3eda3b92f11849537a8f5ac2806d01e1585b82f6df6843f",
+      "bytes": 35663
+    },
+    "P22_M_s1/development_objects.csv": {
+      "sha256": "cdd9cf9b45754d90a5d2d9eded6885abe7a6985b559877ae1c46aa7f8e0c892f",
+      "bytes": 2132769
+    },
+    "P22_M_s1/development_points.npz": {
+      "sha256": "fcb401726e94c1137c5381c4aa2851794ad2c988943308f9acde609f7c8124b1",
+      "bytes": 1944578
+    },
+    "P22_M_s1/development_original.json": {
+      "sha256": "14c2c444a13ad0400f50d6e99b045e0eadb6522159834f7f14b5833ea941582e",
+      "bytes": 77518
+    },
+    "P22_M_s1/development_selected_threshold.json": {
+      "sha256": "bc5031756d38ec1d7319231198ff3c71ba3fc6e97e17dd0acbaf44cb9460003a",
+      "bytes": 77533
+    },
+    "P22_M_s1/development_consensus.json": {
+      "sha256": "0b5bb17cd9a1c10495ac0a56104a850d7a57879d724a2f28509b9c1ec095c1c7",
+      "bytes": 77543
+    },
+    "P22_M_s19/complete.json": {
+      "sha256": "8b5404e83a38bd2654d888a89d25e4cfe430a8e33775c73c9b5ceaac88ef6984",
+      "bytes": 123
+    },
+    "P22_M_s19/summary.json": {
+      "sha256": "7a64302b247fcb01731c69b16a7e3f019a0757f8e86e90c6cb79f0c185fe52a4",
+      "bytes": 36864
+    },
+    "P22_M_s19/selected_rule.json": {
+      "sha256": "8611bb04076ba9795e06f0c5de6bbf7840d357451d39db1211418a4f61dda60c",
+      "bytes": 432
+    },
+    "P22_M_s19/training_objects.csv": {
+      "sha256": "e62c5989deea9b9dfac184e9a9496ab555782ba0347141a8259ba405919cd45a",
+      "bytes": 1006325
+    },
+    "P22_M_s19/training_points.npz": {
+      "sha256": "b90a9db2bb8ec268248e045ab1fc936c667e00d06a8c49b26b08449ca3c2e9ce",
+      "bytes": 920235
+    },
+    "P22_M_s19/training_original.json": {
+      "sha256": "58d0ba909f363486d2e9c3407ff926a24886472c7340d6361b1f52bc5f063ef4",
+      "bytes": 35697
+    },
+    "P22_M_s19/training_selected_threshold.json": {
+      "sha256": "cbda1e010d403736266460f95f3f8d82bce834827ea1e32506007f3a789642a5",
+      "bytes": 35697
+    },
+    "P22_M_s19/training_consensus.json": {
+      "sha256": "4cb8b0940e042f9e433d92b7feec4a93b2388c4c3f2e3e4bed371f3ba6b1acfb",
+      "bytes": 35665
+    },
+    "P22_M_s19/development_objects.csv": {
+      "sha256": "f1d58509a377cfd5c8803e0318c9603171a4ae41ed4995f97196d05aa5f58fa2",
+      "bytes": 2155621
+    },
+    "P22_M_s19/development_points.npz": {
+      "sha256": "106552c187f517b831db3837d8def7b4599bb528b272893fa96952a547a04546",
+      "bytes": 1985349
+    },
+    "P22_M_s19/development_original.json": {
+      "sha256": "829e8fc187fc198692776b249777d06361fbfc11f10951969f6c5d8d7230e582",
+      "bytes": 77534
+    },
+    "P22_M_s19/development_selected_threshold.json": {
+      "sha256": "fe4ee56d5a7effa376f91416db148e21ec9c45a645e65bf75792f664546c244e",
+      "bytes": 77556
+    },
+    "P22_M_s19/development_consensus.json": {
+      "sha256": "33087a9e60c428bd21f98deced4e3c3cb1790f507deb059b55fc8a5c6a865652",
+      "bytes": 77538
+    }
+  },
+  "elapsed_seconds": 56.47273621201748
+}
