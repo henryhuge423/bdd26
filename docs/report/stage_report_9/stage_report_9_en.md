@@ -1,4 +1,4 @@
-# Stage report 9: finding more nuclei and explaining changing predictions
+# Nucleus-center detection: alignment, thresholds and candidate selection — Stage report 9
 
 Research stage: November 17–20, 2026. Revision and progress check:
 November 21, 2026.
@@ -33,13 +33,13 @@ predictions and also deletes some accurately located nuclei.
 |:------|:--------------------------------------------------------------|-----:|
 | P15   | moving training images changes alignment exposure             |    4 |
 | P22   | adapting every encoder layer for nucleus detection            |    5 |
-| D32   | recording each step that produces a prediction                |    6 |
-| D33   | swapping interpolation and score conversion                   |   10 |
-| P34   | learning a movement for each existing prediction              |   13 |
-| P35   | sixteen patch-grid alignments of the same image               |   15 |
-| P36   | selecting score thresholds and combining positions separately |   18 |
-| D37   | explaining each nucleus with preserved points                 |   26 |
-| P38   | grouping low-score points and learning their quality          |   28 |
+| D32   | recording each step that produces a prediction                |    5 |
+| D33   | swapping interpolation and score conversion                   |    8 |
+| P34   | learning a movement for each existing prediction              |   10 |
+| P35   | sixteen patch-grid alignments of the same image               |   11 |
+| P36   | selecting score thresholds and combining positions separately |   14 |
+| D37   | explaining each nucleus with preserved points                 |   20 |
+| P38   | grouping low-score points and learning their quality          |   21 |
 
 # Current progress and experiment map
 

@@ -1,84 +1,78 @@
 {
   "stage_report_9_zh": {
-    "previous": {
-      "pages": 46,
-      "font_span_counts": {
-        "9.96": 2,
-        "10.91": 86,
-        "11.96": 214,
-        "12.95": 210,
-        "14.35": 1975,
-        "17.22": 50,
-        "20.66": 95
-      }
-    },
-    "pages": 34,
-    "font_span_counts": {
-      "9.96": 2,
-      "14.05": 2397,
-      "14.35": 180,
-      "14.94": 50,
-      "15.94": 95
-    },
-    "rendered_pages": 34,
-    "out_of_bounds": [],
-    "sparse_pages": [],
+    "reference_pages": 21,
+    "reference_body_pt": 10.91,
+    "pages": 32,
+    "rendered_pages": 32,
+    "body_pt": 11.96,
+    "dominant_font": "LMRoman12-Regular",
+    "section_bookmarks": [
+      "研究问题与本阶段结论",
+      "P15：训练时让图像移动，改变对齐经历",
+      "P22：让全部编码层适配核检测",
+      "D32：记录预测产生的每一步",
+      "D33：交换插值与分数转换的顺序",
+      "P34：给已有预测点学习一个移动量",
+      "P35：同一张图像，换 16 种网格对齐",
+      "P36：分开选择阈值和汇总位置",
+      "D37：用保存点解释每颗核的结局",
+      "P38：把低分数点组成候选，再学习质量",
+      "综合分析与资料来源"
+    ],
+    "outside_text": [],
+    "short_pages": [],
     "overfull": [],
     "missing_glyphs": [],
-    "unresolved_references": []
+    "unresolved_refs": []
   },
   "stage_report_9_en": {
-    "previous": {
-      "pages": 46,
-      "font_span_counts": {
-        "9.96": 2,
-        "10.91": 86,
-        "11.96": 167,
-        "12.95": 263,
-        "14.35": 2389,
-        "17.22": 45,
-        "20.66": 194
-      }
-    },
-    "pages": 38,
-    "font_span_counts": {
-      "9.96": 2,
-      "14.05": 1638,
-      "14.35": 180,
-      "14.94": 45,
-      "15.94": 87
-    },
-    "rendered_pages": 38,
-    "out_of_bounds": [],
-    "sparse_pages": [],
+    "reference_pages": 21,
+    "reference_body_pt": 10.91,
+    "pages": 30,
+    "rendered_pages": 30,
+    "body_pt": 11.96,
+    "dominant_font": "LMRoman12-Regular",
+    "section_bookmarks": [
+      "Research question and main findings",
+      "P15: moving training images changes alignment exposure",
+      "P22: adapting every encoder layer for nucleus detection",
+      "D32: recording each step that produces a prediction",
+      "D33: swapping interpolation and score conversion",
+      "P34: learning a movement for each existing prediction",
+      "P35: sixteen patch-grid alignments of the same image",
+      "P36: selecting score thresholds and combining positions separately",
+      "D37: explaining each nucleus with preserved points",
+      "P38: grouping low-score points and learning their quality",
+      "Synthesis and source material"
+    ],
+    "outside_text": [],
+    "short_pages": [],
     "overfull": [],
     "missing_glyphs": [],
-    "unresolved_references": []
+    "unresolved_refs": []
   },
   "summary_plain_zh": {
-    "previous": {
-      "pages": 14,
-      "font_span_counts": {
-        "10.91": 42,
-        "11.96": 131,
-        "12.95": 69,
-        "14.35": 501,
-        "17.22": 17,
-        "20.66": 29
-      }
-    },
+    "reference_pages": 8,
+    "reference_body_pt": 10.91,
     "pages": 11,
-    "font_span_counts": {
-      "14.05": 676,
-      "14.35": 90,
-      "14.94": 17,
-      "15.94": 29
-    },
     "rendered_pages": 11,
-    "out_of_bounds": [],
-    "sparse_pages": [],
+    "body_pt": 11.96,
+    "dominant_font": "LMRoman12-Regular",
+    "section_bookmarks": [
+      "本阶段要解决什么问题？",
+      "先读懂图里的点和数字",
+      "P34 结果：移动修正带来的新增与丢失接近",
+      "P35 结果：训练图像的高检出依赖原对齐",
+      "P36 的阈值结果：平移模型的大量点分数偏低",
+      "D37 结果：两类模型的主要漏检来源不同",
+      "P38：把低分数点组成候选，再学习质量",
+      "P38 结果：平移模型的额外点有所减少",
+      "本阶段形成的解释与下一步具体问题"
+    ],
+    "outside_text": [],
+    "short_pages": [],
     "overfull": [],
     "missing_glyphs": [],
-    "unresolved_references": []
+    "unresolved_refs": []
   }
 }

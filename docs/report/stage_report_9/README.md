@@ -1,10 +1,10 @@
-# 阶段报告 9 — 2026-11-21 排版与评估复核
+# 阶段报告 9 — 2026-11-21 沿用阶段报告 8 版式
 
-- [详细中文报告（34 页）](stage_report_9_zh.pdf)
-- [Detailed English report (38 pages)](stage_report_9_en.pdf)
+- [详细中文报告（32 页）](stage_report_9_zh.pdf)
+- [Detailed English report (30 pages)](stage_report_9_en.pdf)
 - [中文导读（11 页）](summary_plain_zh.pdf)
 
-正文与图表文字实测约 14.05–14.35 磅，小标题 14.94 磅，主标题 15.94 磅。三份报告统一页眉、标题层级、表头、图例配色和图注位置。同一组组织对照图与图注保留在同页。正文说明 P35 的跨对齐统计范围、P34 的原预测基线，以及 P38 各模型采用同一校准流程并分别在训练图像上选择规则。
+三份 PDF 采用 12 磅正文，沿用阶段报告 8 的 Fandol 中文字体、Latin Modern 西文字体、A4 版心、22 毫米页边距、自动目录、三线表及编号图注。详报目录按研究问题、各轮实验、综合分析与资料来源排列。
 
 ## P34 缺项复核
 
@@ -14,7 +14,7 @@
 
 ## 从源码构建和验证
 
-使用 XeLaTeX 运行以下命令。构建器逐份编译两次，统计图由 TikZ/PGFPlots 随正文生成。字体优先使用 Microsoft YaHei，缺失时使用 Fandol。公式的数学上下标按排版惯例缩小。
+使用 XeLaTeX 运行以下命令。构建器逐份编译两次，统计图由 TikZ/PGFPlots 随正文生成。需要 CTeX/Fandol 与 Latin Modern 字体。
 
 ```text
 python build_pdf.py
