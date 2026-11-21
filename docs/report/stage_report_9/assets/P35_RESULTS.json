@@ -1,745 +1,745 @@
 {
- "detectors": {
-  "P22_C_s19": {
-   "decoders": {
-    "development": {
-     "original": {
-      "matched": 7255,
-      "total": 12250,
-      "candidates": 10488,
-      "dead_hit": 66,
-      "dead_total": 145,
-      "recall": 0.5922448979591837,
-      "precision": 0.691742944317315,
-      "dead_recall": 0.45517241379310347
-     },
-     "mean_probability": {
-      "matched": 1130,
-      "total": 12250,
-      "candidates": 1185,
-      "dead_hit": 9,
-      "dead_total": 145,
-      "recall": 0.09224489795918367,
-      "precision": 0.9535864978902954,
-      "dead_recall": 0.06206896551724138
-     },
-     "mean_logit": {
-      "matched": 571,
-      "total": 12250,
-      "candidates": 587,
-      "dead_hit": 5,
-      "dead_total": 145,
-      "recall": 0.04661224489795918,
-      "precision": 0.9727427597955707,
-      "dead_recall": 0.034482758620689655
-     }
+  "detectors": {
+    "P22_C_s19": {
+      "decoders": {
+        "development": {
+          "original": {
+            "matched": 7255,
+            "total": 12250,
+            "candidates": 10488,
+            "dead_hit": 66,
+            "dead_total": 145,
+            "recall": 0.5922448979591837,
+            "precision": 0.691742944317315,
+            "dead_recall": 0.45517241379310347
+          },
+          "mean_probability": {
+            "matched": 1130,
+            "total": 12250,
+            "candidates": 1185,
+            "dead_hit": 9,
+            "dead_total": 145,
+            "recall": 0.09224489795918367,
+            "precision": 0.9535864978902954,
+            "dead_recall": 0.06206896551724138
+          },
+          "mean_logit": {
+            "matched": 571,
+            "total": 12250,
+            "candidates": 587,
+            "dead_hit": 5,
+            "dead_total": 145,
+            "recall": 0.04661224489795918,
+            "precision": 0.9727427597955707,
+            "dead_recall": 0.034482758620689655
+          }
+        },
+        "training": {
+          "original": {
+            "matched": 2068,
+            "total": 2154,
+            "candidates": 2073,
+            "dead_hit": 628,
+            "dead_total": 656,
+            "recall": 0.9600742804085423,
+            "precision": 0.9975880366618427,
+            "dead_recall": 0.9573170731707317
+          },
+          "mean_probability": {
+            "matched": 200,
+            "total": 2154,
+            "candidates": 200,
+            "dead_hit": 67,
+            "dead_total": 656,
+            "recall": 0.09285051067780872,
+            "precision": 1.0,
+            "dead_recall": 0.10213414634146341
+          },
+          "mean_logit": {
+            "matched": 112,
+            "total": 2154,
+            "candidates": 112,
+            "dead_hit": 34,
+            "dead_total": 656,
+            "recall": 0.051996285979572884,
+            "precision": 1.0,
+            "dead_recall": 0.051829268292682924
+          }
+        }
+      },
+      "development": {
+        "central": 7014,
+        "trained_alignment": 0.6144853150841175,
+        "other_alignments": 0.6167189430662484,
+        "histogram": [
+          915,
+          317,
+          240,
+          233,
+          204,
+          170,
+          190,
+          194,
+          205,
+          186,
+          246,
+          251,
+          272,
+          306,
+          437,
+          728,
+          1920
+        ],
+        "never": 0.13045337895637296,
+        "sometimes": 0.5958083832335329,
+        "always": 0.2737382378100941,
+        "at_least_one": 0.869546621043627,
+        "between_nucleus_share": 0.5857015324374583,
+        "always_matched_single_alignment_score_median": 0.8614443610885799,
+        "always_matched_averaged_score_median": 0.4630884717514174,
+        "always_matched_averaged_score_at_least_half": 0.3880208333333333
+      },
+      "training": {
+        "central": 1227,
+        "trained_alignment": 0.973920130399348,
+        "other_alignments": 0.685031241510459,
+        "histogram": [
+          13,
+          47,
+          55,
+          48,
+          46,
+          41,
+          33,
+          48,
+          43,
+          37,
+          47,
+          56,
+          48,
+          46,
+          68,
+          126,
+          425
+        ],
+        "never": 0.010594947025264874,
+        "sometimes": 0.6430317848410758,
+        "always": 0.3463732681336593,
+        "at_least_one": 0.9894050529747351,
+        "between_nucleus_share": 0.4719915425856077,
+        "always_matched_single_alignment_score_median": 0.8633196621525849,
+        "always_matched_averaged_score_median": 0.45311828302148655,
+        "always_matched_averaged_score_at_least_half": 0.3458823529411765
+      }
     },
-    "training": {
-     "original": {
-      "matched": 2068,
-      "total": 2154,
-      "candidates": 2073,
-      "dead_hit": 628,
-      "dead_total": 656,
-      "recall": 0.9600742804085423,
-      "precision": 0.9975880366618427,
-      "dead_recall": 0.9573170731707317
-     },
-     "mean_probability": {
-      "matched": 200,
-      "total": 2154,
-      "candidates": 200,
-      "dead_hit": 67,
-      "dead_total": 656,
-      "recall": 0.09285051067780872,
-      "precision": 1.0,
-      "dead_recall": 0.10213414634146341
-     },
-     "mean_logit": {
-      "matched": 112,
-      "total": 2154,
-      "candidates": 112,
-      "dead_hit": 34,
-      "dead_total": 656,
-      "recall": 0.051996285979572884,
-      "precision": 1.0,
-      "dead_recall": 0.051829268292682924
-     }
-    }
-   },
-   "development": {
-    "central": 7014,
-    "trained_alignment": 0.6144853150841175,
-    "other_alignments": 0.6167189430662484,
-    "histogram": [
-     915,
-     317,
-     240,
-     233,
-     204,
-     170,
-     190,
-     194,
-     205,
-     186,
-     246,
-     251,
-     272,
-     306,
-     437,
-     728,
-     1920
-    ],
-    "never": 0.13045337895637296,
-    "sometimes": 0.5958083832335329,
-    "always": 0.2737382378100941,
-    "at_least_one": 0.869546621043627,
-    "between_nucleus_share": 0.5857015324374583,
-    "always_matched_single_alignment_score_median": 0.8614443610885799,
-    "always_matched_averaged_score_median": 0.4630884717514174,
-    "always_matched_averaged_score_at_least_half": 0.3880208333333333
-   },
-   "training": {
-    "central": 1227,
-    "trained_alignment": 0.973920130399348,
-    "other_alignments": 0.685031241510459,
-    "histogram": [
-     13,
-     47,
-     55,
-     48,
-     46,
-     41,
-     33,
-     48,
-     43,
-     37,
-     47,
-     56,
-     48,
-     46,
-     68,
-     126,
-     425
-    ],
-    "never": 0.010594947025264874,
-    "sometimes": 0.6430317848410758,
-    "always": 0.3463732681336593,
-    "at_least_one": 0.9894050529747351,
-    "between_nucleus_share": 0.4719915425856077,
-    "always_matched_single_alignment_score_median": 0.8633196621525849,
-    "always_matched_averaged_score_median": 0.45311828302148655,
-    "always_matched_averaged_score_at_least_half": 0.3458823529411765
-   }
-  },
-  "P22_C_s1": {
-   "decoders": {
-    "development": {
-     "original": {
-      "matched": 7199,
-      "total": 12250,
-      "candidates": 10280,
-      "dead_hit": 61,
-      "dead_total": 145,
-      "recall": 0.5876734693877551,
-      "precision": 0.7002918287937743,
-      "dead_recall": 0.4206896551724138
-     },
-     "mean_probability": {
-      "matched": 1075,
-      "total": 12250,
-      "candidates": 1122,
-      "dead_hit": 7,
-      "dead_total": 145,
-      "recall": 0.08775510204081632,
-      "precision": 0.9581105169340464,
-      "dead_recall": 0.04827586206896552
-     },
-     "mean_logit": {
-      "matched": 516,
-      "total": 12250,
-      "candidates": 533,
-      "dead_hit": 5,
-      "dead_total": 145,
-      "recall": 0.04212244897959184,
-      "precision": 0.9681050656660413,
-      "dead_recall": 0.034482758620689655
-     }
+    "P22_C_s1": {
+      "decoders": {
+        "development": {
+          "original": {
+            "matched": 7199,
+            "total": 12250,
+            "candidates": 10280,
+            "dead_hit": 61,
+            "dead_total": 145,
+            "recall": 0.5876734693877551,
+            "precision": 0.7002918287937743,
+            "dead_recall": 0.4206896551724138
+          },
+          "mean_probability": {
+            "matched": 1075,
+            "total": 12250,
+            "candidates": 1122,
+            "dead_hit": 7,
+            "dead_total": 145,
+            "recall": 0.08775510204081632,
+            "precision": 0.9581105169340464,
+            "dead_recall": 0.04827586206896552
+          },
+          "mean_logit": {
+            "matched": 516,
+            "total": 12250,
+            "candidates": 533,
+            "dead_hit": 5,
+            "dead_total": 145,
+            "recall": 0.04212244897959184,
+            "precision": 0.9681050656660413,
+            "dead_recall": 0.034482758620689655
+          }
+        },
+        "training": {
+          "original": {
+            "matched": 2075,
+            "total": 2154,
+            "candidates": 2078,
+            "dead_hit": 628,
+            "dead_total": 656,
+            "recall": 0.9633240482822656,
+            "precision": 0.9985563041385948,
+            "dead_recall": 0.9573170731707317
+          },
+          "mean_probability": {
+            "matched": 186,
+            "total": 2154,
+            "candidates": 186,
+            "dead_hit": 51,
+            "dead_total": 656,
+            "recall": 0.08635097493036212,
+            "precision": 1.0,
+            "dead_recall": 0.07774390243902439
+          },
+          "mean_logit": {
+            "matched": 101,
+            "total": 2154,
+            "candidates": 101,
+            "dead_hit": 22,
+            "dead_total": 656,
+            "recall": 0.04688950789229341,
+            "precision": 1.0,
+            "dead_recall": 0.03353658536585366
+          }
+        }
+      },
+      "development": {
+        "central": 7014,
+        "trained_alignment": 0.6056458511548332,
+        "other_alignments": 0.6102461743180306,
+        "histogram": [
+          952,
+          304,
+          232,
+          234,
+          220,
+          196,
+          190,
+          176,
+          191,
+          233,
+          223,
+          222,
+          271,
+          355,
+          433,
+          788,
+          1794
+        ],
+        "never": 0.13572854291417166,
+        "sometimes": 0.6084972911320217,
+        "always": 0.2557741659538067,
+        "at_least_one": 0.8642714570858283,
+        "between_nucleus_share": 0.5822582383316057,
+        "always_matched_single_alignment_score_median": 0.8617198008028084,
+        "always_matched_averaged_score_median": 0.46022470522959824,
+        "always_matched_averaged_score_at_least_half": 0.379041248606466
+      },
+      "training": {
+        "central": 1227,
+        "trained_alignment": 0.980440097799511,
+        "other_alignments": 0.6710133116001086,
+        "histogram": [
+          16,
+          56,
+          51,
+          41,
+          49,
+          42,
+          50,
+          46,
+          44,
+          33,
+          40,
+          51,
+          58,
+          62,
+          61,
+          154,
+          373
+        ],
+        "never": 0.013039934800325998,
+        "sometimes": 0.6829665851670742,
+        "always": 0.30399348003259985,
+        "at_least_one": 0.986960065199674,
+        "between_nucleus_share": 0.46390608700925173,
+        "always_matched_single_alignment_score_median": 0.8598945679524866,
+        "always_matched_averaged_score_median": 0.4495496689768129,
+        "always_matched_averaged_score_at_least_half": 0.3324396782841823
+      }
     },
-    "training": {
-     "original": {
-      "matched": 2075,
-      "total": 2154,
-      "candidates": 2078,
-      "dead_hit": 628,
-      "dead_total": 656,
-      "recall": 0.9633240482822656,
-      "precision": 0.9985563041385948,
-      "dead_recall": 0.9573170731707317
-     },
-     "mean_probability": {
-      "matched": 186,
-      "total": 2154,
-      "candidates": 186,
-      "dead_hit": 51,
-      "dead_total": 656,
-      "recall": 0.08635097493036212,
-      "precision": 1.0,
-      "dead_recall": 0.07774390243902439
-     },
-     "mean_logit": {
-      "matched": 101,
-      "total": 2154,
-      "candidates": 101,
-      "dead_hit": 22,
-      "dead_total": 656,
-      "recall": 0.04688950789229341,
-      "precision": 1.0,
-      "dead_recall": 0.03353658536585366
-     }
-    }
-   },
-   "development": {
-    "central": 7014,
-    "trained_alignment": 0.6056458511548332,
-    "other_alignments": 0.6102461743180306,
-    "histogram": [
-     952,
-     304,
-     232,
-     234,
-     220,
-     196,
-     190,
-     176,
-     191,
-     233,
-     223,
-     222,
-     271,
-     355,
-     433,
-     788,
-     1794
-    ],
-    "never": 0.13572854291417166,
-    "sometimes": 0.6084972911320217,
-    "always": 0.2557741659538067,
-    "at_least_one": 0.8642714570858283,
-    "between_nucleus_share": 0.5822582383316057,
-    "always_matched_single_alignment_score_median": 0.8617198008028084,
-    "always_matched_averaged_score_median": 0.46022470522959824,
-    "always_matched_averaged_score_at_least_half": 0.379041248606466
-   },
-   "training": {
-    "central": 1227,
-    "trained_alignment": 0.980440097799511,
-    "other_alignments": 0.6710133116001086,
-    "histogram": [
-     16,
-     56,
-     51,
-     41,
-     49,
-     42,
-     50,
-     46,
-     44,
-     33,
-     40,
-     51,
-     58,
-     62,
-     61,
-     154,
-     373
-    ],
-    "never": 0.013039934800325998,
-    "sometimes": 0.6829665851670742,
-    "always": 0.30399348003259985,
-    "at_least_one": 0.986960065199674,
-    "between_nucleus_share": 0.46390608700925173,
-    "always_matched_single_alignment_score_median": 0.8598945679524866,
-    "always_matched_averaged_score_median": 0.4495496689768129,
-    "always_matched_averaged_score_at_least_half": 0.3324396782841823
-   }
-  },
-  "P22_M_s19": {
-   "decoders": {
-    "development": {
-     "original": {
-      "matched": 7979,
-      "total": 12250,
-      "candidates": 10945,
-      "dead_hit": 85,
-      "dead_total": 145,
-      "recall": 0.6513469387755102,
-      "precision": 0.7290086797624487,
-      "dead_recall": 0.5862068965517241
-     },
-     "mean_probability": {
-      "matched": 1736,
-      "total": 12250,
-      "candidates": 1809,
-      "dead_hit": 19,
-      "dead_total": 145,
-      "recall": 0.1417142857142857,
-      "precision": 0.9596462133775566,
-      "dead_recall": 0.1310344827586207
-     },
-     "mean_logit": {
-      "matched": 910,
-      "total": 12250,
-      "candidates": 936,
-      "dead_hit": 6,
-      "dead_total": 145,
-      "recall": 0.07428571428571429,
-      "precision": 0.9722222222222222,
-      "dead_recall": 0.041379310344827586
-     }
+    "P22_M_s19": {
+      "decoders": {
+        "development": {
+          "original": {
+            "matched": 7979,
+            "total": 12250,
+            "candidates": 10945,
+            "dead_hit": 85,
+            "dead_total": 145,
+            "recall": 0.6513469387755102,
+            "precision": 0.7290086797624487,
+            "dead_recall": 0.5862068965517241
+          },
+          "mean_probability": {
+            "matched": 1736,
+            "total": 12250,
+            "candidates": 1809,
+            "dead_hit": 19,
+            "dead_total": 145,
+            "recall": 0.1417142857142857,
+            "precision": 0.9596462133775566,
+            "dead_recall": 0.1310344827586207
+          },
+          "mean_logit": {
+            "matched": 910,
+            "total": 12250,
+            "candidates": 936,
+            "dead_hit": 6,
+            "dead_total": 145,
+            "recall": 0.07428571428571429,
+            "precision": 0.9722222222222222,
+            "dead_recall": 0.041379310344827586
+          }
+        },
+        "training": {
+          "original": {
+            "matched": 2115,
+            "total": 2154,
+            "candidates": 2124,
+            "dead_hit": 642,
+            "dead_total": 656,
+            "recall": 0.9818941504178273,
+            "precision": 0.9957627118644068,
+            "dead_recall": 0.9786585365853658
+          },
+          "mean_probability": {
+            "matched": 318,
+            "total": 2154,
+            "candidates": 319,
+            "dead_hit": 95,
+            "dead_total": 656,
+            "recall": 0.14763231197771587,
+            "precision": 0.9968652037617555,
+            "dead_recall": 0.1448170731707317
+          },
+          "mean_logit": {
+            "matched": 160,
+            "total": 2154,
+            "candidates": 160,
+            "dead_hit": 37,
+            "dead_total": 656,
+            "recall": 0.07428040854224698,
+            "precision": 1.0,
+            "dead_recall": 0.056402439024390245
+          }
+        }
+      },
+      "development": {
+        "central": 7014,
+        "trained_alignment": 0.677216994582264,
+        "other_alignments": 0.6794030985647752,
+        "histogram": [
+          788,
+          264,
+          187,
+          157,
+          155,
+          161,
+          162,
+          155,
+          180,
+          165,
+          180,
+          203,
+          237,
+          283,
+          406,
+          822,
+          2509
+        ],
+        "never": 0.11234673510122611,
+        "sometimes": 0.5299401197604791,
+        "always": 0.35771314513829483,
+        "at_least_one": 0.8876532648987738,
+        "between_nucleus_share": 0.6152889270954403,
+        "always_matched_single_alignment_score_median": 0.8923151852765254,
+        "always_matched_averaged_score_median": 0.48813293864007445,
+        "always_matched_averaged_score_at_least_half": 0.46632124352331605
+      },
+      "training": {
+        "central": 1227,
+        "trained_alignment": 0.9918500407497962,
+        "other_alignments": 0.7235533822330888,
+        "histogram": [
+          7,
+          59,
+          35,
+          45,
+          43,
+          33,
+          27,
+          41,
+          42,
+          28,
+          29,
+          41,
+          41,
+          48,
+          65,
+          159,
+          484
+        ],
+        "never": 0.0057049714751426246,
+        "sometimes": 0.5998370008149959,
+        "always": 0.39445802770986144,
+        "at_least_one": 0.9942950285248574,
+        "between_nucleus_share": 0.5019820517445249,
+        "always_matched_single_alignment_score_median": 0.892880958241944,
+        "always_matched_averaged_score_median": 0.48818723134531594,
+        "always_matched_averaged_score_at_least_half": 0.45867768595041325
+      }
     },
-    "training": {
-     "original": {
-      "matched": 2115,
-      "total": 2154,
-      "candidates": 2124,
-      "dead_hit": 642,
-      "dead_total": 656,
-      "recall": 0.9818941504178273,
-      "precision": 0.9957627118644068,
-      "dead_recall": 0.9786585365853658
-     },
-     "mean_probability": {
-      "matched": 318,
-      "total": 2154,
-      "candidates": 319,
-      "dead_hit": 95,
-      "dead_total": 656,
-      "recall": 0.14763231197771587,
-      "precision": 0.9968652037617555,
-      "dead_recall": 0.1448170731707317
-     },
-     "mean_logit": {
-      "matched": 160,
-      "total": 2154,
-      "candidates": 160,
-      "dead_hit": 37,
-      "dead_total": 656,
-      "recall": 0.07428040854224698,
-      "precision": 1.0,
-      "dead_recall": 0.056402439024390245
-     }
+    "P22_M_s1": {
+      "decoders": {
+        "development": {
+          "original": {
+            "matched": 7933,
+            "total": 12250,
+            "candidates": 10804,
+            "dead_hit": 84,
+            "dead_total": 145,
+            "recall": 0.6475918367346939,
+            "precision": 0.7342650870048131,
+            "dead_recall": 0.5793103448275863
+          },
+          "mean_probability": {
+            "matched": 1896,
+            "total": 12250,
+            "candidates": 1981,
+            "dead_hit": 19,
+            "dead_total": 145,
+            "recall": 0.15477551020408165,
+            "precision": 0.9570923775870772,
+            "dead_recall": 0.1310344827586207
+          },
+          "mean_logit": {
+            "matched": 958,
+            "total": 12250,
+            "candidates": 982,
+            "dead_hit": 13,
+            "dead_total": 145,
+            "recall": 0.07820408163265306,
+            "precision": 0.9755600814663951,
+            "dead_recall": 0.0896551724137931
+          }
+        },
+        "training": {
+          "original": {
+            "matched": 2116,
+            "total": 2154,
+            "candidates": 2118,
+            "dead_hit": 642,
+            "dead_total": 656,
+            "recall": 0.9823584029712163,
+            "precision": 0.9990557129367328,
+            "dead_recall": 0.9786585365853658
+          },
+          "mean_probability": {
+            "matched": 330,
+            "total": 2154,
+            "candidates": 332,
+            "dead_hit": 105,
+            "dead_total": 656,
+            "recall": 0.1532033426183844,
+            "precision": 0.9939759036144579,
+            "dead_recall": 0.1600609756097561
+          },
+          "mean_logit": {
+            "matched": 172,
+            "total": 2154,
+            "candidates": 173,
+            "dead_hit": 47,
+            "dead_total": 656,
+            "recall": 0.07985143918291551,
+            "precision": 0.9942196531791907,
+            "dead_recall": 0.07164634146341463
+          }
+        }
+      },
+      "development": {
+        "central": 7014,
+        "trained_alignment": 0.6652409466780724,
+        "other_alignments": 0.6783385609732915,
+        "histogram": [
+          819,
+          234,
+          215,
+          173,
+          181,
+          142,
+          147,
+          157,
+          140,
+          188,
+          169,
+          197,
+          227,
+          282,
+          403,
+          705,
+          2635
+        ],
+        "never": 0.11676646706586827,
+        "sometimes": 0.5075563159395494,
+        "always": 0.3756772169945823,
+        "at_least_one": 0.8832335329341318,
+        "between_nucleus_share": 0.6274576175811402,
+        "always_matched_single_alignment_score_median": 0.8978155595399874,
+        "always_matched_averaged_score_median": 0.49714804289149384,
+        "always_matched_averaged_score_at_least_half": 0.4952561669829222
+      },
+      "training": {
+        "central": 1227,
+        "trained_alignment": 0.9885900570497147,
+        "other_alignments": 0.726107036131486,
+        "histogram": [
+          9,
+          57,
+          41,
+          53,
+          33,
+          32,
+          28,
+          34,
+          34,
+          32,
+          39,
+          35,
+          46,
+          42,
+          62,
+          120,
+          530
+        ],
+        "never": 0.007334963325183374,
+        "sometimes": 0.560717196414018,
+        "always": 0.4319478402607987,
+        "at_least_one": 0.9926650366748166,
+        "between_nucleus_share": 0.519102590174473,
+        "always_matched_single_alignment_score_median": 0.8952088968324836,
+        "always_matched_averaged_score_median": 0.48149501819794666,
+        "always_matched_averaged_score_at_least_half": 0.44528301886792454
+      }
     }
-   },
-   "development": {
-    "central": 7014,
-    "trained_alignment": 0.677216994582264,
-    "other_alignments": 0.6794030985647752,
-    "histogram": [
-     788,
-     264,
-     187,
-     157,
-     155,
-     161,
-     162,
-     155,
-     180,
-     165,
-     180,
-     203,
-     237,
-     283,
-     406,
-     822,
-     2509
-    ],
-    "never": 0.11234673510122611,
-    "sometimes": 0.5299401197604791,
-    "always": 0.35771314513829483,
-    "at_least_one": 0.8876532648987738,
-    "between_nucleus_share": 0.6152889270954403,
-    "always_matched_single_alignment_score_median": 0.8923151852765254,
-    "always_matched_averaged_score_median": 0.48813293864007445,
-    "always_matched_averaged_score_at_least_half": 0.46632124352331605
-   },
-   "training": {
-    "central": 1227,
-    "trained_alignment": 0.9918500407497962,
-    "other_alignments": 0.7235533822330888,
-    "histogram": [
-     7,
-     59,
-     35,
-     45,
-     43,
-     33,
-     27,
-     41,
-     42,
-     28,
-     29,
-     41,
-     41,
-     48,
-     65,
-     159,
-     484
-    ],
-    "never": 0.0057049714751426246,
-    "sometimes": 0.5998370008149959,
-    "always": 0.39445802770986144,
-    "at_least_one": 0.9942950285248574,
-    "between_nucleus_share": 0.5019820517445249,
-    "always_matched_single_alignment_score_median": 0.892880958241944,
-    "always_matched_averaged_score_median": 0.48818723134531594,
-    "always_matched_averaged_score_at_least_half": 0.45867768595041325
-   }
   },
-  "P22_M_s1": {
-   "decoders": {
-    "development": {
-     "original": {
-      "matched": 7933,
-      "total": 12250,
-      "candidates": 10804,
-      "dead_hit": 84,
-      "dead_total": 145,
-      "recall": 0.6475918367346939,
-      "precision": 0.7342650870048131,
-      "dead_recall": 0.5793103448275863
-     },
-     "mean_probability": {
-      "matched": 1896,
-      "total": 12250,
-      "candidates": 1981,
-      "dead_hit": 19,
-      "dead_total": 145,
-      "recall": 0.15477551020408165,
-      "precision": 0.9570923775870772,
-      "dead_recall": 0.1310344827586207
-     },
-     "mean_logit": {
-      "matched": 958,
-      "total": 12250,
-      "candidates": 982,
-      "dead_hit": 13,
-      "dead_total": 145,
-      "recall": 0.07820408163265306,
-      "precision": 0.9755600814663951,
-      "dead_recall": 0.0896551724137931
-     }
+  "definition": "central = valid at all sixteen alignments and at least 24 px from every border",
+  "development_structure": [
+    {
+      "family": "Area of the nucleus",
+      "label": "under 80 px",
+      "nuclei": 106,
+      "mean_share_of_alignments": 0.26017099056603776,
+      "never_matched": 0.42924528301886794
     },
-    "training": {
-     "original": {
-      "matched": 2116,
-      "total": 2154,
-      "candidates": 2118,
-      "dead_hit": 642,
-      "dead_total": 656,
-      "recall": 0.9823584029712163,
-      "precision": 0.9990557129367328,
-      "dead_recall": 0.9786585365853658
-     },
-     "mean_probability": {
-      "matched": 330,
-      "total": 2154,
-      "candidates": 332,
-      "dead_hit": 105,
-      "dead_total": 656,
-      "recall": 0.1532033426183844,
-      "precision": 0.9939759036144579,
-      "dead_recall": 0.1600609756097561
-     },
-     "mean_logit": {
-      "matched": 172,
-      "total": 2154,
-      "candidates": 173,
-      "dead_hit": 47,
-      "dead_total": 656,
-      "recall": 0.07985143918291551,
-      "precision": 0.9942196531791907,
-      "dead_recall": 0.07164634146341463
-     }
+    {
+      "family": "Area of the nucleus",
+      "label": "80-149 px",
+      "nuclei": 424,
+      "mean_share_of_alignments": 0.49417747641509435,
+      "never_matched": 0.2270047169811321
+    },
+    {
+      "family": "Area of the nucleus",
+      "label": "150-299 px",
+      "nuclei": 1479,
+      "mean_share_of_alignments": 0.6844785327924273,
+      "never_matched": 0.11646382691007437
+    },
+    {
+      "family": "Area of the nucleus",
+      "label": "300-599 px",
+      "nuclei": 2553,
+      "mean_share_of_alignments": 0.6799170094007051,
+      "never_matched": 0.09312573443008225
+    },
+    {
+      "family": "Area of the nucleus",
+      "label": "600 px or more",
+      "nuclei": 2452,
+      "mean_share_of_alignments": 0.6299258258564437,
+      "never_matched": 0.12918026101141925
+    },
+    {
+      "family": "Annotated centers within 12 px",
+      "label": "no neighbor",
+      "nuclei": 6850,
+      "mean_share_of_alignments": 0.6566286496350365,
+      "never_matched": 0.11642335766423358
+    },
+    {
+      "family": "Annotated centers within 12 px",
+      "label": "one neighbor",
+      "nuclei": 119,
+      "mean_share_of_alignments": 0.21376050420168066,
+      "never_matched": 0.42016806722689076
+    },
+    {
+      "family": "Annotated centers within 12 px",
+      "label": "two or more",
+      "nuclei": 45,
+      "mean_share_of_alignments": 0.14479166666666668,
+      "never_matched": 0.4666666666666667
+    },
+    {
+      "family": "Class",
+      "label": "Neoplastic",
+      "nuclei": 2876,
+      "mean_share_of_alignments": 0.6485244262865091,
+      "never_matched": 0.1213490959666203
+    },
+    {
+      "family": "Class",
+      "label": "Inflammatory",
+      "nuclei": 1285,
+      "mean_share_of_alignments": 0.7706104085603113,
+      "never_matched": 0.0669260700389105
+    },
+    {
+      "family": "Class",
+      "label": "Connective",
+      "nuclei": 1780,
+      "mean_share_of_alignments": 0.5667661516853932,
+      "never_matched": 0.16292134831460675
+    },
+    {
+      "family": "Class",
+      "label": "Dead",
+      "nuclei": 107,
+      "mean_share_of_alignments": 0.5627920560747663,
+      "never_matched": 0.19158878504672897
+    },
+    {
+      "family": "Class",
+      "label": "Epithelial",
+      "nuclei": 966,
+      "mean_share_of_alignments": 0.6267145445134575,
+      "never_matched": 0.12732919254658384
+    },
+    {
+      "family": "Tissue (100 nuclei or more)",
+      "label": "Liver",
+      "nuclei": 177,
+      "mean_share_of_alignments": 0.808792372881356,
+      "never_matched": 0.04096045197740113
+    },
+    {
+      "family": "Tissue (100 nuclei or more)",
+      "label": "Stomach",
+      "nuclei": 184,
+      "mean_share_of_alignments": 0.7820991847826086,
+      "never_matched": 0.04891304347826087
+    },
+    {
+      "family": "Tissue (100 nuclei or more)",
+      "label": "Thyroid",
+      "nuclei": 150,
+      "mean_share_of_alignments": 0.7639583333333333,
+      "never_matched": 0.07333333333333333
+    },
+    {
+      "family": "Tissue (100 nuclei or more)",
+      "label": "Adrenal gland",
+      "nuclei": 252,
+      "mean_share_of_alignments": 0.7384672619047619,
+      "never_matched": 0.0763888888888889
+    },
+    {
+      "family": "Tissue (100 nuclei or more)",
+      "label": "Bile-duct",
+      "nuclei": 330,
+      "mean_share_of_alignments": 0.7364583333333333,
+      "never_matched": 0.08409090909090909
+    },
+    {
+      "family": "Tissue (100 nuclei or more)",
+      "label": "Prostate",
+      "nuclei": 206,
+      "mean_share_of_alignments": 0.7107099514563107,
+      "never_matched": 0.09223300970873786
+    },
+    {
+      "family": "Tissue (100 nuclei or more)",
+      "label": "Testis",
+      "nuclei": 185,
+      "mean_share_of_alignments": 0.7092905405405405,
+      "never_matched": 0.10945945945945947
+    },
+    {
+      "family": "Tissue (100 nuclei or more)",
+      "label": "Pancreatic",
+      "nuclei": 128,
+      "mean_share_of_alignments": 0.7056884765625,
+      "never_matched": 0.07421875
+    },
+    {
+      "family": "Tissue (100 nuclei or more)",
+      "label": "Cervix",
+      "nuclei": 416,
+      "mean_share_of_alignments": 0.6913311298076923,
+      "never_matched": 0.10817307692307693
+    },
+    {
+      "family": "Tissue (100 nuclei or more)",
+      "label": "Skin",
+      "nuclei": 205,
+      "mean_share_of_alignments": 0.6816310975609756,
+      "never_matched": 0.10121951219512196
+    },
+    {
+      "family": "Tissue (100 nuclei or more)",
+      "label": "Lung",
+      "nuclei": 330,
+      "mean_share_of_alignments": 0.6651515151515152,
+      "never_matched": 0.1431818181818182
+    },
+    {
+      "family": "Tissue (100 nuclei or more)",
+      "label": "HeadNeck",
+      "nuclei": 117,
+      "mean_share_of_alignments": 0.6294070512820513,
+      "never_matched": 0.11538461538461539
+    },
+    {
+      "family": "Tissue (100 nuclei or more)",
+      "label": "Breast",
+      "nuclei": 2220,
+      "mean_share_of_alignments": 0.6287936373873874,
+      "never_matched": 0.11677927927927928
+    },
+    {
+      "family": "Tissue (100 nuclei or more)",
+      "label": "Esophagus",
+      "nuclei": 394,
+      "mean_share_of_alignments": 0.6162753807106599,
+      "never_matched": 0.13959390862944163
+    },
+    {
+      "family": "Tissue (100 nuclei or more)",
+      "label": "Ovarian",
+      "nuclei": 151,
+      "mean_share_of_alignments": 0.6002690397350994,
+      "never_matched": 0.1357615894039735
+    },
+    {
+      "family": "Tissue (100 nuclei or more)",
+      "label": "Colon",
+      "nuclei": 1347,
+      "mean_share_of_alignments": 0.5529069227913883,
+      "never_matched": 0.1900519673348181
+    },
+    {
+      "family": "Tissue (100 nuclei or more)",
+      "label": "Kidney",
+      "nuclei": 121,
+      "mean_share_of_alignments": 0.5490702479338843,
+      "never_matched": 0.1652892561983471
     }
-   },
-   "development": {
-    "central": 7014,
-    "trained_alignment": 0.6652409466780724,
-    "other_alignments": 0.6783385609732915,
-    "histogram": [
-     819,
-     234,
-     215,
-     173,
-     181,
-     142,
-     147,
-     157,
-     140,
-     188,
-     169,
-     197,
-     227,
-     282,
-     403,
-     705,
-     2635
-    ],
-    "never": 0.11676646706586827,
-    "sometimes": 0.5075563159395494,
-    "always": 0.3756772169945823,
-    "at_least_one": 0.8832335329341318,
-    "between_nucleus_share": 0.6274576175811402,
-    "always_matched_single_alignment_score_median": 0.8978155595399874,
-    "always_matched_averaged_score_median": 0.49714804289149384,
-    "always_matched_averaged_score_at_least_half": 0.4952561669829222
-   },
-   "training": {
-    "central": 1227,
-    "trained_alignment": 0.9885900570497147,
-    "other_alignments": 0.726107036131486,
-    "histogram": [
-     9,
-     57,
-     41,
-     53,
-     33,
-     32,
-     28,
-     34,
-     34,
-     32,
-     39,
-     35,
-     46,
-     42,
-     62,
-     120,
-     530
-    ],
-    "never": 0.007334963325183374,
-    "sometimes": 0.560717196414018,
-    "always": 0.4319478402607987,
-    "at_least_one": 0.9926650366748166,
-    "between_nucleus_share": 0.519102590174473,
-    "always_matched_single_alignment_score_median": 0.8952088968324836,
-    "always_matched_averaged_score_median": 0.48149501819794666,
-    "always_matched_averaged_score_at_least_half": 0.44528301886792454
-   }
-  }
- },
- "definition": "central = valid at all sixteen alignments and at least 24 px from every border",
- "development_structure": [
-  {
-   "family": "Area of the nucleus",
-   "label": "under 80 px",
-   "nuclei": 106,
-   "mean_share_of_alignments": 0.26017099056603776,
-   "never_matched": 0.42924528301886794
-  },
-  {
-   "family": "Area of the nucleus",
-   "label": "80-149 px",
-   "nuclei": 424,
-   "mean_share_of_alignments": 0.49417747641509435,
-   "never_matched": 0.2270047169811321
-  },
-  {
-   "family": "Area of the nucleus",
-   "label": "150-299 px",
-   "nuclei": 1479,
-   "mean_share_of_alignments": 0.6844785327924273,
-   "never_matched": 0.11646382691007437
-  },
-  {
-   "family": "Area of the nucleus",
-   "label": "300-599 px",
-   "nuclei": 2553,
-   "mean_share_of_alignments": 0.6799170094007051,
-   "never_matched": 0.09312573443008225
-  },
-  {
-   "family": "Area of the nucleus",
-   "label": "600 px or more",
-   "nuclei": 2452,
-   "mean_share_of_alignments": 0.6299258258564437,
-   "never_matched": 0.12918026101141925
-  },
-  {
-   "family": "Annotated centers within 12 px",
-   "label": "no neighbor",
-   "nuclei": 6850,
-   "mean_share_of_alignments": 0.6566286496350365,
-   "never_matched": 0.11642335766423358
-  },
-  {
-   "family": "Annotated centers within 12 px",
-   "label": "one neighbor",
-   "nuclei": 119,
-   "mean_share_of_alignments": 0.21376050420168066,
-   "never_matched": 0.42016806722689076
-  },
-  {
-   "family": "Annotated centers within 12 px",
-   "label": "two or more",
-   "nuclei": 45,
-   "mean_share_of_alignments": 0.14479166666666668,
-   "never_matched": 0.4666666666666667
-  },
-  {
-   "family": "Class",
-   "label": "Neoplastic",
-   "nuclei": 2876,
-   "mean_share_of_alignments": 0.6485244262865091,
-   "never_matched": 0.1213490959666203
-  },
-  {
-   "family": "Class",
-   "label": "Inflammatory",
-   "nuclei": 1285,
-   "mean_share_of_alignments": 0.7706104085603113,
-   "never_matched": 0.0669260700389105
-  },
-  {
-   "family": "Class",
-   "label": "Connective",
-   "nuclei": 1780,
-   "mean_share_of_alignments": 0.5667661516853932,
-   "never_matched": 0.16292134831460675
-  },
-  {
-   "family": "Class",
-   "label": "Dead",
-   "nuclei": 107,
-   "mean_share_of_alignments": 0.5627920560747663,
-   "never_matched": 0.19158878504672897
-  },
-  {
-   "family": "Class",
-   "label": "Epithelial",
-   "nuclei": 966,
-   "mean_share_of_alignments": 0.6267145445134575,
-   "never_matched": 0.12732919254658384
-  },
-  {
-   "family": "Tissue (100 nuclei or more)",
-   "label": "Liver",
-   "nuclei": 177,
-   "mean_share_of_alignments": 0.808792372881356,
-   "never_matched": 0.04096045197740113
-  },
-  {
-   "family": "Tissue (100 nuclei or more)",
-   "label": "Stomach",
-   "nuclei": 184,
-   "mean_share_of_alignments": 0.7820991847826086,
-   "never_matched": 0.04891304347826087
-  },
-  {
-   "family": "Tissue (100 nuclei or more)",
-   "label": "Thyroid",
-   "nuclei": 150,
-   "mean_share_of_alignments": 0.7639583333333333,
-   "never_matched": 0.07333333333333333
-  },
-  {
-   "family": "Tissue (100 nuclei or more)",
-   "label": "Adrenal gland",
-   "nuclei": 252,
-   "mean_share_of_alignments": 0.7384672619047619,
-   "never_matched": 0.0763888888888889
-  },
-  {
-   "family": "Tissue (100 nuclei or more)",
-   "label": "Bile-duct",
-   "nuclei": 330,
-   "mean_share_of_alignments": 0.7364583333333333,
-   "never_matched": 0.08409090909090909
-  },
-  {
-   "family": "Tissue (100 nuclei or more)",
-   "label": "Prostate",
-   "nuclei": 206,
-   "mean_share_of_alignments": 0.7107099514563107,
-   "never_matched": 0.09223300970873786
-  },
-  {
-   "family": "Tissue (100 nuclei or more)",
-   "label": "Testis",
-   "nuclei": 185,
-   "mean_share_of_alignments": 0.7092905405405405,
-   "never_matched": 0.10945945945945947
-  },
-  {
-   "family": "Tissue (100 nuclei or more)",
-   "label": "Pancreatic",
-   "nuclei": 128,
-   "mean_share_of_alignments": 0.7056884765625,
-   "never_matched": 0.07421875
-  },
-  {
-   "family": "Tissue (100 nuclei or more)",
-   "label": "Cervix",
-   "nuclei": 416,
-   "mean_share_of_alignments": 0.6913311298076923,
-   "never_matched": 0.10817307692307693
-  },
-  {
-   "family": "Tissue (100 nuclei or more)",
-   "label": "Skin",
-   "nuclei": 205,
-   "mean_share_of_alignments": 0.6816310975609756,
-   "never_matched": 0.10121951219512196
-  },
-  {
-   "family": "Tissue (100 nuclei or more)",
-   "label": "Lung",
-   "nuclei": 330,
-   "mean_share_of_alignments": 0.6651515151515152,
-   "never_matched": 0.1431818181818182
-  },
-  {
-   "family": "Tissue (100 nuclei or more)",
-   "label": "HeadNeck",
-   "nuclei": 117,
-   "mean_share_of_alignments": 0.6294070512820513,
-   "never_matched": 0.11538461538461539
-  },
-  {
-   "family": "Tissue (100 nuclei or more)",
-   "label": "Breast",
-   "nuclei": 2220,
-   "mean_share_of_alignments": 0.6287936373873874,
-   "never_matched": 0.11677927927927928
-  },
-  {
-   "family": "Tissue (100 nuclei or more)",
-   "label": "Esophagus",
-   "nuclei": 394,
-   "mean_share_of_alignments": 0.6162753807106599,
-   "never_matched": 0.13959390862944163
-  },
-  {
-   "family": "Tissue (100 nuclei or more)",
-   "label": "Ovarian",
-   "nuclei": 151,
-   "mean_share_of_alignments": 0.6002690397350994,
-   "never_matched": 0.1357615894039735
-  },
-  {
-   "family": "Tissue (100 nuclei or more)",
-   "label": "Colon",
-   "nuclei": 1347,
-   "mean_share_of_alignments": 0.5529069227913883,
-   "never_matched": 0.1900519673348181
-  },
-  {
-   "family": "Tissue (100 nuclei or more)",
-   "label": "Kidney",
-   "nuclei": 121,
-   "mean_share_of_alignments": 0.5490702479338843,
-   "never_matched": 0.1652892561983471
-  }
- ]
+  ]
 }

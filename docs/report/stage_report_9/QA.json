@@ -1,18 +1,31 @@
 {
-  "stage_report_9_en": {
-    "pages": 10,
-    "outside_twenty_point_margin": [],
-    "rendered_pages": 10
-  },
   "stage_report_9_zh": {
-    "pages": 10,
-    "outside_twenty_point_margin": [],
-    "rendered_pages": 10
+    "pages": 46,
+    "rendered_pages": 46,
+    "overfull_boxes": 0,
+    "missing_glyphs": 0,
+    "outside_margin_blocks": 0
+  },
+  "stage_report_9_en": {
+    "pages": 46,
+    "rendered_pages": 46,
+    "overfull_boxes": 0,
+    "missing_glyphs": 0,
+    "outside_margin_blocks": 0
   },
   "summary_plain_zh": {
-    "pages": 5,
-    "outside_twenty_point_margin": [],
-    "rendered_pages": 5
+    "pages": 14,
+    "rendered_pages": 14,
+    "overfull_boxes": 0,
+    "missing_glyphs": 0,
+    "outside_margin_blocks": 0
   },
-  "visual_review": "All 25 rendered pages inspected; tables and image captions checked; no overfull boxes in final build."
+  "review": {
+    "body_class": "14pt extarticle; observed long Chinese prose 14.3462 PDF points",
+    "chart_ticks": "12pt",
+    "chart_labels": "13pt",
+    "cropped_panels_verified": 27,
+    "reviewer": "Primary agent, no delegation",
+    "numerical_checks": 896
+  }
 }

@@ -1,0 +1,323 @@
+{
+  "experiment": "D33",
+  "models": [
+    {
+      "model": "P22_C_s19",
+      "original": {
+        "matched": 304,
+        "total": 488,
+        "candidates": 400,
+        "dead_hit": 67,
+        "dead_total": 145
+      },
+      "alternative": {
+        "matched": 324,
+        "total": 488,
+        "candidates": 511,
+        "dead_hit": 80,
+        "dead_total": 145
+      },
+      "dead_gain": 14,
+      "dead_loss": 1,
+      "net_dead": 13,
+      "net_matched": 20,
+      "net_extra": 91,
+      "original_precision": 0.76,
+      "alternative_precision": 0.6340508806262231,
+      "gains_with_original_interpolation_flag": 12
+    },
+    {
+      "model": "P22_C_s1",
+      "original": {
+        "matched": 283,
+        "total": 488,
+        "candidates": 379,
+        "dead_hit": 62,
+        "dead_total": 145
+      },
+      "alternative": {
+        "matched": 306,
+        "total": 488,
+        "candidates": 466,
+        "dead_hit": 70,
+        "dead_total": 145
+      },
+      "dead_gain": 9,
+      "dead_loss": 1,
+      "net_dead": 8,
+      "net_matched": 23,
+      "net_extra": 64,
+      "original_precision": 0.7467018469656992,
+      "alternative_precision": 0.6566523605150214,
+      "gains_with_original_interpolation_flag": 8
+    },
+    {
+      "model": "P22_M_s19",
+      "original": {
+        "matched": 326,
+        "total": 488,
+        "candidates": 426,
+        "dead_hit": 85,
+        "dead_total": 145
+      },
+      "alternative": {
+        "matched": 339,
+        "total": 488,
+        "candidates": 600,
+        "dead_hit": 89,
+        "dead_total": 145
+      },
+      "dead_gain": 5,
+      "dead_loss": 1,
+      "net_dead": 4,
+      "net_matched": 13,
+      "net_extra": 161,
+      "original_precision": 0.7652582159624414,
+      "alternative_precision": 0.565,
+      "gains_with_original_interpolation_flag": 4
+    },
+    {
+      "model": "P22_M_s1",
+      "original": {
+        "matched": 325,
+        "total": 488,
+        "candidates": 412,
+        "dead_hit": 82,
+        "dead_total": 145
+      },
+      "alternative": {
+        "matched": 342,
+        "total": 488,
+        "candidates": 551,
+        "dead_hit": 90,
+        "dead_total": 145
+      },
+      "dead_gain": 8,
+      "dead_loss": 0,
+      "net_dead": 8,
+      "net_matched": 17,
+      "net_extra": 122,
+      "original_precision": 0.7888349514563107,
+      "alternative_precision": 0.6206896551724138,
+      "gains_with_original_interpolation_flag": 8
+    },
+    {
+      "model": "P29_C_s19",
+      "original": {
+        "matched": 292,
+        "total": 488,
+        "candidates": 393,
+        "dead_hit": 65,
+        "dead_total": 145
+      },
+      "alternative": {
+        "matched": 314,
+        "total": 488,
+        "candidates": 460,
+        "dead_hit": 78,
+        "dead_total": 145
+      },
+      "dead_gain": 14,
+      "dead_loss": 1,
+      "net_dead": 13,
+      "net_matched": 22,
+      "net_extra": 45,
+      "original_precision": 0.7430025445292621,
+      "alternative_precision": 0.6826086956521739,
+      "gains_with_original_interpolation_flag": 13
+    },
+    {
+      "model": "P29_C_s1",
+      "original": {
+        "matched": 295,
+        "total": 488,
+        "candidates": 394,
+        "dead_hit": 67,
+        "dead_total": 145
+      },
+      "alternative": {
+        "matched": 317,
+        "total": 488,
+        "candidates": 491,
+        "dead_hit": 76,
+        "dead_total": 145
+      },
+      "dead_gain": 11,
+      "dead_loss": 2,
+      "net_dead": 9,
+      "net_matched": 22,
+      "net_extra": 75,
+      "original_precision": 0.748730964467005,
+      "alternative_precision": 0.6456211812627292,
+      "gains_with_original_interpolation_flag": 10
+    },
+    {
+      "model": "P29_B_s19",
+      "original": {
+        "matched": 312,
+        "total": 488,
+        "candidates": 401,
+        "dead_hit": 81,
+        "dead_total": 145
+      },
+      "alternative": {
+        "matched": 321,
+        "total": 488,
+        "candidates": 436,
+        "dead_hit": 83,
+        "dead_total": 145
+      },
+      "dead_gain": 2,
+      "dead_loss": 0,
+      "net_dead": 2,
+      "net_matched": 9,
+      "net_extra": 26,
+      "original_precision": 0.7780548628428927,
+      "alternative_precision": 0.7362385321100917,
+      "gains_with_original_interpolation_flag": 2
+    },
+    {
+      "model": "P29_B_s1",
+      "original": {
+        "matched": 302,
+        "total": 488,
+        "candidates": 402,
+        "dead_hit": 80,
+        "dead_total": 145
+      },
+      "alternative": {
+        "matched": 311,
+        "total": 488,
+        "candidates": 441,
+        "dead_hit": 82,
+        "dead_total": 145
+      },
+      "dead_gain": 4,
+      "dead_loss": 2,
+      "net_dead": 2,
+      "net_matched": 9,
+      "net_extra": 30,
+      "original_precision": 0.7512437810945274,
+      "alternative_precision": 0.7052154195011338,
+      "gains_with_original_interpolation_flag": 3
+    },
+    {
+      "model": "P31_C_s19",
+      "original": {
+        "matched": 291,
+        "total": 488,
+        "candidates": 390,
+        "dead_hit": 65,
+        "dead_total": 145
+      },
+      "alternative": {
+        "matched": 314,
+        "total": 488,
+        "candidates": 468,
+        "dead_hit": 75,
+        "dead_total": 145
+      },
+      "dead_gain": 12,
+      "dead_loss": 2,
+      "net_dead": 10,
+      "net_matched": 23,
+      "net_extra": 55,
+      "original_precision": 0.7461538461538462,
+      "alternative_precision": 0.6709401709401709,
+      "gains_with_original_interpolation_flag": 11
+    },
+    {
+      "model": "P31_C_s1",
+      "original": {
+        "matched": 298,
+        "total": 488,
+        "candidates": 398,
+        "dead_hit": 68,
+        "dead_total": 145
+      },
+      "alternative": {
+        "matched": 312,
+        "total": 488,
+        "candidates": 484,
+        "dead_hit": 72,
+        "dead_total": 145
+      },
+      "dead_gain": 4,
+      "dead_loss": 0,
+      "net_dead": 4,
+      "net_matched": 14,
+      "net_extra": 72,
+      "original_precision": 0.7487437185929648,
+      "alternative_precision": 0.6446280991735537,
+      "gains_with_original_interpolation_flag": 4
+    },
+    {
+      "model": "P31_G_s19",
+      "original": {
+        "matched": 299,
+        "total": 488,
+        "candidates": 388,
+        "dead_hit": 73,
+        "dead_total": 145
+      },
+      "alternative": {
+        "matched": 321,
+        "total": 488,
+        "candidates": 438,
+        "dead_hit": 84,
+        "dead_total": 145
+      },
+      "dead_gain": 11,
+      "dead_loss": 0,
+      "net_dead": 11,
+      "net_matched": 22,
+      "net_extra": 28,
+      "original_precision": 0.770618556701031,
+      "alternative_precision": 0.7328767123287672,
+      "gains_with_original_interpolation_flag": 10
+    },
+    {
+      "model": "P31_G_s1",
+      "original": {
+        "matched": 303,
+        "total": 488,
+        "candidates": 392,
+        "dead_hit": 70,
+        "dead_total": 145
+      },
+      "alternative": {
+        "matched": 321,
+        "total": 488,
+        "candidates": 454,
+        "dead_hit": 77,
+        "dead_total": 145
+      },
+      "dead_gain": 7,
+      "dead_loss": 0,
+      "net_dead": 7,
+      "net_matched": 18,
+      "net_extra": 44,
+      "original_precision": 0.7729591836734694,
+      "alternative_precision": 0.7070484581497798,
+      "gains_with_original_interpolation_flag": 7
+    }
+  ],
+  "scope": "Eleven fixed development images with all 145 interior Dead nuclei, plus label-selected training maps.",
+  "model_count": 12,
+  "development_images": 11,
+  "development_objects": 488,
+  "dead_objects": 145,
+  "optimizer_updates": 0,
+  "network_inference": false,
+  "execution": {
+    "job_id": "55839942",
+    "state": "COMPLETED",
+    "exit_code": "0:0",
+    "elapsed_seconds": 237
+  },
+  "preservation": {
+    "status": "PASS",
+    "files": 546,
+    "bytes": 188525908
+  }
+}

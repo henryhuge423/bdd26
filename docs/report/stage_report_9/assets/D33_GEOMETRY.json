@@ -1,0 +1,236 @@
+{
+  "models": [
+    {
+      "model": "P22_C_s19",
+      "condition": "original",
+      "extra_partition": {
+        "in_mask_displaced": 42,
+        "outside_masks": 54
+      },
+      "equal_score_2x2_clusters": 0
+    },
+    {
+      "model": "P22_C_s19",
+      "condition": "sigmoid_before_interpolation",
+      "extra_partition": {
+        "in_mask_within_radius_unassigned": 55,
+        "in_mask_displaced": 57,
+        "outside_masks": 75
+      },
+      "equal_score_2x2_clusters": 2
+    },
+    {
+      "model": "P22_C_s1",
+      "condition": "original",
+      "extra_partition": {
+        "in_mask_displaced": 44,
+        "outside_masks": 52
+      },
+      "equal_score_2x2_clusters": 0
+    },
+    {
+      "model": "P22_C_s1",
+      "condition": "sigmoid_before_interpolation",
+      "extra_partition": {
+        "in_mask_displaced": 57,
+        "in_mask_within_radius_unassigned": 40,
+        "outside_masks": 63
+      },
+      "equal_score_2x2_clusters": 0
+    },
+    {
+      "model": "P22_M_s19",
+      "condition": "original",
+      "extra_partition": {
+        "in_mask_displaced": 46,
+        "outside_masks": 53,
+        "in_mask_within_radius_unassigned": 1
+      },
+      "equal_score_2x2_clusters": 0
+    },
+    {
+      "model": "P22_M_s19",
+      "condition": "sigmoid_before_interpolation",
+      "extra_partition": {
+        "in_mask_displaced": 64,
+        "outside_masks": 76,
+        "in_mask_within_radius_unassigned": 121
+      },
+      "equal_score_2x2_clusters": 13
+    },
+    {
+      "model": "P22_M_s1",
+      "condition": "original",
+      "extra_partition": {
+        "in_mask_displaced": 36,
+        "outside_masks": 50,
+        "in_mask_within_radius_unassigned": 1
+      },
+      "equal_score_2x2_clusters": 0
+    },
+    {
+      "model": "P22_M_s1",
+      "condition": "sigmoid_before_interpolation",
+      "extra_partition": {
+        "in_mask_displaced": 59,
+        "in_mask_within_radius_unassigned": 83,
+        "outside_masks": 67
+      },
+      "equal_score_2x2_clusters": 3
+    },
+    {
+      "model": "P29_B_s19",
+      "condition": "original",
+      "extra_partition": {
+        "in_mask_displaced": 38,
+        "outside_masks": 51
+      },
+      "equal_score_2x2_clusters": 0
+    },
+    {
+      "model": "P29_B_s19",
+      "condition": "sigmoid_before_interpolation",
+      "extra_partition": {
+        "in_mask_displaced": 41,
+        "outside_masks": 62,
+        "in_mask_within_radius_unassigned": 12
+      },
+      "equal_score_2x2_clusters": 0
+    },
+    {
+      "model": "P29_B_s1",
+      "condition": "original",
+      "extra_partition": {
+        "in_mask_displaced": 49,
+        "outside_masks": 51
+      },
+      "equal_score_2x2_clusters": 0
+    },
+    {
+      "model": "P29_B_s1",
+      "condition": "sigmoid_before_interpolation",
+      "extra_partition": {
+        "in_mask_displaced": 58,
+        "outside_masks": 60,
+        "in_mask_within_radius_unassigned": 12
+      },
+      "equal_score_2x2_clusters": 0
+    },
+    {
+      "model": "P29_C_s19",
+      "condition": "original",
+      "extra_partition": {
+        "in_mask_displaced": 47,
+        "outside_masks": 54
+      },
+      "equal_score_2x2_clusters": 0
+    },
+    {
+      "model": "P29_C_s19",
+      "condition": "sigmoid_before_interpolation",
+      "extra_partition": {
+        "in_mask_displaced": 58,
+        "outside_masks": 63,
+        "in_mask_within_radius_unassigned": 25
+      },
+      "equal_score_2x2_clusters": 0
+    },
+    {
+      "model": "P29_C_s1",
+      "condition": "original",
+      "extra_partition": {
+        "in_mask_displaced": 45,
+        "outside_masks": 54
+      },
+      "equal_score_2x2_clusters": 0
+    },
+    {
+      "model": "P29_C_s1",
+      "condition": "sigmoid_before_interpolation",
+      "extra_partition": {
+        "in_mask_displaced": 57,
+        "in_mask_within_radius_unassigned": 50,
+        "outside_masks": 67
+      },
+      "equal_score_2x2_clusters": 3
+    },
+    {
+      "model": "P31_C_s19",
+      "condition": "original",
+      "extra_partition": {
+        "outside_masks": 50,
+        "in_mask_displaced": 49
+      },
+      "equal_score_2x2_clusters": 0
+    },
+    {
+      "model": "P31_C_s19",
+      "condition": "sigmoid_before_interpolation",
+      "extra_partition": {
+        "in_mask_displaced": 62,
+        "outside_masks": 65,
+        "in_mask_within_radius_unassigned": 27
+      },
+      "equal_score_2x2_clusters": 1
+    },
+    {
+      "model": "P31_C_s1",
+      "condition": "original",
+      "extra_partition": {
+        "in_mask_displaced": 49,
+        "outside_masks": 51
+      },
+      "equal_score_2x2_clusters": 0
+    },
+    {
+      "model": "P31_C_s1",
+      "condition": "sigmoid_before_interpolation",
+      "extra_partition": {
+        "in_mask_displaced": 59,
+        "in_mask_within_radius_unassigned": 38,
+        "outside_masks": 75
+      },
+      "equal_score_2x2_clusters": 2
+    },
+    {
+      "model": "P31_G_s19",
+      "condition": "original",
+      "extra_partition": {
+        "in_mask_displaced": 40,
+        "outside_masks": 49
+      },
+      "equal_score_2x2_clusters": 0
+    },
+    {
+      "model": "P31_G_s19",
+      "condition": "sigmoid_before_interpolation",
+      "extra_partition": {
+        "in_mask_displaced": 45,
+        "outside_masks": 61,
+        "in_mask_within_radius_unassigned": 11
+      },
+      "equal_score_2x2_clusters": 0
+    },
+    {
+      "model": "P31_G_s1",
+      "condition": "original",
+      "extra_partition": {
+        "in_mask_displaced": 44,
+        "outside_masks": 45
+      },
+      "equal_score_2x2_clusters": 0
+    },
+    {
+      "model": "P31_G_s1",
+      "condition": "sigmoid_before_interpolation",
+      "extra_partition": {
+        "in_mask_displaced": 49,
+        "outside_masks": 65,
+        "in_mask_within_radius_unassigned": 19
+      },
+      "equal_score_2x2_clusters": 1
+    }
+  ],
+  "scope": "Eleven development images; mask membership and distance use native GT.",
+  "native_source": "Same fixed native arrays saved by D32"
+}

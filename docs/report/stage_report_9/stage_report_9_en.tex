@@ -1,512 +1,758 @@
-% Options for packages loaded elsewhere
-\PassOptionsToPackage{unicode}{hyperref}
-\PassOptionsToPackage{hyphens}{url}
-\documentclass[
-  10pt,
-]{article}
-\usepackage{xcolor}
-\usepackage[margin=20mm]{geometry}
-\usepackage{amsmath,amssymb}
-\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
-\usepackage{iftex}
-\ifPDFTeX
-  \usepackage[T1]{fontenc}
-  \usepackage[utf8]{inputenc}
-  \usepackage{textcomp} % provide euro and other symbols
-\else % if luatex or xetex
-  \usepackage{unicode-math} % this also loads fontspec
-  \defaultfontfeatures{Scale=MatchLowercase}
-  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
-\fi
-\usepackage{lmodern}
-\ifPDFTeX\else
-  % xetex/luatex font selection
-\fi
-% Use upquote if available, for straight quotes in verbatim environments
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-\IfFileExists{microtype.sty}{% use microtype if available
-  \usepackage[]{microtype}
-  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
-}{}
-\makeatletter
-\@ifundefined{KOMAClassName}{% if non-KOMA class
-  \IfFileExists{parskip.sty}{%
-    \usepackage{parskip}
-  }{% else
-    \setlength{\parindent}{0pt}
-    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
-}{% if KOMA class
-  \KOMAoptions{parskip=half}}
-\makeatother
-\usepackage{longtable,booktabs,array}
-\usepackage{calc} % for calculating minipage widths
-% Correct order of tables after \paragraph or \subparagraph
-\usepackage{etoolbox}
-\makeatletter
-\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
-\makeatother
-% Allow footnotes in longtable head/foot
-\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
-\makesavenoteenv{longtable}
-\usepackage{graphicx}
-\makeatletter
-\newsavebox\pandoc@box
-\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
-  \sbox\pandoc@box{#1}%
-  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
-  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
-  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
-  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
-  \else\usebox{\pandoc@box}%
-  \fi%
-}
-% Set default figure placement to htbp
-\def\fps@figure{htbp}
-\makeatother
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-\usepackage{fontspec}
-\usepackage{xeCJK}
-\setCJKmainfont{Microsoft YaHei}
+\documentclass[14pt,a4paper]{extarticle}
+\usepackage[margin=18mm]{geometry}
+\usepackage{fontspec,xeCJK}
 \setmainfont{TeX Gyre Termes}
-\usepackage{tikz,pgfplots}
+\IfFontExistsTF{Microsoft YaHei}{\setCJKmainfont[Scale=1.0]{Microsoft YaHei}\setCJKsansfont[Scale=1.0]{Microsoft YaHei}}{\setCJKmainfont[Scale=1.0]{FandolSong-Regular}\setCJKsansfont[Scale=1.0]{FandolHei-Regular}}
+\usepackage{graphicx,booktabs,array,xcolor,tikz,pgfplots}
+\usetikzlibrary{positioning,arrows.meta,calc}
 \pgfplotsset{compat=1.18}
-\usepackage{float}
-\let\origfigure\figure
-\let\endorigfigure\endfigure
-\renewenvironment{figure}[1][]{\origfigure[H]}{\endorigfigure}
-\usepackage{graphicx}
-\setlength{\emergencystretch}{3em}
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\fancyhf{}
-\fancyfoot[C]{\thepage}
-\renewcommand{\headrulewidth}{0pt}
-\usepackage{bookmark}
-\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same}
-\hypersetup{
-  hidelinks,
-  pdfcreator={LaTeX via pandoc}}
-
-\author{}
-\date{}
-
+\usepackage{amsmath,fancyhdr,hyperref}
+\hypersetup{colorlinks=true,urlcolor=blue!55!black,linkcolor=blue!55!black}
+\usepackage{setspace}
+\setstretch{1.15}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{7pt}
+\setlength{\emergencystretch}{4em}
+\pagestyle{fancy}\fancyhf{}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0pt}
+\newcommand{\pagechapter}[1]{\clearpage\section*{#1}\addcontentsline{toc}{section}{#1}}
 \begin{document}
+\section*{Stage report 9: finding more nuclei and explaining changing predictions}\label{chapter0}
+Research stage: November 17–20, 2026. Revision and progress check: November 21, 2026.
 
-\section{Stage nine: alignment, score thresholds and nucleus-center
-detection}\label{stage-nine-alignment-score-thresholds-and-nucleus-center-detection}
+\subsection*{The question of this stage}
+The detector finds nearly every nucleus in its training images, yet misses many in development images. We examine the prediction process step by step: image features, center position, prediction score, and final point selection. Each experiment changes a specific part of this process; the report follows the nuclei recovered or lost as a result.
 
-November 18--20, 2026. The main finding is that alignment dependence and
-low prediction scores are distinct failure modes. The all-layer detector
-benefits most from combining positions across alignments; the
-translation-trained detector locates many nuclei at scores below the
-threshold previously used. A fixed diagnostic of preserved predictions
-now separates these cases object by object.
+\subsection*{Three principal findings}
+First, detection depends on the image’s position relative to the model’s patch grid. Second, translation training makes positions more stable while producing many useful points with low scores. Third, learning candidate quality after admitting low-score points removes some extra predictions and also deletes some accurately located nuclei.
 
-This report covers the useful sequence of experiments, rather than only
-the newest result: the earlier translation-trained detector (P15),
-full-depth adaptation (P22), intermediate-map and interpolation
-diagnosis (D32/D33), position readout (P34), sixteen aligned score maps
-(P35), threshold and point consensus (P36), and the new saved-point
-diagnostic (D37). D32/D33 supply context; P34--D37 are the current
-stage.
-
-Eight P36 scientific computations completed. Seven array tasks finished
-normally; P15 translation-trained seed 19 failed during preservation
-after computation, and preservation-only job 55895127 completed
-successfully. Eight collection receipts passed; 242 collected files
-matched their preserved hashes. All paired decisions and the published
-P36 analysis were independently reproduced. D37 replayed every original,
-selected-threshold and consensus count per image before partitioning
-misses. The partial P34 all-layer seed-1 run remains preserved with no
-completed evaluation.
-
-\newpage
-
-\section{Detectors, images and
-interpretation}\label{detectors-images-and-interpretation}
-
-All eight detectors use their last checkpoint after 130 training epochs.
-P22 C updates the last twelve encoder layers, and P22 M updates all
-twenty-four. P15 C is its own last-twelve control; P15 J was trained
-with integer translation up to sixteen pixels per axis. Each recipe has
-seeds 19 and 1. P15 and P22 controls are different training runs and are
-compared with their own paired experiments.
-
-All measurements use the established fold-1 training/development
-division: 2,134 training images and 522 development images. P36 samples
-240 training images by a fixed hash of their number; these contain 5,581
-annotated nuclei. The development set has 12,250 nuclei and 145 interior
-Dead nuclei. The latter includes apoptotic and necrotic nuclei. Central
-analyses use 7,014 development nuclei at least 24 pixels from all
-borders, visible at all sixteen alignments.
-
-A point is matched within three pixels of its annotated center using
-maximum-cardinality one-to-one assignment. The sixteen alignments move
-each axis by −8, −4, 0 or 4 pixels. White and mirrored fills are
-recorded separately. Predictions are returned to original coordinates.
-Threshold and consensus parameters were selected on shifted training
-images and written before development images were read; the trained
-alignment was excluded from selection.
-
-Precision is the share of predicted points matched to an annotation;
-recall is the share of annotated nuclei matched. F1 is their harmonic
-mean. These are center-detection measurements from CPU single precision.
-The original BF16 records are retained separately; this stage uses the
-single-precision paired controls. Repeated alignments observe the same
-nucleus and are not independent samples. Three-fold instance
-segmentation and official PanNuke metrics belong to a later method
-evaluation.
-
-\newpage
-
-\section{Position readout and averaged score maps: what the earlier
-experiments
-established}\label{position-readout-and-averaged-score-maps-what-the-earlier-experiments-established}
-
-P34 trained a 73,986-parameter position readout while keeping each
-detector frozen. Three tasks completed; the fourth stopped at the second
-readout's first-epoch time guard (1,400.3 seconds against 1,300). No
-final two-seed all-layer result is available.
-
-The readout places the center within three pixels for 99.4\%--99.8\% of
-nuclei on the 48 selected training images, versus 70.6\%--80.6\% on
-development images depending on the readout and detector. Moving and
-merging predicted points adds 158, 172 and 172 matches for the three
-detectors and loses 173, 182 and 158. Its position error is therefore
-large enough to undo almost as many valid matches as it creates.
-Training the readout with translation improves its shifted-image
-localization, but the final detection changes remain small.
-
-The frozen detector itself matches 96.0\%--98.2\% on these training
-images; moving the same images by (5,3) pixels reduces matching to
-56.1\%--64.6\%. P35 extends this observation to sixteen alignments.
-Among central training nuclei, the original alignment matches
-97.4\%--99.2\%, compared with 67.1\%--72.6\% at the other fifteen. The
-central development rates at the original and other alignments remain
-close, at roughly 61\%--68\%.
-
-P35 also finds that 86\%--89\% of central development nuclei are matched
-at some alignment, while 51\%--61\% are matched at only some of the
-sixteen. Directly averaging narrow, displaced score peaks at threshold
-0.5 matches only 9\%--15\% of all development nuclei at 95\%--96\%
-precision. The observed peak displacement and score reduction motivate
-combining point positions and studying thresholds separately.
+\begin{center}\begin{tikzpicture}[node distance=8mm, every node/.style={font=\fontsize{13}{17}\selectfont}]
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt] (n0) {D32 and D33: inspect intermediate outputs and interpolation};
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n0] (n1) {P34 and P35: test position correction and multiple alignments};
+\draw[-{Stealth},thick,blue!60!black] (n0) -- (n1);
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n1] (n2) {P36 and D37: select thresholds, combine positions, explain misses};
+\draw[-{Stealth},thick,blue!60!black] (n1) -- (n2);
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n2] (n3) {P38: learn the quality of low-score candidates};
+\draw[-{Stealth},thick,blue!60!black] (n2) -- (n3);
+\end{tikzpicture}\end{center}
+\clearpage\section*{Reading route}
+\begin{center}\begin{tabular}{p{.12\linewidth}p{.64\linewidth}r}\toprule
+Study & Topic & Page\\
+\midrule
+P15 & moving training images changes alignment exposure & \pageref{chapter5}\\
+P22 & adapting every encoder layer for nucleus detection & \pageref{chapter6}\\
+D32 & recording each step that produces a prediction & \pageref{chapter7}\\
+D33 & swapping interpolation and score conversion & \pageref{chapter10}\\
+P34 & learning a movement for each existing prediction & \pageref{chapter13}\\
+P35 & sixteen patch-grid alignments of the same image & \pageref{chapter16}\\
+P36 & selecting score thresholds and combining positions separately & \pageref{chapter20}\\
+D37 & explaining each nucleus with preserved points & \pageref{chapter29}\\
+P38 & grouping low-score points and learning their quality & \pageref{chapter32}\\
+\bottomrule\end{tabular}\end{center}
+\pagechapter{Current progress and experiment map}\label{chapter1}
+The live query at 07:54:57 EST on November 21 found an empty personal Expanse queue. All P35 tasks completed. All eight P36 scientific computations completed and the preservation recovery completed. P38 completed. Three of four P34 tasks completed; the all-layer seed-1 evaluation remains incomplete.
 
 \begin{center}
-\input{figs/alignment_en}
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{0.1\linewidth}p{0.43\linewidth}p{0.36\linewidth}}
+\toprule
+Study & Operation & Purpose\\
+\midrule
+P15 & Translate images during training & Test alignment exposure\\
+P22 & Update all encoder layers & Test adaptation depth\\
+D32 & Record maps and coordinates & Separate score and position\\
+D33 & Swap interpolation and score conversion & Measure interpolation effects\\
+P34 & Train a small offset readout & Test correction of existing points\\
+P35 & Compare 16 alignments and map averaging & Measure alignment complementarity\\
+P36 & Select thresholds and position rules & Recover filtered candidates\\
+D37 & Partition saved misses per nucleus & Locate the next intervention\\
+P38 & Learn candidate-quality scores & Reduce extras among more candidates\\
+\bottomrule
+\end{tabular}
 \end{center}
+P15 and P22 are earlier detectors reused in this stage; D32 through P38 form the main stage. Independent external archiving of large checkpoints also remains on the task list.
 
-P36 repeats the alignment comparison on 240 training images. Labels
-22-C, 22-M, 15-C and 15-J denote the four defined recipes; the suffix is
-the seed. Bars use central nuclei and mirrored fill.
+\pagechapter{How an image becomes a predicted point}\label{chapter2}
+The encoder is UNI, a pretrained model that turns tissue images into feature vectors. A 256×256-pixel image is divided into 16×16-pixel patches. Each patch becomes a 1,024-dimensional vector processed by 24 encoder layers. A detection head turns the features into a two-dimensional map of nucleus-center scores.
 
-\newpage
+\begin{center}\begin{tikzpicture}[node distance=8mm, every node/.style={font=\fontsize{13}{17}\selectfont}]
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt] (n0) {Input: 256×256-pixel tissue image};
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n0] (n1) {Read layers 6, 12, 18, 24; project each branch to 192 channels};
+\draw[-{Stealth},thick,blue!60!black] (n0) -- (n1);
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n1] (n2) {Fuse and upsample: 128×128 features with 64 channels};
+\draw[-{Stealth},thick,blue!60!black] (n1) -- (n2);
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n2] (n3) {A 1×1 convolution produces raw values; interpolate to 256×256};
+\draw[-{Stealth},thick,blue!60!black] (n2) -- (n3);
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n3] (n4) {Convert to scores → locate local peaks → retain points above a cutoff};
+\draw[-{Stealth},thick,blue!60!black] (n3) -- (n4);
+\end{tikzpicture}\end{center}
+A raw prediction value is a logit and can be positive or negative. The sigmoid function converts it to a score between zero and one; a logit of zero gives a score of 0.5. A local peak is the highest location within a small surrounding window. Decoding is the process of extracting and selecting points from the map.
 
-\section{Threshold selection recovers low-score
-nuclei}\label{threshold-selection-recovers-low-score-nuclei}
+\pagechapter{Essential terms: what the numbers and modules mean}\label{chapter3}
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{0.25\linewidth}p{0.66\linewidth}}
+\toprule
+Term & Meaning in this report\\
+\midrule
+Parameter and update & Parameters are numbers controlling model calculations; training updates change them\\
+Pretraining & Learning from earlier images before the current detection task\\
+Feature and channel & Features are numeric descriptions of image patterns; 1,024 dimensions means 1,024 numbers; 64 channels means 64 numbers per location\\
+Convolution & Combine values in a small window: 3×3 reads neighbors; 1×1 combines channels at one position\\
+Learning rate & Controls the size of a training update; smaller values give smaller steps\\
+Last checkpoint & Saved model parameters at training end; these detectors use epoch 130\\
+BF16 / FP32 & 16-bit and 32-bit number formats; rounding differences can change individual peaks or matches\\
+F1 & 2×precision×recall / (precision+recall); both quantities must be high for a high F1\\
+\bottomrule
+\end{tabular}
+\end{center}
+\pagechapter{Data, annotated centers and comparison rules}\label{chapter4}
+We retain the fixed internal division of PanNuke fold 1: 2,134 training images and 522 development images. Training images teach the models; development images measure transfer of the fixed procedures. Development contains 12,250 annotated nuclei, including 145 Dead nuclei whose masks do not touch an image border, in 11 images. Dead includes apoptotic and necrotic nuclei.
 
-The selected threshold is 0.3 for all last-twelve controls and all-layer
-seed 19, 0.4 for all-layer seed 1, and 0.2 for both translation-trained
-detectors. These values were selected on shifted training images by F1
-over all annotated nuclei, pooling both fills.
-
-The translation-trained detector is the clear change. At threshold 0.5
-it matches 4,771/4,600 development nuclei with 86.57\%/86.38\% precision
-and 44/44 interior Dead matches. At the training-selected threshold 0.2
-it matches 8,463/8,542 nuclei with 66.04\%/66.50\% precision and 101/99
-interior Dead matches. The matched count increases by 3,692/3,942 with
-no lost original match in the saved-record replay. This gain comes with
-many new unmatched predictions.
-
-For the all-layer detector, selected thresholds add 293/145 matches and
-two interior Dead matches in each seed. Their F1 increases by only
-0.0034/0.0015. Translation-trained and control models therefore require
-different score interpretation; the earlier P15 verdict at fixed
-threshold 0.5 remains part of that original recipe's history. The new
-decoder answers a different, explicitly training-selected question.
-
-The translation-trained model's threshold-selected training F1 is about
-0.795/0.796, while development F1 is 0.675/0.681. Translation reduces
-the special advantage of the original alignment; a substantial
-training-to-development gap still remains.
-
-\begin{longtable}[]{@{}lrrrrrr@{}}
-\toprule\noalign{}
-Recipe / seed & Cutoff & Matched / points & Dead / 145 & Recall &
-Precision & F1 \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-22-C/19 & 0.3 & 7,622 / 11,430 & 76 & 62.22\% & 66.68\% & 0.6438 \\
-22-C/1 & 0.3 & 7,606 / 11,324 & 69 & 62.09\% & 67.17\% & 0.6453 \\
-22-M/19 & 0.3 & 8,272 / 11,677 & 87 & 67.53\% & 70.84\% & 0.6914 \\
-22-M/1 & 0.4 & 8,078 / 11,173 & 86 & 65.94\% & 72.30\% & 0.6897 \\
-15-C/19 & 0.3 & 7,569 / 11,463 & 77 & 61.79\% & 66.03\% & 0.6384 \\
-15-C/1 & 0.3 & 7,707 / 11,454 & 66 & 62.91\% & 67.29\% & 0.6503 \\
-15-J/19 & 0.2 & 8,463 / 12,814 & 101 & 69.09\% & 66.04\% & 0.6753 \\
-15-J/1 & 0.2 & 8,542 / 12,846 & 99 & 69.73\% & 66.50\% & 0.6807 \\
-\end{longtable}
-
-\newpage
-
-\section{Combining point positions: useful gains and the remaining
-tradeoff}\label{combining-point-positions-useful-gains-and-the-remaining-tradeoff}
-
-Consensus groups points scoring at least 0.5 from the fifteen shifted
-alignments around a highest-scoring point, then averages their
-positions. Every detector selects radius four pixels. Last-twelve
-controls select four or six contributing alignments; the all-layer
-detectors select five or six; both translation-trained detectors select
-one. The number is relative to alignments valid at that position.
-
-All-layer seed 19 gains 1,163 matches and loses 871, a net 292; seed 1
-gains 1,096 and loses 825, a net 271. Interior Dead matches change from
-85 to 99 and 84 to 89. Precision changes from 72.90\% to 73.63\% and
-73.43\% to 72.29\%. The primary two-seed criteria remain unmet: the
-precision floor is 75\%, and seed 1's Dead gain is 5/145 with a paired
-interval spanning zero (−0.0204 to 0.1000).
-
-The translation-trained consensus raises recall from 38.95\%/37.55\% to
-52.86\%/52.24\%, while retaining precision above 80\%. It gains
-1,826/1,906 nuclei and loses 122/107. Its one-alignment rule reflects
-less complementary variation among its predictions, compared with
-detectors trained at one alignment. The threshold-selected decoder has
-much higher recall; the consensus still discards all phase points
-scoring below 0.5.
-
-\begin{longtable}[]{@{}lrrrrrr@{}}
-\toprule\noalign{}
-Recipe / seed & Cutoff & Matched / points & Dead / 145 & Recall &
-Precision & F1 \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-22-C/19 & 0.5 & 7,671 / 11,050 & 84 & 62.62\% & 69.42\% & 0.6585 \\
-22-C/1 & 0.5 & 7,917 / 11,543 & 94 & 64.63\% & 68.59\% & 0.6655 \\
-22-M/19 & 0.5 & 8,271 / 11,233 & 99 & 67.52\% & 73.63\% & 0.7044 \\
-22-M/1 & 0.5 & 8,204 / 11,348 & 89 & 66.97\% & 72.29\% & 0.6953 \\
-15-C/19 & 0.5 & 7,628 / 10,963 & 80 & 62.27\% & 69.58\% & 0.6572 \\
-15-C/1 & 0.5 & 7,681 / 10,957 & 81 & 62.70\% & 70.10\% & 0.6620 \\
-15-J/19 & 0.5 & 6,475 / 8,006 & 71 & 52.86\% & 80.88\% & 0.6393 \\
-15-J/1 & 0.5 & 6,399 / 7,863 & 69 & 52.24\% & 81.38\% & 0.6363 \\
-\end{longtable}
-
-\newpage
-
-\section{Breast image 178: following individual
-nuclei}\label{breast-image-178-following-individual-nuclei}
-
-The four panels use the all-layer detector, seed 19: annotated centers,
-original decoder, threshold 0.3 selected on training images, and
-selected consensus. The image has 20 original matches, 21 at the lower
-threshold and 24 with consensus. Cyan circles mark annotated centers;
-green plus signs are matched points, red crosses are unmatched
-predictions. Yellow indices identify interior Dead nuclei.
-
-\begin{figure}
-\centering
-\includegraphics[width=0.9\linewidth,height=\textheight,keepaspectratio,alt={Fixed breast tissue image 178: all-layer detector, seed 19.}]{assets/P22_M_s19_development_0178.png}
-\caption{Fixed breast tissue image 178: all-layer detector, seed 19.}
-\end{figure}
-
-Object 23, an epithelial nucleus at (y,x)=(71,38), has an original peak
-score 0.202 within three pixels. Neither threshold 0.5 nor 0.3 retains
-that peak. Four shifted alignments match it, and the consensus position
-is (69.33,38.33), 1.70 pixels from the annotation. Combining shifted
-positions therefore recovers this object.
-
-Interior Dead object 3 at (191,86), area 286 pixels, is retained in all
-three decoders. Its original peak score is 0.926; the consensus point is
-2.97 pixels from its center, close to the three-pixel boundary. More
-views can move a valid point closer to the matching boundary as well as
-rescue a miss.
-
-\newpage
-
-\section{Colon image 1482: score loss, recovery and persistent
-misses}\label{colon-image-1482-score-loss-recovery-and-persistent-misses}
-
-This figure uses the translation-trained detector, seed 19. Matching
-rises from 12 nuclei at threshold 0.5 to 26 at selected threshold 0.2;
-consensus matches 18. The central strip contains many adjacent small
-annotated nuclei; the full coordinates and assignments are retained.
-
-\begin{figure}
-\centering
-\includegraphics[width=0.9\linewidth,height=\textheight,keepaspectratio,alt={Fixed colon tissue image 1482: translation-trained detector, seed 19.}]{assets/P15_J_s19_development_1482.png}
-\caption{Fixed colon tissue image 1482: translation-trained detector,
-seed 19.}
-\end{figure}
-
-Dead object 7 at (141,65), area 504 pixels, has an original
-center-neighborhood peak score 0.486. Threshold 0.5 removes it;
-threshold 0.2 retains it. Twelve shifted alignments match it, and
-consensus places a point 1.90 pixels from its annotation. Here score
-threshold and alignment both account for recovery.
-
-Dead object 51 at (145,86), area 67 pixels, remains missed by both
-detectors. Neither detector has a recorded original peak at or above 0.1
-within six pixels, and no alignment matches it at recording floor 0.1
-within three pixels. A nearby small object, 55 at (153,35), area 57
-pixels, is found by the translation-trained model (score 0.575;
-consensus distance 1.11 pixels) and missed by the all-layer model. Small
-area is associated with difficulty across the dataset; these two objects
-show that area alone cannot explain each outcome.
-
-\newpage
-
-\section{D37: an exclusive partition of the remaining
-misses}\label{d37-an-exclusive-partition-of-the-remaining-misses}
-
-The new diagnostic uses preserved P36 points without another model
-forward pass. In order, each nucleus is: matched originally; missed
-originally but matched at another alignment at 0.5; matched only after
-admitting scores down to the recording floor 0.1; near a point assigned
-elsewhere; or without a recorded point within three pixels at any
-alignment. Both fills and both data roles are analyzed. Lower thresholds
-can alter assignment to neighboring nuclei, so the partition uses the
-stated priority rather than assuming identical per-object assignments.
-
-For all-layer seed 19, of 4,271 original misses, 2,476 (58.0\%) are
-matched at another white-filled alignment at 0.5, 401 (9.4\%) only below
-0.5, two involve competition, and 1,392 (32.6\%) have no recorded point
-within three pixels. For translation-trained seed 19, of 7,479 original
-misses, 2,104 (28.1\%) are alignment-recoverable and 4,141 (55.4\%)
-require lower scores; 1,234 (16.5\%) have no recorded point within three
-pixels. Seed 1 repeats the contrast.
-
-The central-only chart below removes the border strip. The annotations
-are used to ask whether a matching point exists at any alignment; this
-availability statistic is separate from the selected decoder. A score
-below 0.1 is not stored, and a peak farther than three pixels belongs to
-the last category even when it is inside the nucleus.
+An annotated center is the pixel inside the annotated mask nearest its centroid. Coordinates are written (y,x): y increases downward and x increases rightward. A prediction within three pixels can match the center. Each nucleus and point can be used once; the assignment maximizes the number of matches.
 
 \begin{center}
-\input{figs/partition_en}
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{0.26\linewidth}p{0.65\linewidth}}
+\toprule
+Quantity & Meaning\\
+\midrule
+Recall & Matched nuclei / all annotated nuclei\\
+Precision & Matched points / all predicted points\\
+Extra point & Prediction without a one-to-one match\\
+F1 & Harmonic mean of precision and recall\\
+Seeds 19 and 1 & Two random initializations and training runs\\
+\bottomrule
+\end{tabular}
 \end{center}
+For example, matching 70 of 100 nuclei with 90 predictions gives 70\% recall and 77.8\% precision, with 20 extras. An extra can lie in background, inside a nucleus but away from its center, or duplicate another prediction.
 
-Exclusive states for 7,014 central development nuclei; white fill. Full
-all-nucleus counts are below.
+Later center comparisons use paired single-precision forward results; D32 intermediate maps include BF16 mixed precision. Each chapter identifies its scope and numerical precision. This stage measures center detection; formal instance segmentation follows the last-checkpoint, official-evaluator, three-split protocol.
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1304}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1739}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1739}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1739}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1739}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1739}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Recipe / seed
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Original
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Other alignment
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Low score
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Competition
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-No nearby point
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-22-C/19 & 7,255 & 2,875 & 536 & 1 & 1,583 \\
-22-C/1 & 7,199 & 2,893 & 521 & 1 & 1,636 \\
-22-M/19 & 7,979 & 2,476 & 401 & 2 & 1,392 \\
-22-M/1 & 7,933 & 2,493 & 354 & 2 & 1,468 \\
-15-C/19 & 7,255 & 2,849 & 574 & 1 & 1,571 \\
-15-C/1 & 7,285 & 2,894 & 498 & 1 & 1,572 \\
-15-J/19 & 4,771 & 2,104 & 4,141 & 0 & 1,234 \\
-15-J/1 & 4,600 & 2,178 & 4,267 & 1 & 1,204 \\
-\end{longtable}
+\pagechapter{P15: moving training images changes alignment exposure}\label{chapter5}
+\subsection*{What we did}
+Starting from its own control, P15 randomly moves training images by −16 to 16 integer pixels on each axis. Vacated pixels are white; centers move with the image and centers outside it are removed. Translation precedes the original rotations, flips and color augmentation. The detector still updates the last 12 encoder layers for 130 epochs with seeds 19 and 1.
 
-\newpage
+\subsection*{What we found}
+In this stage’s last-checkpoint replay at cutoff 0.5, translation-trained models match 4,771 and 4,600 development nuclei versus 7,255 and 7,285 for their own controls. They emit fewer points with higher precision, matching 44 interior Dead nuclei in both seeds. P36 subsequently selects thresholds on training images and finds many useful points below 0.5.
 
-\section{Position variation: reduced jitter, persistent shared
-displacement}\label{position-variation-reduced-jitter-persistent-shared-displacement}
+\begin{center}\input{figs/p15_original_en}\end{center}
+\subsection*{What the experiment contributes}
+P15 provides a detector exposed to multiple patch alignments, allowing us to study position stability separately from score level. The later observation of more stable positions and lower scores comes from this specific comparison, evaluated against its own control under the same decoding procedure.
 
-For isolated central nuclei with a point within six pixels in at least
-two shifted alignments, P36 separates squared displacement into an
-alignment-varying component and a shared component. With mirrored fill,
-last-twelve detectors have about 2.04--2.10 squared pixels of variation
-and 4.29--4.42 of shared displacement. All-layer detectors have
-1.67/1.68 and 3.78/3.83. Translation-trained detectors have 0.62/0.62
-and 3.46/3.40.
+\pagechapter{P22: adapting every encoder layer for nucleus detection}\label{chapter6}
+\subsection*{What we did}
+The control trains the final 12 encoder layers; the experiment trains all 24. Encoder learning rate remains $10^{-5}$, with the same head, data division, augmentation, loss and 130-epoch schedule. Both have seeds 19 and 1. Updating earlier feature-processing layers allows early features to adapt to center detection.
 
-Translation training reduces the alignment-varying quantity by roughly
-70\% relative to its own controls. The shared displacement remains
-larger. Averaging views can reduce variation, but it cannot remove a
-common offset. This explains why stable predictions need not coincide
-with the annotation.
+\begin{center}\input{figs/p22_original_en}\end{center}
+\subsection*{Findings and insight}
+In this stage’s single-precision replay, all-layer models match 85 and 84 interior Dead nuclei versus 66 and 61 for their controls. Overall matches rise from 7,255 and 7,199 to 7,979 and 7,933. D32 finds fewer weak-response observations after full-depth adaptation, while in-mask peaks displaced from the center remain. Broader adaptation helps detection; position readout and score selection remain separate questions.
 
-The shared estimate is the squared mean offset minus the
-within-alignment sample variance divided by the number of observed
-points. This is a descriptive moment decomposition of deterministic
-shifts, not a causal attribution of the offset to image content or
-annotation noise. It also conditions on a nearby retained point; the
-translation-trained subset contains about 4,500 nuclei versus roughly
-6,300 in the other models, so the cross-model comparison is not based on
-identical retained objects.
+Historical BF16 and current single-precision counts are retained separately: for example, all-layer seed 1 has 82 and 84 interior Dead matches respectively. Later paired results use each model’s control at the same precision.
+
+\pagechapter{D32: recording each step that produces a prediction}\label{chapter7}
+\subsection*{What we did}
+We reuse 12 last checkpoints: controls and experimental models from P22, P29 and P31, each with two seeds. P29 updates the first six and last six layers. P31 adds group normalization to the head, rescaling features within channel groups. We record raw maps before and after interpolation, scores, peaks, retained points and per-nucleus coordinates, then examine one-pixel translations. All 522 development images provide detection counts; 145 interior Dead nuclei provide detailed response comparisons.
+
+\subsection*{What we observed}
+The 12 models repeatedly observe the same 145 nuclei, giving 1,740 model–nucleus observations and 875 misses. In 334 misses, coarse-grid contributors include a nonnegative logit while fine-grid scores near the center are below 0.5. In 183 misses, a retained point lies inside the mask but farther than three pixels from the center. These flags can overlap. Among 6,048 one-pixel shift observations, 744 cross the 0.5 threshold, about 12.3\%.
+
+\begin{center}\input{figs/d32_counts_en}\end{center}
+D32 uses actual arrays to distinguish weak scores, lower scores near the center after interpolation, and strong in-mask peaks at displaced locations. The 180 diagnostic PNGs, arrays and coordinates are preserved. An initial plotting failure was followed by a rendering-only correction that completed the planned calculation.
+
+\pagechapter{A D32 example: responding inside a nucleus without matching its center}\label{chapter8}
+In breast image 178, the P22 control with seed 19 observes a Dead nucleus centered at (191,86), area 286 pixels. Its in-mask prediction at (190,89) scores about 0.963 and lies √10≈3.16 pixels away. With a three-pixel matching radius, the point is an extra and the nucleus a miss. The highest score within three pixels is about 0.108.
+
+\begin{center}\begin{tikzpicture}[node distance=8mm, every node/.style={font=\fontsize{13}{17}\selectfont}]
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt] (n0) {Annotated center (191,86)};
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n0] (n1) {In-mask prediction (190,89), score 0.963};
+\draw[-{Stealth},thick,blue!60!black] (n0) -- (n1);
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n1] (n2) {Distance 3.16 pixels exceeds the 3-pixel radius};
+\draw[-{Stealth},thick,blue!60!black] (n1) -- (n2);
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n2] (n3) {Count: one missed nucleus + one extra point};
+\draw[-{Stealth},thick,blue!60!black] (n2) -- (n3);
+\end{tikzpicture}\end{center}
+\subsection*{What this example teaches}
+Response location and annotated center are different quantities. A high-scoring prediction can lie inside a nucleus while failing to match its center. Such objects motivate position correction. Nuclei with weak scores throughout their masks provide fewer candidate points to move.
+
+The same nucleus has a different row number in later object tables. We link it by image number and center coordinate: instance 4 is its mask ID, while object 3 is the later table index.
+
+\pagechapter{D32 maps: before interpolation, after interpolation and actual matches}\label{chapter9}
+P22 control, seed 19, breast image 178. The image has 40 annotated nuclei and 34 retained points, giving 20 matches and 14 extras. White indicates a higher center score; black is near zero. Both maps use the same zero-to-one color scale.
 
 \begin{center}
-\input{figs/displacement_en}
+\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Image and annotated centers\par}
+\includegraphics[width=\linewidth]{assets/d32_control178_0.png}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont 128-grid center scores\par}
+\includegraphics[width=\linewidth]{assets/d32_control178_1.png}
+\end{minipage}\par\vspace{5mm}
+\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont 256-grid center scores\par}
+\includegraphics[width=\linewidth]{assets/d32_control178_2.png}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Matches: green / misses: yellow / extras: red\par}
+\includegraphics[width=\linewidth]{assets/d32_control178_3.png}
+\end{minipage}\par\vspace{5mm}
 \end{center}
+Preserved D32 maps. Green: matches; yellow: misses; red: extras. The displaced point beside center (191,86) is red.
 
-Development images, mirrored fill: same radius, isolation rule and
-estimator for each detector. The differing retained-object subsets are
-stated above.
+\pagechapter{D33: swapping interpolation and score conversion}\label{chapter10}
+\subsection*{What we did}
+Using D32 arrays, we compare two orders. The original bilinearly interpolates logits and then applies sigmoid. The alternative applies sigmoid first and interpolates scores. Bilinear interpolation forms a new pixel from a weighted average of four grid values. We keep the same weights, cutoff 0.5, peak selection and three-pixel matcher.
 
-\newpage
+\begin{center}\begin{tikzpicture}[node distance=8mm, every node/.style={font=\fontsize{13}{17}\selectfont}]
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt] (n0) {Original: coarse logits → interpolate → sigmoid → scores};
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n0] (n1) {Alternative: coarse logits → sigmoid → interpolate → scores};
+\draw[-{Stealth},thick,blue!60!black] (n0) -- (n1);
+\end{tikzpicture}\end{center}
+Sigmoid is nonlinear, so the orders produce different values. In one illustrative narrow-peak construction with background score 0.01, the original needs a coarse peak of about 0.9727 to reach 0.5; score-first interpolation needs about 0.8811. Actual peak width and shape are measured from image arrays.
 
-\section{Research decisions, reproducibility and remaining
-work}\label{research-decisions-reproducibility-and-remaining-work}
+\subsection*{Evaluation scope}
+We compare 12 models on the fixed 11 development images containing interior Dead nuclei: 488 annotated nuclei, including all 145 interior Dead nuclei. The job processes arrays only, completes in 237 seconds, and generates 180 comparison figures.
 
-The useful findings now separate three mechanisms. First, changing
-alignment recovers many misses of the all-layer detector; point-position
-consensus is more suitable than averaging narrow probability peaks.
-Second, translation training reduces alignment variation and lowers
-scores, making decoder calibration part of evaluating that recipe.
-Third, about 9\%--10\% of central development nuclei still lack a
-recorded point within three pixels at any alignment at 0.1 in the
-all-layer and translation-trained detectors. Those objects require
-further image and response analysis, with small and crowded nuclei as
-concrete subgroups.
+\pagechapter{D33 results: more detected nuclei and more competing predictions}\label{chapter11}
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{0.35\linewidth}p{0.25\linewidth}p{0.14\linewidth}p{0.15\linewidth}}
+\toprule
+Model / seed & Dead: before→after & Match gain & Extra gain\\
+\midrule
+Depth control / 19 & 67 → 80 & +20 & +91\\
+Depth control / 1 & 62 → 70 & +23 & +64\\
+All layers / 19 & 85 → 89 & +13 & +161\\
+All layers / 1 & 82 → 90 & +17 & +122\\
+Ends control / 19 & 65 → 78 & +22 & +45\\
+Ends control / 1 & 67 → 76 & +22 & +75\\
+First/last layers / 19 & 81 → 83 & +9 & +26\\
+First/last layers / 1 & 80 → 82 & +9 & +30\\
+Norm control / 19 & 65 → 75 & +23 & +55\\
+Norm control / 1 & 68 → 72 & +14 & +72\\
+Group norm / 19 & 73 → 84 & +22 & +28\\
+Group norm / 1 & 70 → 77 & +18 & +44\\
+\bottomrule
+\end{tabular}
+\end{center}
+Each model gains 2 to 13 Dead matches and 26 to 161 extras; precision drops for every model on these 11 images. Of 813 additional-extra observations, 491 lie inside a mask within three pixels of its center but compete with an assigned point, 137 are in-mask and displaced, and 185 lie outside all annotated masks.
 
-The next method experiment should couple training-selected score
-calibration with positional support: P36 selects a lower threshold for
-single-view decoding, but its consensus always starts at 0.5. A separate
-frozen design should compare calibrated low-score consensus with the
-existing P36 rule, choose parameters only on a training calibration
-subset separated by image, and keep both seeds, last checkpoints and
-original development criteria. No development threshold will be deployed
-from the descriptive curves. No new detector training, mask expansion or
-test-fold evaluation was run in this task.
+\subsection*{Insight}
+The score computation order can push existing weak peaks above the cutoff and generate multiple points near one nucleus. D33 separates generating more candidates from finding more distinct centers. Later methods must consider position, duplication and score together.
 
-D37 code and the fixed design were committed before its calculation. The
-first replay omitted images with no annotated nuclei from the object
-table; a focused regression and a corrected replay retain their
-unmatched predictions. The failed output and log remain preserved. Final
-focused validation: 33 passed, including inherited alignment behavior.
-D37 replays all three decoders on 240 training and 522 development
-images for all eight models. Source, hashes, full object records, eight
-fixed image figures, selected case responses and build instructions are
-retained.
+\pagechapter{D33 maps: wider fine-grid peaks and more extra points}\label{chapter12}
+All-layer detector, seed 19, breast image 178; 40 nuclei. The original order matches 20 with 17 extras. Score-first interpolation matches 21 with 22 extras. Fine-grid maps use the same color scale.
 
-P34's incomplete all-layer seed-1 evaluation and independent external
-checkpoint archiving remain recorded tasks. A future completion of P34
-requires its own explicit recovery design and resource check. GPU
-allocation queries now differ from earlier accounting snapshots; this
-task uses CPU saved-record analysis, preserving the budget uncertainty.
-The report PDFs are compiled from the accompanying LaTeX, with
-statistical charts generated by PGFPlots and actual tissue images
-embedded as raster evidence.
+\begin{center}\begin{tabular}{cc}
+\includegraphics[width=.475\linewidth]{assets/d33_depth178_original_2.png} & \includegraphics[width=.475\linewidth]{assets/d33_depth178_original_3.png} \\
+\multicolumn{2}{c}{Original: fine-grid scores / matching} \\
+\includegraphics[width=.475\linewidth]{assets/d33_depth178_alternative_2.png} & \includegraphics[width=.475\linewidth]{assets/d33_depth178_alternative_3.png} \\
+\multicolumn{2}{c}{Score first: fine-grid scores / matching} \\
+\end{tabular}\end{center}
+Some bright peaks spread over a larger high-score area, with additional red crosses in the matching panel. Map colors run from black at zero to white at one; green points match, yellow circles miss, and red crosses are extras.
+
+\pagechapter{P34: learning a movement for each existing prediction}\label{chapter13}
+\subsection*{What we did}
+We freeze four P22 detectors and add an offset readout to their 64-channel features: two 3×3 convolutions and a two-output 1×1 convolution, totaling 73,986 parameters. Each pixel inside a nucleus learns vertical and horizontal offsets to its center. Absolute error is averaged within each nucleus and then across nuclei, giving large and small nuclei equal weight.
+
+Each detector receives two readouts: original augmentation and augmentation with −8 to 8-pixel translations per axis. They share initial weights and image order, training for 12 epochs on all 2,134 images. Decoding compares original points, moved points, and moved points merged within two pixels.
+
+\begin{center}\begin{tikzpicture}[node distance=8mm, every node/.style={font=\fontsize{13}{17}\selectfont}]
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt] (n0) {Frozen detector outputs a point (y,x)};
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n0] (n1) {Readout predicts an offset (Δy,Δx)};
+\draw[-{Stealth},thick,blue!60!black] (n0) -- (n1);
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n1] (n2) {New position: (y+Δy, x+Δx)};
+\draw[-{Stealth},thick,blue!60!black] (n1) -- (n2);
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n2] (n3) {Merge points within two pixels; rerun one-to-one matching};
+\draw[-{Stealth},thick,blue!60!black] (n2) -- (n3);
+\end{tikzpicture}\end{center}
+Evaluation uses 48 annotation-selected training images, their (5,3)-pixel shifted copies, and all development images. The 48-image subset is diagnostic; training uses the full training set.
+
+\pagechapter{P34 results: movement gains and losses nearly balance}\label{chapter14}
+\begin{center}\input{figs/p34_movement_en}\end{center}
+With the translation readout, movement and merging gain 158 and lose 173 matches for control seed 19, gain 172 and lose 182 for control seed 1, and gain 172 and lose 158 for all-layer seed 19. Net changes are −15, −10 and +14. Interior Dead matches for all-layer seed 19 change from 85 to 83.
+
+\begin{center}\input{figs/p34_offset_en}\end{center}
+All-layer seed 1 stops at the first-epoch guard of its second readout: 1,400.3 seconds exceeds the 1,300-second limit. Its full evaluation remains pending.
+
+\pagechapter{P34 insight: position correction must transfer to new images}\label{chapter15}
+Depending on detector and readout, center error is within three pixels for about 99.4\%–99.8\% of training nuclei and 70.6\%–80.6\% of development nuclei. Translation improves readout error on shifted images, yet final detection gains remain small.
+
+The gains and losses reveal the practical effect: moving points brings some displaced predictions inside the radius and moves some valid predictions outside it. For all-layer seed 19, the net gain of 14 combines 172 recoveries and 158 losses.
+
+\subsection*{How this informs the next step}
+P34 measures whether the existing features support a more accurate offset readout. The results direct attention to preserving valid points, combining alignments and selecting candidates. A further correction method needs to establish which existing matches it can protect.
+
+Readout error queries the offset module at an annotated center; final matching queries it at the detector’s actual prediction points. The latter includes the combined effects of point selection, movement and merging.
+
+\pagechapter{P35: sixteen patch-grid alignments of the same image}\label{chapter16}
+\subsection*{What we did}
+We freeze four P22 detectors and shift each axis by −8, −4, 0 and 4 pixels, forming 16 alignments. Predictions are mapped back to original coordinates. We compare one original image, the mean of 16 score maps, and the mean of 16 logit maps followed by score conversion, all at cutoff 0.5.
+
+Original alignment means the unshifted image; other alignments are the 15 remaining combinations. To compare nuclei unaffected by truncation, central nuclei are at least 24 pixels from every border: 1,227 in the 48 selected training images and 7,014 in development.
+
+\begin{center}\begin{tikzpicture}[node distance=8mm, every node/.style={font=\fontsize{13}{17}\selectfont}]
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt] (n0) {Per-axis offsets: −8, −4, 0, 4 pixels};
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n0] (n1) {16 combinations, each using the same frozen model};
+\draw[-{Stealth},thick,blue!60!black] (n0) -- (n1);
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n1] (n2) {Return every prediction to original coordinates};
+\draw[-{Stealth},thick,blue!60!black] (n1) -- (n2);
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n2] (n3) {For each nucleus: how many alignments find it?};
+\draw[-{Stealth},thick,blue!60!black] (n2) -- (n3);
+\end{tikzpicture}\end{center}
+Image content and weights stay fixed; the content’s position inside 16-pixel patches changes. This directly measures patch-grid alignment dependence.
+
+\pagechapter{P35 results: high training recall depends on the original alignment}\label{chapter17}
+\begin{center}\input{figs/p35_alignment_en}\end{center}
+Training recall is about 97\%–99\% at original alignment and 67\%–73\% elsewhere. Development recall is about 61\%–68\% at both. Moving the same training nuclei a few pixels reduces near-complete detection toward the development level.
+
+\subsection*{Per-nucleus finding}
+About 86\%–89\% of central development nuclei match at least one alignment; about 51\%–61\% match at only some alignments. Other alignments recover objects missed in one view and provide complementary candidate positions.
+
+These proportions use annotations to check whether any alignment can match each nucleus; an operational decoder still selects from the candidate points.
+
+\pagechapter{P35 subgroups: small and crowded nuclei remain missed across more alignments}\label{chapter18}
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{0.36\linewidth}p{0.11\linewidth}p{0.24\linewidth}p{0.18\linewidth}}
+\toprule
+Central subgroup & Nuclei & Mean matched alignments & Never matched\\
+\midrule
+Area <80 pixels & 106 & 26.0\% & 42.9\%\\
+Area 80–149 pixels & 424 & 49.4\% & 22.7\%\\
+Area 150–299 pixels & 1479 & 68.4\% & 11.6\%\\
+No neighbor within 12 pixels & 6850 & 65.7\% & 11.6\%\\
+One neighbor within 12 pixels & 119 & 21.4\% & 42.0\%\\
+At least two neighbors & 45 & 14.5\% & 46.7\%\\
+\bottomrule
+\end{tabular}
+\end{center}
+P35 uses 7,014 central development nuclei and averages repeated observations from four detectors. Area is the number of mask pixels; crowding counts other annotated centers within 12 pixels. Mean alignment matching is the fraction of 16 alignments finding a nucleus, averaged across objects and models in the subgroup.
+
+Small nuclei and nuclei with neighbors have higher never-matched proportions. Multiple alignments recover some objects; these subgroups still need features that distinguish neighboring nuclei and produce suitable positions. They provide concrete groups for later saved-point diagnostics.
+
+\pagechapter{P35 results: averaging narrow peaks lowers detection}\label{chapter19}
+\begin{center}\input{figs/p35_average_en}\end{center}
+Mean score maps match about 9\%–15\% of development nuclei at 95\%–96\% precision; mean logits match about 4\%–8\%. Even nuclei found at every alignment can fall below 0.5 after averaging: for all-layer seed 19, this subgroup has median single-view score about 0.892 and median averaged score about 0.488.
+
+\subsection*{Explanation from the operation}
+Peak tops sit at neighboring pixels in different views. A pixel that is a peak in one map can lie on a low-scoring flank in another. Pixelwise averaging combines those values and reduces peak height. P36 therefore extracts points before combining positions and studies score thresholds separately.
+
+\pagechapter{P36: selecting score thresholds and combining positions separately}\label{chapter20}
+\subsection*{What we did}
+We extend to eight frozen P22 and P15 detectors. We use a fixed 240-image training sample and all 522 development images, generating 16 alignments with white and mirrored fill. Mirrored fill reflects edge content into vacated regions. We preserve all local peaks scoring at least 0.1 and map coordinates back to the original image.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{0.24\linewidth}p{0.67\linewidth}}
+\toprule
+Decoder & Steps\\
+\midrule
+Original & Original alignment; retain peaks ≥0.5\\
+Selected threshold & Select 0.1–0.9 on shifted training images; apply to original alignment\\
+Position consensus & Collect points ≥0.5 from 15 shifts; group within a radius and average positions\\
+\bottomrule
+\end{tabular}
+\end{center}
+Threshold selection maximizes F1 on shifted training images. Consensus selects fill, a 2/3/4-pixel radius, and support from 1 to 15 alignments on training images. Rules are persisted before development results are read. The original alignment is excluded from selection so near-perfect training alignment does not dominate the rule.
+
+Support is the number of valid alignments producing a nearby point. Near image edges, some alignments cannot observe the position, so support requirements are normalized by valid alignments.
+
+\pagechapter{P36 thresholds: many translation-trained points have low scores}\label{chapter21}
+\begin{center}\input{figs/p36_shift_threshold_en}\end{center}
+Both translation-trained models select cutoff 0.2 on training images. Development matches rise from 4,771 and 4,600 to 8,463 and 8,542; recall rises from 38.95\% and 37.55\% to 69.09\% and 69.73\%. The saved-point replay gains 3,692 and 3,942 matches without losing an original match. Interior Dead counts rise from 44 and 44 to 101 and 99.
+
+\begin{center}\input{figs/p36_threshold_precision_en}\end{center}
+Admitting low-score points expands coverage and reduces precision from about 86\% to about 66\%. The next question is which new candidates recover missed centers and which are background, displaced or duplicate predictions.
+
+\pagechapter{P36: threshold results for all eight models}\label{chapter22}
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{0.33\linewidth}p{0.12\linewidth}p{0.14\linewidth}p{0.12\linewidth}p{0.18\linewidth}}
+\toprule
+Model / seed & Cutoff & Matches & Dead & Precision\\
+\midrule
+Depth control / 19 & 0.3 & 7622 & 76 & 66.68\%\\
+Depth control / 1 & 0.3 & 7606 & 69 & 67.17\%\\
+All layers / 19 & 0.3 & 8272 & 87 & 70.84\%\\
+All layers / 1 & 0.4 & 8078 & 86 & 72.30\%\\
+Shift control / 19 & 0.3 & 7569 & 77 & 66.03\%\\
+Shift control / 1 & 0.3 & 7707 & 66 & 67.29\%\\
+Shift training / 19 & 0.2 & 8463 & 101 & 66.04\%\\
+Shift training / 1 & 0.2 & 8542 & 99 & 66.50\%\\
+\bottomrule
+\end{tabular}
+\end{center}
+The table covers 12,250 development nuclei; the Dead denominator is 145. All-layer models select 0.3 and 0.4, gaining 293 and 145 matches and two interior Dead matches per seed. They already cover more nuclei at 0.5, so lowering the threshold adds much less than for translation-trained models.
+
+\subsection*{What this tells us}
+Training recipes produce different score distributions. Cutoff 0.5 excludes many well-positioned translation-trained points. For all-layer models, complementary alignments provide a larger opportunity. Comparisons therefore describe each training recipe together with its fixed decoding procedure.
+
+\pagechapter{Understanding low scores: exact-pixel supervision and center tolerance}\label{chapter23}
+The training loss marks one annotated-center pixel positive. Surrounding pixels remain negative with reduced penalties. Evaluation accepts a point within three pixels. Training asks which exact pixel is the center; evaluation accepts a small region.
+
+A simplified theoretical example compares these requirements. Suppose possible center locations follow a Gaussian distribution around the most likely pixel. A larger standard deviation spreads the center over more pixels. Minimizing the expected implemented loss gives the following peak scores.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{0.31\linewidth}p{0.25\linewidth}p{0.33\linewidth}}
+\toprule
+Position SD (pixels) & Loss-optimal score & Within 3 pixels\\
+\midrule
+0.5 & 0.796 & >99.9\%\\
+1.0 & 0.480 & 98.9\%\\
+1.5 & 0.335 & 86.7\%\\
+2.0 & 0.265 & 68.1\%\\
+3.0 & 0.195 & 40.0\%\\
+\bottomrule
+\end{tabular}
+\end{center}
+Standard deviation measures position dispersion and is specified in this theoretical construction. A score below 0.5 can coexist with a position inside the evaluation tolerance. P36 empirically finds many matches after admitting 0.2 and lower position variation in translation-trained models. Separate controls can identify which aspects of training, representation and loss produce the score change.
+
+\pagechapter{P36 position consensus: recovered nuclei and lost matches}\label{chapter24}
+\begin{center}\input{figs/p36_depth_consensus_en}\end{center}
+All-layer seed 19 gains 1,163 and loses 871 matches, net +292; seed 1 gains 1,096 and loses 825, net +271. Precision is 73.63\% and 72.29\%. Averaging positions recovers nuclei appearing in other alignments and changes the coordinates and selection of previously valid predictions.
+
+Translation-trained matches rise from 4,771 and 4,600 to 6,475 and 6,399, with precision 80.88\% and 81.38\% and Dead counts 71 and 69. They select a rule requiring support equivalent to one valid alignment; all-layer models require five or six.
+
+\subsection*{Insight}
+Extracting points before averaging positions retains peaks suppressed by map averaging. The translation-trained low-cutoff single view has higher recall, while high-cutoff consensus has higher precision. This measured tradeoff motivates P38’s combination of low-score admission and candidate selection.
+
+\pagechapter{Breast image 178: recovering a nucleus from other alignments}\label{chapter25}
+All-layer detector, seed 19. The four panels share identical tissue pixels. Matches change from 20 originally to 21 with the selected threshold and 24 with consensus.
+
+\begin{center}
+\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Annotated centers\par}
+\includegraphics[width=\linewidth]{assets/p36_P22_M_s19_0178_0.png}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Cutoff 0.5: 20 matches\par}
+\includegraphics[width=\linewidth]{assets/p36_P22_M_s19_0178_1.png}
+\end{minipage}\par\vspace{5mm}
+\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Selected 0.3: 21 matches\par}
+\includegraphics[width=\linewidth]{assets/p36_P22_M_s19_0178_2.png}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Consensus: 24 matches\par}
+\includegraphics[width=\linewidth]{assets/p36_P22_M_s19_0178_3.png}
+\end{minipage}\par\vspace{5mm}
+\end{center}
+Cyan circles: annotated centers. Green plus: matched points. Red crosses: extras. Yellow numbers: interior Dead object indices.
+
+\pagechapter{Breast image 178: tracing position and score per nucleus}\label{chapter26}
+\subsection*{Recovered: epithelial object 23}
+Center (71,38). The highest original peak within three pixels scores 0.202 and is removed by both 0.5 and selected 0.3. Four shifted alignments match it. Consensus places the point at (69.33,38.33), 1.70 pixels away, recovering it from complementary positions.
+
+\subsection*{Retained near the radius: Dead object 3}
+Center (191,86), area 286 pixels, matched by all three decoders. Original score is 0.926; the consensus point lies 2.97 pixels away, near the fixed three-pixel boundary. Additional alignments recover some nuclei while moving positions also changes existing matches.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{0.15\linewidth}p{0.22\linewidth}p{0.27\linewidth}p{0.25\linewidth}}
+\toprule
+Object & Original score & Consensus error & Outcome\\
+\midrule
+23 & 0.202 & 1.70 pixels & Recovered\\
+3 & 0.926 & 2.97 pixels & Retained\\
+\bottomrule
+\end{tabular}
+\end{center}
+The examples show that one low score does not summarize availability at other alignments, and that consensus must be checked by its actual coordinate as well as support count.
+
+\pagechapter{Colon image 1482: a lower cutoff recovers nuclei in a crowded strip}\label{chapter27}
+Translation-trained detector, seed 19; 75 annotated nuclei. Original decoding matches 12, cutoff 0.2 matches 26, and consensus matches 18.
+
+\begin{center}
+\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Annotated centers\par}
+\includegraphics[width=\linewidth]{assets/p36_P15_J_s19_1482_0.png}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Cutoff 0.5: 12 matches\par}
+\includegraphics[width=\linewidth]{assets/p36_P15_J_s19_1482_1.png}
+\end{minipage}\par\vspace{5mm}
+\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Selected 0.2: 26 matches\par}
+\includegraphics[width=\linewidth]{assets/p36_P15_J_s19_1482_2.png}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Consensus: 18 matches\par}
+\includegraphics[width=\linewidth]{assets/p36_P15_J_s19_1482_3.png}
+\end{minipage}\par\vspace{5mm}
+\end{center}
+Cyan: annotated centers. Green plus: match. Red cross: extra. Yellow numbers link to the object coordinate table.
+
+\pagechapter{Colon image 1482: low scores and persistent misses differ}\label{chapter28}
+\subsection*{Dead object 7: a useful position with a low score}
+Center (141,65), area 504 pixels. The original peak within three pixels scores 0.486, below 0.5 and above selected 0.2. Lowering the cutoff recovers it. Twelve shifts also match it; consensus error is 1.90 pixels.
+
+\subsection*{Dead object 51: no nearby point in the saved range}
+Center (145,86), area 67 pixels. Neither the all-layer nor translation-trained detector has a matching point within three pixels at any alignment down to the saved floor 0.1. There is no recorded original peak within six pixels either. This object needs an appropriate new position or information supporting a new candidate.
+
+\subsection*{Dead object 55: a smaller nucleus is detected}
+Center (153,35), area 57 pixels, smaller than object 51. The translation-trained original score is 0.575 and consensus error is 1.11 pixels, producing a match; the all-layer model misses it. The small nuclei differ in appearance and nearby structures; area is one descriptive feature of difficulty.
+
+\pagechapter{D37: explaining each nucleus with preserved points}\label{chapter29}
+\subsection*{What we did}
+We replay all P36 preserved points and reproduce original, threshold and consensus decoding for eight models on 240 training and 522 development images. Each annotated nucleus then enters one category in the following fixed order.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{0.32\linewidth}p{0.59\linewidth}}
+\toprule
+Category & Definition\\
+\midrule
+1 Original match & Matched originally at cutoff 0.5\\
+2 Other alignment & Originally missed; matched at another alignment at 0.5\\
+3 Low score only & Requires admitting points between 0.1 and 0.5\\
+4 Assignment competition & Nearby point assigned to another nucleus\\
+5 No saved near-center point & No point within three pixels at any alignment down to 0.1\\
+\bottomrule
+\end{tabular}
+\end{center}
+The order makes categories exclusive, including assignment changes caused by lower thresholds. Annotations determine point availability. The diagnostic reuses saved records, completes in 56.47 seconds, and preserves fixed images and per-nucleus coordinates.
+
+\pagechapter{D37 results: the two detectors have different dominant misses}\label{chapter30}
+\begin{center}\input{figs/d37_misses_en}\end{center}
+White fill, all 12,250 development nuclei. Of 4,271 all-layer seed-19 original misses, 2,476 are recovered at another alignment (58.0\%), 401 require low scores (9.4\%), two involve competition, and 1,392 have no saved nearby point. Translation-trained seed 19 has 7,479 original misses, with corresponding counts 2,104, 4,141, zero and 1,234.
+
+\subsection*{Insight}
+All-layer models mainly gain candidates from alternative alignments; translation-trained models mainly gain them from lower scores. Both seeds repeat the contrast, motivating P38’s use of score, alignment support and position dispersion to select low-score candidates.
+
+Category five is defined by the actual recording conditions: score at least 0.1 and distance at most three pixels. More distant in-mask points and lower scores are separate information for further measurement.
+
+\pagechapter{Position stability: shared offset and alignment-dependent variation}\label{chapter31}
+For isolated central nuclei, P36 records the offset from the nearest prediction within six pixels at each alignment. At least two shifted alignments must have a nearby point. Mean squared displacement is split into an alignment-varying part and a shared part, measured in squared pixels.
+
+\begin{center}\input{figs/displacement_en}\end{center}
+Translation-trained alignment variation is about 0.62 in both seeds, about 70\% below their own controls. Shared components are about 3.46 and 3.40. Averaging can reduce variation, while a common-direction offset remains in the mean position.
+
+The shared estimate is squared mean offset minus sample variance divided by point count. This describes deterministic shifts. Retained subsets differ: about 4,500 nuclei for translation-trained models versus 6,300 for others. Further controls can identify image or annotation mechanisms producing shared offsets.
+
+\pagechapter{P38: grouping low-score points and learning their quality}\label{chapter32}
+\subsection*{Question and controls}
+P36’s low-cutoff single view finds more nuclei, while high-cutoff consensus has higher precision. P38 admits saved points scoring at least 0.1 and compares support-only selection with a learned six-feature quality score. Both operate on exactly the same groups, isolating the quality model’s effect.
+
+\subsection*{Procedure}
+Use mirrored fill and 15 shifted alignments, excluding the original. Visit points from highest score downward and group within four pixels of a fixed first point. Each alignment contributes only its highest-score member, preventing repeated peaks from one view from multiplying support. Output position is the mean of these points.
+
+\begin{center}\begin{tikzpicture}[node distance=8mm, every node/.style={font=\fontsize{13}{17}\selectfont}]
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt] (n0) {Saved peaks: 15 shifts, scores ≥0.1};
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n0] (n1) {Group within 4 pixels; one contribution per alignment};
+\draw[-{Stealth},thick,blue!60!black] (n0) -- (n1);
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n1] (n2) {Same groups → support-only / learned-quality filtering};
+\draw[-{Stealth},thick,blue!60!black] (n1) -- (n2);
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n2] (n3) {Rematch after filtering; record gains and losses};
+\draw[-{Stealth},thick,blue!60!black] (n2) -- (n3);
+\end{tikzpicture}\end{center}
+Detector weights and saved predictions stay frozen; P38 trains only a small candidate-scoring model. CPU job 55918618 completes in 291 seconds, preserving eight models’ results and eight fixed figures.
+
+\pagechapter{P38: the six quality-score inputs}\label{chapter33}
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{0.35\linewidth}p{0.56\linewidth}}
+\toprule
+Input & Plain meaning\\
+\midrule
+Maximum-score log odds & Strongest detector score, converted with log(p/(1−p))\\
+Mean-score log odds & The same conversion of the group mean score\\
+Support fraction & Contributing alignments / valid alignments\\
+Position dispersion & Root mean squared distance from the group mean\\
+Score standard deviation & Variation in scores across alignments\\
+Maximum minus mean & Whether one view scores much higher than the rest\\
+\bottomrule
+\end{tabular}
+\end{center}
+Logistic regression combines the six measurements and applies sigmoid to output a quality score from zero to one. A group assigned to a nucleus by one-to-one matching receives label one; other groups receive zero. Features are standardized using fitting-subset means and standard deviations. A fixed squared-coefficient penalty of strength one discourages extreme weights.
+
+The detector score rates a center at a location; the quality score rates whether a group with these measurements matches a nucleus in training records. They come from different models. At application, the quality model reads only saved-point values and coordinates.
+
+\pagechapter{P38: fitting, selecting and comparing the gains}\label{chapter34}
+A fixed image-ID hash divides the 240 P36 training images into two subsets of 120. A hash converts an ID to a fixed sorting key, making membership repeatable. The first fits logistic regression; the second selects filters. Support thresholds range from 1/15 to 15/15; quality cutoffs range from 0.05 to 0.95 in steps of 0.05. Among nonempty rules with at least 75\% precision, select maximum F1, breaking ties toward stricter thresholds or more support.
+
+\begin{center}\begin{tikzpicture}[node distance=8mm, every node/.style={font=\fontsize{13}{17}\selectfont}]
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt] (n0) {120 training images: fit quality model};
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n0] (n1) {Another 120 training images: select fixed filter};
+\draw[-{Stealth},thick,blue!60!black] (n0) -- (n1);
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n1] (n2) {Persist all eight models’ selections};
+\draw[-{Stealth},thick,blue!60!black] (n1) -- (n2);
+\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n2] (n3) {522 development images: evaluate unchanged rules};
+\draw[-{Stealth},thick,blue!60!black] (n2) -- (n3);
+\end{tikzpicture}\end{center}
+Fitting and selection use separate images, both previously used to train the detector. Development measures transfer of the calibration relationship. The primary comparison is translation-trained versus its own P15 control, both with learned-quality selection. Within each model we also compare support-only, original, P36 threshold and P36 consensus decoding.
+
+These comparisons separate the usefulness of low-score candidates, the value of quality learning over support alone, and the contribution of detector training under the same filter.
+
+\pagechapter{P38 results: fewer extras from translation-trained models}\label{chapter35}
+\begin{center}\input{figs/p38_extra_en}\end{center}
+Relative to support-only selection of the same candidates, extras decrease by 676 and 377 for seeds 19 and 1; matches decrease by 166 and increase by four. Precision rises from 68.23\% and 67.92\% to 71.99\% and 70.17\%. Dead matches change from 105 and 101 to 98 and 99.
+
+\begin{center}\input{figs/p38_precision_en}\end{center}
+Quality learning removes some extra candidates and also loses true nuclei in seed 19. A separate comparison uses equally calibrated controls to examine the detector-training contribution.
+
+\pagechapter{P38 results: paired detectors under the same quality procedure}\label{chapter36}
+\begin{center}\input{figs/p38_paired_dead_en}\end{center}
+With learned-quality selection, translation-trained models match 12 and 14 more interior Dead nuclei than their own controls, improving recall by 8.28 and 9.66 percentage points. Tissue-stratified paired image-bootstrap 95\% intervals are [4.17,11.18] and [3.03,14.56] percentage points.
+
+The paired bootstrap resamples images within tissues, keeping both detectors paired, and recalculates differences over 1,000 draws. Both seeds have the same gain direction. Current precision is 71.99\% and 70.17\%, against the fixed 75\% target.
+
+\subsection*{All-layer result}
+Compared with support-only selection, all-layer quality filtering adds 489 and 117 matches and 984 and 175 extras. Precision changes from 75.86\% and 73.48\% to 70.58\% and 72.61\%. The six-feature procedure behaves differently across detectors, making support-only selection a useful simple control.
+
+\pagechapter{P38: comparing coverage and precision across five decoders}\label{chapter37}
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{0.34\linewidth}p{0.13\linewidth}p{0.13\linewidth}p{0.11\linewidth}p{0.18\linewidth}}
+\toprule
+Shift detector / seed 19 & Matches & Extras & Dead & Precision\\
+\midrule
+Original 0.5 & 4771 & 740 & 44 & 86.57\%\\
+Single-view 0.2 & 8463 & 4351 & 101 & 66.04\%\\
+High-score consensus & 6475 & 1531 & 71 & 80.88\%\\
+Low-score support & 7975 & 3714 & 105 & 68.23\%\\
+Low-score quality & 7809 & 3038 & 98 & 71.99\%\\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{0.34\linewidth}p{0.13\linewidth}p{0.13\linewidth}p{0.11\linewidth}p{0.18\linewidth}}
+\toprule
+Shift detector / seed 1 & Matches & Extras & Dead & Precision\\
+\midrule
+Original 0.5 & 4600 & 725 & 44 & 86.38\%\\
+Single-view 0.2 & 8542 & 4304 & 99 & 66.50\%\\
+High-score consensus & 6399 & 1464 & 69 & 81.38\%\\
+Low-score support & 8022 & 3789 & 101 & 67.92\%\\
+Low-score quality & 8026 & 3412 & 99 & 70.17\%\\
+\bottomrule
+\end{tabular}
+\end{center}
+All 522 development images, 12,250 nuclei and 145 interior Dead nuclei. The low-cutoff single view covers the most nuclei and produces the most extras. High-score consensus has greater precision and excludes low-score candidates. Learned-quality selection occupies an intermediate tradeoff.
+
+\pagechapter{P38 colon image 1482: candidate recovery and quality selection}\label{chapter38}
+Translation-trained detector, seed 19; 75 nuclei. High-score consensus finds 18 with six extras; low-score support finds 28 with seven extras; quality selection finds 26 with five extras.
+
+\begin{center}
+\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Annotated centers\par}
+\includegraphics[width=\linewidth]{assets/p38_P15_J_s19_1482_0.png}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont P36: 18 matched / 6 extra\par}
+\includegraphics[width=\linewidth]{assets/p38_P15_J_s19_1482_1.png}
+\end{minipage}\par\vspace{5mm}
+\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Support: 28 matched / 7 extra\par}
+\includegraphics[width=\linewidth]{assets/p38_P15_J_s19_1482_2.png}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Quality: 26 matched / 5 extra\par}
+\includegraphics[width=\linewidth]{assets/p38_P15_J_s19_1482_3.png}
+\end{minipage}\par\vspace{5mm}
+\end{center}
+Cyan circles mark annotated centers; yellow circles mark misses; green plus signs mark matched points; red crosses mark extras.
+
+\pagechapter{P38 colon image: one useful candidate retained, another deleted}\label{chapter39}
+\subsection*{Retained: Dead object 7}
+Center (141,65). Its nearest low-score group has support from 15 of 15 alignments, quality 0.91579 and center error 1.89 pixels. The selected cutoff is 0.5, so it is retained and matched.
+
+\subsection*{Deleted: Dead object 10}
+Center (81,44). Its candidate is only 1.69 pixels away with 11 of 15 supporting alignments, yet quality is 0.30811. Support-only retains it; quality filtering deletes it. This is a real recall loss from selection: the location is accurate enough, while the combined features score the group low.
+
+\begin{center}\begin{minipage}[t]{.31\linewidth}\centering Annotated object 10\par\includegraphics[width=\linewidth]{assets/p38_object10_zoom_0.png}\end{minipage}\hfill\begin{minipage}[t]{.31\linewidth}\centering Support: retained\par\includegraphics[width=\linewidth]{assets/p38_object10_zoom_2.png}\end{minipage}\hfill\begin{minipage}[t]{.31\linewidth}\centering Quality: deleted\par\includegraphics[width=\linewidth]{assets/p38_object10_zoom_3.png}\end{minipage}\hfill\end{center}
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{0.13\linewidth}p{0.18\linewidth}p{0.2\linewidth}p{0.14\linewidth}p{0.23\linewidth}}
+\toprule
+Object & Support & Quality & Error & Quality outcome\\
+\midrule
+7 & 15/15 & 0.91579 & 1.89 & Matched\\
+10 & 11/15 & 0.30811 & 1.69 & Deleted\\
+\bottomrule
+\end{tabular}
+\end{center}
+Errors are in pixels. Quality differs from the detector score, and its cutoff was selected on training images. Object 51 remains missed; its nearest group center lies 20.14 pixels away, so an appropriate near-center candidate is still needed.
+
+\pagechapter{P38 lung image 1037: losing an accurately located original match}\label{chapter40}
+All-layer detector, seed 19. The fixed panels compare high-score consensus, support-only and quality filtering. The next page traces small object 78.
+
+\begin{center}
+\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Annotated centers\par}
+\includegraphics[width=\linewidth]{assets/p38_P22_M_s19_1037_0.png}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont P36 high-score consensus\par}
+\includegraphics[width=\linewidth]{assets/p38_P22_M_s19_1037_1.png}
+\end{minipage}\par\vspace{5mm}
+\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont P38 low-score support\par}
+\includegraphics[width=\linewidth]{assets/p38_P22_M_s19_1037_2.png}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont P38 low-score quality\par}
+\includegraphics[width=\linewidth]{assets/p38_P22_M_s19_1037_3.png}
+\end{minipage}\par\vspace{5mm}
+\end{center}
+Colors have the same meaning as the preceding P38 figure. Panels are cropped from preserved outputs with unchanged tissue pixels and overlays.
+
+\pagechapter{P38 fixed objects: why preserving original predictions matters}\label{chapter41}
+\subsection*{Lung object 78: accurate with limited support}
+Center (222,125), area 78 pixels, already matched by original decoding. The new group lies 0.25 pixels away, with four supporting alignments and quality 0.19840. Both new filters remove it. Positional accuracy and cross-alignment support are distinct measurements.
+
+\subsection*{Colon object 43: quality retains a lower-support candidate}
+All-layer seed 19, image 1482, center (73,19), area 89 pixels. The candidate has seven supporting alignments and quality 0.39413, above the selected cutoff 0.35. A nine-support rule deletes it; quality filtering retains and matches it.
+
+\subsection*{Insight}
+Replacing all original predictions with grouped candidates can recover new nuclei and remove valid originals. The next design separates preservation of credible original points from the marginal value of supplementary candidates, rather than scoring each group in isolation alone.
+
+\pagechapter{What the stage explains and the next concrete question}\label{chapter42}
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{0.44\linewidth}p{0.47\linewidth}}
+\toprule
+Measured finding & Implication for the next step\\
+\midrule
+Training detection drops after changing alignment & Study positional information stable across alignments\\
+Strong in-mask peaks can miss the 3-pixel radius & Measure presence and position separately\\
+Translation models produce useful low-score points & Include score interpretation in the method\\
+Stable positions can share an offset & Examine support and shared displacement\\
+Quality filtering reduces extras and loses true nuclei & Keep original points; learn supplementary value\\
+\bottomrule
+\end{tabular}
+\end{center}
+The next diagnostic locates extras inside already matched nuclei, inside unmatched nuclei, or outside annotated masks. It then compares training and development correctness at the same score or support level. These results guide the choice of morphology features, position correction or center-uncertainty representation.
+
+These are questions for a new experiment design. P34 seed-1 completion and independent checkpoint archiving remain pending. Current selected filters retain their fixed values.
+
+\pagechapter{Comparison conditions, evidence scope and reproducibility}\label{chapter43}
+This stage uses repeatedly examined fold-1 center-detection development data. Dead counts have 145 objects from 11 images as their denominator; models and alignments repeatedly observe these objects. Fixed examples are breast 178, colon 776/1482 and lung 1037, retained under the original annotation-based selection.
+
+The fixed joint criteria include Dead recall at least 60\%, gain at least five percentage points with a positive paired interval, precision at least 75\%, no greater than two-percentage-point drops in precision or overall recall, and predictions on at least 95\% of Dead-positive images. All 16 P38 joint decisions are recorded false. The report interprets experiments through measured gains, losses and precision changes.
+
+Existing validation includes D32 count reproduction; D33 reproduction of all 12 original conditions and 21 node checks; recorded P34/P35/P36 checks; 33 focused D37 checks; and 31 focused P38 checks plus 192 independent numerical checks. This revision regenerates tables and charts from JSON and checks PDF font sizes, numbers and every page.
+
+The delivery includes LaTeX sources, a build script, result JSON, object tables, fixed images and crop provenance. Statistical charts compile with TikZ/PGFPlots; tissue images retain their pixels and prediction overlays. Source evidence paths and hashes are included.
+
+\pagechapter{Appendix: P38 results for all detectors under the same definitions}\label{chapter44}
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{0.33\linewidth}p{0.15\linewidth}p{0.14\linewidth}p{0.12\linewidth}p{0.17\linewidth}}
+\toprule
+Model / seed & Matches & Extras & Dead & Precision\\
+\midrule
+Depth control / 19 & 7702 & 3283 & 87 & 70.11\%\\
+Depth control / 1 & 7947 & 3794 & 86 & 67.69\%\\
+All layers / 19 & 8406 & 3504 & 95 & 70.58\%\\
+All layers / 1 & 8167 & 3081 & 89 & 72.61\%\\
+Shift control / 19 & 7851 & 3803 & 86 & 67.37\%\\
+Shift control / 1 & 7890 & 3696 & 85 & 68.10\%\\
+Shift training / 19 & 7809 & 3038 & 98 & 71.99\%\\
+Shift training / 1 & 8026 & 3412 & 99 & 70.17\%\\
+\bottomrule
+\end{tabular}
+\end{center}
+All rows show learned-quality development results: 522 images, 12,250 nuclei and 145 interior Dead nuclei. Each detector uses its training-selected rule. The two control families are distinct P22 and P15 training runs; comparisons stay within family and seed.
+
+The main text reports gains, losses and extras caused by each intervention. All five decoders—original, P36 threshold, P36 consensus, support-only and learned quality—are retained in assets/P38\_RESULTS.json.
 
 \end{document}

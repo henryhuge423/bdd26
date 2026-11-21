@@ -1,0 +1,380 @@
+[
+  {
+    "source": "outputs/review_2026-11-20/report9/assets/P22_M_s19_development_0178.png",
+    "source_sha256": "ab82e51c2068dcfcf214ff5435af9c79e04ed9a0fefff0b527082a8bd95a0377",
+    "crop_box": [
+      61,
+      56,
+      778,
+      773
+    ],
+    "output": "assets/p36_P22_M_s19_0178_0.png",
+    "output_sha256": "ee4071095b50596fc2a73ab8ef03e177d5f4fce4624a5cb41a9aaa4c3d84da47",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/p36_P22_M_s19_0178_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-20/report9/assets/P22_M_s19_development_0178.png",
+    "source_sha256": "ab82e51c2068dcfcf214ff5435af9c79e04ed9a0fefff0b527082a8bd95a0377",
+    "crop_box": [
+      873,
+      56,
+      1590,
+      773
+    ],
+    "output": "assets/p36_P22_M_s19_0178_1.png",
+    "output_sha256": "71b85356d3555023bf368d52d59c16fcc7f6008646d5ed885d3bc2fc8bbff846",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/p36_P22_M_s19_0178_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-20/report9/assets/P22_M_s19_development_0178.png",
+    "source_sha256": "ab82e51c2068dcfcf214ff5435af9c79e04ed9a0fefff0b527082a8bd95a0377",
+    "crop_box": [
+      61,
+      829,
+      778,
+      1546
+    ],
+    "output": "assets/p36_P22_M_s19_0178_2.png",
+    "output_sha256": "dc8a05154884306febefaac291b99d00bff4bc12c4c48ac8da29c5420f9877ae",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/p36_P22_M_s19_0178_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-20/report9/assets/P22_M_s19_development_0178.png",
+    "source_sha256": "ab82e51c2068dcfcf214ff5435af9c79e04ed9a0fefff0b527082a8bd95a0377",
+    "crop_box": [
+      873,
+      829,
+      1590,
+      1546
+    ],
+    "output": "assets/p36_P22_M_s19_0178_3.png",
+    "output_sha256": "1c92ab4baa29f324822a9e994f8f1ea3a2b75b20a99b6084ab34e28887a6bbdd",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/p36_P22_M_s19_0178_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-20_next/delivery/figures/P22_M_s19_1037.png",
+    "source_sha256": "747a337ad709580f4665697f3d74fba85ea80bb6429bc8c7f61b205dae34f722",
+    "crop_box": [
+      28,
+      165,
+      668,
+      805
+    ],
+    "output": "assets/p38_P22_M_s19_1037_0.png",
+    "output_sha256": "729621b2654c0074ec4a7368ad7000bbac49e521a3b15e53a91a1536fe820d09",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/p38_P22_M_s19_1037_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-20_next/delivery/figures/P22_M_s19_1037.png",
+    "source_sha256": "747a337ad709580f4665697f3d74fba85ea80bb6429bc8c7f61b205dae34f722",
+    "crop_box": [
+      704,
+      165,
+      1344,
+      805
+    ],
+    "output": "assets/p38_P22_M_s19_1037_1.png",
+    "output_sha256": "61ab5e6c2ab982456d6e1014f81a9810b2ab53c46b5eb3fc93428f72a826606b",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/p38_P22_M_s19_1037_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-20_next/delivery/figures/P22_M_s19_1037.png",
+    "source_sha256": "747a337ad709580f4665697f3d74fba85ea80bb6429bc8c7f61b205dae34f722",
+    "crop_box": [
+      28,
+      915,
+      668,
+      1555
+    ],
+    "output": "assets/p38_P22_M_s19_1037_2.png",
+    "output_sha256": "c52d1f14a2be649577d8816b8609edd2da539721ffe50ca01b72374f568c9fab",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/p38_P22_M_s19_1037_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-20_next/delivery/figures/P22_M_s19_1037.png",
+    "source_sha256": "747a337ad709580f4665697f3d74fba85ea80bb6429bc8c7f61b205dae34f722",
+    "crop_box": [
+      704,
+      915,
+      1344,
+      1555
+    ],
+    "output": "assets/p38_P22_M_s19_1037_3.png",
+    "output_sha256": "08123abcb66e4512a9c11ea34c229768127468dbf2aa94cccb8f0410f84fe6ba",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/p38_P22_M_s19_1037_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-20/report9/assets/P15_J_s19_development_1482.png",
+    "source_sha256": "08f14e4b63d4e0a22b02e3e4bf891f8f03cbd882cabed8114b16f61c19ee788e",
+    "crop_box": [
+      61,
+      56,
+      778,
+      773
+    ],
+    "output": "assets/p36_P15_J_s19_1482_0.png",
+    "output_sha256": "3bd6b015f7e603d8538e6343a8608a7986a174d9b64bcf5235f8734245207ce5",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/p36_P15_J_s19_1482_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-20/report9/assets/P15_J_s19_development_1482.png",
+    "source_sha256": "08f14e4b63d4e0a22b02e3e4bf891f8f03cbd882cabed8114b16f61c19ee788e",
+    "crop_box": [
+      873,
+      56,
+      1590,
+      773
+    ],
+    "output": "assets/p36_P15_J_s19_1482_1.png",
+    "output_sha256": "2ae7d6af13b308587be82cb803e030b5f49504eec1a9caafcdde38beb8abf2e9",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/p36_P15_J_s19_1482_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-20/report9/assets/P15_J_s19_development_1482.png",
+    "source_sha256": "08f14e4b63d4e0a22b02e3e4bf891f8f03cbd882cabed8114b16f61c19ee788e",
+    "crop_box": [
+      61,
+      829,
+      778,
+      1546
+    ],
+    "output": "assets/p36_P15_J_s19_1482_2.png",
+    "output_sha256": "1cc9e514da503d0bf9e7f91a517fc54d686c91f7377abcf7492f279bb39b11af",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/p36_P15_J_s19_1482_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-20/report9/assets/P15_J_s19_development_1482.png",
+    "source_sha256": "08f14e4b63d4e0a22b02e3e4bf891f8f03cbd882cabed8114b16f61c19ee788e",
+    "crop_box": [
+      873,
+      829,
+      1590,
+      1546
+    ],
+    "output": "assets/p36_P15_J_s19_1482_3.png",
+    "output_sha256": "84e4b85d15d73c94ffab4650bca3ea608118d6514d448d0073225862d8253010",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/p36_P15_J_s19_1482_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-20_next/delivery/figures/P15_J_s19_1482.png",
+    "source_sha256": "ad230bd5fea13bcec0d1d35828102609484d5ec46effdd75bdcb218d39511431",
+    "crop_box": [
+      28,
+      165,
+      668,
+      805
+    ],
+    "output": "assets/p38_P15_J_s19_1482_0.png",
+    "output_sha256": "556869f7d90404933b4c5e6e26d885c5337a7e3d681a9f3be97e5b27d9c17859",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/p38_P15_J_s19_1482_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-20_next/delivery/figures/P15_J_s19_1482.png",
+    "source_sha256": "ad230bd5fea13bcec0d1d35828102609484d5ec46effdd75bdcb218d39511431",
+    "crop_box": [
+      704,
+      165,
+      1344,
+      805
+    ],
+    "output": "assets/p38_P15_J_s19_1482_1.png",
+    "output_sha256": "f54215d44e8fcc55dee7b5438559ef0cf7b428e13b602de43d3bbfaa8c7405d1",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/p38_P15_J_s19_1482_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-20_next/delivery/figures/P15_J_s19_1482.png",
+    "source_sha256": "ad230bd5fea13bcec0d1d35828102609484d5ec46effdd75bdcb218d39511431",
+    "crop_box": [
+      28,
+      915,
+      668,
+      1555
+    ],
+    "output": "assets/p38_P15_J_s19_1482_2.png",
+    "output_sha256": "f759bb9dcec62e9bf52743714f2ba01cca8340a13c418876d15ed2393bde549a",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/p38_P15_J_s19_1482_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-20_next/delivery/figures/P15_J_s19_1482.png",
+    "source_sha256": "ad230bd5fea13bcec0d1d35828102609484d5ec46effdd75bdcb218d39511431",
+    "crop_box": [
+      704,
+      915,
+      1344,
+      1555
+    ],
+    "output": "assets/p38_P15_J_s19_1482_3.png",
+    "output_sha256": "ac51ce1b61f16659444386ec3a249def5c79a77efc7aa540c065f19064327d73",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/p38_P15_J_s19_1482_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-18/delivery/docs/results/center_diagnostics_recovery_2026-11-18/figures/P22_C_s19_development_0178.png",
+    "source_sha256": "87ae3a4a70e825e0ed43605f3ed0be285ff5bb7b92b23f52086bf3d5177754f1",
+    "crop_box": [
+      28,
+      174,
+      668,
+      814
+    ],
+    "output": "assets/d32_control178_0.png",
+    "output_sha256": "85a418fab80a3eefc05e8661efe6f42f2ca559c8ceeba19a79a8f1c0f0090765",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/d32_control178_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-18/delivery/docs/results/center_diagnostics_recovery_2026-11-18/figures/P22_C_s19_development_0178.png",
+    "source_sha256": "87ae3a4a70e825e0ed43605f3ed0be285ff5bb7b92b23f52086bf3d5177754f1",
+    "crop_box": [
+      704,
+      174,
+      1344,
+      814
+    ],
+    "output": "assets/d32_control178_1.png",
+    "output_sha256": "b22104168a7e53b58b0052bd666da4dec6ac333f99ea90232c2368c97932ed60",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/d32_control178_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-18/delivery/docs/results/center_diagnostics_recovery_2026-11-18/figures/P22_C_s19_development_0178.png",
+    "source_sha256": "87ae3a4a70e825e0ed43605f3ed0be285ff5bb7b92b23f52086bf3d5177754f1",
+    "crop_box": [
+      1380,
+      174,
+      2020,
+      814
+    ],
+    "output": "assets/d32_control178_2.png",
+    "output_sha256": "3ae5ad4819a260d0d6cf50c2a5cfebbd18e0e10426c730a842421ece0c8e81e8",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/d32_control178_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-18/delivery/docs/results/center_diagnostics_recovery_2026-11-18/figures/P22_C_s19_development_0178.png",
+    "source_sha256": "87ae3a4a70e825e0ed43605f3ed0be285ff5bb7b92b23f52086bf3d5177754f1",
+    "crop_box": [
+      2056,
+      174,
+      2696,
+      814
+    ],
+    "output": "assets/d32_control178_3.png",
+    "output_sha256": "2c40cd3b93b6e85439316081a6a165757db4f565adbbb403d8ada925b9539516",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/d32_control178_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-18/delivery/docs/results/center_diagnostics_recovery_2026-11-18/figures/P22_M_s19_development_0178.png",
+    "source_sha256": "9af08d68218720160f3529d53ddc589ae7d7f5d9701389b16347b6f59f30b440",
+    "crop_box": [
+      1380,
+      174,
+      2020,
+      814
+    ],
+    "output": "assets/d33_depth178_original_2.png",
+    "output_sha256": "a8e339e314a1749ed5064822e9568f556185cdcaf2b53bfb4044a8c9eda09312",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/d33_depth178_original_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-18/delivery/docs/results/center_diagnostics_recovery_2026-11-18/figures/P22_M_s19_development_0178.png",
+    "source_sha256": "9af08d68218720160f3529d53ddc589ae7d7f5d9701389b16347b6f59f30b440",
+    "crop_box": [
+      2056,
+      174,
+      2696,
+      814
+    ],
+    "output": "assets/d33_depth178_original_3.png",
+    "output_sha256": "b20185500e2822e7f59689690e940f1506189f4cd40468239d3c5f98acd06946",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/d33_depth178_original_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-18/delivery/docs/results/center_diagnostics_recovery_2026-11-18/figures/d33_P22_M_s19_development_0178.png",
+    "source_sha256": "3b2bdcc1e2b7770639fa2449b3ae93e5a17ab09d0d89cdbe2f1864363589508a",
+    "crop_box": [
+      1380,
+      174,
+      2020,
+      814
+    ],
+    "output": "assets/d33_depth178_alternative_2.png",
+    "output_sha256": "140ab94f9e82cd2b5a1c4d56c504ac288b4f16efd4a71b8a226fe31bd0944b4c",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/d33_depth178_alternative_original.png"
+  },
+  {
+    "source": "outputs/review_2026-11-18/delivery/docs/results/center_diagnostics_recovery_2026-11-18/figures/d33_P22_M_s19_development_0178.png",
+    "source_sha256": "3b2bdcc1e2b7770639fa2449b3ae93e5a17ab09d0d89cdbe2f1864363589508a",
+    "crop_box": [
+      2056,
+      174,
+      2696,
+      814
+    ],
+    "output": "assets/d33_depth178_alternative_3.png",
+    "output_sha256": "aa833ad3d792debb9a7fe28d54e95c02ea069e300b2ff4d881ade78aeb1b63fd",
+    "operation": "crop only; tissue pixels and prediction overlays unchanged",
+    "source_in_delivery": "assets/d33_depth178_alternative_original.png"
+  },
+  {
+    "source": "assets/p38_P15_J_s19_1482_0.png",
+    "source_sha256": "556869f7d90404933b4c5e6e26d885c5337a7e3d681a9f3be97e5b27d9c17859",
+    "crop_box": [
+      37,
+      125,
+      212,
+      287
+    ],
+    "output": "assets/p38_object10_zoom_0.png",
+    "output_sha256": "b7cc677db6eed1c32637234eaeef55ab6d1aea511ff349e3c82c4065120e627d",
+    "operation": "crop only; enlarge object 10 and surrounding tissue",
+    "source_in_delivery": "assets/p38_P15_J_s19_1482_0.png"
+  },
+  {
+    "source": "assets/p38_P15_J_s19_1482_2.png",
+    "source_sha256": "f759bb9dcec62e9bf52743714f2ba01cca8340a13c418876d15ed2393bde549a",
+    "crop_box": [
+      37,
+      125,
+      212,
+      287
+    ],
+    "output": "assets/p38_object10_zoom_2.png",
+    "output_sha256": "a9be6e989424180170a372f070bbca0debbe1e006e42129ef62347536285c76b",
+    "operation": "crop only; enlarge object 10 and surrounding tissue",
+    "source_in_delivery": "assets/p38_P15_J_s19_1482_2.png"
+  },
+  {
+    "source": "assets/p38_P15_J_s19_1482_3.png",
+    "source_sha256": "ac51ce1b61f16659444386ec3a249def5c79a77efc7aa540c065f19064327d73",
+    "crop_box": [
+      37,
+      125,
+      212,
+      287
+    ],
+    "output": "assets/p38_object10_zoom_3.png",
+    "output_sha256": "f3e7291802d37e2d3f01f92d1a424ebb3cfb12242fd9032f8221301e5e0894e0",
+    "operation": "crop only; enlarge object 10 and surrounding tissue",
+    "source_in_delivery": "assets/p38_P15_J_s19_1482_3.png"
+  }
+]
