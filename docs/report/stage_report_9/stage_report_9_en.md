@@ -31,23 +31,19 @@ predictions and also deletes some accurately located nuclei.
 
 | Study | Topic                                                         | Page |
 |:------|:--------------------------------------------------------------|-----:|
-| P15   | moving training images changes alignment exposure             |    7 |
-| P22   | adapting every encoder layer for nucleus detection            |    8 |
-| D32   | recording each step that produces a prediction                |    9 |
-| D33   | swapping interpolation and score conversion                   |   12 |
-| P34   | learning a movement for each existing prediction              |   15 |
-| P35   | sixteen patch-grid alignments of the same image               |   18 |
-| P36   | selecting score thresholds and combining positions separately |   22 |
-| D37   | explaining each nucleus with preserved points                 |   31 |
-| P38   | grouping low-score points and learning their quality          |   34 |
+| P15   | moving training images changes alignment exposure             |    4 |
+| P22   | adapting every encoder layer for nucleus detection            |    5 |
+| D32   | recording each step that produces a prediction                |    6 |
+| D33   | swapping interpolation and score conversion                   |   10 |
+| P34   | learning a movement for each existing prediction              |   13 |
+| P35   | sixteen patch-grid alignments of the same image               |   15 |
+| P36   | selecting score thresholds and combining positions separately |   18 |
+| D37   | explaining each nucleus with preserved points                 |   26 |
+| P38   | grouping low-score points and learning their quality          |   28 |
 
 # Current progress and experiment map
 
-The live query at 07:54:57
-EST on November 21 found an empty personal Expanse queue. All P35 tasks
-completed. All eight P36 scientific computations completed and the
-preservation recovery completed. P38 completed. Three of four P34 tasks
-completed; the all-layer seed-1 evaluation remains incomplete.
+The November 21 check at 10:18 a.m. EST confirmed completion of P35, P36 and P38. Three of the four P34 tasks completed. For the all-layer model at seed 1, the original prediction baseline was verified from per-image records. Evaluation after offset correction is pending.
 
 | Study | Operation | Purpose |
 |:---|:---|:---|
@@ -61,9 +57,7 @@ completed; the all-layer seed-1 evaluation remains incomplete.
 | D37 | Partition saved misses per nucleus | Locate the next intervention |
 | P38 | Learn candidate-quality scores | Reduce extras among more candidates |
 
-P15 and P22 are earlier detectors reused in this stage; D32 through P38
-form the main stage. Independent external archiving of large checkpoints
-also remains on the task list.
+P15 and P22 supply the earlier detectors reused by D32 through P38. From D32 onward, each experiment isolates a step from generating a score map to selecting a final set of points.
 
 # How an image becomes a predicted point
 
@@ -416,9 +410,7 @@ to 83.
 
 [Figure source (chart in PDF)](figs/p34_offset_en.tex)
 
-All-layer seed 1 stops at the first-epoch guard of its second readout:
-1,400.3 seconds exceeds the 1,300-second limit. Its full evaluation
-remains pending.
+The all-layer seed-1 readout with original augmentation completed all 12 epochs and its weights were saved. The translation readout exceeded the 1,300-second guard at epoch 1 (1,400.3 seconds). The run saved the first-epoch loss. The single-precision original decoder yielded 7,933 matches from 10,804 predictions across 522 development images, including 84 of 145 interior Dead nuclei. This is the baseline before offset correction. The full paired comparison requires all 12 epochs of the translation readout and evaluation under the original protocol.
 
 # P34 insight: position correction must transfer to new images
 
@@ -444,6 +436,8 @@ Readout error queries the offset module at an annotated center; final
 matching queries it at the detector’s actual prediction points. The
 latter includes the combined effects of point selection, movement and
 merging.
+
+P35 returns to the frozen detector and tests whether a different image alignment produces a usable point before any offset correction.
 
 # P35: sixteen patch-grid alignments of the same image
 
@@ -491,6 +485,8 @@ positions.
 These proportions use annotations to check whether any alignment can
 match each nucleus; an operational decoder still selects from the
 candidate points.
+
+The P35 central-nucleus analysis uses nuclei at least 24 pixels from all image borders and visible at all 16 alignments. Its separate cross-alignment Dead analysis uses the 144 interior Dead nuclei visible at every alignment. Full development-set results in other sections cover 145 interior Dead nuclei.
 
 # P35 subgroups: small and crowded nuclei remain missed across more alignments
 
@@ -1037,7 +1033,7 @@ near-center candidate is still needed.
 
 All-layer detector, seed
 19. The fixed panels compare high-score consensus, support-only and
-quality filtering. The next page traces small object 78.
+quality filtering. The following analysis traces nucleus 78.
 
 <div class="minipage">
 
@@ -1099,14 +1095,12 @@ and development correctness at the same score or support level. These
 results guide the choice of morphology features, position correction or
 center-uncertainty representation.
 
-These are questions for a new experiment design. P34 seed-1 completion
-and independent checkpoint archiving remain pending. Current selected
-filters retain their fixed values.
+For these comparisons, the thresholds and candidate rules remain fixed at their training-selected values.
 
 # Comparison conditions, evidence scope and reproducibility
 
 This stage uses
-repeatedly examined fold-1 center-detection development data. Dead
+repeatedly examined fold-1 center-detection development data. Full development-set Dead
 counts have 145 objects from 11 images as their denominator; models and
 alignments repeatedly observe these objects. Fixed examples are breast
 178, colon 776/1482 and lung 1037, retained under the original

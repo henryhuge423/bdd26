@@ -1,34 +1,74 @@
 \documentclass[14pt,a4paper]{extarticle}
-\usepackage[margin=18mm]{geometry}
+\usepackage[left=18mm,right=18mm,top=23mm,bottom=18mm]{geometry}
 \usepackage{fontspec,xeCJK}
 \setmainfont{TeX Gyre Termes}
 \IfFontExistsTF{Microsoft YaHei}{\setCJKmainfont[Scale=1.0]{Microsoft YaHei}\setCJKsansfont[Scale=1.0]{Microsoft YaHei}}{\setCJKmainfont[Scale=1.0]{FandolSong-Regular}\setCJKsansfont[Scale=1.0]{FandolHei-Regular}}
-\usepackage{graphicx,booktabs,array,xcolor,tikz,pgfplots}
+\usepackage[table]{xcolor}
+\usepackage{graphicx,booktabs,array,ragged2e,tikz,pgfplots}
 \usetikzlibrary{positioning,arrows.meta,calc}
 \pgfplotsset{compat=1.18}
 \usepackage{amsmath,fancyhdr,hyperref}
 \hypersetup{colorlinks=true,urlcolor=blue!55!black,linkcolor=blue!55!black}
 \usepackage{setspace}
-\setstretch{1.15}
+\setstretch{1.06}
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{7pt}
+\setlength{\parskip}{5pt}
 \setlength{\emergencystretch}{4em}
 \pagestyle{fancy}\fancyhf{}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0pt}
-\newcommand{\pagechapter}[1]{\clearpage\section*{#1}\addcontentsline{toc}{section}{#1}}
+\newcommand{\pagechapter}[1]{\section*{#1}\addcontentsline{toc}{section}{#1}}
+
+\definecolor{ReportInk}{HTML}{213244}
+\definecolor{ReportMuted}{HTML}{4B5C69}
+\definecolor{ReportRule}{HTML}{D9E2E9}
+\definecolor{ReportTableHeader}{HTML}{ECF2F6}
+\definecolor{ReportBlue}{HTML}{245B84}
+\definecolor{ReportAmber}{HTML}{B45A24}
+\definecolor{ReportTeal}{HTML}{237A74}
+\definecolor{ReportTint}{HTML}{EFF5F9}
+\newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\RaggedLeft\arraybackslash}p{#1}}
+\newcommand{\reportpanel}[2]{%
+  \centering
+  \parbox[c][32pt][c]{\linewidth}{\centering\color{ReportInk}\fontsize{14.1}{16}\selectfont #1\par}\par
+  \includegraphics[width=\linewidth]{#2}\par
+}
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0pt}%
+  {-2.6ex plus -.5ex minus -.2ex}{1.15ex plus .2ex}%
+  {\normalfont\color{ReportInk}\bfseries\fontsize{16}{19}\selectfont}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0pt}%
+  {-1.95ex plus -.4ex minus -.2ex}{.8ex plus .2ex}%
+  {\normalfont\color{ReportInk}\bfseries\fontsize{15}{18}\selectfont}}
+\makeatother
+\AtBeginDocument{\fontsize{14.1}{17.5}\selectfont\RaggedRight}
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+\setlength{\headheight}{18pt}
+\setlength{\headsep}{11pt}
+\setlength{\footskip}{24pt}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{{\color{ReportRule}\hrule height\headrulewidth width\headwidth}\vskip-\headrulewidth}
+\fancyhead[L]{\color{ReportMuted}\fontsize{14.1}{16}\selectfont 阶段报告 9}
+\fancyhead[R]{\color{ReportMuted}\fontsize{14.1}{16}\selectfont 中文导读}
+\fancyfoot[C]{\color{ReportMuted}\fontsize{14.1}{16}\selectfont\thepage}
+\fancypagestyle{reportfirst}{\fancyhead{}\renewcommand{\headrulewidth}{0pt}}
+\raggedbottom
 \begin{document}
+\thispagestyle{reportfirst}
 \section*{中文导读：同一颗核为什么有时能找到、有时找不到}\label{chapter0}
 本阶段沿着一个具体问题展开：模型已经在图里产生了一个点，怎样判断它是否真的找到了核？我们分别检查图像对齐、点的位置、分数和筛选。下面用实验图与同一颗核的坐标解释结果。
 
-当前 P35、P36、P38 已完成，P34 完成三项，另一项待补齐。最清晰的发现是：全层模型多从换对齐获益；平移训练模型有大量有效但低分数的点；质量筛选能减少额外点，也会删掉正确点。
+11 月 21 日 10:18（美东时间）复核显示，P35、P36、P38 已完成，P34 四项任务完成三项。缺项是全层模型种子 1 的训练后位移评估，其原预测基线已从保存的逐图结果核验。 全层模型可通过改变对齐找回一部分漏检。平移训练模型有许多位置有效但分数偏低的预测点，质量筛选可以减少额外点，也会删掉部分正确点。
 
-\begin{center}\begin{tikzpicture}[node distance=8mm, every node/.style={font=\fontsize{13}{17}\selectfont}]
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt] (n0) {图像相对 16 像素小块的位置会改变预测};
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n0] (n1) {原分数低于阈值的点也可能接近核中心};
-\draw[-{Stealth},thick,blue!60!black] (n0) -- (n1);
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n1] (n2) {多个对齐给出相似位置，可以帮助筛选};
-\draw[-{Stealth},thick,blue!60!black] (n1) -- (n2);
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n2] (n3) {保护原来找到的核，再评价新增候选};
-\draw[-{Stealth},thick,blue!60!black] (n2) -- (n3);
+\begin{center}\begin{tikzpicture}[node distance=5mm, every node/.style={font=\fontsize{14.1}{17}\selectfont}]
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt] (n0) {图像相对 16 像素小块的位置会改变预测};
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n0] (n1) {原分数低于阈值的点也可能接近核中心};
+\draw[-{Stealth},thick,ReportBlue] (n0) -- (n1);
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n1] (n2) {多个对齐给出相似位置，可以帮助筛选};
+\draw[-{Stealth},thick,ReportBlue] (n1) -- (n2);
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n2] (n3) {保护原来找到的核，再评价新增候选};
+\draw[-{Stealth},thick,ReportBlue] (n2) -- (n3);
 \end{tikzpicture}\end{center}
 \pagechapter{先读懂图里的点和数字}\label{chapter1}
 青色圈代表从人工标注核区域计算的中心；绿色加号代表成功匹配的预测点；红叉代表没有得到一对一匹配的额外点。P38 图还用黄色圈标记漏检核。坐标 (y,x) 的第一个数是上下位置，第二个数是左右位置。
@@ -36,11 +76,12 @@
 预测距标注中心不超过 3 像素才可匹配，每个核只分配一个点。核内距离 3.16 像素的点也会被计为额外点。因此，红叉既可能在背景，也可能在真实核内。
 
 \begin{center}
-\renewcommand{\arraystretch}{1.35}
+\renewcommand{\arraystretch}{1.24}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.25\linewidth}p{0.65\linewidth}}
+\begin{tabular}{L{0.25\linewidth}L{0.65\linewidth}}
 \toprule
-指标 & 一个例子\\
+\rowcolor{ReportTableHeader}
+\textbf{指标} & \textbf{一个例子}\\
 \midrule
 召回率 & 100 个核找到 70 个：70\%\\
 精度 & 90 个预测点中 70 个匹配：77.8\%\\
@@ -60,7 +101,7 @@ P34 学习把已有点移向标注中心；P35 改变图像对齐；P36 选择�
 带平移读出、移动并合并后：对照种子 19 新增 158、丢失 173；对照种子 1 新增 172、丢失 182；全层种子 19 新增 172、丢失 158。净变化分别为 −15、−10、+14。全层种子 19 的内部死亡核从 85 变为 83。
 
 \begin{center}\input{figs/p34_offset_zh}\end{center}
-全层种子 1 在第二个读出的首轮耗时检查处停止，耗时 1,400.3 秒超过 1,300 秒上限，完整评估待补齐。
+全层模型种子 1 的原增强读出已完成 12 轮并保存权重。带平移的读出首轮耗时 1,400.3 秒，超过 1,300 秒上限，作业退出前只写出首轮损失。复核 522 张开发图像的单精度原预测得到 7,933 个匹配、10,804 个预测点，其中 84/145 个内部死亡核匹配。这组数值是位移修正前的基线。完整成对比较仍需完成带平移读出的 12 轮训练和同口径评估。
 
 \pagechapter{P35 结果：训练图像的高检出依赖原对齐}\label{chapter3}
 \begin{center}\input{figs/p35_alignment_zh}\end{center}
@@ -71,6 +112,8 @@ P34 学习把已有点移向标注中心；P35 改变图像对齐；P36 选择�
 
 这些比例逐核利用标注检查“有没有一种对齐可匹配”；实际输出仍要从所有候选中选择。
 
+P35 的对齐分析限定在图像中央，P34 和后面的 P36 整体检出统计覆盖全部 522 张开发图像的标注核。
+
 \pagechapter{P36 的阈值结果：平移模型的大量点分数偏低}\label{chapter4}
 \begin{center}\input{figs/p36_shift_threshold_zh}\end{center}
 两个平移模型都在训练图像上选择了 0.2。开发核匹配数从 4,771、4,600 增到 8,463、8,542，召回率从 38.95\%、37.55\% 增到 69.09\%、69.73\%。新增 3,692、3,942 个匹配，保存点重放中原匹配没有丢失。内部死亡核从 44、44 增到 101、99。
@@ -78,24 +121,22 @@ P34 学习把已有点移向标注中心；P35 改变图像对齐；P36 选择�
 \begin{center}\input{figs/p36_threshold_precision_zh}\end{center}
 接纳低分数点扩大覆盖，同时精度从约 86\% 降到约 66\%。因此下一步要研究哪些新增点是真正漏检核的中心，哪些是背景、偏离或重复预测。
 
+\par\noindent\begin{minipage}{\linewidth}
 \pagechapter{结肠图像 1482：降低阈值找回密集区域中的核}\label{chapter5}
 平移训练模型，种子 19，75 个标注核。原解码匹配 12 个，阈值 0.2 匹配 26 个，位置汇总匹配 18 个。
 
 \begin{center}
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont 标注中心\par}
-\includegraphics[width=\linewidth]{assets/p36_P15_J_s19_1482_0.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{标注中心}{assets/p36_P15_J_s19_1482_0.png}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont 原阈值 0.5：12 个匹配\par}
-\includegraphics[width=\linewidth]{assets/p36_P15_J_s19_1482_1.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{原阈值 0.5：12 个匹配}{assets/p36_P15_J_s19_1482_1.png}
 \end{minipage}\par\vspace{5mm}
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont 训练选择 0.2：26 个匹配\par}
-\includegraphics[width=\linewidth]{assets/p36_P15_J_s19_1482_2.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{训练选择 0.2：26 个匹配}{assets/p36_P15_J_s19_1482_2.png}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont 位置汇总：18 个匹配\par}
-\includegraphics[width=\linewidth]{assets/p36_P15_J_s19_1482_3.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{位置汇总：18 个匹配}{assets/p36_P15_J_s19_1482_3.png}
 \end{minipage}\par\vspace{5mm}
 \end{center}
 青色：标注中心；绿色加号：匹配；红叉：额外点。黄色数字用于和对象坐标表对应。
+\end{minipage}\par
 
 \pagechapter{结肠图像 1482：分数不足与持续漏检的差别}\label{chapter6}
 \subsection*{死亡核 7：已有合适位置，分数略低}
@@ -123,24 +164,25 @@ P36 的低阈值单图找到了更多核，高阈值汇总给出更高精度。P
 \subsection*{具体操作}
 只用镜像填充的 15 个平移对齐，原对齐排除。按分数从高到低访问预测点，在距离首个点 4 像素内归到同组；每个对齐只贡献组内最高分点，避免一张图重复贡献多个峰。输出位置为这些点的平均坐标。
 
-\begin{center}\begin{tikzpicture}[node distance=8mm, every node/.style={font=\fontsize{13}{17}\selectfont}]
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt] (n0) {保存点：15 个对齐，分数 ≥0.1};
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n0] (n1) {4 像素归组；每个对齐只贡献一次};
-\draw[-{Stealth},thick,blue!60!black] (n0) -- (n1);
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n1] (n2) {相同候选组 → 支持数筛选 / 学习质量筛选};
-\draw[-{Stealth},thick,blue!60!black] (n1) -- (n2);
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n2] (n3) {筛选后重新一对一匹配，记录新增与丢失};
-\draw[-{Stealth},thick,blue!60!black] (n2) -- (n3);
+\begin{center}\begin{tikzpicture}[node distance=5mm, every node/.style={font=\fontsize{14.1}{17}\selectfont}]
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt] (n0) {保存点：15 个对齐，分数 ≥0.1};
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n0] (n1) {4 像素归组；每个对齐只贡献一次};
+\draw[-{Stealth},thick,ReportBlue] (n0) -- (n1);
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n1] (n2) {相同候选组 → 支持数筛选 / 学习质量筛选};
+\draw[-{Stealth},thick,ReportBlue] (n1) -- (n2);
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n2] (n3) {筛选后重新一对一匹配，记录新增与丢失};
+\draw[-{Stealth},thick,ReportBlue] (n2) -- (n3);
 \end{tikzpicture}\end{center}
 检测器权重与保存点保持冻结，P38 只训练很小的候选评分模型。SLURM CPU 作业 55918618 已在 291 秒内完成，8 个模型和 8 张固定图保存完毕。
 
 \pagechapter{P38：质量评分输入的六个量}\label{chapter9}
 \begin{center}
-\renewcommand{\arraystretch}{1.35}
+\renewcommand{\arraystretch}{1.24}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.35\linewidth}p{0.56\linewidth}}
+\begin{tabular}{L{0.35\linewidth}L{0.56\linewidth}}
 \toprule
-输入 & 直白解释\\
+\rowcolor{ReportTableHeader}
+\textbf{输入} & \textbf{直白解释}\\
 \midrule
 最高分数的 logit & 组内最强原检测分数，经 log(p/(1−p)) 转换\\
 平均分数的 logit & 组内平均原分数的同样转换\\
@@ -159,27 +201,24 @@ P36 的低阈值单图找到了更多核，高阈值汇总给出更高精度。P
 \begin{center}\input{figs/p38_extra_zh}\end{center}
 相对同一候选组的支持数筛选，种子 19、1 的额外点分别减少 676、377 个；匹配核数分别减少 166、增加 4 个。精度从 68.23\%、67.92\% 提高到 71.99\%、70.17\%，死亡核匹配从 105、101 变为 98、99。
 
-\begin{center}\input{figs/p38_precision_zh}\end{center}
-质量学习减少了一部分额外候选，种子 19 同时损失真实核。报告另与使用同样校准的对照比较，检验检测器训练本身带来的差异。
+质量学习减少了一部分额外候选，种子 19 同时损失真实核。报告另与按同一流程分别校准的对照比较，检验检测器训练本身带来的差异。
 
+\par\noindent\begin{minipage}{\linewidth}
 \pagechapter{P38 结肠图像 1482：补回候选与质量筛选}\label{chapter11}
 平移训练模型，种子 19。75 个标注核。高分数汇总找到 18 个、额外 6 个；低分支持数找到 28 个、额外 7 个；质量筛选找到 26 个、额外 5 个。
 
 \begin{center}
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont 标注中心\par}
-\includegraphics[width=\linewidth]{assets/p38_P15_J_s19_1482_0.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{标注中心}{assets/p38_P15_J_s19_1482_0.png}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont P36：18 匹配 / 6 额外\par}
-\includegraphics[width=\linewidth]{assets/p38_P15_J_s19_1482_1.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{P36：18 匹配 / 6 额外}{assets/p38_P15_J_s19_1482_1.png}
 \end{minipage}\par\vspace{5mm}
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont 支持数：28 匹配 / 7 额外\par}
-\includegraphics[width=\linewidth]{assets/p38_P15_J_s19_1482_2.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{支持数：28 匹配 / 7 额外}{assets/p38_P15_J_s19_1482_2.png}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont 质量分：26 匹配 / 5 额外\par}
-\includegraphics[width=\linewidth]{assets/p38_P15_J_s19_1482_3.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{质量分：26 匹配 / 5 额外}{assets/p38_P15_J_s19_1482_3.png}
 \end{minipage}\par\vspace{5mm}
 \end{center}
 青色圆圈标注中心；黄色圆圈标记未匹配核；绿色加号为匹配点；红叉为额外点。
+\end{minipage}\par
 
 \pagechapter{P38 结肠图像：两个正确候选，一保留一删除}\label{chapter12}
 \subsection*{保留：死亡核 7}
@@ -190,11 +229,12 @@ P36 的低阈值单图找到了更多核，高阈值汇总给出更高精度。P
 
 \begin{center}\begin{minipage}[t]{.31\linewidth}\centering 标注核 10\par\includegraphics[width=\linewidth]{assets/p38_object10_zoom_0.png}\end{minipage}\hfill\begin{minipage}[t]{.31\linewidth}\centering 支持数：保留\par\includegraphics[width=\linewidth]{assets/p38_object10_zoom_2.png}\end{minipage}\hfill\begin{minipage}[t]{.31\linewidth}\centering 质量分：删除\par\includegraphics[width=\linewidth]{assets/p38_object10_zoom_3.png}\end{minipage}\hfill\end{center}
 \begin{center}
-\renewcommand{\arraystretch}{1.35}
+\renewcommand{\arraystretch}{1.24}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.13\linewidth}p{0.18\linewidth}p{0.2\linewidth}p{0.14\linewidth}p{0.23\linewidth}}
+\begin{tabular}{L{0.13\linewidth}R{0.18\linewidth}R{0.2\linewidth}R{0.14\linewidth}L{0.23\linewidth}}
 \toprule
-对象 & 支持 & 质量分 & 中心误差 & 质量结果\\
+\rowcolor{ReportTableHeader}
+\textbf{对象} & \textbf{支持} & \textbf{质量分} & \textbf{中心误差} & \textbf{质量结果}\\
 \midrule
 7 & 15/15 & 0.91579 & 1.89 & 匹配\\
 10 & 11/15 & 0.30811 & 1.69 & 删除\\
@@ -203,13 +243,15 @@ P36 的低阈值单图找到了更多核，高阈值汇总给出更高精度。P
 \end{center}
 两个误差单位均为像素。质量分与原检测分数不同；质量阈值是在训练图像上选出的。对象 51 仍漏检，最近候选组中心距它 20.14 像素，适当的近中心候选仍待产生。
 
+\par\noindent\begin{minipage}{\linewidth}
 \pagechapter{本阶段形成的解释与下一步具体问题}\label{chapter13}
 \begin{center}
-\renewcommand{\arraystretch}{1.35}
+\renewcommand{\arraystretch}{1.24}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.44\linewidth}p{0.47\linewidth}}
+\begin{tabular}{L{0.44\linewidth}L{0.47\linewidth}}
 \toprule
-实际发现 & 对下一步的用处\\
+\rowcolor{ReportTableHeader}
+\textbf{实际发现} & \textbf{对下一步的用处}\\
 \midrule
 训练原对齐高检出，换对齐明显下降 & 学习跨对齐稳定的位置信息\\
 核内强峰可能离中心超过 3 像素 & 分开测量存在与定位\\
@@ -220,7 +262,6 @@ P36 的低阈值单图找到了更多核，高阈值汇总给出更高精度。P
 \end{tabular}
 \end{center}
 下一项工作先用保存点诊断额外候选落在哪里：已有匹配核内、未匹配核内、标注区域外。再比较训练和开发图像中，给定同一分数或支持水平时的匹配比例。由这些结果决定需要加入形态信息、修正位置，还是改进中心不确定性的表示。
-
-这些是新的实验设计问题；P34 种子 1 完整评估与独立检查点归档仍待安排。当前固定筛选保持原值。
+\end{minipage}\par
 
 \end{document}

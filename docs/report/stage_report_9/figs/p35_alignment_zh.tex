@@ -1,8 +1,8 @@
 \begin{tikzpicture}
-\begin{axis}[width=0.94\linewidth,height=68mm,ybar,bar width=10pt,ymin=0,ymax=110,enlarge x limits=0.17,xtick={0,1,2,3},xticklabels={{对照 19},{对照 1},{全层 19},{全层 1}},ylabel={中心区域核召回率（\%）},tick label style={font=\fontsize{12}{15}\selectfont},label style={font=\fontsize{13}{16}\selectfont},legend style={at={(0.5,1.06)},anchor=south,legend columns=2,draw=none,font=\fontsize{12}{15}\selectfont},grid=major,major grid style={gray!20}]
-\addplot[fill=blue!65!black,draw=none] coordinates {(0,97.39000000) (1,98.04000000) (2,99.19000000) (3,98.86000000)};
-\addplot[fill=orange!85!black,draw=none] coordinates {(0,68.50000000) (1,67.10000000) (2,72.36000000) (3,72.61000000)};
-\addplot[fill=teal!75!black,draw=none] coordinates {(0,61.67000000) (1,61.02000000) (2,67.94000000) (3,67.83000000)};
+\begin{axis}[width=0.94\linewidth,height=68mm,ybar,bar width=10pt,ymin=0,ymax=110,enlarge x limits=0.17,xtick={0,1,2,3},xticklabels={{对照 19},{对照 1},{全层 19},{全层 1}},ylabel={中心区域核召回率（\%）},tick label style={font=\fontsize{14.1}{17}\selectfont},label style={font=\fontsize{14.1}{17}\selectfont},legend style={at={(0.5,1.06)},anchor=south,legend columns=2,column sep=5pt,draw=none,font=\fontsize{14.1}{17}\selectfont},grid=major,major grid style={ReportRule}]
+\addplot[fill=ReportBlue,draw=none] coordinates {(0,97.39000000) (1,98.04000000) (2,99.19000000) (3,98.86000000)};
+\addplot[fill=ReportAmber,draw=none] coordinates {(0,68.50000000) (1,67.10000000) (2,72.36000000) (3,72.61000000)};
+\addplot[fill=ReportTeal,draw=none] coordinates {(0,61.67000000) (1,61.02000000) (2,67.94000000) (3,67.83000000)};
 \legend{{训练原对齐},{训练其他对齐},{开发其他对齐}}
 \end{axis}
 \end{tikzpicture}

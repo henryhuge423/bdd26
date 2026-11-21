@@ -1,0 +1,41 @@
+{
+  "study": "P34 original FP32 decoder; all-layer P22 detector, seed 1",
+  "source_job": "55855798_3",
+  "zero_offset_refined_equals_original_per_image_for_both_readouts": true,
+  "source": "results/P22_M_s1/preflight/{role}_original.json",
+  "roles": {
+    "development": {
+      "images": 522,
+      "counts": {
+        "matched": 7933,
+        "total": 12250,
+        "candidates": 10804,
+        "dead_hit": 84,
+        "dead_total": 145
+      },
+      "sha256": "09db4c56311d16dd57a871ae268813352775294b671842347c53ee5c544376f9"
+    },
+    "training": {
+      "images": 48,
+      "counts": {
+        "matched": 2116,
+        "total": 2154,
+        "candidates": 2118,
+        "dead_hit": 642,
+        "dead_total": 656
+      },
+      "sha256": "9ee013637c7fd6b61669fa53e55d66d46f06c265e2ef394de9fcc3efd104a8cc"
+    },
+    "training_shifted": {
+      "images": 48,
+      "counts": {
+        "matched": 1306,
+        "total": 2087,
+        "candidates": 1647,
+        "dead_hit": 424,
+        "dead_total": 638
+      },
+      "sha256": "361b10f64f9d41bd4136ee73f057494d229987c237ae54d3723c365f79294b8e"
+    }
+  }
+}

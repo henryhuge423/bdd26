@@ -1,21 +1,61 @@
 \documentclass[14pt,a4paper]{extarticle}
-\usepackage[margin=18mm]{geometry}
+\usepackage[left=18mm,right=18mm,top=23mm,bottom=18mm]{geometry}
 \usepackage{fontspec,xeCJK}
 \setmainfont{TeX Gyre Termes}
 \IfFontExistsTF{Microsoft YaHei}{\setCJKmainfont[Scale=1.0]{Microsoft YaHei}\setCJKsansfont[Scale=1.0]{Microsoft YaHei}}{\setCJKmainfont[Scale=1.0]{FandolSong-Regular}\setCJKsansfont[Scale=1.0]{FandolHei-Regular}}
-\usepackage{graphicx,booktabs,array,xcolor,tikz,pgfplots}
+\usepackage[table]{xcolor}
+\usepackage{graphicx,booktabs,array,ragged2e,tikz,pgfplots}
 \usetikzlibrary{positioning,arrows.meta,calc}
 \pgfplotsset{compat=1.18}
 \usepackage{amsmath,fancyhdr,hyperref}
 \hypersetup{colorlinks=true,urlcolor=blue!55!black,linkcolor=blue!55!black}
 \usepackage{setspace}
-\setstretch{1.15}
+\setstretch{1.06}
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{7pt}
+\setlength{\parskip}{5pt}
 \setlength{\emergencystretch}{4em}
 \pagestyle{fancy}\fancyhf{}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0pt}
-\newcommand{\pagechapter}[1]{\clearpage\section*{#1}\addcontentsline{toc}{section}{#1}}
+\newcommand{\pagechapter}[1]{\section*{#1}\addcontentsline{toc}{section}{#1}}
+
+\definecolor{ReportInk}{HTML}{213244}
+\definecolor{ReportMuted}{HTML}{4B5C69}
+\definecolor{ReportRule}{HTML}{D9E2E9}
+\definecolor{ReportTableHeader}{HTML}{ECF2F6}
+\definecolor{ReportBlue}{HTML}{245B84}
+\definecolor{ReportAmber}{HTML}{B45A24}
+\definecolor{ReportTeal}{HTML}{237A74}
+\definecolor{ReportTint}{HTML}{EFF5F9}
+\newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\RaggedLeft\arraybackslash}p{#1}}
+\newcommand{\reportpanel}[2]{%
+  \centering
+  \parbox[c][32pt][c]{\linewidth}{\centering\color{ReportInk}\fontsize{14.1}{16}\selectfont #1\par}\par
+  \includegraphics[width=\linewidth]{#2}\par
+}
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0pt}%
+  {-2.6ex plus -.5ex minus -.2ex}{1.15ex plus .2ex}%
+  {\normalfont\color{ReportInk}\bfseries\fontsize{16}{19}\selectfont}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0pt}%
+  {-1.95ex plus -.4ex minus -.2ex}{.8ex plus .2ex}%
+  {\normalfont\color{ReportInk}\bfseries\fontsize{15}{18}\selectfont}}
+\makeatother
+\AtBeginDocument{\fontsize{14.1}{17.5}\selectfont\RaggedRight}
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+\setlength{\headheight}{18pt}
+\setlength{\headsep}{11pt}
+\setlength{\footskip}{24pt}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{{\color{ReportRule}\hrule height\headrulewidth width\headwidth}\vskip-\headrulewidth}
+\fancyhead[L]{\color{ReportMuted}\fontsize{14.1}{16}\selectfont Stage report 9}
+\fancyhead[R]{\color{ReportMuted}\fontsize{14.1}{16}\selectfont Nucleus-center detection}
+\fancyfoot[C]{\color{ReportMuted}\fontsize{14.1}{16}\selectfont\thepage}
+\fancypagestyle{reportfirst}{\fancyhead{}\renewcommand{\headrulewidth}{0pt}}
+\raggedbottom
 \begin{document}
+\thispagestyle{reportfirst}
 \section*{Stage report 9: finding more nuclei and explaining changing predictions}\label{chapter0}
 Research stage: November 17–20, 2026. Revision and progress check: November 21, 2026.
 
@@ -25,16 +65,16 @@ The detector finds nearly every nucleus in its training images, yet misses many 
 \subsection*{Three principal findings}
 First, detection depends on the image’s position relative to the model’s patch grid. Second, translation training makes positions more stable while producing many useful points with low scores. Third, learning candidate quality after admitting low-score points removes some extra predictions and also deletes some accurately located nuclei.
 
-\begin{center}\begin{tikzpicture}[node distance=8mm, every node/.style={font=\fontsize{13}{17}\selectfont}]
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt] (n0) {D32 and D33: inspect intermediate outputs and interpolation};
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n0] (n1) {P34 and P35: test position correction and multiple alignments};
-\draw[-{Stealth},thick,blue!60!black] (n0) -- (n1);
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n1] (n2) {P36 and D37: select thresholds, combine positions, explain misses};
-\draw[-{Stealth},thick,blue!60!black] (n1) -- (n2);
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n2] (n3) {P38: learn the quality of low-score candidates};
-\draw[-{Stealth},thick,blue!60!black] (n2) -- (n3);
+\begin{center}\begin{tikzpicture}[node distance=5mm, every node/.style={font=\fontsize{14.1}{17}\selectfont}]
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt] (n0) {D32 and D33: inspect intermediate outputs and interpolation};
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n0] (n1) {P34 and P35: test position correction and multiple alignments};
+\draw[-{Stealth},thick,ReportBlue] (n0) -- (n1);
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n1] (n2) {P36 and D37: select thresholds, combine positions, explain misses};
+\draw[-{Stealth},thick,ReportBlue] (n1) -- (n2);
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n2] (n3) {P38: learn the quality of low-score candidates};
+\draw[-{Stealth},thick,ReportBlue] (n2) -- (n3);
 \end{tikzpicture}\end{center}
-\clearpage\section*{Reading route}
+\section*{Reading route}
 \begin{center}\begin{tabular}{p{.12\linewidth}p{.64\linewidth}r}\toprule
 Study & Topic & Page\\
 \midrule
@@ -49,14 +89,15 @@ D37 & explaining each nucleus with preserved points & \pageref{chapter29}\\
 P38 & grouping low-score points and learning their quality & \pageref{chapter32}\\
 \bottomrule\end{tabular}\end{center}
 \pagechapter{Current progress and experiment map}\label{chapter1}
-The live query at 07:54:57 EST on November 21 found an empty personal Expanse queue. All P35 tasks completed. All eight P36 scientific computations completed and the preservation recovery completed. P38 completed. Three of four P34 tasks completed; the all-layer seed-1 evaluation remains incomplete.
+The November 21 check at 10:18 a.m. EST confirmed completion of P35, P36 and P38. Three of the four P34 tasks completed. For the all-layer model at seed 1, the original prediction baseline was verified from per-image records. Evaluation after offset correction is pending.
 
 \begin{center}
-\renewcommand{\arraystretch}{1.35}
+\renewcommand{\arraystretch}{1.24}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.1\linewidth}p{0.43\linewidth}p{0.36\linewidth}}
+\begin{tabular}{L{0.1\linewidth}L{0.43\linewidth}L{0.36\linewidth}}
 \toprule
-Study & Operation & Purpose\\
+\rowcolor{ReportTableHeader}
+\textbf{Study} & \textbf{Operation} & \textbf{Purpose}\\
 \midrule
 P15 & Translate images during training & Test alignment exposure\\
 P22 & Update all encoder layers & Test adaptation depth\\
@@ -70,31 +111,32 @@ P38 & Learn candidate-quality scores & Reduce extras among more candidates\\
 \bottomrule
 \end{tabular}
 \end{center}
-P15 and P22 are earlier detectors reused in this stage; D32 through P38 form the main stage. Independent external archiving of large checkpoints also remains on the task list.
+P15 and P22 supply the earlier detectors reused by D32 through P38. From D32 onward, each experiment isolates a step from generating a score map to selecting a final set of points.
 
 \pagechapter{How an image becomes a predicted point}\label{chapter2}
 The encoder is UNI, a pretrained model that turns tissue images into feature vectors. A 256×256-pixel image is divided into 16×16-pixel patches. Each patch becomes a 1,024-dimensional vector processed by 24 encoder layers. A detection head turns the features into a two-dimensional map of nucleus-center scores.
 
-\begin{center}\begin{tikzpicture}[node distance=8mm, every node/.style={font=\fontsize{13}{17}\selectfont}]
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt] (n0) {Input: 256×256-pixel tissue image};
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n0] (n1) {Read layers 6, 12, 18, 24; project each branch to 192 channels};
-\draw[-{Stealth},thick,blue!60!black] (n0) -- (n1);
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n1] (n2) {Fuse and upsample: 128×128 features with 64 channels};
-\draw[-{Stealth},thick,blue!60!black] (n1) -- (n2);
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n2] (n3) {A 1×1 convolution produces raw values; interpolate to 256×256};
-\draw[-{Stealth},thick,blue!60!black] (n2) -- (n3);
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n3] (n4) {Convert to scores → locate local peaks → retain points above a cutoff};
-\draw[-{Stealth},thick,blue!60!black] (n3) -- (n4);
+\begin{center}\begin{tikzpicture}[node distance=5mm, every node/.style={font=\fontsize{14.1}{17}\selectfont}]
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt] (n0) {Input: 256×256-pixel tissue image};
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n0] (n1) {Read layers 6, 12, 18, 24; project each branch to 192 channels};
+\draw[-{Stealth},thick,ReportBlue] (n0) -- (n1);
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n1] (n2) {Fuse and upsample: 128×128 features with 64 channels};
+\draw[-{Stealth},thick,ReportBlue] (n1) -- (n2);
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n2] (n3) {A 1×1 convolution produces raw values; interpolate to 256×256};
+\draw[-{Stealth},thick,ReportBlue] (n2) -- (n3);
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n3] (n4) {Convert to scores → locate local peaks → retain points above a cutoff};
+\draw[-{Stealth},thick,ReportBlue] (n3) -- (n4);
 \end{tikzpicture}\end{center}
 A raw prediction value is a logit and can be positive or negative. The sigmoid function converts it to a score between zero and one; a logit of zero gives a score of 0.5. A local peak is the highest location within a small surrounding window. Decoding is the process of extracting and selecting points from the map.
 
 \pagechapter{Essential terms: what the numbers and modules mean}\label{chapter3}
 \begin{center}
-\renewcommand{\arraystretch}{1.35}
+\renewcommand{\arraystretch}{1.24}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.25\linewidth}p{0.66\linewidth}}
+\begin{tabular}{L{0.25\linewidth}L{0.66\linewidth}}
 \toprule
-Term & Meaning in this report\\
+\rowcolor{ReportTableHeader}
+\textbf{Term} & \textbf{Meaning in this report}\\
 \midrule
 Parameter and update & Parameters are numbers controlling model calculations; training updates change them\\
 Pretraining & Learning from earlier images before the current detection task\\
@@ -113,11 +155,12 @@ We retain the fixed internal division of PanNuke fold 1: 2,134 training images a
 An annotated center is the pixel inside the annotated mask nearest its centroid. Coordinates are written (y,x): y increases downward and x increases rightward. A prediction within three pixels can match the center. Each nucleus and point can be used once; the assignment maximizes the number of matches.
 
 \begin{center}
-\renewcommand{\arraystretch}{1.35}
+\renewcommand{\arraystretch}{1.24}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.26\linewidth}p{0.65\linewidth}}
+\begin{tabular}{L{0.26\linewidth}L{0.65\linewidth}}
 \toprule
-Quantity & Meaning\\
+\rowcolor{ReportTableHeader}
+\textbf{Quantity} & \textbf{Meaning}\\
 \midrule
 Recall & Matched nuclei / all annotated nuclei\\
 Precision & Matched points / all predicted points\\
@@ -162,63 +205,65 @@ The 12 models repeatedly observe the same 145 nuclei, giving 1,740 model–nucle
 \begin{center}\input{figs/d32_counts_en}\end{center}
 D32 uses actual arrays to distinguish weak scores, lower scores near the center after interpolation, and strong in-mask peaks at displaced locations. The 180 diagnostic PNGs, arrays and coordinates are preserved. An initial plotting failure was followed by a rendering-only correction that completed the planned calculation.
 
+\par\noindent\begin{minipage}{\linewidth}
 \pagechapter{A D32 example: responding inside a nucleus without matching its center}\label{chapter8}
 In breast image 178, the P22 control with seed 19 observes a Dead nucleus centered at (191,86), area 286 pixels. Its in-mask prediction at (190,89) scores about 0.963 and lies √10≈3.16 pixels away. With a three-pixel matching radius, the point is an extra and the nucleus a miss. The highest score within three pixels is about 0.108.
 
-\begin{center}\begin{tikzpicture}[node distance=8mm, every node/.style={font=\fontsize{13}{17}\selectfont}]
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt] (n0) {Annotated center (191,86)};
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n0] (n1) {In-mask prediction (190,89), score 0.963};
-\draw[-{Stealth},thick,blue!60!black] (n0) -- (n1);
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n1] (n2) {Distance 3.16 pixels exceeds the 3-pixel radius};
-\draw[-{Stealth},thick,blue!60!black] (n1) -- (n2);
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n2] (n3) {Count: one missed nucleus + one extra point};
-\draw[-{Stealth},thick,blue!60!black] (n2) -- (n3);
+\begin{center}\begin{tikzpicture}[node distance=5mm, every node/.style={font=\fontsize{14.1}{17}\selectfont}]
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt] (n0) {Annotated center (191,86)};
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n0] (n1) {In-mask prediction (190,89), score 0.963};
+\draw[-{Stealth},thick,ReportBlue] (n0) -- (n1);
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n1] (n2) {Distance 3.16 pixels exceeds the 3-pixel radius};
+\draw[-{Stealth},thick,ReportBlue] (n1) -- (n2);
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n2] (n3) {Count: one missed nucleus + one extra point};
+\draw[-{Stealth},thick,ReportBlue] (n2) -- (n3);
 \end{tikzpicture}\end{center}
 \subsection*{What this example teaches}
 Response location and annotated center are different quantities. A high-scoring prediction can lie inside a nucleus while failing to match its center. Such objects motivate position correction. Nuclei with weak scores throughout their masks provide fewer candidate points to move.
 
 The same nucleus has a different row number in later object tables. We link it by image number and center coordinate: instance 4 is its mask ID, while object 3 is the later table index.
+\end{minipage}\par
 
+\par\noindent\begin{minipage}{\linewidth}
 \pagechapter{D32 maps: before interpolation, after interpolation and actual matches}\label{chapter9}
 P22 control, seed 19, breast image 178. The image has 40 annotated nuclei and 34 retained points, giving 20 matches and 14 extras. White indicates a higher center score; black is near zero. Both maps use the same zero-to-one color scale.
 
 \begin{center}
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Image and annotated centers\par}
-\includegraphics[width=\linewidth]{assets/d32_control178_0.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{Image and annotated centers}{assets/d32_control178_0.png}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont 128-grid center scores\par}
-\includegraphics[width=\linewidth]{assets/d32_control178_1.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{128-grid center scores}{assets/d32_control178_1.png}
 \end{minipage}\par\vspace{5mm}
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont 256-grid center scores\par}
-\includegraphics[width=\linewidth]{assets/d32_control178_2.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{256-grid center scores}{assets/d32_control178_2.png}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Matches: green / misses: yellow / extras: red\par}
-\includegraphics[width=\linewidth]{assets/d32_control178_3.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{Matches: green / misses: yellow / extras: red}{assets/d32_control178_3.png}
 \end{minipage}\par\vspace{5mm}
 \end{center}
 Preserved D32 maps. Green: matches; yellow: misses; red: extras. The displaced point beside center (191,86) is red.
+\end{minipage}\par
 
 \pagechapter{D33: swapping interpolation and score conversion}\label{chapter10}
 \subsection*{What we did}
 Using D32 arrays, we compare two orders. The original bilinearly interpolates logits and then applies sigmoid. The alternative applies sigmoid first and interpolates scores. Bilinear interpolation forms a new pixel from a weighted average of four grid values. We keep the same weights, cutoff 0.5, peak selection and three-pixel matcher.
 
-\begin{center}\begin{tikzpicture}[node distance=8mm, every node/.style={font=\fontsize{13}{17}\selectfont}]
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt] (n0) {Original: coarse logits → interpolate → sigmoid → scores};
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n0] (n1) {Alternative: coarse logits → sigmoid → interpolate → scores};
-\draw[-{Stealth},thick,blue!60!black] (n0) -- (n1);
+\begin{center}\begin{tikzpicture}[node distance=5mm, every node/.style={font=\fontsize{14.1}{17}\selectfont}]
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt] (n0) {Original: coarse logits → interpolate → sigmoid → scores};
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n0] (n1) {Alternative: coarse logits → sigmoid → interpolate → scores};
+\draw[-{Stealth},thick,ReportBlue] (n0) -- (n1);
 \end{tikzpicture}\end{center}
 Sigmoid is nonlinear, so the orders produce different values. In one illustrative narrow-peak construction with background score 0.01, the original needs a coarse peak of about 0.9727 to reach 0.5; score-first interpolation needs about 0.8811. Actual peak width and shape are measured from image arrays.
 
 \subsection*{Evaluation scope}
 We compare 12 models on the fixed 11 development images containing interior Dead nuclei: 488 annotated nuclei, including all 145 interior Dead nuclei. The job processes arrays only, completes in 237 seconds, and generates 180 comparison figures.
 
+\par\noindent\begin{minipage}{\linewidth}
 \pagechapter{D33 results: more detected nuclei and more competing predictions}\label{chapter11}
 \begin{center}
-\renewcommand{\arraystretch}{1.35}
+\renewcommand{\arraystretch}{1.24}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.35\linewidth}p{0.25\linewidth}p{0.14\linewidth}p{0.15\linewidth}}
+\begin{tabular}{L{0.35\linewidth}L{0.25\linewidth}R{0.14\linewidth}R{0.15\linewidth}}
 \toprule
-Model / seed & Dead: before→after & Match gain & Extra gain\\
+\rowcolor{ReportTableHeader}
+\textbf{Model / seed} & \textbf{Dead: before→after} & \textbf{Match gain} & \textbf{Extra gain}\\
 \midrule
 Depth control / 19 & 67 → 80 & +20 & +91\\
 Depth control / 1 & 62 → 70 & +23 & +64\\
@@ -239,17 +284,20 @@ Each model gains 2 to 13 Dead matches and 26 to 161 extras; precision drops for 
 
 \subsection*{Insight}
 The score computation order can push existing weak peaks above the cutoff and generate multiple points near one nucleus. D33 separates generating more candidates from finding more distinct centers. Later methods must consider position, duplication and score together.
+\end{minipage}\par
 
+\par\noindent\begin{minipage}{\linewidth}
 \pagechapter{D33 maps: wider fine-grid peaks and more extra points}\label{chapter12}
 All-layer detector, seed 19, breast image 178; 40 nuclei. The original order matches 20 with 17 extras. Score-first interpolation matches 21 with 22 extras. Fine-grid maps use the same color scale.
 
-\begin{center}\begin{tabular}{cc}
-\includegraphics[width=.475\linewidth]{assets/d33_depth178_original_2.png} & \includegraphics[width=.475\linewidth]{assets/d33_depth178_original_3.png} \\
-\multicolumn{2}{c}{Original: fine-grid scores / matching} \\
-\includegraphics[width=.475\linewidth]{assets/d33_depth178_alternative_2.png} & \includegraphics[width=.475\linewidth]{assets/d33_depth178_alternative_3.png} \\
-\multicolumn{2}{c}{Score first: fine-grid scores / matching} \\
-\end{tabular}\end{center}
+\begin{center}
+\begin{minipage}[t]{.475\linewidth}\reportpanel{Original: score map}{assets/d33_depth178_original_2.png}\end{minipage}\hfill
+\begin{minipage}[t]{.475\linewidth}\reportpanel{Original: matches}{assets/d33_depth178_original_3.png}\end{minipage}\par\vspace{4mm}
+\begin{minipage}[t]{.475\linewidth}\reportpanel{Score first: score map}{assets/d33_depth178_alternative_2.png}\end{minipage}\hfill
+\begin{minipage}[t]{.475\linewidth}\reportpanel{Score first: matches}{assets/d33_depth178_alternative_3.png}\end{minipage}
+\end{center}
 Some bright peaks spread over a larger high-score area, with additional red crosses in the matching panel. Map colors run from black at zero to white at one; green points match, yellow circles miss, and red crosses are extras.
+\end{minipage}\par
 
 \pagechapter{P34: learning a movement for each existing prediction}\label{chapter13}
 \subsection*{What we did}
@@ -257,14 +305,14 @@ We freeze four P22 detectors and add an offset readout to their 64-channel featu
 
 Each detector receives two readouts: original augmentation and augmentation with −8 to 8-pixel translations per axis. They share initial weights and image order, training for 12 epochs on all 2,134 images. Decoding compares original points, moved points, and moved points merged within two pixels.
 
-\begin{center}\begin{tikzpicture}[node distance=8mm, every node/.style={font=\fontsize{13}{17}\selectfont}]
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt] (n0) {Frozen detector outputs a point (y,x)};
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n0] (n1) {Readout predicts an offset (Δy,Δx)};
-\draw[-{Stealth},thick,blue!60!black] (n0) -- (n1);
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n1] (n2) {New position: (y+Δy, x+Δx)};
-\draw[-{Stealth},thick,blue!60!black] (n1) -- (n2);
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n2] (n3) {Merge points within two pixels; rerun one-to-one matching};
-\draw[-{Stealth},thick,blue!60!black] (n2) -- (n3);
+\begin{center}\begin{tikzpicture}[node distance=5mm, every node/.style={font=\fontsize{14.1}{17}\selectfont}]
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt] (n0) {Frozen detector outputs a point (y,x)};
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n0] (n1) {Readout predicts an offset (Δy,Δx)};
+\draw[-{Stealth},thick,ReportBlue] (n0) -- (n1);
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n1] (n2) {New position: (y+Δy, x+Δx)};
+\draw[-{Stealth},thick,ReportBlue] (n1) -- (n2);
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n2] (n3) {Merge points within two pixels; rerun one-to-one matching};
+\draw[-{Stealth},thick,ReportBlue] (n2) -- (n3);
 \end{tikzpicture}\end{center}
 Evaluation uses 48 annotation-selected training images, their (5,3)-pixel shifted copies, and all development images. The 48-image subset is diagnostic; training uses the full training set.
 
@@ -273,7 +321,7 @@ Evaluation uses 48 annotation-selected training images, their (5,3)-pixel shifte
 With the translation readout, movement and merging gain 158 and lose 173 matches for control seed 19, gain 172 and lose 182 for control seed 1, and gain 172 and lose 158 for all-layer seed 19. Net changes are −15, −10 and +14. Interior Dead matches for all-layer seed 19 change from 85 to 83.
 
 \begin{center}\input{figs/p34_offset_en}\end{center}
-All-layer seed 1 stops at the first-epoch guard of its second readout: 1,400.3 seconds exceeds the 1,300-second limit. Its full evaluation remains pending.
+The all-layer seed-1 readout with original augmentation completed all 12 epochs and its weights were saved. The translation readout exceeded the 1,300-second guard at epoch 1 (1,400.3 seconds). The run saved the first-epoch loss. The single-precision original decoder yielded 7,933 matches from 10,804 predictions across 522 development images, including 84 of 145 interior Dead nuclei. This is the baseline before offset correction. The full paired comparison requires all 12 epochs of the translation readout and evaluation under the original protocol.
 
 \pagechapter{P34 insight: position correction must transfer to new images}\label{chapter15}
 Depending on detector and readout, center error is within three pixels for about 99.4\%–99.8\% of training nuclei and 70.6\%–80.6\% of development nuclei. Translation improves readout error on shifted images, yet final detection gains remain small.
@@ -285,20 +333,22 @@ P34 measures whether the existing features support a more accurate offset readou
 
 Readout error queries the offset module at an annotated center; final matching queries it at the detector’s actual prediction points. The latter includes the combined effects of point selection, movement and merging.
 
+P35 returns to the frozen detector and tests whether a different image alignment produces a usable point before any offset correction.
+
 \pagechapter{P35: sixteen patch-grid alignments of the same image}\label{chapter16}
 \subsection*{What we did}
 We freeze four P22 detectors and shift each axis by −8, −4, 0 and 4 pixels, forming 16 alignments. Predictions are mapped back to original coordinates. We compare one original image, the mean of 16 score maps, and the mean of 16 logit maps followed by score conversion, all at cutoff 0.5.
 
 Original alignment means the unshifted image; other alignments are the 15 remaining combinations. To compare nuclei unaffected by truncation, central nuclei are at least 24 pixels from every border: 1,227 in the 48 selected training images and 7,014 in development.
 
-\begin{center}\begin{tikzpicture}[node distance=8mm, every node/.style={font=\fontsize{13}{17}\selectfont}]
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt] (n0) {Per-axis offsets: −8, −4, 0, 4 pixels};
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n0] (n1) {16 combinations, each using the same frozen model};
-\draw[-{Stealth},thick,blue!60!black] (n0) -- (n1);
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n1] (n2) {Return every prediction to original coordinates};
-\draw[-{Stealth},thick,blue!60!black] (n1) -- (n2);
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n2] (n3) {For each nucleus: how many alignments find it?};
-\draw[-{Stealth},thick,blue!60!black] (n2) -- (n3);
+\begin{center}\begin{tikzpicture}[node distance=5mm, every node/.style={font=\fontsize{14.1}{17}\selectfont}]
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt] (n0) {Per-axis offsets: −8, −4, 0, 4 pixels};
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n0] (n1) {16 combinations, each using the same frozen model};
+\draw[-{Stealth},thick,ReportBlue] (n0) -- (n1);
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n1] (n2) {Return every prediction to original coordinates};
+\draw[-{Stealth},thick,ReportBlue] (n1) -- (n2);
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n2] (n3) {For each nucleus: how many alignments find it?};
+\draw[-{Stealth},thick,ReportBlue] (n2) -- (n3);
 \end{tikzpicture}\end{center}
 Image content and weights stay fixed; the content’s position inside 16-pixel patches changes. This directly measures patch-grid alignment dependence.
 
@@ -311,13 +361,16 @@ About 86\%–89\% of central development nuclei match at least one alignment; ab
 
 These proportions use annotations to check whether any alignment can match each nucleus; an operational decoder still selects from the candidate points.
 
+The P35 central-nucleus analysis uses nuclei at least 24 pixels from all image borders and visible at all 16 alignments. Its separate cross-alignment Dead analysis uses the 144 interior Dead nuclei visible at every alignment. Full development-set results in other sections cover 145 interior Dead nuclei.
+
 \pagechapter{P35 subgroups: small and crowded nuclei remain missed across more alignments}\label{chapter18}
 \begin{center}
-\renewcommand{\arraystretch}{1.35}
+\renewcommand{\arraystretch}{1.24}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.36\linewidth}p{0.11\linewidth}p{0.24\linewidth}p{0.18\linewidth}}
+\begin{tabular}{L{0.36\linewidth}R{0.11\linewidth}R{0.24\linewidth}R{0.18\linewidth}}
 \toprule
-Central subgroup & Nuclei & Mean matched alignments & Never matched\\
+\rowcolor{ReportTableHeader}
+\textbf{Central subgroup} & \textbf{Nuclei} & \textbf{Mean matched alignments} & \textbf{Never matched}\\
 \midrule
 Area <80 pixels & 106 & 26.0\% & 42.9\%\\
 Area 80–149 pixels & 424 & 49.4\% & 22.7\%\\
@@ -344,11 +397,12 @@ Peak tops sit at neighboring pixels in different views. A pixel that is a peak i
 We extend to eight frozen P22 and P15 detectors. We use a fixed 240-image training sample and all 522 development images, generating 16 alignments with white and mirrored fill. Mirrored fill reflects edge content into vacated regions. We preserve all local peaks scoring at least 0.1 and map coordinates back to the original image.
 
 \begin{center}
-\renewcommand{\arraystretch}{1.35}
+\renewcommand{\arraystretch}{1.24}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.24\linewidth}p{0.67\linewidth}}
+\begin{tabular}{L{0.24\linewidth}L{0.67\linewidth}}
 \toprule
-Decoder & Steps\\
+\rowcolor{ReportTableHeader}
+\textbf{Decoder} & \textbf{Steps}\\
 \midrule
 Original & Original alignment; retain peaks ≥0.5\\
 Selected threshold & Select 0.1–0.9 on shifted training images; apply to original alignment\\
@@ -369,11 +423,12 @@ Admitting low-score points expands coverage and reduces precision from about 86\
 
 \pagechapter{P36: threshold results for all eight models}\label{chapter22}
 \begin{center}
-\renewcommand{\arraystretch}{1.35}
+\renewcommand{\arraystretch}{1.24}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.33\linewidth}p{0.12\linewidth}p{0.14\linewidth}p{0.12\linewidth}p{0.18\linewidth}}
+\begin{tabular}{L{0.33\linewidth}R{0.12\linewidth}R{0.14\linewidth}R{0.12\linewidth}R{0.18\linewidth}}
 \toprule
-Model / seed & Cutoff & Matches & Dead & Precision\\
+\rowcolor{ReportTableHeader}
+\textbf{Model / seed} & \textbf{Cutoff} & \textbf{Matches} & \textbf{Dead} & \textbf{Precision}\\
 \midrule
 Depth control / 19 & 0.3 & 7622 & 76 & 66.68\%\\
 Depth control / 1 & 0.3 & 7606 & 69 & 67.17\%\\
@@ -397,11 +452,12 @@ The training loss marks one annotated-center pixel positive. Surrounding pixels 
 A simplified theoretical example compares these requirements. Suppose possible center locations follow a Gaussian distribution around the most likely pixel. A larger standard deviation spreads the center over more pixels. Minimizing the expected implemented loss gives the following peak scores.
 
 \begin{center}
-\renewcommand{\arraystretch}{1.35}
+\renewcommand{\arraystretch}{1.24}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.31\linewidth}p{0.25\linewidth}p{0.33\linewidth}}
+\begin{tabular}{L{0.31\linewidth}R{0.25\linewidth}L{0.33\linewidth}}
 \toprule
-Position SD (pixels) & Loss-optimal score & Within 3 pixels\\
+\rowcolor{ReportTableHeader}
+\textbf{Position SD (pixels)} & \textbf{Loss-optimal score} & \textbf{Within 3 pixels}\\
 \midrule
 0.5 & 0.796 & >99.9\%\\
 1.0 & 0.480 & 98.9\%\\
@@ -413,6 +469,7 @@ Position SD (pixels) & Loss-optimal score & Within 3 pixels\\
 \end{center}
 Standard deviation measures position dispersion and is specified in this theoretical construction. A score below 0.5 can coexist with a position inside the evaluation tolerance. P36 empirically finds many matches after admitting 0.2 and lower position variation in translation-trained models. Separate controls can identify which aspects of training, representation and loss produce the score change.
 
+\par\noindent\begin{minipage}{\linewidth}
 \pagechapter{P36 position consensus: recovered nuclei and lost matches}\label{chapter24}
 \begin{center}\input{figs/p36_depth_consensus_en}\end{center}
 All-layer seed 19 gains 1,163 and loses 871 matches, net +292; seed 1 gains 1,096 and loses 825, net +271. Precision is 73.63\% and 72.29\%. Averaging positions recovers nuclei appearing in other alignments and changes the coordinates and selection of previously valid predictions.
@@ -421,25 +478,24 @@ Translation-trained matches rise from 4,771 and 4,600 to 6,475 and 6,399, with p
 
 \subsection*{Insight}
 Extracting points before averaging positions retains peaks suppressed by map averaging. The translation-trained low-cutoff single view has higher recall, while high-cutoff consensus has higher precision. This measured tradeoff motivates P38’s combination of low-score admission and candidate selection.
+\end{minipage}\par
 
+\par\noindent\begin{minipage}{\linewidth}
 \pagechapter{Breast image 178: recovering a nucleus from other alignments}\label{chapter25}
 All-layer detector, seed 19. The four panels share identical tissue pixels. Matches change from 20 originally to 21 with the selected threshold and 24 with consensus.
 
 \begin{center}
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Annotated centers\par}
-\includegraphics[width=\linewidth]{assets/p36_P22_M_s19_0178_0.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{Annotated centers}{assets/p36_P22_M_s19_0178_0.png}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Cutoff 0.5: 20 matches\par}
-\includegraphics[width=\linewidth]{assets/p36_P22_M_s19_0178_1.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{Cutoff 0.5: 20 matches}{assets/p36_P22_M_s19_0178_1.png}
 \end{minipage}\par\vspace{5mm}
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Selected 0.3: 21 matches\par}
-\includegraphics[width=\linewidth]{assets/p36_P22_M_s19_0178_2.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{Selected 0.3: 21 matches}{assets/p36_P22_M_s19_0178_2.png}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Consensus: 24 matches\par}
-\includegraphics[width=\linewidth]{assets/p36_P22_M_s19_0178_3.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{Consensus: 24 matches}{assets/p36_P22_M_s19_0178_3.png}
 \end{minipage}\par\vspace{5mm}
 \end{center}
 Cyan circles: annotated centers. Green plus: matched points. Red crosses: extras. Yellow numbers: interior Dead object indices.
+\end{minipage}\par
 
 \pagechapter{Breast image 178: tracing position and score per nucleus}\label{chapter26}
 \subsection*{Recovered: epithelial object 23}
@@ -449,11 +505,12 @@ Center (71,38). The highest original peak within three pixels scores 0.202 and i
 Center (191,86), area 286 pixels, matched by all three decoders. Original score is 0.926; the consensus point lies 2.97 pixels away, near the fixed three-pixel boundary. Additional alignments recover some nuclei while moving positions also changes existing matches.
 
 \begin{center}
-\renewcommand{\arraystretch}{1.35}
+\renewcommand{\arraystretch}{1.24}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.15\linewidth}p{0.22\linewidth}p{0.27\linewidth}p{0.25\linewidth}}
+\begin{tabular}{L{0.15\linewidth}R{0.22\linewidth}L{0.27\linewidth}L{0.25\linewidth}}
 \toprule
-Object & Original score & Consensus error & Outcome\\
+\rowcolor{ReportTableHeader}
+\textbf{Object} & \textbf{Original score} & \textbf{Consensus error} & \textbf{Outcome}\\
 \midrule
 23 & 0.202 & 1.70 pixels & Recovered\\
 3 & 0.926 & 2.97 pixels & Retained\\
@@ -462,24 +519,22 @@ Object & Original score & Consensus error & Outcome\\
 \end{center}
 The examples show that one low score does not summarize availability at other alignments, and that consensus must be checked by its actual coordinate as well as support count.
 
+\par\noindent\begin{minipage}{\linewidth}
 \pagechapter{Colon image 1482: a lower cutoff recovers nuclei in a crowded strip}\label{chapter27}
 Translation-trained detector, seed 19; 75 annotated nuclei. Original decoding matches 12, cutoff 0.2 matches 26, and consensus matches 18.
 
 \begin{center}
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Annotated centers\par}
-\includegraphics[width=\linewidth]{assets/p36_P15_J_s19_1482_0.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{Annotated centers}{assets/p36_P15_J_s19_1482_0.png}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Cutoff 0.5: 12 matches\par}
-\includegraphics[width=\linewidth]{assets/p36_P15_J_s19_1482_1.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{Cutoff 0.5: 12 matches}{assets/p36_P15_J_s19_1482_1.png}
 \end{minipage}\par\vspace{5mm}
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Selected 0.2: 26 matches\par}
-\includegraphics[width=\linewidth]{assets/p36_P15_J_s19_1482_2.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{Selected 0.2: 26 matches}{assets/p36_P15_J_s19_1482_2.png}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Consensus: 18 matches\par}
-\includegraphics[width=\linewidth]{assets/p36_P15_J_s19_1482_3.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{Consensus: 18 matches}{assets/p36_P15_J_s19_1482_3.png}
 \end{minipage}\par\vspace{5mm}
 \end{center}
 Cyan: annotated centers. Green plus: match. Red cross: extra. Yellow numbers link to the object coordinate table.
+\end{minipage}\par
 
 \pagechapter{Colon image 1482: low scores and persistent misses differ}\label{chapter28}
 \subsection*{Dead object 7: a useful position with a low score}
@@ -496,11 +551,12 @@ Center (153,35), area 57 pixels, smaller than object 51. The translation-trained
 We replay all P36 preserved points and reproduce original, threshold and consensus decoding for eight models on 240 training and 522 development images. Each annotated nucleus then enters one category in the following fixed order.
 
 \begin{center}
-\renewcommand{\arraystretch}{1.35}
+\renewcommand{\arraystretch}{1.24}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.32\linewidth}p{0.59\linewidth}}
+\begin{tabular}{L{0.32\linewidth}L{0.59\linewidth}}
 \toprule
-Category & Definition\\
+\rowcolor{ReportTableHeader}
+\textbf{Category} & \textbf{Definition}\\
 \midrule
 1 Original match & Matched originally at cutoff 0.5\\
 2 Other alignment & Originally missed; matched at another alignment at 0.5\\
@@ -536,24 +592,25 @@ P36’s low-cutoff single view finds more nuclei, while high-cutoff consensus ha
 \subsection*{Procedure}
 Use mirrored fill and 15 shifted alignments, excluding the original. Visit points from highest score downward and group within four pixels of a fixed first point. Each alignment contributes only its highest-score member, preventing repeated peaks from one view from multiplying support. Output position is the mean of these points.
 
-\begin{center}\begin{tikzpicture}[node distance=8mm, every node/.style={font=\fontsize{13}{17}\selectfont}]
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt] (n0) {Saved peaks: 15 shifts, scores ≥0.1};
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n0] (n1) {Group within 4 pixels; one contribution per alignment};
-\draw[-{Stealth},thick,blue!60!black] (n0) -- (n1);
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n1] (n2) {Same groups → support-only / learned-quality filtering};
-\draw[-{Stealth},thick,blue!60!black] (n1) -- (n2);
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n2] (n3) {Rematch after filtering; record gains and losses};
-\draw[-{Stealth},thick,blue!60!black] (n2) -- (n3);
+\begin{center}\begin{tikzpicture}[node distance=5mm, every node/.style={font=\fontsize{14.1}{17}\selectfont}]
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt] (n0) {Saved peaks: 15 shifts, scores ≥0.1};
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n0] (n1) {Group within 4 pixels; one contribution per alignment};
+\draw[-{Stealth},thick,ReportBlue] (n0) -- (n1);
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n1] (n2) {Same groups → support-only / learned-quality filtering};
+\draw[-{Stealth},thick,ReportBlue] (n1) -- (n2);
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n2] (n3) {Rematch after filtering; record gains and losses};
+\draw[-{Stealth},thick,ReportBlue] (n2) -- (n3);
 \end{tikzpicture}\end{center}
 Detector weights and saved predictions stay frozen; P38 trains only a small candidate-scoring model. CPU job 55918618 completes in 291 seconds, preserving eight models’ results and eight fixed figures.
 
 \pagechapter{P38: the six quality-score inputs}\label{chapter33}
 \begin{center}
-\renewcommand{\arraystretch}{1.35}
+\renewcommand{\arraystretch}{1.24}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.35\linewidth}p{0.56\linewidth}}
+\begin{tabular}{L{0.35\linewidth}L{0.56\linewidth}}
 \toprule
-Input & Plain meaning\\
+\rowcolor{ReportTableHeader}
+\textbf{Input} & \textbf{Plain meaning}\\
 \midrule
 Maximum-score log odds & Strongest detector score, converted with log(p/(1−p))\\
 Mean-score log odds & The same conversion of the group mean score\\
@@ -571,14 +628,14 @@ The detector score rates a center at a location; the quality score rates whether
 \pagechapter{P38: fitting, selecting and comparing the gains}\label{chapter34}
 A fixed image-ID hash divides the 240 P36 training images into two subsets of 120. A hash converts an ID to a fixed sorting key, making membership repeatable. The first fits logistic regression; the second selects filters. Support thresholds range from 1/15 to 15/15; quality cutoffs range from 0.05 to 0.95 in steps of 0.05. Among nonempty rules with at least 75\% precision, select maximum F1, breaking ties toward stricter thresholds or more support.
 
-\begin{center}\begin{tikzpicture}[node distance=8mm, every node/.style={font=\fontsize{13}{17}\selectfont}]
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt] (n0) {120 training images: fit quality model};
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n0] (n1) {Another 120 training images: select fixed filter};
-\draw[-{Stealth},thick,blue!60!black] (n0) -- (n1);
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n1] (n2) {Persist all eight models’ selections};
-\draw[-{Stealth},thick,blue!60!black] (n1) -- (n2);
-\node[draw=blue!60!black,fill=blue!4,rounded corners,text width=.86\linewidth,align=center,inner sep=7pt,below=of n2] (n3) {522 development images: evaluate unchanged rules};
-\draw[-{Stealth},thick,blue!60!black] (n2) -- (n3);
+\begin{center}\begin{tikzpicture}[node distance=5mm, every node/.style={font=\fontsize{14.1}{17}\selectfont}]
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt] (n0) {120 training images: fit quality model};
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n0] (n1) {Another 120 training images: select fixed filter};
+\draw[-{Stealth},thick,ReportBlue] (n0) -- (n1);
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n1] (n2) {Persist all eight models’ selections};
+\draw[-{Stealth},thick,ReportBlue] (n1) -- (n2);
+\node[draw=ReportRule,fill=ReportTint,rounded corners,text width=.86\linewidth,align=center,inner sep=5pt,below=of n2] (n3) {522 development images: evaluate unchanged rules};
+\draw[-{Stealth},thick,ReportBlue] (n2) -- (n3);
 \end{tikzpicture}\end{center}
 Fitting and selection use separate images, both previously used to train the detector. Development measures transfer of the calibration relationship. The primary comparison is translation-trained versus its own P15 control, both with learned-quality selection. Within each model we also compare support-only, original, P36 threshold and P36 consensus decoding.
 
@@ -600,13 +657,15 @@ The paired bootstrap resamples images within tissues, keeping both detectors pai
 \subsection*{All-layer result}
 Compared with support-only selection, all-layer quality filtering adds 489 and 117 matches and 984 and 175 extras. Precision changes from 75.86\% and 73.48\% to 70.58\% and 72.61\%. The six-feature procedure behaves differently across detectors, making support-only selection a useful simple control.
 
+\par\noindent\begin{minipage}{\linewidth}
 \pagechapter{P38: comparing coverage and precision across five decoders}\label{chapter37}
 \begin{center}
-\renewcommand{\arraystretch}{1.35}
+\renewcommand{\arraystretch}{1.24}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.34\linewidth}p{0.13\linewidth}p{0.13\linewidth}p{0.11\linewidth}p{0.18\linewidth}}
+\begin{tabular}{L{0.34\linewidth}R{0.13\linewidth}R{0.13\linewidth}R{0.11\linewidth}R{0.18\linewidth}}
 \toprule
-Shift detector / seed 19 & Matches & Extras & Dead & Precision\\
+\rowcolor{ReportTableHeader}
+\textbf{Shift detector / seed 19} & \textbf{Matches} & \textbf{Extras} & \textbf{Dead} & \textbf{Precision}\\
 \midrule
 Original 0.5 & 4771 & 740 & 44 & 86.57\%\\
 Single-view 0.2 & 8463 & 4351 & 101 & 66.04\%\\
@@ -617,11 +676,12 @@ Low-score quality & 7809 & 3038 & 98 & 71.99\%\\
 \end{tabular}
 \end{center}
 \begin{center}
-\renewcommand{\arraystretch}{1.35}
+\renewcommand{\arraystretch}{1.24}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.34\linewidth}p{0.13\linewidth}p{0.13\linewidth}p{0.11\linewidth}p{0.18\linewidth}}
+\begin{tabular}{L{0.34\linewidth}R{0.13\linewidth}R{0.13\linewidth}R{0.11\linewidth}R{0.18\linewidth}}
 \toprule
-Shift detector / seed 1 & Matches & Extras & Dead & Precision\\
+\rowcolor{ReportTableHeader}
+\textbf{Shift detector / seed 1} & \textbf{Matches} & \textbf{Extras} & \textbf{Dead} & \textbf{Precision}\\
 \midrule
 Original 0.5 & 4600 & 725 & 44 & 86.38\%\\
 Single-view 0.2 & 8542 & 4304 & 99 & 66.50\%\\
@@ -632,25 +692,24 @@ Low-score quality & 8026 & 3412 & 99 & 70.17\%\\
 \end{tabular}
 \end{center}
 All 522 development images, 12,250 nuclei and 145 interior Dead nuclei. The low-cutoff single view covers the most nuclei and produces the most extras. High-score consensus has greater precision and excludes low-score candidates. Learned-quality selection occupies an intermediate tradeoff.
+\end{minipage}\par
 
+\par\noindent\begin{minipage}{\linewidth}
 \pagechapter{P38 colon image 1482: candidate recovery and quality selection}\label{chapter38}
 Translation-trained detector, seed 19; 75 nuclei. High-score consensus finds 18 with six extras; low-score support finds 28 with seven extras; quality selection finds 26 with five extras.
 
 \begin{center}
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Annotated centers\par}
-\includegraphics[width=\linewidth]{assets/p38_P15_J_s19_1482_0.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{Annotated centers}{assets/p38_P15_J_s19_1482_0.png}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont P36: 18 matched / 6 extra\par}
-\includegraphics[width=\linewidth]{assets/p38_P15_J_s19_1482_1.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{P36: 18 matched / 6 extra}{assets/p38_P15_J_s19_1482_1.png}
 \end{minipage}\par\vspace{5mm}
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Support: 28 matched / 7 extra\par}
-\includegraphics[width=\linewidth]{assets/p38_P15_J_s19_1482_2.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{Support: 28 matched / 7 extra}{assets/p38_P15_J_s19_1482_2.png}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Quality: 26 matched / 5 extra\par}
-\includegraphics[width=\linewidth]{assets/p38_P15_J_s19_1482_3.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{Quality: 26 matched / 5 extra}{assets/p38_P15_J_s19_1482_3.png}
 \end{minipage}\par\vspace{5mm}
 \end{center}
 Cyan circles mark annotated centers; yellow circles mark misses; green plus signs mark matched points; red crosses mark extras.
+\end{minipage}\par
 
 \pagechapter{P38 colon image: one useful candidate retained, another deleted}\label{chapter39}
 \subsection*{Retained: Dead object 7}
@@ -661,11 +720,12 @@ Center (81,44). Its candidate is only 1.69 pixels away with 11 of 15 supporting 
 
 \begin{center}\begin{minipage}[t]{.31\linewidth}\centering Annotated object 10\par\includegraphics[width=\linewidth]{assets/p38_object10_zoom_0.png}\end{minipage}\hfill\begin{minipage}[t]{.31\linewidth}\centering Support: retained\par\includegraphics[width=\linewidth]{assets/p38_object10_zoom_2.png}\end{minipage}\hfill\begin{minipage}[t]{.31\linewidth}\centering Quality: deleted\par\includegraphics[width=\linewidth]{assets/p38_object10_zoom_3.png}\end{minipage}\hfill\end{center}
 \begin{center}
-\renewcommand{\arraystretch}{1.35}
+\renewcommand{\arraystretch}{1.24}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.13\linewidth}p{0.18\linewidth}p{0.2\linewidth}p{0.14\linewidth}p{0.23\linewidth}}
+\begin{tabular}{L{0.13\linewidth}R{0.18\linewidth}R{0.2\linewidth}R{0.14\linewidth}L{0.23\linewidth}}
 \toprule
-Object & Support & Quality & Error & Quality outcome\\
+\rowcolor{ReportTableHeader}
+\textbf{Object} & \textbf{Support} & \textbf{Quality} & \textbf{Error} & \textbf{Quality outcome}\\
 \midrule
 7 & 15/15 & 0.91579 & 1.89 & Matched\\
 10 & 11/15 & 0.30811 & 1.69 & Deleted\\
@@ -674,24 +734,22 @@ Object & Support & Quality & Error & Quality outcome\\
 \end{center}
 Errors are in pixels. Quality differs from the detector score, and its cutoff was selected on training images. Object 51 remains missed; its nearest group center lies 20.14 pixels away, so an appropriate near-center candidate is still needed.
 
+\par\noindent\begin{minipage}{\linewidth}
 \pagechapter{P38 lung image 1037: losing an accurately located original match}\label{chapter40}
-All-layer detector, seed 19. The fixed panels compare high-score consensus, support-only and quality filtering. The next page traces small object 78.
+All-layer detector, seed 19. The fixed panels compare high-score consensus, support-only and quality filtering. The following analysis traces nucleus 78.
 
 \begin{center}
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont Annotated centers\par}
-\includegraphics[width=\linewidth]{assets/p38_P22_M_s19_1037_0.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{Annotated centers}{assets/p38_P22_M_s19_1037_0.png}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont P36 high-score consensus\par}
-\includegraphics[width=\linewidth]{assets/p38_P22_M_s19_1037_1.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{P36 high-score consensus}{assets/p38_P22_M_s19_1037_1.png}
 \end{minipage}\par\vspace{5mm}
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont P38 low-score support\par}
-\includegraphics[width=\linewidth]{assets/p38_P22_M_s19_1037_2.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{P38 low-score support}{assets/p38_P22_M_s19_1037_2.png}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.485\linewidth}\centering{\fontsize{13}{16}\selectfont P38 low-score quality\par}
-\includegraphics[width=\linewidth]{assets/p38_P22_M_s19_1037_3.png}
+\begin{minipage}[t]{0.475\linewidth}\reportpanel{P38 low-score quality}{assets/p38_P22_M_s19_1037_3.png}
 \end{minipage}\par\vspace{5mm}
 \end{center}
 Colors have the same meaning as the preceding P38 figure. Panels are cropped from preserved outputs with unchanged tissue pixels and overlays.
+\end{minipage}\par
 
 \pagechapter{P38 fixed objects: why preserving original predictions matters}\label{chapter41}
 \subsection*{Lung object 78: accurate with limited support}
@@ -705,11 +763,12 @@ Replacing all original predictions with grouped candidates can recover new nucle
 
 \pagechapter{What the stage explains and the next concrete question}\label{chapter42}
 \begin{center}
-\renewcommand{\arraystretch}{1.35}
+\renewcommand{\arraystretch}{1.24}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.44\linewidth}p{0.47\linewidth}}
+\begin{tabular}{L{0.44\linewidth}L{0.47\linewidth}}
 \toprule
-Measured finding & Implication for the next step\\
+\rowcolor{ReportTableHeader}
+\textbf{Measured finding} & \textbf{Implication for the next step}\\
 \midrule
 Training detection drops after changing alignment & Study positional information stable across alignments\\
 Strong in-mask peaks can miss the 3-pixel radius & Measure presence and position separately\\
@@ -721,10 +780,10 @@ Quality filtering reduces extras and loses true nuclei & Keep original points; l
 \end{center}
 The next diagnostic locates extras inside already matched nuclei, inside unmatched nuclei, or outside annotated masks. It then compares training and development correctness at the same score or support level. These results guide the choice of morphology features, position correction or center-uncertainty representation.
 
-These are questions for a new experiment design. P34 seed-1 completion and independent checkpoint archiving remain pending. Current selected filters retain their fixed values.
+For these comparisons, the thresholds and candidate rules remain fixed at their training-selected values.
 
 \pagechapter{Comparison conditions, evidence scope and reproducibility}\label{chapter43}
-This stage uses repeatedly examined fold-1 center-detection development data. Dead counts have 145 objects from 11 images as their denominator; models and alignments repeatedly observe these objects. Fixed examples are breast 178, colon 776/1482 and lung 1037, retained under the original annotation-based selection.
+This stage uses repeatedly examined fold-1 center-detection development data. Full development-set Dead counts have 145 objects from 11 images as their denominator; models and alignments repeatedly observe these objects. Fixed examples are breast 178, colon 776/1482 and lung 1037, retained under the original annotation-based selection.
 
 The fixed joint criteria include Dead recall at least 60\%, gain at least five percentage points with a positive paired interval, precision at least 75\%, no greater than two-percentage-point drops in precision or overall recall, and predictions on at least 95\% of Dead-positive images. All 16 P38 joint decisions are recorded false. The report interprets experiments through measured gains, losses and precision changes.
 
@@ -732,13 +791,15 @@ Existing validation includes D32 count reproduction; D33 reproduction of all 12 
 
 The delivery includes LaTeX sources, a build script, result JSON, object tables, fixed images and crop provenance. Statistical charts compile with TikZ/PGFPlots; tissue images retain their pixels and prediction overlays. Source evidence paths and hashes are included.
 
+\par\noindent\begin{minipage}{\linewidth}
 \pagechapter{Appendix: P38 results for all detectors under the same definitions}\label{chapter44}
 \begin{center}
-\renewcommand{\arraystretch}{1.35}
+\renewcommand{\arraystretch}{1.24}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{0.33\linewidth}p{0.15\linewidth}p{0.14\linewidth}p{0.12\linewidth}p{0.17\linewidth}}
+\begin{tabular}{L{0.33\linewidth}R{0.15\linewidth}R{0.14\linewidth}R{0.12\linewidth}R{0.17\linewidth}}
 \toprule
-Model / seed & Matches & Extras & Dead & Precision\\
+\rowcolor{ReportTableHeader}
+\textbf{Model / seed} & \textbf{Matches} & \textbf{Extras} & \textbf{Dead} & \textbf{Precision}\\
 \midrule
 Depth control / 19 & 7702 & 3283 & 87 & 70.11\%\\
 Depth control / 1 & 7947 & 3794 & 86 & 67.69\%\\
@@ -754,5 +815,6 @@ Shift training / 1 & 8026 & 3412 & 99 & 70.17\%\\
 All rows show learned-quality development results: 522 images, 12,250 nuclei and 145 interior Dead nuclei. Each detector uses its training-selected rule. The two control families are distinct P22 and P15 training runs; comparisons stay within family and seed.
 
 The main text reports gains, losses and extras caused by each intervention. All five decoders—original, P36 threshold, P36 consensus, support-only and learned quality—are retained in assets/P38\_RESULTS.json.
+\end{minipage}\par
 
 \end{document}

@@ -1,31 +1,84 @@
 {
   "stage_report_9_zh": {
-    "pages": 46,
-    "rendered_pages": 46,
-    "overfull_boxes": 0,
-    "missing_glyphs": 0,
-    "outside_margin_blocks": 0
+    "previous": {
+      "pages": 46,
+      "font_span_counts": {
+        "9.96": 2,
+        "10.91": 86,
+        "11.96": 214,
+        "12.95": 210,
+        "14.35": 1975,
+        "17.22": 50,
+        "20.66": 95
+      }
+    },
+    "pages": 34,
+    "font_span_counts": {
+      "9.96": 2,
+      "14.05": 2397,
+      "14.35": 180,
+      "14.94": 50,
+      "15.94": 95
+    },
+    "rendered_pages": 34,
+    "out_of_bounds": [],
+    "sparse_pages": [],
+    "overfull": [],
+    "missing_glyphs": [],
+    "unresolved_references": []
   },
   "stage_report_9_en": {
-    "pages": 46,
-    "rendered_pages": 46,
-    "overfull_boxes": 0,
-    "missing_glyphs": 0,
-    "outside_margin_blocks": 0
+    "previous": {
+      "pages": 46,
+      "font_span_counts": {
+        "9.96": 2,
+        "10.91": 86,
+        "11.96": 167,
+        "12.95": 263,
+        "14.35": 2389,
+        "17.22": 45,
+        "20.66": 194
+      }
+    },
+    "pages": 38,
+    "font_span_counts": {
+      "9.96": 2,
+      "14.05": 1638,
+      "14.35": 180,
+      "14.94": 45,
+      "15.94": 87
+    },
+    "rendered_pages": 38,
+    "out_of_bounds": [],
+    "sparse_pages": [],
+    "overfull": [],
+    "missing_glyphs": [],
+    "unresolved_references": []
   },
   "summary_plain_zh": {
-    "pages": 14,
-    "rendered_pages": 14,
-    "overfull_boxes": 0,
-    "missing_glyphs": 0,
-    "outside_margin_blocks": 0
-  },
-  "review": {
-    "body_class": "14pt extarticle; observed long Chinese prose 14.3462 PDF points",
-    "chart_ticks": "12pt",
-    "chart_labels": "13pt",
-    "cropped_panels_verified": 27,
-    "reviewer": "Primary agent, no delegation",
-    "numerical_checks": 896
+    "previous": {
+      "pages": 14,
+      "font_span_counts": {
+        "10.91": 42,
+        "11.96": 131,
+        "12.95": 69,
+        "14.35": 501,
+        "17.22": 17,
+        "20.66": 29
+      }
+    },
+    "pages": 11,
+    "font_span_counts": {
+      "14.05": 676,
+      "14.35": 90,
+      "14.94": 17,
+      "15.94": 29
+    },
+    "rendered_pages": 11,
+    "out_of_bounds": [],
+    "sparse_pages": [],
+    "overfull": [],
+    "missing_glyphs": [],
+    "unresolved_references": []
   }
 }

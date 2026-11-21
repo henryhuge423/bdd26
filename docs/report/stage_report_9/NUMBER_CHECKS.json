@@ -1,6 +1,6 @@
 {
   "status": "PASS",
-  "checks": 896,
+  "checks": 905,
   "check_names": [
     "D32 repeated objects",
     "D32 original misses",
@@ -897,7 +897,16 @@
     "P22_M_s19 P38 match difference",
     "P22_M_s19 P38 extra difference",
     "P22_M_s1 P38 match difference",
-    "P22_M_s1 P38 extra difference"
+    "P22_M_s1 P38 extra difference",
+    "P34 all-layer seed-1 raw preflight identity",
+    "P34 all-layer seed-1 development preflight images",
+    "P34 all-layer seed-1 training preflight images",
+    "P34 all-layer seed-1 training_shifted preflight images",
+    "P34 all-layer seed-1 original agrees with P36 matched",
+    "P34 all-layer seed-1 original agrees with P36 total",
+    "P34 all-layer seed-1 original agrees with P36 candidates",
+    "P34 all-layer seed-1 original agrees with P36 dead_hit",
+    "P34 all-layer seed-1 original agrees with P36 dead_total"
   ],
-  "scope": "Cross-artifact P36/P38 replay counts, exclusive partitions, transitions and fixed-case geometry; no new model inference or experiments."
+  "scope": "Cross-artifact P34/P36/P38 original and replay counts, exclusive partitions, transitions and fixed-case geometry; no new model inference or experiments."
 }

@@ -56,6 +56,13 @@ for m,deltaextra,deltamatch in [('P15_J_s19',-676,-166),('P15_J_s1',-377,4),('P2
  ds=data['P38_RESULTS']['detectors'][m]['roles']['development']['decoders'];a=ds['support_only']['counts'];b=ds['calibrated']['counts']
  check(m+' P38 match difference',b['matched']-a['matched']==deltamatch)
  check(m+' P38 extra difference',b['candidates']-b['matched']-a['candidates']+a['matched']==deltaextra)
-record={'status':'PASS','checks':len(checks),'check_names':checks,'scope':'Cross-artifact P36/P38 replay counts, exclusive partitions, transitions and fixed-case geometry; no new model inference or experiments.'}
-(out/'NUMBER_CHECKS.json').write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+baseline = json.loads((out/'assets/P34_SEED1_BASELINE.json').read_text())
+check('P34 all-layer seed-1 raw preflight identity', baseline['zero_offset_refined_equals_original_per_image_for_both_readouts'] is True)
+for role, expected in [('development', 522), ('training', 48), ('training_shifted', 48)]:
+ check('P34 all-layer seed-1 '+role+' preflight images',baseline['roles'][role]['images']==expected)
+p36_original = data['P36_RESULTS']['detectors']['P22_M_s1']['development']['decoders']['original']
+for key, value in baseline['roles']['development']['counts'].items():
+ check('P34 all-layer seed-1 original agrees with P36 '+key,value==p36_original[key])
+record={'status':'PASS','checks':len(checks),'check_names':checks,'scope':'Cross-artifact P34/P36/P38 original and replay counts, exclusive partitions, transitions and fixed-case geometry; no new model inference or experiments.'}
+(out/'NUMBER_CHECKS.json').write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n',encoding='utf8',newline='\n')
 print('PASS:',len(checks),'cross-artifact numerical and case checks')
