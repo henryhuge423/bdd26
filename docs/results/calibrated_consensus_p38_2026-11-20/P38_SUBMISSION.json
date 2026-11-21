@@ -1,0 +1,38 @@
+{
+  "experiment": "P38",
+  "job_id": "55918618",
+  "submitted_utc": "2026-11-21T03:16:15.352951Z",
+  "observed_utc": "2026-11-21T03:22:25.191754Z",
+  "state": "COMPLETED",
+  "scheduler_record": "55918618|COMPLETED|0:0|00:04:51|4|8G|exp-1-27\n",
+  "completed": true,
+  "preserved": true,
+  "resource": {
+    "gpu": 0,
+    "cpu": 4,
+    "memory_GiB": 8,
+    "hours": 2,
+    "tasks": 1
+  },
+  "requested_CPU_SU_upper_bound": 8,
+  "source_commit": "bd70fbefb2acf739249a0b8c1654eea54aecf03f",
+  "source_manifest_sha256": "f9c801b406bd9c30b2016aecb66aebb8245f051edf28c606c51d692ec92dc034",
+  "source_files": 534,
+  "launcher_sha256": "2d1943379f75c147de4037fb8e5e15cbb75d3ae3dcd7f2fc9f12b26284e105b0",
+  "design_sha256": "7646819afda499ebdb038b4ee9b817b13b086ef0c3d9a44ef9c9325120bdc8c2",
+  "detector_forward_passes": 0,
+  "detectors": 8,
+  "focused_validation": "31 passed in 4.14s; metrics and HoVer-Net unchanged",
+  "integration": "eight training images: four calibration/four selection, discarded parameters; no development reads",
+  "failures_preserved": [
+    "first submission precheck returned Unexpected message received before real submission",
+    "second attempt stopped when another member GPU job appeared; full resource classification added"
+  ],
+  "submission_attempt": 3,
+  "real_submissions": 1,
+  "scheduler_environment": "native; pinned Python library variables excluded; cause of first error not isolated",
+  "elapsed_seconds": 291,
+  "final_pngs": 8,
+  "preserved_files": 140,
+  "independent_checks": 192
+}

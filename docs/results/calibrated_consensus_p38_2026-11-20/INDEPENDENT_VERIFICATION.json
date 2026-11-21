@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "checks": 192,
+  "files": 19,
+  "numpy": "2.3.5",
+  "bundle_sha256": "1d99bf4f0602fa87e36ae8c5e2d678cb59e3c9614de7d098b08e8d67e4c9d9d0",
+  "per_image_aggregate_and_original_decisions": "all reproduced within 1e-12"
+}

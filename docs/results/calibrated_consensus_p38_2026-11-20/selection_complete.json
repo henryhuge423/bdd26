@@ -1,0 +1,24 @@
+{
+  "models": [
+    "P22_C_s19",
+    "P22_C_s1",
+    "P22_M_s19",
+    "P22_M_s1",
+    "P15_C_s19",
+    "P15_C_s1",
+    "P15_J_s19",
+    "P15_J_s1"
+  ],
+  "development_records_opened": 0,
+  "selection_sha256": {
+    "P22_C_s19": "db9c0441b60ecc63a61b26aacd7bcf98b4a2a797346741403706618090756812",
+    "P22_C_s1": "e6176a965e5e3425c671bb38c5838713e05c51ebaaa6f7154a4a8dc262f80378",
+    "P22_M_s19": "ea91f95d14143e5c55216505b6f85f014c313968a2984abd11bd289968457ab7",
+    "P22_M_s1": "bb1054f2f99b9dada597682d6e630a4e50a8a70f3f48a17b38622780b4ae05e8",
+    "P15_C_s19": "f6ec9ec5e6b13026cc6c464de967f51c3bedbead53cf51114da5ef9229915b72",
+    "P15_C_s1": "53b5abf474f12d0b73e215475a89d9a3fc65b3100f2075552826d5022376f6ff",
+    "P15_J_s19": "44346a4138751173151d52cb1a32638cc1ad91763a8933bd8b30517a96d6b35b",
+    "P15_J_s1": "8a87de883c36d1f87b42d57f20a1ae25fe7ab1b9393d847990b3046e68ae6db2"
+  },
+  "script_sha256": "f93d1b4ce693dfcf8b3cd3689639878696718b31faedb8f0a99431d82c1fb423"
+}

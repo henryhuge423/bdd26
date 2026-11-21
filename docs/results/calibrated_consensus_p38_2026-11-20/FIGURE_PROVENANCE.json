@@ -1,0 +1,42 @@
+{
+  "P15_J_s19_0178.png": {
+    "raw_sha256": "f1178cdd7f133a1ceb52ff71100965c2a6ef62aa88309f822ffcc1555550166e",
+    "published_sha256": "f83b612b74c2e68b81afed7a8e5c863ee055f4ec6d5f7661ef1b7d9ad139429c",
+    "change": "annotation-only panel heading clarified; image pixels and prediction overlays preserved"
+  },
+  "P15_J_s19_0776.png": {
+    "raw_sha256": "38e9cd15cf7c007d88f407757488b266a1e3270b4b8dd3af2d521984222168db",
+    "published_sha256": "1d08c50292699a37ae3d55454849e53ece122eb2c1ff57934f34a813d45f79ba",
+    "change": "annotation-only panel heading clarified; image pixels and prediction overlays preserved"
+  },
+  "P15_J_s19_1037.png": {
+    "raw_sha256": "9145e0624e61a2bca2d3efa0f8e1d21bf58c2a859886aa0396babf38066e53a6",
+    "published_sha256": "b41ceb05251eae3fa5a5b280c820602d44efbbce77cefdb41c2b9970a3d90c89",
+    "change": "annotation-only panel heading clarified; image pixels and prediction overlays preserved"
+  },
+  "P15_J_s19_1482.png": {
+    "raw_sha256": "78937141b85c2d70ee3d68cc3272f3968867cb0cd48a944319911446ef8fb298",
+    "published_sha256": "ad230bd5fea13bcec0d1d35828102609484d5ec46effdd75bdcb218d39511431",
+    "change": "annotation-only panel heading clarified; image pixels and prediction overlays preserved"
+  },
+  "P22_M_s19_0178.png": {
+    "raw_sha256": "414add821c69afcb8eb266e81b021caa66c3f85c43eeff7942b162a18f9322eb",
+    "published_sha256": "2427df8275e900ebd03de558de4738632a742593f31f0b2cc169303a65f9c1e7",
+    "change": "annotation-only panel heading clarified; image pixels and prediction overlays preserved"
+  },
+  "P22_M_s19_0776.png": {
+    "raw_sha256": "7457552aea2b35edf04d9677a2297f1eb8294d6f594b9387c77062542980ec6a",
+    "published_sha256": "0bca5225734d273f657a84f66cfb41a121fb4bcc710393eabfe74326c3877a4f",
+    "change": "annotation-only panel heading clarified; image pixels and prediction overlays preserved"
+  },
+  "P22_M_s19_1037.png": {
+    "raw_sha256": "f9c79fef02b88bdf94dede4d42bf8ba7925b39b4107ca998a4b812c56a29470e",
+    "published_sha256": "747a337ad709580f4665697f3d74fba85ea80bb6429bc8c7f61b205dae34f722",
+    "change": "annotation-only panel heading clarified; image pixels and prediction overlays preserved"
+  },
+  "P22_M_s19_1482.png": {
+    "raw_sha256": "973dd6f5b8ceb9ba5ad74ff344ed403876cf6d6bbeacd22766357efb0f8695d8",
+    "published_sha256": "1dde054b7c9e261167fc50e676a5ddfafb8b52d308a5e0287a62d1d1609118d0",
+    "change": "annotation-only panel heading clarified; image pixels and prediction overlays preserved"
+  }
+}
