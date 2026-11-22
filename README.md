@@ -155,7 +155,7 @@ images. PM-Net remains a proposal; no new training. Current mechanism runner
 passed 52 focused checks; the prior 403-test full regression belongs to the training implementation.
 
 Latest complete [progress PDF](Presentations/progress/PanNuke_Progress_2026-11-14.pdf)
-and [project proposal PDF](docs/report/project_proposal/PanNuke_Project_Proposal.pdf).
+and [project proposal PDF](docs/report/project_proposal/PanNuke_Project_Proposal_ver02.pdf).
 Only current PDFs are tracked in these delivery directories; the complete PPTX is
 available locally and ignored. Generators/QA/provenance build files live in ignored ops.
 
