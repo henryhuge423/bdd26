@@ -1,3 +1,5 @@
+> **P34 recovery completed, November 21:** [complete two-seed analysis and decisions](P34_RECOVERY_2026-11-21.md). The November 19 results below preserve the original three-run snapshot.
+
 > **P36 completed — November 20:** all eight scientific computations and preservation are complete; [current results and D37 diagnosis](../alignment_results_2026-11-20/README.md), [stage-nine reports](../../report/stage_report_9/README.md). The dated November 19 submission snapshot below is retained.
 
 # Offset readout (P34) and sixteen grid alignments (P35): results; P36 submitted — November 19, 2026

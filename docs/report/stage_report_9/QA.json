@@ -28,8 +28,8 @@
   "stage_report_9_en": {
     "reference_pages": 21,
     "reference_body_pt": 10.91,
-    "pages": 30,
-    "rendered_pages": 30,
+    "pages": 31,
+    "rendered_pages": 31,
     "body_pt": 11.96,
     "dominant_font": "LMRoman12-Regular",
     "section_bookmarks": [
@@ -74,5 +74,13 @@
     "overfull": [],
     "missing_glyphs": [],
     "unresolved_refs": []
+  },
+  "p34_recovery_revision": {
+    "review": "All PDF pages rendered and contact sheet inspected; P34 figure and text updated for four detectors",
+    "pages": [
+      32,
+      31,
+      11
+    ]
   }
 }

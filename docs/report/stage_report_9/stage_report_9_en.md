@@ -43,7 +43,7 @@ predictions and also deletes some accurately located nuclei.
 
 # Current progress and experiment map
 
-The November 21 check at 10:18 a.m. EST confirmed completion of P35, P36 and P38. Three of the four P34 tasks completed. For the all-layer model at seed 1, the original prediction baseline was verified from per-image records. Evaluation after offset correction is pending.
+All four P34 evaluations are complete. The recovery for the all-layer model at seed 1 completed 12 epochs for each readout and its preserved files were verified. P35, P36 and P38 are also complete.
 
 | Study | Operation | Purpose |
 |:---|:---|:---|
@@ -1146,3 +1146,8 @@ The main text reports gains, losses and extras caused by each
 intervention. All five decoders—original, P36 threshold, P36 consensus,
 support-only and learned quality—are retained in
 assets/P38_RESULTS.json.
+
+
+### P34 两种子补跑结果
+
+On 522 development images, the recovered all-layer seed 1 baseline matched 7,933 nuclei. The translation-trained offset readout followed by merging matched 7,909: 142 matches were gained and 166 lost. Interior Dead matches fell from 84 to 83 of 145. All-layer seed 19 gained 172 and lost 158, a net gain of 14; the two seeds lost two and one interior Dead matches, respectively. Median offset errors queried at annotated centers were 1.47 and 1.51 pixels, with 90th percentiles 4.37 and 4.46 pixels. Moving existing points can bring them inside the three-pixel matching radius or move them outside it. These are center-detection results on the repeatedly used fold-1 development set.

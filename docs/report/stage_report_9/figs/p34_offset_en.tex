@@ -1,8 +1,8 @@
 \begin{tikzpicture}
-\begin{axis}[width=0.94\linewidth,height=55mm,ybar,bar width=10pt,ymin=0,ymax=100,enlarge x limits=0.17,xtick={0,1,2},xticklabels={{Depth control / 19},{Depth control / 1},{All layers / 19}},ylabel={Readout error within 3 pixels (\%)},tick label style={font=\small},label style={font=\small},legend style={at={(0.5,1.06)},anchor=south,legend columns=2,column sep=5pt,draw=none,font=\small},grid=major,major grid style={gray!20}]
-\addplot[fill=blue!65!black,draw=none] coordinates {(0,99.48932219) (1,99.81429898) (2,99.67502321)};
-\addplot[fill=orange!85!black,draw=none] coordinates {(0,82.03162434) (1,79.68375659) (2,83.66075707)};
-\addplot[fill=teal!75!black,draw=none] coordinates {(0,76.17142857) (1,75.85306122) (2,80.62040816)};
+\begin{axis}[width=0.94\linewidth,height=55mm,ybar,bar width=10pt,ymin=0,ymax=100,enlarge x limits=0.17,xtick={0,1,2,3},xticklabels={{Depth control / 19},{Depth control / 1},{All layers / 19},{All layers / 1}},ylabel={Readout error within 3 pixels (\%)},tick label style={font=\small},label style={font=\small},legend style={at={(0.5,1.06)},anchor=south,legend columns=2,column sep=5pt,draw=none,font=\small},grid=major,major grid style={gray!20}]
+\addplot[fill=blue!65!black,draw=none] coordinates {(0,99.48932219) (1,99.81429898) (2,99.67502321) (3,99.72144847)};
+\addplot[fill=orange!85!black,draw=none] coordinates {(0,82.03162434) (1,79.68375659) (2,83.66075707) (3,82.41494969)};
+\addplot[fill=teal!75!black,draw=none] coordinates {(0,76.17142857) (1,75.85306122) (2,80.62040816) (3,79.74693878)};
 \legend{{Training images},{Shifted training images},{Development images}}
 \end{axis}
 \end{tikzpicture}
